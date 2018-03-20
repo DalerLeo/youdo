@@ -21,6 +21,7 @@ const enhance = compose(
             borderRadius: '2px !important',
             background: '#2d3037 !important',
             lineHeight: '1.3',
+            whiteSpace: 'nowrap',
             '&.place-left': {
                 '&:after': {
                     right: '-5px !important'
@@ -37,7 +38,7 @@ const enhance = compose(
 const ToolTip = enhance(({classes, text, children, position, type, disabled, alignRight}) => {
     const uniqId = _.uniqueId('tooltip_')
     return (
-        <div disabled={disabled}>
+        <div>
             <div data-tip data-for={uniqId} className={alignRight ? classes.alignRightWrapper : classes.wrapper}>
                 {children}
             </div>

@@ -25,6 +25,7 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
 import {PRICE_FILTER_KEY} from '../../components/Price'
+import {HR_WORK_SCHEDULE} from '../../constants/backendConstants'
 
 const enhance = compose(
     connect((state, props) => {
@@ -238,14 +239,27 @@ const ResumeList = enhance((props) => {
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
 
+    const isSelectedModes = _.map(HR_WORK_SCHEDULE, (obj) => {
+        const userSelectedMode = _.find(_.get(detail, 'mode'), {'id': obj.id})
+        if (!openCreateDialog && _.get(userSelectedMode, 'id') === obj.id) {
+            return {id: obj.id, selected: true}
+        }
+        return {id: obj.id, selected: false}
+    })
+
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {
-                    languages: [{}]
+                    experiences: [{}],
+                    educations: [{}],
+                    languagesLevel: [{}, {}],
+                    modes: isSelectedModes
                 }
             }
-            return {}
+            return {
+                modes: isSelectedModes
+            }
         })(),
         updateLoading: detailLoading || updateLoading,
         openUpdateDialog,

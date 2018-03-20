@@ -1,3 +1,5 @@
+import t from '../helpers/translate'
+
 export const SUM_CURRENCY = 'UZS'
 export const ZERO = 0
 
@@ -36,3 +38,26 @@ export const APPLICATION_NOT_ASSIGNED = 'not_assigned'
 export const APPLICATION_ASSIGNED = 'assigned'
 export const APPLICATION_CANCELED = 'canceled'
 export const APPLICATION_COMPLETED = 'completed'
+
+export const HR_DRIVER_LICENSE = [
+    {id: 'A', name: 'A', active: false},
+    {id: 'B', name: 'B', active: false},
+    {id: 'C', name: 'C', active: false},
+    {id: 'D', name: 'D', active: false},
+    {id: 'BE', name: 'BE', active: false},
+    {id: 'CE', name: 'CE', active: false},
+    {id: 'DE', name: 'DE', active: false}
+]
+export const HR_WORK_SCHEDULE = [
+    {id: 'full_time', name: t('Полный рабочий день')},
+    {id: 'shift_work', name: t('Сменный график')},
+    {id: 'remote', name: t('Удаленно')},
+    {id: 'part_time', name: t('Частичная занятость')}
+]
+export const HR_EDUCATION = [
+    {id: 'no_matter', name: t('Не имеет значения')},
+    {id: 'secondary', name: t('Среднее')},
+    {id: 'higher', name: t('Высшее')},
+    {id: 'master', name: t('Магистратура')},
+    {id: 'doctoral', name: t('Докторантура')}
+]

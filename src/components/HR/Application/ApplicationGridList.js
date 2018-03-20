@@ -187,7 +187,7 @@ const ApplicationGridList = enhance((props) => {
 
     const applicationList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const client = _.get(item, ['client', 'name'])
+        const client = _.get(item, ['contact', 'client', 'name'])
         const position = _.get(item, ['position', 'name'])
         const recruiter = _.get(item, ['recruiter'])
             ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])

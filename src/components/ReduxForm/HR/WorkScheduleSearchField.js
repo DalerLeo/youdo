@@ -1,14 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/SearchField'
-import t from '../../../helpers/translate'
+import {HR_WORK_SCHEDULE} from '../../../constants/backendConstants'
 
-const Items = [
-    {id: 'full_time', name: t('Полный рабочий день')},
-    {id: 'shift_work', name: t('Сменный график')},
-    {id: 'remote', name: t('Удаленно')},
-    {id: 'part_time', name: t('Частичная занятость')}
-]
+const Items = HR_WORK_SCHEDULE
 
 const getOptions = () => {
     return Promise.resolve(Items)
@@ -16,7 +11,7 @@ const getOptions = () => {
 
 const getItem = (id) => {
     return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
+        _.find(Items, (o) => { return o.id === id }))
 }
 
 const WorkScheduleSearchField = (props) => {

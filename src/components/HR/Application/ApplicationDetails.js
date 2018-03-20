@@ -157,7 +157,7 @@ const ApplicationDetails = enhance((props) => {
     const levelPc = _.get(data, 'levelPc')
     const workSchedule = _.get(data, 'mode')
     const planningDate = dateFormat(_.get(data, 'planningDate'))
-    const position = _.get(data, 'position')
+    const position = _.get(data, ['position', 'name'])
     const privileges = _.get(data, 'privileges')
     const realSalaryMin = numberFormat(_.get(data, 'realSalaryMin'))
     const realSalaryMax = numberFormat(_.get(data, 'realSalaryMax'))
