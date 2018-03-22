@@ -133,8 +133,35 @@ const enhance = compose(
         return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
             _.get(nextProps, ['state', 'open'])
-    }, (props) => props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props))
+    }, (props) => props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+    withPropsOnChange((props, nextProps) => {
+        return _.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value'])
+    }, (props) => {
+        const {state, input, dispatch, getText, getValue, getIdsOption} = props
+        const items = _.join(_.get(input, 'value'), '-')
+        let notFound = true
 
+        for (let i = 0; i < _.size(input.value); i++) {
+            if (!_.find(state.dataSource, {'value': input.value[i]})) {
+                notFound = true
+                break
+            }
+            notFound = false
+        }
+        if (!_.isEmpty(input.value) && notFound) {
+            getIdsOption(items)
+                .then((data) => {
+                    return dispatch({
+                        dataSource: _.unionBy(state.dataSource, _.map(data, (item) => {
+                            return {
+                                text: getText(item),
+                                value: getValue(item)
+                            }
+                        }), 'value')
+                    })
+                })
+        }
+    })
 )
 
 const MultiSelectField = enhance((props) => {

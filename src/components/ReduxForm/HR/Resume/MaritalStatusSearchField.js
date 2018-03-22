@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
-import t from '../../../helpers/translate'
+import SearchField from '../../Basic/SearchField'
+import t from '../../../../helpers/translate'
 
 const Items = [
     {id: 'single', name: t('Не женат / не замужем')},
@@ -14,7 +14,7 @@ const getOptions = () => {
 
 const getItem = (id) => {
     return Promise.resolve(
-        _.find(Items, (o) => { return o.id === _.toInteger(id) }))
+        _.find(Items, (o) => { return o.id === id }))
 }
 
 const ComputerLevelSearchField = (props) => {

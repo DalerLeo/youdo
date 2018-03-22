@@ -3,15 +3,13 @@ import React from 'react'
 import SearchField from '../Basic/SearchField'
 import t from '../../../helpers/translate'
 
-const EducationSearchField = (props) => {
+const SexSearchField = (props) => {
     const {removeNoMatter} = props
 
     const Items = [
         {id: 'no_matter', name: t('Не имеет значения')},
-        {id: 'secondary', name: t('Среднее')},
-        {id: 'higher', name: t('Высшее')},
-        {id: 'master', name: t('Магистратура')},
-        {id: 'doctoral', name: t('Докторантура')}
+        {id: 'male', name: t('Мужской')},
+        {id: 'female', name: t('Женский')}
     ]
 
     const getOptions = () => {
@@ -23,7 +21,6 @@ const EducationSearchField = (props) => {
         return Promise.resolve(
             _.find(Items, (o) => { return o.id === id }))
     }
-
     return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
@@ -36,4 +33,4 @@ const EducationSearchField = (props) => {
     )
 }
 
-export default EducationSearchField
+export default SexSearchField

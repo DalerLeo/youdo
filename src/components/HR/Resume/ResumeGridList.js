@@ -23,38 +23,32 @@ import t from '../../../helpers/translate'
 const listHeader = [
     {
         sorting: true,
-        name: 'client',
-        xs: 2,
-        title: t('Клиент')
-    },
-    {
-        sorting: true,
         name: 'position',
         xs: 3,
-        title: t('Вакантная должность')
+        title: t('Должность')
     },
     {
         sorting: true,
+        name: 'experience',
         xs: 2,
-        name: 'recruiter',
-        title: t('Рекрутер')
+        title: t('Опыт работы')
+    },
+    {
+        sorting: true,
+        xs: 3,
+        name: 'fullName',
+        title: t('Ф.И.О.')
     },
     {
         sorting: true,
         xs: 2,
         name: 'createdDate',
-        title: t('Дата создания')
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'deadline',
-        title: t('Дэдлайн')
+        title: t('Дата добавления')
     },
     {
         sorting: true,
         alignRight: true,
-        xs: 1,
+        xs: 2,
         name: 'status',
         title: t('Статус')
     }
@@ -134,25 +128,21 @@ const ResumeGridList = enhance((props) => {
 
     const resumeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const client = _.get(item, ['client', 'name'])
         const position = _.get(item, ['position', 'name'])
-        const recruiter = _.get(item, ['recruiter'])
-            ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
-            : t('Не назначен')
+        const experience = _.get(item, ['experience'])
+        const fullName = _.get(item, ['fullName'])
         const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const deadline = dateFormat(_.get(item, 'deadline'), true)
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
                     pathname: sprintf(ROUTES.HR_RESUME_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={2}>{client}</Col>
                     <Col xs={3}>{position}</Col>
-                    <Col xs={2}>{recruiter}</Col>
+                    <Col xs={2}>{experience}</Col>
+                    <Col xs={3}>{fullName}</Col>
                     <Col xs={2}>{createdDate}</Col>
-                    <Col xs={2}>{deadline}</Col>
-                    <Col xs={1} className={classes.buttons}>
+                    <Col xs={2} className={classes.buttons}>
                     </Col>
                 </Link>
             </Row>
@@ -169,7 +159,7 @@ const ResumeGridList = enhance((props) => {
         <Container>
             <SubMenu url={ROUTES.HR_RESUME_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text={t('Добавить заявку')}>
+                <ToolTip position="left" text={t('Добавить резюме')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

@@ -618,3 +618,11 @@ export const HR_RESUME_DELETE = `/${HR_RESUME}/%d/`
 export const HR_RESUME_LIST = `/${HR_RESUME}/`
 export const HR_RESUME_ITEM = `/${HR_RESUME}/%d/`
 
+export const HR_COUNTRY = 'hr/country'
+export const HR_COUNTRY_LIST = `/${HR_COUNTRY}/`
+export const HR_COUNTRY_ITEM = `/${HR_COUNTRY}/%d/`
+
+export const HR_CITY = 'hr/city'
+export const HR_CITY_LIST = `/${HR_CITY}/`
+export const HR_CITY_ITEM = `/${HR_CITY}/%d/`
+
