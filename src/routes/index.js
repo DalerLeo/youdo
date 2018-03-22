@@ -92,7 +92,8 @@ import {CellTypeList} from '../containers/CellType'
 import {CellList} from '../containers/Cell'
 import {
     ApplicationList,
-    ResumeList
+    ResumeList,
+    TasksList
 } from '../containers/HR'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
@@ -963,6 +964,17 @@ export default {
                 {
                     path: ROUTES.HR_RESUME_ITEM_URL,
                     component: userIsAuth(ResumeList)
+                }
+            ]
+        },
+        // HR My Tasks
+        {
+            path: ROUTES.HR_TASKS_LIST_URL,
+            component: userIsAdminChain(TasksList),
+            childRoutes: [
+                {
+                    path: ROUTES.HR_TASKS_ITEM_URL,
+                    component: userIsAuth(TasksList)
                 }
             ]
         },

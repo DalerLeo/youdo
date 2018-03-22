@@ -64,10 +64,7 @@ const enhance = compose(
         },
         block: {
             borderLeft: BORDER_STYLE,
-            padding: PADDING_STANDART,
-            '&:first-child': {
-                borderLeft: 'none'
-            }
+            padding: PADDING_STANDART
         },
         info: {
             '& > div': {
@@ -152,11 +149,7 @@ const ApplicationDetails = enhance((props) => {
     const ageMin = _.get(data, 'ageMin')
     const ageMax = _.get(data, 'ageMax')
     const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
-    const client = _.get(data, ['contact', 'client', 'name'])
-    const contact = _.get(data, ['contact', 'name'])
-    const email = _.get(data, ['contact', 'email']) || t('Не указан')
-    const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
-    const address = _.get(data, ['contact', 'address']) || t('Не указан')
+    const client = _.get(data, ['client', 'name'])
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const deadline = dateFormat(_.get(data, 'deadline'), true)
     const education = _.get(data, 'education')
@@ -236,10 +229,10 @@ const ApplicationDetails = enhance((props) => {
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
                     <div className={classes.info + ' ' + classes.flexBetween}>
                         <div>{t('Клиент')}: <strong>{client}</strong></div>
-                        <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
-                        <div>{t('Телефон')}: <strong>{phone}</strong></div>
-                        <div>{t('Адрес')}: <strong>{address}</strong></div>
-                        <div>{t('Email')}: <strong>{email}</strong></div>
+                        <div>{t('Контактное лицо')}: <strong>{}</strong></div>
+                        <div>{t('Телефон')}: <strong>{}</strong></div>
+                        <div>{t('Адрес')}: <strong>{}</strong></div>
+                        <div>{t('Email')}: <strong>{}</strong></div>
                     </div>
                 </div>
             </div>
@@ -298,7 +291,7 @@ ApplicationDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    })
+    }).isRequired
 }
 
 export default ApplicationDetails

@@ -397,3 +397,8 @@ export const HR_RESUME = `${HR_URL}/resume`
 export const HR_RESUME_LIST_URL = `${HR_RESUME}/`
 export const HR_RESUME_ITEM_URL = `${HR_RESUME}/:resumeId`
 export const HR_RESUME_ITEM_PATH = `${HR_RESUME}/%d`
+
+export const HR_TASKS = `${HR_URL}/tasks`
+export const HR_TASKS_LIST_URL = `${HR_TASKS}/`
+export const HR_TASKS_ITEM_URL = `${HR_TASKS}/:tasksId`
+export const HR_TASKS_ITEM_PATH = `${HR_TASKS}/%d`
