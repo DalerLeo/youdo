@@ -1,8 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import {connect} from 'react-redux'
+import {reduxForm, Field, FieldArray} from 'redux-form'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
@@ -10,30 +9,39 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {
-    MeasurementMultiSearchField,
-    ProductTypeChildSearchField,
-    ProductTypeSearchField,
-    CheckBox
-} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
+import PositionMultiSearchField from '../../ReduxForm/HR/Position/PositionMultiSearchField'
+import WorkScheduleMultiSearchField from '../../ReduxForm/HR/WorkScheduleMultiSearchField'
+import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
+import EducationMultiSearchField from '../../ReduxForm/HR/EducationMultiSearchField'
+import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
+import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
+import LanguageField from '../../ReduxForm/HR/LanguageField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../../helpers/translate'
+import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
 
 export const RESUME_FILTER_OPEN = 'openFilterDialog'
 
 export const RESUME_FILTER_KEY = {
-    TYPE_PARENT: 'typeParent',
-    TYPE_CHILD: 'typeChild',
-    MEASUREMENT: 'measurement',
-    WITHOUT_NET_COST: 'withoutNetCost'
+    POSITION: 'position',
+    MODE: 'mode',
+    AGE_MIN: 'ageMin',
+    AGE_MAX: 'ageMax',
+    SEX: 'sex',
+    EDUCATION: 'education',
+    LEVEL_PC: 'levelPc',
+    LANGUAGES: 'languages',
+    EXPERIENCE: 'experience',
+    SKILLS: 'skills'
 }
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            width: '310px',
+            width: '355px',
             background: '#fff',
             zIndex: 99,
             top: 0,
@@ -101,17 +109,21 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
+        },
+        flexHalf: {
+            display: 'flex',
+            alignItems: 'baseline',
+            '& > div': {
+                width: '100px !important'
+            },
+            '& > span': {
+                margin: '0 15px'
+            }
         }
     }),
     reduxForm({
         form: 'ResumeFilterForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const typeParent = _.get(state, ['form', 'ResumeFilterForm', 'values', 'typeParent', 'value'])
-        return {
-            typeParent
-        }
     }),
     withHandlers({
         getCount: props => () => {
@@ -127,7 +139,7 @@ const enhance = compose(
 )
 
 const ResumeFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -168,35 +180,70 @@ const ResumeFilterForm = enhance((props) => {
                 </div>
                 <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                     <Field
-                        name="typeParent"
+                        name="position"
                         className={classes.inputFieldCustom}
-                        component={ProductTypeSearchField}
-                        params={{parent: 0}}
-                        label={t('Тип продукта')}
-                        fullWidth={true}
-                    />
-                    {typeParent ? <Field
-                            name="typeChild"
-                            className={classes.inputFieldCustom}
-                            component={ProductTypeChildSearchField}
-                            params={{parent: typeParent}}
-                            label={t('Подкатегория')}
-                            fullWidth={true}
-                        /> : null}
-                    <div>
+                        component={PositionMultiSearchField}
+                        label={t('Должность')}
+                        fullWidth={true}/>
+                    <Field
+                        name="mode"
+                        className={classes.inputFieldCustom}
+                        component={WorkScheduleMultiSearchField}
+                        label={t('Режим работы')}
+                        fullWidth={true}/>
+                    <div className={classes.flexHalf}>
                         <Field
+                            name="age[min]"
                             className={classes.inputFieldCustom}
-                            name="measurement"
-                            component={MeasurementMultiSearchField}
-                            label={t('Мера')}/>
-                    </div>
-                    <div>
+                            component={TextField}
+                            normalize={normalizeNumber}
+                            inputStyle={{textAlign: 'center'}}
+                            label={t('Возраст (мин)')}
+                            fullWidth={true}/>
+                        <span>-</span>
                         <Field
+                            name="age[max]"
                             className={classes.inputFieldCustom}
-                            name="withoutNetCost"
-                            component={CheckBox}
-                            label={t('Товары без себестоимости')}/>
+                            component={TextField}
+                            normalize={normalizeNumber}
+                            inputStyle={{textAlign: 'center'}}
+                            label={t('Возраст (макс)')}
+                            fullWidth={true}/>
                     </div>
+                    <Field
+                        name="sex"
+                        className={classes.inputFieldCustom}
+                        component={GenderSearchField}
+                        label={t('Пол')}
+                        fullWidth={true}/>
+                    <Field
+                        name="education"
+                        className={classes.inputFieldCustom}
+                        component={EducationMultiSearchField}
+                        label={t('Образование')}
+                        fullWidth={true}/>
+                    <Field
+                        name="levelPc"
+                        className={classes.inputFieldCustom}
+                        component={ComputerLevelSearchField}
+                        label={t('Знание ПК')}
+                        fullWidth={true}/>
+                    <FieldArray
+                        name="languages"
+                        component={LanguageField}/>
+                    <Field
+                        name="experience"
+                        className={classes.inputFieldCustom}
+                        component={TextField}
+                        normalize={normalizeNumber}
+                        label={t('Опыт работы')}
+                        fullWidth={true}/>
+                    <Field
+                        name="skills"
+                        className={classes.inputFieldCustom}
+                        component={SkillsTagSearchField}
+                        label={t('Навыки')}
+                        fullWidth={true}/>
                     <RaisedButton
                         type="submit"
                         primary={true}
