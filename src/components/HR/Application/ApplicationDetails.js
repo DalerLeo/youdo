@@ -13,7 +13,7 @@ import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import t from '../../../helpers/translate'
-import {PADDING_STANDART, BORDER_STYLE} from '../../../constants/styleConstants'
+import {PADDING_STANDART, BORDER_STYLE, COLOR_GREY_LIGHTEN} from '../../../constants/styleConstants'
 import {SUM_CURRENCY} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
@@ -83,12 +83,6 @@ const enhance = compose(
             flexWrap: 'wrap'
         },
         skill: {
-            // . backgroundColor: '#4db6ac',
-            // . borderRadius: '2px',
-            // . padding: '3px 8px',
-            // . margin: '0 3px',
-            // . display: 'inline-block',
-            // . color: '#fff'
             fontWeight: '600',
             marginLeft: '5px',
             '&:after': {
@@ -96,7 +90,13 @@ const enhance = compose(
             },
             '&:last-child:after': {
                 display: 'none'
+            },
+            '& strong': {
+                color: COLOR_GREY_LIGHTEN
             }
+        },
+        lowercase: {
+            textTransform: 'lowercase'
         },
         titleLabel: {
             fontSize: '18px',
@@ -174,6 +174,7 @@ const ApplicationDetails = enhance((props) => {
     const responsibility = _.get(data, 'responsibility')
     const sex = _.get(data, 'sex')
     const skills = _.get(data, 'skills')
+    const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
 
@@ -272,16 +273,29 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Пол')}: <strong>{sex}</strong></div>
                         <div>{t('Образование')}: <strong>{education}</strong></div>
                         <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
-                        <div>{t('Знание языков')}: <strong>{}</strong></div>
+                        <div>{t('Знание языков')}:
+                            {_.isEmpty(languages)
+                                ? <strong> {t('Не указано')}</strong>
+                                : _.map(languages, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, ['language', 'name'])
+                                    const level = _.get(item, ['level', 'name'])
+                                    return (
+                                        <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                    )
+                                })}
+                        </div>
                         <div>{t('Минимальный опыт работы по специальности')}: <strong>{experience}</strong></div>
                         <div>{t('Профессиональные навыки')}:
-                            {_.map(skills, (item) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <span key={id} className={classes.skill}>{name}</span>
-                                )
-                            })}
+                            {_.isEmpty(skills)
+                                ? <strong> {t('Не указаны')}</strong>
+                                : _.map(skills, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <span key={id} className={classes.skill}>{name}</span>
+                                    )
+                                })}
                         </div>
                     </div>
                 </div>

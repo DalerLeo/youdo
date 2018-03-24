@@ -49,6 +49,12 @@ const enhance = compose(
             borderRadius: 0,
             padding: '10px 20px 10px 20px'
         },
+        wrapperDialog: {
+            width: '100%',
+            padding: '20px 30px',
+            boxShadow: 'none !important',
+            zIndex: '2'
+        },
         afterFilter: {
             alignItems: 'center',
             display: 'flex',
@@ -91,6 +97,10 @@ const enhance = compose(
         title: {
             fontSize: '15px',
             color: '#5d6474'
+        },
+        titleDialog: {
+            fontWeight: '600',
+            marginBottom: '10px'
         },
         submit: {
             color: '#fff !important'
@@ -139,7 +149,7 @@ const enhance = compose(
 )
 
 const ResumeFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, forDialog} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -170,98 +180,96 @@ const ResumeFilterForm = enhance((props) => {
     }
 
     return (
-        <div>
-            <Paper className={classes.wrapper} zDepth={2}>
-                <div className={classes.header}>
-                    <span className={classes.title}>{t('Фильтр')}</span>
-                    <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
-                        <CloseIcon className={classes.icon} />
-                    </IconButton>
-                </div>
-                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+        <Paper className={forDialog ? classes.wrapperDialog : classes.wrapper} zDepth={2}>
+            <div className={classes.header}>
+                <span className={forDialog ? classes.titleDialog : classes.title}>{t('Фильтр')}</span>
+                {!forDialog &&
+                <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+                    <CloseIcon className={classes.icon} />
+                </IconButton>}
+            </div>
+            <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                <Field
+                    name="position"
+                    className={classes.inputFieldCustom}
+                    component={PositionMultiSearchField}
+                    label={t('Должность')}
+                    fullWidth={true}/>
+                <Field
+                    name="mode"
+                    className={classes.inputFieldCustom}
+                    component={WorkScheduleMultiSearchField}
+                    label={t('Режим работы')}
+                    fullWidth={true}/>
+                <div className={classes.flexHalf}>
                     <Field
-                        name="position"
-                        className={classes.inputFieldCustom}
-                        component={PositionMultiSearchField}
-                        label={t('Должность')}
-                        fullWidth={true}/>
-                    <Field
-                        name="mode"
-                        className={classes.inputFieldCustom}
-                        component={WorkScheduleMultiSearchField}
-                        label={t('Режим работы')}
-                        fullWidth={true}/>
-                    <div className={classes.flexHalf}>
-                        <Field
-                            name="age[min]"
-                            className={classes.inputFieldCustom}
-                            component={TextField}
-                            normalize={normalizeNumber}
-                            inputStyle={{textAlign: 'center'}}
-                            label={t('Возраст (мин)')}
-                            fullWidth={true}/>
-                        <span>-</span>
-                        <Field
-                            name="age[max]"
-                            className={classes.inputFieldCustom}
-                            component={TextField}
-                            normalize={normalizeNumber}
-                            inputStyle={{textAlign: 'center'}}
-                            label={t('Возраст (макс)')}
-                            fullWidth={true}/>
-                    </div>
-                    <Field
-                        name="sex"
-                        className={classes.inputFieldCustom}
-                        component={GenderSearchField}
-                        label={t('Пол')}
-                        fullWidth={true}/>
-                    <Field
-                        name="education"
-                        className={classes.inputFieldCustom}
-                        component={EducationMultiSearchField}
-                        label={t('Образование')}
-                        fullWidth={true}/>
-                    <Field
-                        name="levelPc"
-                        className={classes.inputFieldCustom}
-                        component={ComputerLevelSearchField}
-                        label={t('Знание ПК')}
-                        fullWidth={true}/>
-                    <FieldArray
-                        name="languages"
-                        component={LanguageField}/>
-                    <Field
-                        name="experience"
+                        name="age[min]"
                         className={classes.inputFieldCustom}
                         component={TextField}
                         normalize={normalizeNumber}
-                        label={t('Опыт работы')}
+                        inputStyle={{textAlign: 'center'}}
+                        label={t('Возраст (мин)')}
                         fullWidth={true}/>
+                    <span>-</span>
                     <Field
-                        name="skills"
+                        name="age[max]"
                         className={classes.inputFieldCustom}
-                        component={SkillsTagSearchField}
-                        label={t('Навыки')}
+                        component={TextField}
+                        normalize={normalizeNumber}
+                        inputStyle={{textAlign: 'center'}}
+                        label={t('Возраст (макс)')}
                         fullWidth={true}/>
-                    <RaisedButton
-                        type="submit"
-                        primary={true}
-                        buttonStyle={{color: '#fff'}}
-                        label={t('Применить')}
-                        labelStyle={{fontSize: '13px'}}
-                        style={{marginTop: '15px'}}>
-                    </RaisedButton>
-                </form>
-            </Paper>
-        </div>
+                </div>
+                <Field
+                    name="sex"
+                    className={classes.inputFieldCustom}
+                    component={GenderSearchField}
+                    label={t('Пол')}
+                    fullWidth={true}/>
+                <Field
+                    name="education"
+                    className={classes.inputFieldCustom}
+                    component={EducationMultiSearchField}
+                    label={t('Образование')}
+                    fullWidth={true}/>
+                <Field
+                    name="levelPc"
+                    className={classes.inputFieldCustom}
+                    component={ComputerLevelSearchField}
+                    label={t('Знание ПК')}
+                    fullWidth={true}/>
+                <FieldArray
+                    name="languages"
+                    component={LanguageField}/>
+                <Field
+                    name="experience"
+                    className={classes.inputFieldCustom}
+                    component={TextField}
+                    normalize={normalizeNumber}
+                    label={t('Опыт работы')}
+                    fullWidth={true}/>
+                <Field
+                    name="skills"
+                    className={classes.inputFieldCustom}
+                    component={SkillsTagSearchField}
+                    label={t('Навыки')}
+                    fullWidth={true}/>
+                <RaisedButton
+                    type="submit"
+                    primary={true}
+                    buttonStyle={{color: '#fff'}}
+                    label={t('Применить')}
+                    labelStyle={{fontSize: '13px'}}
+                    style={{marginTop: '15px'}}>
+                </RaisedButton>
+            </form>
+        </Paper>
     )
 })
 
 ResumeFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
-        filterLoading: PropTypes.bool.isRequired,
         openFilterDialog: PropTypes.bool.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,

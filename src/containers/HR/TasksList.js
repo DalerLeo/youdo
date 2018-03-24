@@ -15,7 +15,10 @@ import {
     tasksItemFetchAction
 } from '../../actions/HR/tasks'
 import * as TASK_TAB from '../../constants/hrTasksTab'
-import {APPLICATION_ASSIGNED, APPLICATION_COMPLETED} from '../../constants/backendConstants'
+import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
+import {joinArray} from '../../helpers/joinSplitValues'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import {langQueryFormat} from '../../helpers/joinSplitLanguages'
 
 const enhance = compose(
     connect((state, props) => {
@@ -52,25 +55,25 @@ const enhance = compose(
         tasksId && dispatch(tasksItemFetchAction(tasksId))
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const tab = _.get(props, ['location', 'query', TAB])
-        const nextTab = _.get(nextProps, ['location', 'query', TAB])
-        return tab !== nextTab && nextTab
-    }, ({dispatch, location: {query, pathname}, filter}) => {
-        const currentTab = _.get(query, TAB) || TASK_TAB.TASKS_TAB_CURRENT
-        const filterList = (status, doing) => {
-            return hashHistory.push({
-                pathname: pathname,
-                query: filter.getParams({status: status, doing: doing})
-            })
-        }
-        switch (currentTab) {
-            case TASK_TAB.TASKS_TAB_CURRENT: return filterList(APPLICATION_ASSIGNED, true)
-            case TASK_TAB.TASKS_TAB_NEW: return filterList(APPLICATION_ASSIGNED, false)
-            case TASK_TAB.TASKS_TAB_COMPLETED: return filterList(APPLICATION_COMPLETED, false)
-            default: return null
-        }
-    }),
+    // . withPropsOnChange((props, nextProps) => {
+    // .     const tab = _.get(props, ['location', 'query', TAB])
+    // .     const nextTab = _.get(nextProps, ['location', 'query', TAB])
+    // .     return tab !== nextTab && nextTab
+    // . }, ({dispatch, location: {query, pathname}, filter}) => {
+    // .     const currentTab = _.get(query, TAB) || TASK_TAB.TASKS_TAB_CURRENT
+    // .     const filterList = (status, doing) => {
+    // .         return hashHistory.push({
+    // .             pathname: pathname,
+    // .             query: filter.getParams({status: status, doing: doing})
+    // .         })
+    // .     }
+    // .     switch (currentTab) {
+    // .         case TASK_TAB.TASKS_TAB_CURRENT: return filterList(APPLICATION_ASSIGNED, true)
+    // .         case TASK_TAB.TASKS_TAB_NEW: return filterList(APPLICATION_ASSIGNED, false)
+    // .         case TASK_TAB.TASKS_TAB_COMPLETED: return filterList(APPLICATION_COMPLETED, false)
+    // .         default: return null
+    // .     }
+    // . }),
 
     withHandlers({
         handleCloseDetail: props => () => {
@@ -83,6 +86,47 @@ const enhance = compose(
             hashHistory.push({
                 pathname: pathname,
                 query: filter.getParams({[TAB]: tab})
+            })
+        },
+
+        handleOpenFilterDialog: props => () => {
+            return null
+        },
+
+        handleCloseFilterDialog: props => () => {
+            return null
+        },
+
+        handleClearFilterDialog: props => () => {
+            return null
+        },
+
+        handleSubmitFilterDialog: props => () => {
+            const {filter, filterForm} = props
+            const position = _.get(filterForm, ['values', 'position']) || null
+            const mode = _.get(filterForm, ['values', 'mode']) || null
+            const ageMin = _.get(filterForm, ['values', 'age', 'min']) || null
+            const ageMax = _.get(filterForm, ['values', 'age', 'max']) || null
+            const sex = _.get(filterForm, ['values', 'sex', 'value']) || null
+            const education = _.get(filterForm, ['values', 'education']) || null
+            const levelPc = _.get(filterForm, ['values', 'levelPc', 'value']) || null
+            const languages = _.get(filterForm, ['values', 'languages']) || null
+            const experience = _.get(filterForm, ['values', 'experience']) || null
+            const skills = _.get(filterForm, ['values', 'skills']) || null
+            const langToUrl = langQueryFormat(languages)
+
+            filter.filterBy({
+                [RESUME_FILTER_OPEN]: false,
+                [RESUME_FILTER_KEY.POSITION]: joinArray(position),
+                [RESUME_FILTER_KEY.MODE]: joinArray(mode),
+                [RESUME_FILTER_KEY.AGE_MIN]: ageMin && numberWithoutSpaces(ageMin),
+                [RESUME_FILTER_KEY.AGE_MAX]: ageMax && numberWithoutSpaces(ageMax),
+                [RESUME_FILTER_KEY.SEX]: sex,
+                [RESUME_FILTER_KEY.EDUCATION]: joinArray(education),
+                [RESUME_FILTER_KEY.LEVEL_PC]: levelPc,
+                [RESUME_FILTER_KEY.LANGUAGES]: _.join(langToUrl, '|'),
+                [RESUME_FILTER_KEY.EXPERIENCE]: experience && numberWithoutSpaces(experience),
+                [RESUME_FILTER_KEY.SKILLS]: joinArray(skills)
             })
         }
     })
@@ -120,6 +164,14 @@ const TasksList = enhance((props) => {
         handleTabChange: props.handleTabChange
     }
 
+    const filterDialog = {
+        openFilterDialog: true,
+        handleOpenFilterDialog: props.handleOpenFilterDialog,
+        handleCloseFilterDialog: props.handleCloseFilterDialog,
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+    }
+
     return (
         <Layout {...layout}>
             <TasksGridList
@@ -127,6 +179,7 @@ const TasksList = enhance((props) => {
                 listData={listData}
                 detailData={detailData}
                 tabData={tabData}
+                filterDialog={filterDialog}
             />
         </Layout>
     )

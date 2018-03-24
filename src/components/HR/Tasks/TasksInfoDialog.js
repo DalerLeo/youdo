@@ -4,31 +4,15 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
-import FlatButton from 'material-ui/FlatButton'
-import Loader from '../../Loader'
-import ToolTip from '../../ToolTip'
-import {Field, FieldArray, reduxForm, change} from 'redux-form'
-import {TextField, CheckBox, DateField, ClientContactsField, TimeField} from '../../ReduxForm'
-import WorkScheduleSearchField from '../../ReduxForm/HR/WorkScheduleSearchField'
-import SexSearchField from '../../ReduxForm/HR/GenderSearchField'
-import EducationSearchField from '../../ReduxForm/HR/EducationSearchField'
-import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
-import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
-import LanguageField from '../../ReduxForm/HR/LanguageField'
-import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
-import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import AddPerson from 'material-ui/svg-icons/social/person-add'
-import PersonIcon from 'material-ui/svg-icons/social/person'
 import IconButton from 'material-ui/IconButton'
+import Loader from '../../Loader'
+import {reduxForm} from 'redux-form'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
-import * as ROUTES from '../../../constants/routes'
-import formValidate from '../../../helpers/formValidate'
-import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
 import {BORDER_STYLE, COLOR_DEFAULT} from '../../../constants/styleConstants'
 import {connect} from 'react-redux'
-import {Link} from 'react-router'
-import Popover from 'material-ui/Popover/Popover'
 import ApplicationDetails from '../Application/ApplicationDetails'
+import ResumeFilterForm from '../Resume/ResumeFilterForm'
 
 const enhance = compose(
     injectSheet({
@@ -180,9 +164,13 @@ const enhance = compose(
             }
         },
         details: {
+            borderBottom: BORDER_STYLE,
             '& > div > div:first-child': {
                 display: 'none'
             }
+        },
+        filters: {
+
         }
     }),
     reduxForm({
@@ -205,17 +193,46 @@ const TasksInfoDialog = enhance((props) => {
         onClose,
         classes,
         loading,
-        data
+        data,
+        filter,
+        filterDialog
     } = props
 
     const appId = _.get(data, 'id')
+    const initialValues = {
+        age: {
+            min: _.get(data, 'ageMin'),
+            max: _.get(data, 'ageMax')
+        },
+        position: [_.get(data, ['position', 'id'])],
+        mode: [_.get(data, 'mode')],
+        experience: _.get(data, 'experience'),
+        sex: {
+            value: _.get(data, 'sex')
+        },
+        education: [_.get(data, 'education')],
+        levelPc: {
+            value: _.get(data, 'levelPc')
+        },
+        skills: _.map(_.get(data, 'skills'), (item) => _.get(item, 'name')),
+        languages: _.map(_.get(data, 'languages'), (item) => {
+            return {
+                name: {
+                    value: _.get(item, 'language')
+                },
+                level: {
+                    value: _.get(item, 'level')
+                }
+            }
+        })
+    }
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '900px', maxWidth: 'none'}}
+            contentStyle={{width: '800px', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
@@ -235,6 +252,13 @@ const TasksInfoDialog = enhance((props) => {
                             data={data}
                             loading={loading}
                             handleOpenUpdateDialog={null}/>
+                    </div>
+                    <div className={classes.filters}>
+                        <ResumeFilterForm
+                            filter={filter}
+                            filterDialog={filterDialog}
+                            initialValues={initialValues}
+                            forDialog={true}/>
                     </div>
                 </div>
             </div>

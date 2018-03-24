@@ -28,6 +28,7 @@ import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
 import {HR_WORK_SCHEDULE} from '../../constants/backendConstants'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
+import {langArrayFormat, langQueryFormat} from '../../helpers/joinSplitLanguages'
 
 const enhance = compose(
     connect((state, props) => {
@@ -100,11 +101,7 @@ const enhance = compose(
             const languages = _.get(filterForm, ['values', 'languages']) || null
             const experience = _.get(filterForm, ['values', 'experience']) || null
             const skills = _.get(filterForm, ['values', 'skills']) || null
-            const langToUrl = _.map(languages, (item) => {
-                const name = _.get(item, ['name', 'value'])
-                const level = _.get(item, ['level', 'value'])
-                return name + '-' + level
-            })
+            const langToUrl = langQueryFormat(languages)
 
             filter.filterBy({
                 [RESUME_FILTER_OPEN]: false,
@@ -233,14 +230,7 @@ const ResumeList = enhance((props) => {
     const languages = filter.getParam(RESUME_FILTER_KEY.LANGUAGES)
     const experience = filter.getParam(RESUME_FILTER_KEY.EXPERIENCE)
     const skills = filter.getParam(RESUME_FILTER_KEY.SKILLS)
-    const langToForm = _.map(_.split(languages, '|'), (item) => {
-        const name = _.parseInt(item)
-        const level = _.trimStart(item, name + '-')
-        return {
-            name: {value: name},
-            level: {value: level}
-        }
-    })
+    const langToForm = langArrayFormat(languages)
 
     const filterDialog = {
         initialValues: {

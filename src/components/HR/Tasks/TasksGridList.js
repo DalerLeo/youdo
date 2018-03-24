@@ -1,116 +1,194 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {Row, Col} from 'react-flexbox-grid'
 import * as ROUTES from '../../../constants/routes'
 import sprintf from 'sprintf'
-import GridList from '../../GridList'
 import Container from '../../Container'
+import Loader from '../../Loader'
 import TasksInfoDialog from './TasksInfoDialog'
-import ConfirmDialog from '../../ConfirmDialog'
-import SubMenu from '../../SubMenu'
-import {Tabs, Tab} from 'material-ui/Tabs'
-import Paper from 'material-ui/Paper'
-import Badge from 'material-ui/Badge'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
+import Calendar from 'material-ui/svg-icons/action/event'
+import CalendarCreated from 'material-ui/svg-icons/notification/event-available'
 import ToolTip from '../../ToolTip'
 import {hashHistory, Link} from 'react-router'
-import TasksDetail from '../Application/ApplicationDetails'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
-import {COLOR_WHITE, LINK_COLOR} from '../../../constants/styleConstants'
-import * as TAB from '../../../constants/hrTasksTab'
+import {
+    BORDER_STYLE,
+    COLOR_DEFAULT, COLOR_GREEN,
+    COLOR_GREY,
+    COLOR_GREY_LIGHTEN,
+    COLOR_WHITE,
+    LINK_COLOR,
+    PADDING_STANDART
+} from '../../../constants/styleConstants'
 import {ZERO} from '../../../constants/backendConstants'
 
-const listHeader = [
-    {
-        sorting: true,
-        name: 'client',
-        xs: 2,
-        title: t('Клиент')
-    },
-    {
-        sorting: true,
-        name: 'position',
-        xs: 3,
-        title: t('Вакантная должность')
-    },
-    {
-        sorting: true,
-        xs: 3,
-        name: 'recruiter',
-        title: t('Рекрутер')
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'createdDate',
-        title: t('Дата создания')
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'deadline',
-        title: t('Дэдлайн')
-    }
-]
+const SORT_BY_DEADLINE = 'deadline'
+const SORT_BY_CREATED_DATE = 'createdDate'
 
+const BORDER_DARKER = '1px #e3e3e3 solid'
+const BORDER_TRANSPARENT = '1px transparent solid'
 const enhance = compose(
     injectSheet({
-        addButtonWrapper: {
+        loader: {
+            display: 'flex',
+            alignItems: 'center',
+            alignSelf: 'baseline',
+            justifyContent: 'center',
+            padding: '100px 0',
+            width: '100%'
+        },
+        wrapper: {
             position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
+            top: '60px',
+            left: '-28px',
+            right: '-32px',
+            bottom: '-28px',
+            display: 'flex'
         },
-        actionBtn: {
-            height: '48px'
+        leftSide: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            width: '75%'
         },
-        listRow: {
+        header: {
+            display: 'flex',
+            height: '60px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            margin: '0 -32px 0 -28px',
+            borderBottom: BORDER_DARKER
+        },
+        title: {
+            fontWeight: '600',
+            fontSize: '17px',
+            padding: '0 30px'
+        },
+        tasks: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            height: '100%',
+            overflowY: 'auto',
+            width: '100%'
+        },
+        task: {
+            borderBottom: BORDER_DARKER,
+            borderRight: BORDER_DARKER,
+            borderTop: BORDER_TRANSPARENT,
             position: 'relative',
+            cursor: 'pointer',
+            width: '50%',
+            height: '400px',
+            transition: 'all 250ms ease',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
             '& > a': {
-                display: 'flex',
-                alignItems: 'center',
                 position: 'absolute',
                 top: '0',
-                left: '-30px',
-                right: '-30px',
-                bottom: '0',
-                padding: '0 30px',
-                '& > div:first-child': {
-                    paddingLeft: '0'
-                },
-                '& > div:last-child': {
-                    paddingRight: '0'
+                left: '0',
+                right: '0',
+                bottom: '0'
+            },
+            '&:nth-child(2n + 2)': {
+                borderRight: BORDER_TRANSPARENT
+            },
+
+            '&:hover': {
+                background: COLOR_WHITE,
+                borderBottom: BORDER_TRANSPARENT,
+                borderRight: BORDER_TRANSPARENT,
+                borderTop: BORDER_TRANSPARENT,
+                boxShadow: 'rgba(0, 0, 0, 0.1) 0px 0px 30px, rgba(0, 0, 0, 0.19) 0px 6px 10px',
+                zIndex: '2'
+            },
+
+            '& header': {
+                display: 'flex',
+                height: '50px',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0 20px'
+            },
+            '& section': {
+                padding: '10px 0',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            },
+            '& footer': {
+                borderTop: BORDER_STYLE,
+                display: 'flex',
+                height: '50px',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                '& > div': {
+                    borderRight: BORDER_STYLE,
+                    color: COLOR_GREY,
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '100%',
+                    padding: '0 20px',
+                    width: 'calc(100% / 3)',
+                    '&:last-child': {
+                        borderRight: 'none'
+                    },
+                    '& strong': {
+                        color: COLOR_DEFAULT,
+                        marginLeft: '5px',
+                        fontWeight: 'bold'
+                    }
                 }
             }
+        },
+        deadline: {
+            display: 'flex',
+            alignItems: 'center',
+            color: COLOR_GREY_LIGHTEN,
+            fontSize: '11px',
+            '& svg': {
+                color: COLOR_GREY_LIGHTEN + '!important',
+                width: '20px !important',
+                height: '20px !important',
+                marginRight: '5px'
+            }
+        },
+        bodyBlock: {
+            textAlign: 'center'
+        },
+        status: {
+            border: '2px solid',
+            borderRadius: '4px',
+            color: LINK_COLOR,
+            display: 'inline-block',
+            fontWeight: '600',
+            padding: '3px 8px',
+            marginBottom: '10px'
+        },
+        client: {
+            fontSize: '13px',
+            color: COLOR_GREY,
+            marginBottom: '5px'
+        },
+        position: {
+            fontSize: '16px',
+            fontWeight: '600'
+        },
+        rightSide: {
+            background: COLOR_WHITE,
+            width: '25%',
+            padding: PADDING_STANDART
         },
         buttons: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end'
-        },
-        tab: {
-            marginBottom: '20px',
-            width: '100%',
-            '& > div': {
-                paddingRight: 'calc(100% - 350px)'
-            },
-            '& > div:first-child': {
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
-                borderBottom: '1px transparent solid'
-            },
-            '& > div:last-child': {
-                width: '100% !important',
-                padding: '0'
-            },
-            '& button > div': {
-                height: '50px !important'
-            }
+            borderRadius: '40px',
+            background: COLOR_WHITE,
+            marginRight: '30px'
         }
     })
 )
@@ -121,89 +199,99 @@ const TasksGridList = enhance((props) => {
         listData,
         detailData,
         classes,
-        tabData
+        filterDialog
     } = props
 
-    const tasksDetail = (
-        <TasksDetail
-            key={_.get(detailData, 'id')}
-            data={_.get(detailData, 'data') || {}}
-            loading={_.get(detailData, 'detailLoading')}
-            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
-    )
-
+    const loading = _.get(listData, 'listLoading')
     const tasksList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
+        const status = _.get(item, 'status')
         const client = _.get(item, ['contact', 'client', 'name'])
         const position = _.get(item, ['position', 'name'])
-        const recruiter = _.get(item, ['recruiter'])
-            ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
-            : t('Не назначен')
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const deadline = dateFormat(_.get(item, 'deadline'), true)
+        const deadline = dateFormat(_.get(item, 'deadline'))
         return (
-            <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
+            <div key={id} className={classes.task}>
                 <Link to={{
                     pathname: sprintf(ROUTES.HR_TASKS_ITEM_PATH, id),
-                    query: filter.getParams()
-                }}>
-                    <Col xs={2}>{client}</Col>
-                    <Col xs={3}>{position}</Col>
-                    <Col xs={3}>{recruiter}</Col>
-                    <Col xs={2}>{createdDate}</Col>
-                    <Col xs={2}>{deadline}</Col>
-                </Link>
-            </Row>
+                    query: filter.getParams()}}/>
+                <header>
+                    <div className={classes.deadline}><Calendar/>{deadline}</div>
+                </header>
+                <section>
+                    <div className={classes.bodyBlock}>
+                        <div className={classes.status}>{status}</div>
+                        <div className={classes.client}>{client}</div>
+                        <div className={classes.position}>{position}</div>
+                    </div>
+                </section>
+                <footer>
+                    <div>Long list:<strong>4</strong></div>
+                    <div>{t('Собеседования')}:<strong>3</strong></div>
+                    <div>Short list:<strong>0</strong></div>
+                </footer>
+            </div>
         )
     })
 
-    const list = {
-        header: listHeader,
-        list: tasksList,
-        loading: _.get(listData, 'listLoading')
-    }
-
-    const tabStyle = {
+    const buttonStyle = {
         button: {
-            textTransform: 'none'
+            width: 40,
+            height: 40,
+            padding: 9
+        },
+        icon: {
+            width: 22,
+            height: 22
         }
+    }
+    const currentOrdering = filter.getParam('ordering')
+    const sortyBy = (value) => {
+        return hashHistory.push(filter.createURL({ordering: value}))
     }
 
     return (
         <Container>
-            <SubMenu url={ROUTES.HR_TASKS_LIST_URL}/>
-            <Tabs
-                value={tabData.tab}
-                className={classes.tab}
-                contentContainerStyle={{background: COLOR_WHITE}}
-                inkBarStyle={{background: LINK_COLOR, marginTop: '-2px', height: '2px'}}
-                onChange={(value) => tabData.handleTabChange(value)}>
-                <Tab
-                    label="Текущие"
-                    value={TAB.TASKS_TAB_CURRENT}
-                    buttonStyle={tabStyle.button}
-                    disableTouchRipple={true}/>
-                <Tab
-                    label="Новые"
-                    value={TAB.TASKS_TAB_NEW}
-                    buttonStyle={tabStyle.button}
-                    disableTouchRipple={true}/>
-                <Tab
-                    label="Завершенные"
-                    value={TAB.TASKS_TAB_COMPLETED}
-                    buttonStyle={tabStyle.button}
-                    disableTouchRipple={true}/>
-            </Tabs>
-            <GridList
-                filter={filter}
-                list={list}
-                detail={<div/>}/>
+            <div className={classes.header}>
+                <h2 className={classes.title}>{t('Активные задания')}</h2>
+                <div className={classes.buttons}>
+                    <ToolTip position={'left'} text={t('Сортировать по дэдлайну')}>
+                        <IconButton
+                            style={buttonStyle.button}
+                            iconStyle={buttonStyle.icon}
+                            onTouchTap={() => { sortyBy(SORT_BY_DEADLINE) }}>
+                            <Calendar color={currentOrdering === SORT_BY_DEADLINE ? COLOR_GREEN : COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>
+                    <ToolTip position={'left'} text={t('Сортировать по дате создания')}>
+                        <IconButton
+                            style={buttonStyle.button}
+                            iconStyle={buttonStyle.icon}
+                            onTouchTap={() => { sortyBy(SORT_BY_CREATED_DATE) }}>
+                            <CalendarCreated color={currentOrdering === SORT_BY_CREATED_DATE ? COLOR_GREEN : COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>
+                </div>
+            </div>
+            <div className={classes.wrapper}>
+                <div className={classes.leftSide}>
+                    {loading
+                        ? <div className={classes.loader}><Loader size={0.75}/></div>
+                        : <div className={classes.tasks}>
+                            {tasksList}
+                        </div>}
+                </div>
+                <div className={classes.rightSide}>
+
+                </div>
+            </div>
 
             <TasksInfoDialog
                 open={_.get(detailData, 'id') > ZERO}
                 onClose={_.get(detailData, 'handleCloseDetail')}
                 loading={_.get(detailData, 'detailLoading')}
                 data={_.get(detailData, 'data') || {}}
+                filter={filter}
+                filterDialog={filterDialog}
             />
         </Container>
     )
