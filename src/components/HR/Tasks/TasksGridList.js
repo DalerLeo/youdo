@@ -51,6 +51,7 @@ const enhance = compose(
         },
         leftSide: {
             display: 'flex',
+            alignSelf: '',
             flexWrap: 'wrap',
             width: '75%'
         },
@@ -211,9 +212,9 @@ const TasksGridList = enhance((props) => {
         const deadline = dateFormat(_.get(item, 'deadline'))
         return (
             <div key={id} className={classes.task}>
-                <Link to={{
-                    pathname: sprintf(ROUTES.HR_TASKS_ITEM_PATH, id),
-                    query: filter.getParams()}}/>
+                <Link target={'_blank'} to={{
+                    pathname: ROUTES.HR_LONG_LIST_URL,
+                    query: filter.getParams({application: id})}}/>
                 <header>
                     <div className={classes.deadline}><Calendar/>{deadline}</div>
                 </header>

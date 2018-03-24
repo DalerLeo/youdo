@@ -12,6 +12,7 @@ import Deadline from 'material-ui/svg-icons/image/timelapse'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
+import {getYearText} from '../../../helpers/yearsToText'
 import t from '../../../helpers/translate'
 import {PADDING_STANDART, BORDER_STYLE, COLOR_GREY_LIGHTEN} from '../../../constants/styleConstants'
 import {SUM_CURRENCY} from '../../../constants/backendConstants'
@@ -149,8 +150,8 @@ const ApplicationDetails = enhance((props) => {
     } = props
 
     const applicationId = _.get(data, 'id')
-    const ageMin = _.get(data, 'ageMin')
-    const ageMax = _.get(data, 'ageMax')
+    const ageMin = _.toNumber(_.get(data, 'ageMin'))
+    const ageMax = _.toNumber(_.get(data, 'ageMax'))
     const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
     const client = _.get(data, ['contact', 'client', 'name'])
     const contact = _.get(data, ['contact', 'name'])
@@ -269,7 +270,7 @@ const ApplicationDetails = enhance((props) => {
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
                     <div className={classes.info}>
-                        <div>{t('Возраст')}: <strong>{ageMin} - {ageMax}</strong></div>
+                        <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
                         <div>{t('Пол')}: <strong>{sex}</strong></div>
                         <div>{t('Образование')}: <strong>{education}</strong></div>
                         <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
