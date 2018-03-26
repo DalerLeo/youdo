@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../../constants/routes'
-import sprintf from 'sprintf'
 import Container from '../../Container'
 import Loader from '../../Loader'
 import TasksInfoDialog from './TasksInfoDialog'
@@ -51,7 +50,7 @@ const enhance = compose(
         },
         leftSide: {
             display: 'flex',
-            alignSelf: '',
+            alignSelf: 'baseline',
             flexWrap: 'wrap',
             width: '75%'
         },
@@ -72,6 +71,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             height: '100%',
+            paddingBottom: '15px',
             overflowY: 'auto',
             width: '100%'
         },
@@ -81,8 +81,8 @@ const enhance = compose(
             borderTop: BORDER_TRANSPARENT,
             position: 'relative',
             cursor: 'pointer',
-            width: '50%',
-            height: '400px',
+            minHeight: '300px',
+            width: 'calc(100% / 3)',
             transition: 'all 250ms ease',
             display: 'flex',
             flexDirection: 'column',
@@ -94,7 +94,7 @@ const enhance = compose(
                 right: '0',
                 bottom: '0'
             },
-            '&:nth-child(2n + 2)': {
+            '&:nth-child(3n + 3)': {
                 borderRight: BORDER_TRANSPARENT
             },
 
@@ -129,6 +129,7 @@ const enhance = compose(
                 '& > div': {
                     borderRight: BORDER_STYLE,
                     color: COLOR_GREY,
+                    fontSize: '11px',
                     fontWeight: '600',
                     display: 'flex',
                     alignItems: 'center',
@@ -181,8 +182,9 @@ const enhance = compose(
         },
         rightSide: {
             background: COLOR_WHITE,
-            width: '25%',
-            padding: PADDING_STANDART
+            borderLeft: BORDER_DARKER,
+            padding: PADDING_STANDART,
+            width: '25%'
         },
         buttons: {
             display: 'flex',
@@ -227,7 +229,7 @@ const TasksGridList = enhance((props) => {
                 </section>
                 <footer>
                     <div>Long list:<strong>4</strong></div>
-                    <div>{t('Собеседования')}:<strong>3</strong></div>
+                    <div>Interview:<strong>3</strong></div>
                     <div>Short list:<strong>0</strong></div>
                 </footer>
             </div>

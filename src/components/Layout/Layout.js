@@ -51,7 +51,7 @@ const enhance = compose(
         },
         content: {
             position: 'relative',
-            background: '#f2f5f8',
+            background: '#f7f8f9',
             width: 'calc(100% - 84px)',
             marginLeft: '84px',
             padding: '0 28px 28px',

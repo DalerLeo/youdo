@@ -161,7 +161,7 @@ const ApplicationDetails = enhance((props) => {
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const deadline = dateFormat(_.get(data, 'deadline'), true)
     const education = _.get(data, 'education')
-    const experience = _.get(data, 'experience')
+    const experience = _.toNumber(_.get(data, 'experience'))
     const levelPc = _.get(data, 'levelPc')
     const workSchedule = _.get(data, 'mode')
     const planningDate = dateFormat(_.get(data, 'planningDate'))
@@ -286,7 +286,7 @@ const ApplicationDetails = enhance((props) => {
                                     )
                                 })}
                         </div>
-                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{experience}</strong></div>
+                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
                         <div>{t('Профессиональные навыки')}:
                             {_.isEmpty(skills)
                                 ? <strong> {t('Не указаны')}</strong>
