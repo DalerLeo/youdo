@@ -8,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import {Field, FieldArray, reduxForm, change} from 'redux-form'
-import {TextField, CheckBox, DateField, ClientContactsField, TimeField} from '../../ReduxForm'
+import {TextField, CheckBox, DateField, ClientContactsField} from '../../ReduxForm'
 import WorkScheduleSearchField from '../../ReduxForm/HR/WorkScheduleSearchField'
 import SexSearchField from '../../ReduxForm/HR/GenderSearchField'
 import EducationSearchField from '../../ReduxForm/HR/EducationSearchField'
@@ -70,13 +70,7 @@ const enhance = compose(
             }
         },
         deadline: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '10px',
-            '& > div': {
-                width: '48%'
-            }
+            marginTop: '10px'
         },
         popUp: {
             color: '#333 !important',
@@ -383,12 +377,6 @@ const ApplicationCreateDialog = enhance((props) => {
                                 floatingLabelText={t('Дэдлайн')}
                                 errorStyle={{bottom: 2}}
                                 fullWidth={true}/>
-                            <Field
-                                name="deadlineTime"
-                                component={TimeField}
-                                hintText={t('Время')}
-                                hintStyle={{fontSize: '13px'}}
-                                fullWidth={true}/>
                         </div>
                     </div>}
                     <div className={classes.inContent}>
@@ -413,12 +401,6 @@ const ApplicationCreateDialog = enhance((props) => {
                                 name="contact"
                                 extraText={t('Ответстенный за подобор персонала')}
                                 component={ClientContactsField}/>
-                            <Field
-                                name="responsiblePosition"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label={t('Должность ответственного за подбор персонала')}
-                                fullWidth={true}/>
                         </div>
                     </div>
                     <div className={classes.inContent}>

@@ -626,3 +626,5 @@ export const HR_CITY = 'hr/city'
 export const HR_CITY_LIST = `/${HR_CITY}/`
 export const HR_CITY_ITEM = `/${HR_CITY}/%d/`
 
+export const HR_LONG_LIST_CREATE = `/${HR_APPLICATION}/%d/moving_resume/`
+

@@ -203,7 +203,7 @@ const ApplicationGridList = enhance((props) => {
             ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
             : t('Не назначен')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const deadline = dateFormat(_.get(item, 'deadline'), true)
+        const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>

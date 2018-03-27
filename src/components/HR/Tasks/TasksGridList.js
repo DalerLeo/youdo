@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container'
 import Loader from '../../Loader'
-import TasksInfoDialog from './TasksInfoDialog'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -23,7 +22,6 @@ import {
     LINK_COLOR,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
-import {ZERO} from '../../../constants/backendConstants'
 
 const SORT_BY_DEADLINE = 'deadline'
 const SORT_BY_CREATED_DATE = 'createdDate'
@@ -168,8 +166,7 @@ const enhance = compose(
             color: LINK_COLOR,
             display: 'inline-block',
             fontWeight: '600',
-            padding: '3px 8px',
-            marginBottom: '10px'
+            padding: '2px 8px'
         },
         client: {
             fontSize: '13px',
@@ -200,15 +197,13 @@ const TasksGridList = enhance((props) => {
     const {
         filter,
         listData,
-        detailData,
-        classes,
-        filterDialog
+        classes
     } = props
 
     const loading = _.get(listData, 'listLoading')
     const tasksList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const status = _.get(item, 'status')
+        const isNew = _.get(item, 'isNew')
         const client = _.get(item, ['contact', 'client', 'name'])
         const position = _.get(item, ['position', 'name'])
         const deadline = dateFormat(_.get(item, 'deadline'))
@@ -219,10 +214,10 @@ const TasksGridList = enhance((props) => {
                     query: filter.getParams({application: id})}}/>
                 <header>
                     <div className={classes.deadline}><Calendar/>{deadline}</div>
+                    <div className={classes.status}>{isNew && t('новое')}</div>
                 </header>
                 <section>
                     <div className={classes.bodyBlock}>
-                        <div className={classes.status}>{status}</div>
                         <div className={classes.client}>{client}</div>
                         <div className={classes.position}>{position}</div>
                     </div>
@@ -287,15 +282,6 @@ const TasksGridList = enhance((props) => {
 
                 </div>
             </div>
-
-            <TasksInfoDialog
-                open={_.get(detailData, 'id') > ZERO}
-                onClose={_.get(detailData, 'handleCloseDetail')}
-                loading={_.get(detailData, 'detailLoading')}
-                data={_.get(detailData, 'data') || {}}
-                filter={filter}
-                filterDialog={filterDialog}
-            />
         </Container>
     )
 })

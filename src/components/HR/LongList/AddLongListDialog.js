@@ -1,18 +1,20 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
+import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
-import Loader from '../../Loader'
-import {reduxForm} from 'redux-form'
+import FlatButton from 'material-ui/FlatButton'
+import Loader from '../../Loader/index'
+import {reduxForm, Field} from 'redux-form'
+import {CheckBox} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
-import {BORDER_STYLE, COLOR_DEFAULT} from '../../../constants/styleConstants'
-import {connect} from 'react-redux'
-import ApplicationDetails from '../Application/ApplicationDetails'
+import {BORDER_STYLE, COLOR_DEFAULT, PADDING_STANDART} from '../../../constants/styleConstants'
 import ResumeFilterForm from '../Resume/ResumeFilterForm'
+import formValidate from '../../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet({
@@ -32,12 +34,11 @@ const enhance = compose(
             justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
-        customLoader: {
-            background: '#fff',
+        listLoader: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '20px 0'
+            padding: '50px 0'
         },
         popUp: {
             color: '#333 !important',
@@ -63,21 +64,8 @@ const enhance = compose(
             height: '60px',
             zIndex: '999'
         },
-        sidePaddings: {
-            padding: '10px 30px 15px'
-        },
         inContent: {
-            borderTop: BORDER_STYLE,
-            '&:first-child': {
-                border: 'none'
-            }
-        },
-        block: {
-            '& h4': {
-                fontWeight: '600',
-                fontSize: '13px',
-                padding: '10px 0'
-            }
+            display: 'flex'
         },
         inputFieldCustom: {
             fontSize: '13px !important',
@@ -163,113 +151,136 @@ const enhance = compose(
                 width: '32% !important'
             }
         },
-        details: {
-            borderBottom: BORDER_STYLE,
-            '& > div > div:first-child': {
-                display: 'none'
+        filters: {
+            borderRight: BORDER_STYLE,
+            width: '300px'
+        },
+        list: {
+            padding: PADDING_STANDART,
+            width: 'calc(100% - 300px)'
+        },
+        resumeList: {
+            '& .row': {
+                alignItems: 'center',
+                margin: '0',
+                padding: '0',
+                minHeight: '45px',
+                '&:first-child': {fontWeight: '600'},
+                '&:last-child:after': {display: 'none'},
+
+                '& > div:first-child': {paddingLeft: '0'},
+                '& > div:last-child': {paddingRight: '0', textAlign: 'right'}
             }
         },
-        filters: {
-
+        title: {
+            fontWeight: '600',
+            marginBottom: '10px'
         }
     }),
     reduxForm({
-        form: 'TasksCreateForm',
+        form: 'AddLongListForm',
         enableReinitialize: true
-    }),
-    withState('anchorEl', 'setAnchorEl', null),
-    withState('chosenRecruiter', 'chooseRecruiter', false),
-    connect((state) => {
-        const recruiter = _.get(state, ['form', 'TasksCreateForm', 'values', 'recruiter']) || false
-        return {
-            recruiter
-        }
     })
 )
 
-const TasksInfoDialog = enhance((props) => {
+const AddLongListDialog = enhance((props) => {
     const {
         open,
         onClose,
         classes,
-        loading,
-        data,
         filter,
-        filterDialog
+        filterDialog,
+        handleSubmit,
+        dispatch,
+        resumePreview
     } = props
+    const onSubmit = handleSubmit(() => props.onSubmit()
+        .catch((error) => {
+            formValidate([], dispatch, error)
+        }))
+    const resumeLoading = _.get(resumePreview, 'loading')
 
-    const appId = _.get(data, 'id')
-    const initialValues = {
-        age: {
-            min: _.get(data, 'ageMin'),
-            max: _.get(data, 'ageMax')
-        },
-        position: [_.get(data, ['position', 'id'])],
-        mode: [_.get(data, 'mode')],
-        experience: _.get(data, 'experience'),
-        sex: {
-            value: _.get(data, 'sex')
-        },
-        education: [_.get(data, 'education')],
-        levelPc: {
-            value: _.get(data, 'levelPc')
-        },
-        skills: _.map(_.get(data, 'skills'), (item) => _.get(item, 'name')),
-        languages: _.map(_.get(data, 'languages'), (item) => {
-            return {
-                name: {
-                    value: _.get(item, 'language')
-                },
-                level: {
-                    value: _.get(item, 'level')
-                }
-            }
-        })
-    }
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '800px', maxWidth: 'none'}}
+            contentStyle={{width: '900px', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{t('Работа с заявкой')} №{appId}</span>
+                <span>{t('Добавление в "long list"')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
 
             <div className={classes.bodyContent}>
-                <div className={classes.inContent}>
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
+                <form onSubmit={onSubmit}>
+                    <div className={classes.inContent}>
+                        <div className={classes.loader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        <div className={classes.filters}>
+                            <ResumeFilterForm
+                                filter={filter}
+                                filterDialog={filterDialog}
+                                forDialog={true}/>
+                        </div>
+                        <div className={classes.list}>
+                            <div className={classes.title}>{t('Список резюме')}</div>
+                            <div className={classes.resumeList}>
+                                <Row className={'dottedList'}>
+                                    <Col xs={1}/>
+                                    <Col xs={4}>{t('Должность')}</Col>
+                                    <Col xs={5}>{t('Ф.И.О.')}</Col>
+                                    <Col xs={2}>{t('Статус')}</Col>
+                                </Row>
+                                {resumeLoading
+                                    ? <div className={classes.listLoader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : _.map(_.get(resumePreview, 'list'), (item) => {
+                                        const id = _.get(item, ['id'])
+                                        const position = _.get(item, ['position', 'name'])
+                                        const fullName = _.get(item, ['fullName'])
+                                        const status = _.get(item, ['status'])
+                                        return (
+                                            <Row key={id} className={'dottedList'}>
+                                                <Col xs={1}>
+                                                    <Field
+                                                        name={'resumes[' + id + '][selected]'}
+                                                        component={CheckBox}/>
+                                                </Col>
+                                                <Col xs={4}>{position}</Col>
+                                                <Col xs={5}>{fullName}</Col>
+                                                <Col xs={2}>{status}</Col>
+                                            </Row>
+                                        )
+                                    })}
+                            </div>
+                        </div>
                     </div>
-                    <div className={classes.details}>
-                        <ApplicationDetails
-                            data={data}
-                            loading={loading}
-                            handleOpenUpdateDialog={null}/>
+                    <div className={classes.bottomButton}>
+                        <FlatButton
+                            label={t('Сохранить')}
+                            className={classes.actionButton}
+                            primary={true}
+                            type="submit"
+                        />
                     </div>
-                    <div className={classes.filters}>
-                        <ResumeFilterForm
-                            filter={filter}
-                            filterDialog={filterDialog}
-                            initialValues={initialValues}
-                            forDialog={true}/>
-                    </div>
-                </div>
+                </form>
             </div>
         </Dialog>
     )
 })
 
-TasksInfoDialog.propTypes = {
+AddLongListDialog.propTypes = {
     open: PropTypes.bool.isRequired,
+    filter: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
 }
 
-export default TasksInfoDialog
+export default AddLongListDialog

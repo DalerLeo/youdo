@@ -61,3 +61,9 @@ export const HR_EDUCATION = [
     {id: 'master', name: t('Магистратура')},
     {id: 'doctoral', name: t('Докторантура')}
 ]
+
+export const HR_RESUME_SHORT = 'short'
+export const HR_RESUME_REMOVED = 'removed'
+export const HR_RESUME_MEETING = 'meeting'
+export const HR_RESUME_FAILED = 'failed'
+export const HR_RESUME_LONG = 'long'

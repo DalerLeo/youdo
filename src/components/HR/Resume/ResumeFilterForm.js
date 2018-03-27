@@ -8,6 +8,7 @@ import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {TextField} from '../../ReduxForm'
 import PositionMultiSearchField from '../../ReduxForm/HR/Position/PositionMultiSearchField'
@@ -21,6 +22,7 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../../helpers/translate'
 import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
+import {LINK_COLOR} from '../../../constants/styleConstants'
 
 export const RESUME_FILTER_OPEN = 'openFilterDialog'
 
@@ -34,7 +36,15 @@ export const RESUME_FILTER_KEY = {
     LEVEL_PC: 'levelPc',
     LANGUAGES: 'languages',
     EXPERIENCE: 'experience',
-    SKILLS: 'skills'
+    SKILLS: 'skills',
+
+    // FOR LONG LIST
+    AGE_0: 'age0',
+    AGE_1: 'age1',
+    POSITIONS: 'positions',
+    EDUCATIONS: 'educations',
+    LANG_LEVEL: 'langLevel',
+    TOTAL_EXP_0: 'totalExp0'
 }
 
 const enhance = compose(
@@ -254,14 +264,22 @@ const ResumeFilterForm = enhance((props) => {
                     component={SkillsTagSearchField}
                     label={t('Навыки')}
                     fullWidth={true}/>
-                <RaisedButton
-                    type="submit"
-                    primary={true}
-                    buttonStyle={{color: '#fff'}}
-                    label={t('Применить')}
-                    labelStyle={{fontSize: '13px'}}
-                    style={{marginTop: '15px'}}>
-                </RaisedButton>
+                {forDialog
+                    ? <FlatButton
+                        label={t('Применить')}
+                        labelStyle={{color: LINK_COLOR, fontWeight: '600', verticalAlign: 'inherit'}}
+                        style={{marginTop: '15px'}}
+                        onTouchTap={handleSubmit(filterDialog.handleSubmitFilterDialog)}
+                        fullWidth={true}
+                    />
+                    : <RaisedButton
+                        type="submit"
+                        primary={true}
+                        buttonStyle={{color: '#fff'}}
+                        label={t('Применить')}
+                        labelStyle={{fontSize: '13px'}}
+                        style={{marginTop: '15px'}}/>
+                }
             </form>
         </Paper>
     )

@@ -13,8 +13,7 @@ export const createSerializer = (data) => {
     const responsibility = _.get(data, ['responsibility'])
     const position = _.get(data, ['position', 'value'])
     const planningDate = moment(_.get(data, ['planningDate'])).format('YYYY-MM-DD')
-    const deadlineDate = moment(_.get(data, ['deadline'])).format('YYYY-MM-DD')
-    const deadlineTime = moment(_.get(data, ['deadlineTime'])).format('HH:mm')
+    const deadlineDate = moment(_.get(data, ['deadline'])).format('YYYY-MM-DD HH:mm')
     const trialSalaryMin = _.toNumber(numberWithoutSpaces(_.get(data, ['trialSalary', 'min'])))
     const trialSalaryMax = _.toNumber(numberWithoutSpaces(_.get(data, ['trialSalary', 'max'])))
     const realSalaryMin = _.toNumber(numberWithoutSpaces(_.get(data, ['realSalary', 'min'])))
@@ -41,7 +40,7 @@ export const createSerializer = (data) => {
         contact,
         education,
         experience,
-        deadline: deadlineDate + ' ' + deadlineTime,
+        deadline: deadlineDate,
         languages_level: languages,
         level_pc: compLevel,
         responsibility,
