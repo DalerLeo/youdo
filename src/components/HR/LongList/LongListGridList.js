@@ -11,10 +11,14 @@ import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Add from 'material-ui/svg-icons/content/add'
+import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import AddLongListDialog from './AddLongListDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
 import t from '../../../helpers/translate'
 import {
+    BORDER_STYLE,
+    COLOR_DEFAULT,
     COLOR_GREY,
     COLOR_WHITE,
     PADDING_STANDART
@@ -23,10 +27,14 @@ import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
 import Person from '../../Images/person.png'
 import {
-    HR_RESUME_LONG, HR_RESUME_MEETING, HR_RESUME_REMOVED, HR_RESUME_SHORT,
+    HR_RESUME_LONG,
+    HR_RESUME_MEETING,
+    HR_RESUME_REMOVED,
+    HR_RESUME_SHORT,
     ZERO
 } from '../../../constants/backendConstants'
 
+const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -34,6 +42,18 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'center',
             padding: '25px 0'
+        },
+        detailLoader: {
+            background: COLOR_WHITE,
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '2'
         },
         wrapper: {
             paddingTop: '30px',
@@ -44,9 +64,10 @@ const enhance = compose(
             height: '100%'
         },
         header: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            marginBottom: '20px',
+            background: COLOR_WHITE,
+            marginBottom: '30px',
+            boxShadow: CUSTOM_BOX_SHADOW,
+            position: 'relative',
             '& h1': {
                 fontSize: '18px',
                 fontWeight: '600',
@@ -57,22 +78,27 @@ const enhance = compose(
             }
         },
         demands: {
+            borderTop: BORDER_STYLE,
             padding: PADDING_STANDART,
             width: '100%',
             '& h2': {
                 fontSize: '15px',
                 fontWeight: '600',
-                marginBottom: '10px',
-                textAlign: 'right'
+                marginBottom: '15px'
             }
         },
         demandsList: {
             display: 'flex',
-            justifyContent: 'flex-end',
+            marginBottom: '20px',
+            '& h5': {
+                fontSize: '13px',
+                fontWeight: '600',
+                marginBottom: '5px'
+            },
             '& ul': {
                 marginLeft: '20px',
                 listStyle: 'none',
-                maxWidth: '250px',
+                minWidth: '200px',
                 '&:first-child': {
                     marginLeft: '0'
                 },
@@ -91,13 +117,29 @@ const enhance = compose(
                         width: '8px'
                     }
                 }
+            },
+            '&:last-child': {
+                marginBottom: '0'
             }
+        },
+        tagsWrapper: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            marginBottom: '-8px'
+        },
+        tag: {
+            background: '#e8e8e8',
+            padding: '3px 10px',
+            margin: '0 8px 8px 0'
         },
         lists: {
             display: 'flex',
             '& > div': {
-                padding: PADDING_STANDART,
-                width: 'calc(100% / 3)'
+                marginRight: '30px',
+                width: 'calc(100% / 3)',
+                '&:last-child': {
+                    margin: '0'
+                }
             }
         },
         column: {
@@ -108,7 +150,7 @@ const enhance = compose(
                 height: '30px',
                 marginBottom: '10px',
                 '& h3': {
-                    color: COLOR_GREY,
+                    color: COLOR_DEFAULT,
                     fontSize: '14px',
                     fontWeight: '600',
                     whiteSpace: 'nowrap',
@@ -124,18 +166,18 @@ const enhance = compose(
         add: {
             background: '#eceff2',
             cursor: 'pointer',
-            height: '36px',
+            height: '26px',
             width: '36px',
-            padding: '7px',
-            borderRadius: '50%',
+            padding: '3px 8px',
+            borderRadius: '4px',
             transition: 'all 200ms ease',
             '& svg': {
-                height: '22px !important',
-                width: '22px !important',
-                color: '#a6aebc !important',
-                opacity: '0.6'
+                height: '20px !important',
+                width: '20px !important',
+                color: '#5d6474 !important'
             },
             '&:hover': {
+                background: '#e7e8ea',
                 '& svg': {
                     opacity: '1'
                 }
@@ -147,7 +189,7 @@ const enhance = compose(
         resume: {
             background: 'rgba(255,255,255, 0.5)',
             borderRadius: '2px',
-            boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+            boxShadow: CUSTOM_BOX_SHADOW,
             cursor: 'pointer',
             padding: PADDING_STANDART,
             position: 'relative',
@@ -219,8 +261,12 @@ const enhance = compose(
         resumeAge: {
             color: '#a6aebc',
             fontWeight: '600'
+        },
+        block: {
+            display: 'block !important'
         }
     }),
+    withState('showDetails', 'setShowDetails', false),
     withState('anchorEl', 'setAnchorEl', null),
     withState('currentResume', 'setCurrentResume', null),
     withState('currentStatus', 'setCurrentStatus', ''),
@@ -245,17 +291,20 @@ const LongListGridList = enhance((props) => {
         currentResume,
         setCurrentResume,
         currentStatus,
-        setCurrentStatus
+        setCurrentStatus,
+        showDetails,
+        setShowDetails
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
 
     const data = _.get(detailData, 'data')
-    // . const loading = _.get(detailData, 'loading')
-    // . const position = _.get(data, ['position', 'name'])
+    const loading = _.get(detailData, 'loading')
+    const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
 
     const application = _.get(data, ['id'])
+    const client = _.get(data, ['contact', 'client', 'name'])
     const ageMin = _.get(data, ['ageMin'])
     const ageMax = _.get(data, ['ageMax'])
     const sex = _.get(data, ['sex'])
@@ -269,7 +318,15 @@ const LongListGridList = enhance((props) => {
         const level = _.get(item, ['level', 'name'])
         return <span key={id}>{name} {level && <span>({level})</span>}</span>
     })
-    const skills = _.map(_.get(data, ['skills']), (item) => _.get(item, 'name'))
+    const skills = _.map(_.get(data, ['skills']), (item) => {
+        return (
+            <span className={classes.tag}>{_.get(item, 'name')}</span>
+        )
+    })
+
+    const mode = _.get(data, ['mode'])
+    const responsibility = _.get(data, ['responsibility'])
+    const privileges = _.map(_.get(data, ['privileges']), (item) => _.get(item, 'name'))
 
     const popoverStyle = {
         menuItem: {
@@ -352,8 +409,12 @@ const LongListGridList = enhance((props) => {
             <div className={classes.wrapper}>
                 <div className={classes.content}>
                     <div className={classes.header}>
-                        <div>
-                            <h1>{t('Задание')} №{application}</h1>
+                        {loading && <div className={classes.detailLoader}>
+                            <Loader size={0.75}/>
+                        </div>}
+                        <div className={classes.title}>
+                            <h1>{t('Задание')} №{application} {position}</h1>
+                            <h1>{}</h1>
                         </div>
                         <div className={classes.demands}>
                             <h2>{t('Требования к кандидату')}</h2>
@@ -361,14 +422,28 @@ const LongListGridList = enhance((props) => {
                                 <ul>
                                     <li>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></li>
                                     <li>{t('Пол')}: <strong>{genderFormat[sex]}</strong></li>
+                                </ul>
+                                <ul>
                                     <li>{t('Образование')}: <strong>{education}</strong></li>
+                                    <li>{t('Знание языков')}: <strong>{_.isEmpty(languages) ? t('Не указано') : languages}</strong></li>
                                     <li>{t('Знание ПК')}: <strong>{levelPc}</strong></li>
                                 </ul>
                                 <ul>
+                                    <li>{t('Режим работы')}: <strong>{mode}</strong></li>
                                     <li>{t('Минимальный опыт работы')}: <strong>{getYearText(experience)}</strong></li>
-                                    <li>{t('Знание языков')}: <strong>{_.isEmpty(languages) ? t('Не указано') : languages}</strong></li>
-                                    <li>{t('Профессиональные навыки')}: <strong>{_.join(skills, ', ') || t('Не указаны')}</strong></li>
                                 </ul>
+                            </div>
+                            <div className={classes.demandsList + ' ' + classes.block}>
+                                <h5>{t('Функциональные обязанности')}</h5>
+                                <div>{responsibility}</div>
+                            </div>
+                            <div className={classes.demandsList + ' ' + classes.block}>
+                                <h5>{t('Социальный пакет')}</h5>
+                                <div>{_.join(privileges, ', ') || t('Не указан')}</div>
+                            </div>
+                            <div className={classes.demandsList + ' ' + classes.block}>
+                                <h5>{t('Профессиональные навыки')}</h5>
+                                <div className={classes.tagsWrapper}>{skills}</div>
                             </div>
                         </div>
                     </div>

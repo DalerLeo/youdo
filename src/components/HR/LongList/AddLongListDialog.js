@@ -154,11 +154,11 @@ const enhance = compose(
         },
         filters: {
             borderRight: BORDER_STYLE,
-            width: '300px'
+            width: '400px'
         },
         list: {
             padding: PADDING_STANDART,
-            width: 'calc(100% - 300px)'
+            width: 'calc(100% - 400px)'
         },
         resumeList: {
             '& .row': {
@@ -216,7 +216,7 @@ const AddLongListDialog = enhance((props) => {
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '900px', maxWidth: 'none'}}
+            contentStyle={{width: '1000px', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
