@@ -1,13 +1,13 @@
 import React from 'react'
 import MultiSelectField from '../Basic/MultiSelectField'
-import {HR_EDUCATION} from '../../../constants/backendConstants'
+import {HR_WORK_SCHEDULE} from '../../../constants/backendConstants'
 
-const Items = HR_EDUCATION
+const Items = HR_WORK_SCHEDULE
 const getOptions = () => {
     return Promise.resolve(Items)
 }
 
-const EducationMultiSearchField = (props) => {
+const WorkScheduleMultiSearchField = (props) => {
     return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
@@ -20,4 +20,4 @@ const EducationMultiSearchField = (props) => {
     )
 }
 
-export default EducationMultiSearchField
+export default WorkScheduleMultiSearchField

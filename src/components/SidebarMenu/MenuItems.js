@@ -190,7 +190,8 @@ export const MenuItems = [
         url: ROUTES.HR_APPLICATION_LIST_URL,
         childs: [
             {name: t('Заявки'), url: ROUTES.HR_APPLICATION_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-            {name: t('Резюме'), url: ROUTES.HR_RESUME_LIST_URL, query: defaultPageSizeQuery, permission: ''}
+            {name: t('Резюме'), url: ROUTES.HR_RESUME_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+            {name: t('Задания'), url: ROUTES.HR_TASKS_LIST_URL, query: defaultPageSizeQuery, permission: ''}
         ]
     },
     {

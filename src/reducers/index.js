@@ -547,6 +547,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.HR_RESUME_UPDATE),
         item: createThunkReducer(actionTypes.HR_RESUME_ITEM)
     }),
+    longList: combineReducers({
+        resumePreview: createThunkReducer(actionTypes.HR_RESUME_PREVIEW_LIST),
+        longList: createThunkReducer(actionTypes.HR_LONG_LIST),
+        interviewList: createThunkReducer(actionTypes.HR_INTERVIEW_LIST),
+        shortList: createThunkReducer(actionTypes.HR_SHORT_LIST)
+    }),
     // HR!
 
     snackbar: snackbarReducer(),

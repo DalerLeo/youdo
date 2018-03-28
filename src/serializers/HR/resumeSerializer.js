@@ -82,11 +82,24 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, application, appStatus) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
     return {
+        'positions': _.get(defaultData, 'position'),
+        'mode': _.get(defaultData, 'mode'),
+        'age_0': _.get(defaultData, 'ageMin'),
+        'age_1': _.get(defaultData, 'ageMax'),
+        'sex': _.get(defaultData, 'sex'),
+        'educations': _.get(defaultData, 'education'),
+        'status': _.get(defaultData, 'status'),
+        'languages_level': _.get(defaultData, 'languages'),
+        'total_exp_0': _.get(defaultData, 'experience'),
+        'skills': _.get(defaultData, 'skills'),
+        'level_pc': _.get(defaultData, 'levelPc'),
+        'application_status': _.get(defaultData, 'appStatus') || appStatus,
+        'application': _.get(defaultData, 'application') || application,
         'search': _.get(defaultData, 'search'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),

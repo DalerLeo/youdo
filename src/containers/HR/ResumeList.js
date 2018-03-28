@@ -8,6 +8,7 @@ import Layout from '../../components/Layout/index'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import toBoolean from '../../helpers/toBoolean'
 import {
     RESUME_CREATE_DIALOG_OPEN,
@@ -24,8 +25,10 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
-import {PRICE_FILTER_KEY} from '../../components/Price'
 import {HR_WORK_SCHEDULE} from '../../constants/backendConstants'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
+import numberFormat from '../../helpers/numberFormat'
+import {langArrayFormat, langQueryFormat} from '../../helpers/joinSplitLanguages'
 
 const enhance = compose(
     connect((state, props) => {
@@ -38,6 +41,7 @@ const enhance = compose(
         const list = _.get(state, ['resume', 'list', 'data'])
         const listLoading = _.get(state, ['resume', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'ResumeCreateForm'])
+        const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -48,7 +52,8 @@ const enhance = compose(
             createLoading,
             updateLoading,
             filter,
-            createForm
+            createForm,
+            filterForm
         }
     }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -86,17 +91,30 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const typeParent = _.get(filterForm, ['values', 'typeParent', 'value']) || null
-            const typeChild = _.get(filterForm, ['values', 'typeChild', 'value']) || null
-            const measurement = _.get(filterForm, ['values', 'measurement']) || null
-            const withoutNetCost = _.get(filterForm, ['values', 'withoutNetCost']) || null
+            const position = _.get(filterForm, ['values', 'position']) || null
+            const mode = _.get(filterForm, ['values', 'mode']) || null
+            const ageMin = _.get(filterForm, ['values', 'age', 'min']) || null
+            const ageMax = _.get(filterForm, ['values', 'age', 'max']) || null
+            const sex = _.get(filterForm, ['values', 'sex', 'value']) || null
+            const education = _.get(filterForm, ['values', 'education']) || null
+            const levelPc = _.get(filterForm, ['values', 'levelPc', 'value']) || null
+            const languages = _.get(filterForm, ['values', 'languages']) || null
+            const experience = _.get(filterForm, ['values', 'experience']) || null
+            const skills = _.get(filterForm, ['values', 'skills']) || null
+            const langToUrl = langQueryFormat(languages)
 
             filter.filterBy({
                 [RESUME_FILTER_OPEN]: false,
-                [RESUME_FILTER_KEY.TYPE_PARENT]: typeParent,
-                [RESUME_FILTER_KEY.TYPE_CHILD]: typeParent && typeChild,
-                [RESUME_FILTER_KEY.MEASUREMENT]: _.join(measurement, '-'),
-                [RESUME_FILTER_KEY.WITHOUT_NET_COST]: withoutNetCost
+                [RESUME_FILTER_KEY.POSITION]: joinArray(position),
+                [RESUME_FILTER_KEY.MODE]: joinArray(mode),
+                [RESUME_FILTER_KEY.AGE_MIN]: ageMin && numberWithoutSpaces(ageMin),
+                [RESUME_FILTER_KEY.AGE_MAX]: ageMax && numberWithoutSpaces(ageMax),
+                [RESUME_FILTER_KEY.SEX]: sex,
+                [RESUME_FILTER_KEY.EDUCATION]: joinArray(education),
+                [RESUME_FILTER_KEY.LEVEL_PC]: levelPc,
+                [RESUME_FILTER_KEY.LANGUAGES]: _.join(langToUrl, '|'),
+                [RESUME_FILTER_KEY.EXPERIENCE]: experience && numberWithoutSpaces(experience),
+                [RESUME_FILTER_KEY.SKILLS]: joinArray(skills)
             })
         },
 
@@ -202,19 +220,36 @@ const ResumeList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', RESUME_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'resumeId'))
 
-    const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
-    const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
-    const measurement = _.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT])
-    const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
+    const position = filter.getParam(RESUME_FILTER_KEY.POSITION)
+    const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
+    const ageMin = filter.getParam(RESUME_FILTER_KEY.AGE_MIN)
+    const ageMax = filter.getParam(RESUME_FILTER_KEY.AGE_MAX)
+    const sex = filter.getParam(RESUME_FILTER_KEY.SEX)
+    const education = filter.getParam(RESUME_FILTER_KEY.EDUCATION)
+    const levelPc = filter.getParam(RESUME_FILTER_KEY.LEVEL_PC)
+    const languages = filter.getParam(RESUME_FILTER_KEY.LANGUAGES)
+    const experience = filter.getParam(RESUME_FILTER_KEY.EXPERIENCE)
+    const skills = filter.getParam(RESUME_FILTER_KEY.SKILLS)
+    const langToForm = langArrayFormat(languages)
 
     const filterDialog = {
         initialValues: {
-            typeParent: {value: typeParent},
-            typeChild: {value: typeChild},
-            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            withoutNetCost: withoutNetCost
+            position: position && splitToArray(position),
+            mode: mode && splitToArray(mode),
+            age: {
+                min: ageMin && numberFormat(ageMin),
+                max: ageMax && numberFormat(ageMax)
+            },
+            sex: {
+                value: sex
+            },
+            education: education && splitToArray(education),
+            levelPc: {
+                value: levelPc
+            },
+            languages: langToForm,
+            experience: experience && numberFormat(experience),
+            skills: skills && splitToArray(skills)
         },
         filterLoading: false,
         openFilterDialog,

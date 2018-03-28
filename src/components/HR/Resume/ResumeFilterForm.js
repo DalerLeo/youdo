@@ -1,45 +1,69 @@
 import _ from 'lodash'
 import React from 'react'
 import {compose, withHandlers} from 'recompose'
-import {reduxForm, Field} from 'redux-form'
-import {connect} from 'react-redux'
+import {reduxForm, Field, FieldArray} from 'redux-form'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {
-    MeasurementMultiSearchField,
-    ProductTypeChildSearchField,
-    ProductTypeSearchField,
-    CheckBox
-} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
+import PositionMultiSearchField from '../../ReduxForm/HR/Position/PositionMultiSearchField'
+import WorkScheduleMultiSearchField from '../../ReduxForm/HR/WorkScheduleMultiSearchField'
+import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
+import EducationMultiSearchField from '../../ReduxForm/HR/EducationMultiSearchField'
+import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
+import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
+import LanguageField from '../../ReduxForm/HR/LanguageField'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../../helpers/translate'
+import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
+import {COLOR_RED, LINK_COLOR} from '../../../constants/styleConstants'
 
 export const RESUME_FILTER_OPEN = 'openFilterDialog'
 
 export const RESUME_FILTER_KEY = {
-    TYPE_PARENT: 'typeParent',
-    TYPE_CHILD: 'typeChild',
-    MEASUREMENT: 'measurement',
-    WITHOUT_NET_COST: 'withoutNetCost'
+    POSITION: 'position',
+    MODE: 'mode',
+    AGE_MIN: 'ageMin',
+    AGE_MAX: 'ageMax',
+    SEX: 'sex',
+    EDUCATION: 'education',
+    LEVEL_PC: 'levelPc',
+    LANGUAGES: 'languages',
+    EXPERIENCE: 'experience',
+    SKILLS: 'skills',
+
+    // FOR LONG LIST
+    AGE_0: 'age0',
+    AGE_1: 'age1',
+    POSITIONS: 'positions',
+    EDUCATIONS: 'educations',
+    LANG_LEVEL: 'langLevel',
+    TOTAL_EXP_0: 'totalExp0'
 }
 
 const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            width: '310px',
+            width: '355px',
             background: '#fff',
             zIndex: 99,
             top: 0,
             left: 0,
             borderRadius: 0,
             padding: '10px 20px 10px 20px'
+        },
+        wrapperDialog: {
+            width: '100%',
+            padding: '20px 30px',
+            boxShadow: 'none !important',
+            zIndex: '2'
         },
         afterFilter: {
             alignItems: 'center',
@@ -84,6 +108,10 @@ const enhance = compose(
             fontSize: '15px',
             color: '#5d6474'
         },
+        titleDialog: {
+            fontWeight: '600',
+            marginBottom: '10px'
+        },
         submit: {
             color: '#fff !important'
         },
@@ -101,17 +129,28 @@ const enhance = compose(
             '& input': {
                 marginTop: '0 !important'
             }
+        },
+        flexHalf: {
+            display: 'flex',
+            alignItems: 'baseline',
+            '& > div': {
+                width: '100px !important'
+            },
+            '& > span': {
+                margin: '0 15px'
+            }
+        },
+        buttons: {
+            display: 'flex',
+            marginTop: '15px',
+            '& button': {
+                width: '50% !important'
+            }
         }
     }),
     reduxForm({
         form: 'ResumeFilterForm',
         enableReinitialize: true
-    }),
-    connect((state) => {
-        const typeParent = _.get(state, ['form', 'ResumeFilterForm', 'values', 'typeParent', 'value'])
-        return {
-            typeParent
-        }
     }),
     withHandlers({
         getCount: props => () => {
@@ -127,7 +166,7 @@ const enhance = compose(
 )
 
 const ResumeFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, typeParent, handleSubmit} = props
+    const {classes, filterDialog, getCount, handleSubmit, forDialog} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -158,63 +197,107 @@ const ResumeFilterForm = enhance((props) => {
     }
 
     return (
-        <div>
-            <Paper className={classes.wrapper} zDepth={2}>
-                <div className={classes.header}>
-                    <span className={classes.title}>{t('Фильтр')}</span>
-                    <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
-                        <CloseIcon className={classes.icon} />
-                    </IconButton>
-                </div>
-                <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+        <Paper className={forDialog ? classes.wrapperDialog : classes.wrapper} zDepth={2}>
+            <div className={classes.header}>
+                <span className={forDialog ? classes.titleDialog : classes.title}>{t('Фильтр')}</span>
+                {!forDialog &&
+                <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+                    <CloseIcon className={classes.icon} />
+                </IconButton>}
+            </div>
+            <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
+                <Field
+                    name="position"
+                    className={classes.inputFieldCustom}
+                    component={PositionMultiSearchField}
+                    label={t('Должность')}
+                    fullWidth={true}/>
+                <Field
+                    name="mode"
+                    className={classes.inputFieldCustom}
+                    component={WorkScheduleMultiSearchField}
+                    label={t('Режим работы')}
+                    fullWidth={true}/>
+                <div className={classes.flexHalf}>
                     <Field
-                        name="typeParent"
+                        name="age[min]"
                         className={classes.inputFieldCustom}
-                        component={ProductTypeSearchField}
-                        params={{parent: 0}}
-                        label={t('Тип продукта')}
-                        fullWidth={true}
-                    />
-                    {typeParent ? <Field
-                            name="typeChild"
-                            className={classes.inputFieldCustom}
-                            component={ProductTypeChildSearchField}
-                            params={{parent: typeParent}}
-                            label={t('Подкатегория')}
-                            fullWidth={true}
-                        /> : null}
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="measurement"
-                            component={MeasurementMultiSearchField}
-                            label={t('Мера')}/>
+                        component={TextField}
+                        normalize={normalizeNumber}
+                        inputStyle={{textAlign: 'center'}}
+                        label={t('Возраст (мин)')}
+                        fullWidth={true}/>
+                    <span>-</span>
+                    <Field
+                        name="age[max]"
+                        className={classes.inputFieldCustom}
+                        component={TextField}
+                        normalize={normalizeNumber}
+                        inputStyle={{textAlign: 'center'}}
+                        label={t('Возраст (макс)')}
+                        fullWidth={true}/>
+                </div>
+                <Field
+                    name="sex"
+                    className={classes.inputFieldCustom}
+                    component={GenderSearchField}
+                    label={t('Пол')}
+                    fullWidth={true}/>
+                <Field
+                    name="education"
+                    className={classes.inputFieldCustom}
+                    component={EducationMultiSearchField}
+                    label={t('Образование')}
+                    fullWidth={true}/>
+                <Field
+                    name="levelPc"
+                    className={classes.inputFieldCustom}
+                    component={ComputerLevelSearchField}
+                    label={t('Знание ПК')}
+                    fullWidth={true}/>
+                <FieldArray
+                    name="languages"
+                    component={LanguageField}/>
+                <Field
+                    name="experience"
+                    className={classes.inputFieldCustom}
+                    component={TextField}
+                    normalize={normalizeNumber}
+                    label={t('Опыт работы')}
+                    fullWidth={true}/>
+                <Field
+                    name="skills"
+                    className={classes.inputFieldCustom}
+                    component={SkillsTagSearchField}
+                    label={t('Навыки')}
+                    fullWidth={true}/>
+                {forDialog
+                    ? <div className={classes.buttons}>
+                        <FlatButton
+                            label={t('Очистить')}
+                            labelStyle={{color: COLOR_RED, fontWeight: '600', verticalAlign: 'inherit'}}
+                            onTouchTap={filterDialog.handleClearFilterDialog}/>
+                        <FlatButton
+                            label={t('Применить')}
+                            labelStyle={{color: LINK_COLOR, fontWeight: '600', verticalAlign: 'inherit'}}
+                            onTouchTap={handleSubmit(filterDialog.handleSubmitFilterDialog)}/>
                     </div>
-                    <div>
-                        <Field
-                            className={classes.inputFieldCustom}
-                            name="withoutNetCost"
-                            component={CheckBox}
-                            label={t('Товары без себестоимости')}/>
-                    </div>
-                    <RaisedButton
+                    : <RaisedButton
                         type="submit"
                         primary={true}
                         buttonStyle={{color: '#fff'}}
                         label={t('Применить')}
                         labelStyle={{fontSize: '13px'}}
-                        style={{marginTop: '15px'}}>
-                    </RaisedButton>
-                </form>
-            </Paper>
-        </div>
+                        style={{marginTop: '15px'}}/>
+                }
+            </form>
+        </Paper>
     )
 })
 
 ResumeFilterForm.propTypes = {
     filter: PropTypes.object.isRequired,
     filterDialog: PropTypes.shape({
-        filterLoading: PropTypes.bool.isRequired,
         openFilterDialog: PropTypes.bool.isRequired,
         handleOpenFilterDialog: PropTypes.func.isRequired,
         handleCloseFilterDialog: PropTypes.func.isRequired,

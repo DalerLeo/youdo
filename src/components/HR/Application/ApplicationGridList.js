@@ -50,6 +50,16 @@ export const getStatusName = (status) => {
     }
 }
 
+export const getStatusIcon = (status) => {
+    switch (status) {
+        case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_BLUE_GREY}/>
+        case APPLICATION_ASSIGNED: return <Assigned color={COLOR_BLUE_GREY}/>
+        case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
+        case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
+        default: return null
+    }
+}
+
 const listHeader = [
     {
         sorting: true,
@@ -193,17 +203,8 @@ const ApplicationGridList = enhance((props) => {
             ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
             : t('Не назначен')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
-        const deadline = dateFormat(_.get(item, 'deadline'), true)
+        const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
-        const getStatusIcon = () => {
-            switch (status) {
-                case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_BLUE_GREY}/>
-                case APPLICATION_ASSIGNED: return <Assigned color={COLOR_BLUE_GREY}/>
-                case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
-                case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
-                default: return null
-            }
-        }
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
@@ -220,7 +221,7 @@ const ApplicationGridList = enhance((props) => {
                             <IconButton
                                 style={iconStyle.button}
                                 iconStyle={iconStyle.icon}>
-                                {getStatusIcon()}
+                                {getStatusIcon(status)}
                             </IconButton>
                         </ToolTip>
                     </Col>

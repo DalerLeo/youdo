@@ -12,9 +12,8 @@ import Deadline from 'material-ui/svg-icons/image/timelapse'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {getYearText} from '../../../helpers/yearsToText'
 import t from '../../../helpers/translate'
-import {PADDING_STANDART, BORDER_STYLE, COLOR_GREY_LIGHTEN} from '../../../constants/styleConstants'
+import {PADDING_STANDART, BORDER_STYLE} from '../../../constants/styleConstants'
 import {SUM_CURRENCY} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
@@ -65,10 +64,7 @@ const enhance = compose(
         },
         block: {
             borderLeft: BORDER_STYLE,
-            padding: PADDING_STANDART,
-            '&:first-child': {
-                borderLeft: 'none'
-            }
+            padding: PADDING_STANDART
         },
         info: {
             '& > div': {
@@ -84,6 +80,12 @@ const enhance = compose(
             flexWrap: 'wrap'
         },
         skill: {
+            // . backgroundColor: '#4db6ac',
+            // . borderRadius: '2px',
+            // . padding: '3px 8px',
+            // . margin: '0 3px',
+            // . display: 'inline-block',
+            // . color: '#fff'
             fontWeight: '600',
             marginLeft: '5px',
             '&:after': {
@@ -91,13 +93,7 @@ const enhance = compose(
             },
             '&:last-child:after': {
                 display: 'none'
-            },
-            '& strong': {
-                color: COLOR_GREY_LIGHTEN
             }
-        },
-        lowercase: {
-            textTransform: 'lowercase'
         },
         titleLabel: {
             fontSize: '18px',
@@ -150,18 +146,14 @@ const ApplicationDetails = enhance((props) => {
     } = props
 
     const applicationId = _.get(data, 'id')
-    const ageMin = _.toNumber(_.get(data, 'ageMin'))
-    const ageMax = _.toNumber(_.get(data, 'ageMax'))
+    const ageMin = _.get(data, 'ageMin')
+    const ageMax = _.get(data, 'ageMax')
     const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
-    const client = _.get(data, ['contact', 'client', 'name'])
-    const contact = _.get(data, ['contact', 'name'])
-    const email = _.get(data, ['contact', 'email']) || t('Не указан')
-    const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
-    const address = _.get(data, ['contact', 'address']) || t('Не указан')
+    const client = _.get(data, ['client', 'name'])
     const createdDate = dateFormat(_.get(data, 'createdDate'))
     const deadline = dateFormat(_.get(data, 'deadline'), true)
     const education = _.get(data, 'education')
-    const experience = _.toNumber(_.get(data, 'experience'))
+    const experience = _.get(data, 'experience')
     const levelPc = _.get(data, 'levelPc')
     const workSchedule = _.get(data, 'mode')
     const planningDate = dateFormat(_.get(data, 'planningDate'))
@@ -175,7 +167,6 @@ const ApplicationDetails = enhance((props) => {
     const responsibility = _.get(data, 'responsibility')
     const sex = _.get(data, 'sex')
     const skills = _.get(data, 'skills')
-    const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
 
@@ -238,10 +229,10 @@ const ApplicationDetails = enhance((props) => {
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
                     <div className={classes.info + ' ' + classes.flexBetween}>
                         <div>{t('Клиент')}: <strong>{client}</strong></div>
-                        <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
-                        <div>{t('Телефон')}: <strong>{phone}</strong></div>
-                        <div>{t('Адрес')}: <strong>{address}</strong></div>
-                        <div>{t('Email')}: <strong>{email}</strong></div>
+                        <div>{t('Контактное лицо')}: <strong>{}</strong></div>
+                        <div>{t('Телефон')}: <strong>{}</strong></div>
+                        <div>{t('Адрес')}: <strong>{}</strong></div>
+                        <div>{t('Email')}: <strong>{}</strong></div>
                     </div>
                 </div>
             </div>
@@ -270,33 +261,20 @@ const ApplicationDetails = enhance((props) => {
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
                     <div className={classes.info}>
-                        <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
+                        <div>{t('Возраст')}: <strong>{ageMin} - {ageMax}</strong></div>
                         <div>{t('Пол')}: <strong>{sex}</strong></div>
                         <div>{t('Образование')}: <strong>{education}</strong></div>
                         <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
-                        <div>{t('Знание языков')}:
-                            {_.isEmpty(languages)
-                                ? <strong> {t('Не указано')}</strong>
-                                : _.map(languages, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, ['language', 'name'])
-                                    const level = _.get(item, ['level', 'name'])
-                                    return (
-                                        <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
-                                    )
-                                })}
-                        </div>
-                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
+                        <div>{t('Знание языков')}: <strong>{}</strong></div>
+                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{experience}</strong></div>
                         <div>{t('Профессиональные навыки')}:
-                            {_.isEmpty(skills)
-                                ? <strong> {t('Не указаны')}</strong>
-                                : _.map(skills, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, 'name')
-                                    return (
-                                        <span key={id} className={classes.skill}>{name}</span>
-                                    )
-                                })}
+                            {_.map(skills, (item) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <span key={id} className={classes.skill}>{name}</span>
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
@@ -313,7 +291,7 @@ ApplicationDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    })
+    }).isRequired
 }
 
 export default ApplicationDetails
