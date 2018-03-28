@@ -13,7 +13,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
 import {BORDER_STYLE, COLOR_DEFAULT, PADDING_STANDART} from '../../../constants/styleConstants'
 import formValidate from '../../../helpers/formValidate'
-import {HR_RESUME_MEETING} from '../../../constants/backendConstants'
+import {HR_RESUME_MEETING, HR_RESUME_REMOVED, HR_RESUME_SHORT} from '../../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
@@ -120,7 +120,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'AddLongListForm',
+        form: 'ResumeMoveForm',
         enableReinitialize: true
     })
 )
@@ -138,6 +138,14 @@ const DateTimeCommentDialog = enhance((props) => {
         .catch((error) => {
             formValidate([], dispatch, error)
         }))
+    const getTitle = () => {
+        switch (status) {
+            case HR_RESUME_MEETING: return t('Назначить собеседование')
+            case HR_RESUME_SHORT: return t('Добавление в "short list"')
+            case HR_RESUME_REMOVED: return t('Удаление резюме из списка')
+            default: return null
+        }
+    }
 
     return (
         <Dialog
@@ -149,7 +157,7 @@ const DateTimeCommentDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{status === HR_RESUME_MEETING ? t('Назначить собеседование') : t('Добавление в "short list"')}</span>
+                <span>{getTitle()}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

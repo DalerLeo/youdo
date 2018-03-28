@@ -18,13 +18,19 @@ import {
     getLongList,
     getInterviewList,
     getShortList,
-    addToLongList
+    addToLongList,
+    addToInterviewList,
+    addToShortList,
+    deleteResume
 } from '../../actions/HR/longList'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
 import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import {langArrayFormat, langQueryFormat} from '../../helpers/joinSplitLanguages'
-import {HR_RESUME_LONG, HR_RESUME_MEETING, HR_RESUME_SHORT, ZERO} from '../../constants/backendConstants'
+import {
+    HR_RESUME_LONG, HR_RESUME_MEETING, HR_RESUME_REMOVED, HR_RESUME_SHORT,
+    ZERO
+} from '../../constants/backendConstants'
 import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -34,8 +40,10 @@ const except = {
     application: null,
     resume: null,
     moveTo: null,
+    excludeAccepted: null,
     openAddLongListDialog: null,
     openMoveToDialog: null,
+    page: null,
     // DETAIL URI
     sex: null,
     skills: null,
@@ -65,6 +73,7 @@ const enhance = compose(
         const detail = _.get(state, ['application', 'item', 'data'])
         const detailLoading = _.get(state, ['application', 'item', 'loading'])
         const createForm = _.get(state, ['form', 'AddLongListForm'])
+        const moveToForm = _.get(state, ['form', 'ResumeMoveForm'])
         const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
         const filter = filterHelper([], pathname, query)
         const filterResume = filterHelper(resumePreviewList, pathname, query)
@@ -82,6 +91,7 @@ const enhance = compose(
             detailLoading,
             createForm,
             filterForm,
+            moveToForm,
             filter,
             filterResume
         }
@@ -127,6 +137,11 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const excludeFilters = {
             application: null,
+            resume: null,
+            moveTo: null,
+            excludeAccepted: null,
+            openMoveToDialog: null,
+            page: null,
             openAddLongListDialog: null
         }
         const openDialog = toBoolean(_.get(props, ['location', 'query', OPEN_ADD_LONG_LIST_DIALOG]))
@@ -164,6 +179,7 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_LONG_LIST_DIALOG]: false})})
                     dispatch(getLongList(filter, application, HR_RESUME_LONG))
+                    dispatch(getApplicationDetails(application))
                 })
         },
 
@@ -179,18 +195,44 @@ const enhance = compose(
         },
 
         handleSubmitMoveToDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname, query}} = props
+            const {dispatch, moveToForm, filter, location: {pathname, query}} = props
+            const application = _.get(query, 'application')
             const resume = _.toInteger(_.get(query, 'resume'))
             const status = _.get(query, 'moveTo')
-            // return dispatch(addToLongList(application, _.get(createForm, ['values'])))
-            //     .then(() => {
-            //         dispatch(reset('AddLongListForm'))
-            //         return dispatch(openSnackbarAction({message: t('Выбранные резюме успешно добавлены')}))
-            //     })
-            //     .then(() => {
-            //         hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_LONG_LIST_DIALOG]: false})})
-            //         dispatch(getLongList(filter, application, HR_RESUME_LONG))
-            //     })
+            const formValues = _.get(moveToForm, ['values'])
+            const dispatchByStatus = () => {
+                switch (status) {
+                    case HR_RESUME_MEETING: return dispatch(addToInterviewList(application, resume, formValues))
+                    case HR_RESUME_SHORT: return dispatch(addToShortList(application, resume, formValues))
+                    case HR_RESUME_REMOVED: return dispatch(deleteResume(application, resume, formValues))
+                    default: return null
+                }
+            }
+            return (dispatchByStatus())
+                    .then(() => {
+                        dispatch(reset('ResumeMoveForm'))
+                        const getSnackbarMessage = () => {
+                            switch (status) {
+                                case HR_RESUME_MEETING: return t('Резюме успешно добавлено в "собеседования"')
+                                case HR_RESUME_SHORT: return t('Резюме успешно добавлено в "short list"')
+                                case HR_RESUME_REMOVED: return t('Резюме успешно удалено')
+                                default: return null
+                            }
+                        }
+                        return dispatch(openSnackbarAction({message: getSnackbarMessage()}))
+                    })
+                    .then(() => {
+                        hashHistory.push({pathname, query: {application}})
+                        dispatch(getLongList(filter, application, HR_RESUME_LONG))
+                        if (status === HR_RESUME_MEETING) {
+                            dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
+                        } else if (status === HR_RESUME_SHORT) {
+                            dispatch(getShortList(filter, application, HR_RESUME_SHORT))
+                        } else if (status === HR_RESUME_REMOVED) {
+                            dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
+                            dispatch(getShortList(filter, application, HR_RESUME_SHORT))
+                        }
+                    })
         },
 
         handleClearFilterDialog: props => () => {
@@ -202,7 +244,7 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm, location: {query}} = props
-            const application = _.get(query, 'application')
+            const application = _.toInteger(_.get(query, 'application'))
             const position = _.get(filterForm, ['values', 'position']) || null
             const mode = _.get(filterForm, ['values', 'mode']) || null
             const ageMin = _.toNumber(_.get(filterForm, ['values', 'age', 'min'])) || null

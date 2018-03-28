@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import {HR_RESUME_MEETING} from '../../constants/backendConstants'
 
 const dateSerializer = (date, format) => {
     const defaultFormat = format || 'YYYY-MM-DD'
@@ -20,19 +21,27 @@ export const createLongSerializer = (data) => {
         status: 'long'
     }
 }
-export const createMeetingSerializer = (resume, data) => {
-    return {
+export const createMoveToSerializer = (application, resume, moveTo, data) => {
+    const date = dateSerializer(_.get(data, 'date'))
+    const time = moment(_.get(data, 'time')).format('HH:mm')
+    const comment = _.get(data, 'comment')
+    const request = {
+        application,
         resume,
-        status: 'meeting'
+        comment,
+        status: moveTo
     }
+    return moveTo === HR_RESUME_MEETING
+        ? _.merge(request, {date_time: date + ' ' + time})
+        : request
 }
 
 export const resumeListFilterSerializer = (data, application, appStatus) => {
     const {...defaultData} = data
+    const applicationStatus = application + '-' + appStatus
 
     return {
-        'application_status': _.get(defaultData, 'appStatus') || appStatus,
-        'application': _.get(defaultData, 'application') || application,
+        'application': applicationStatus,
         'page_size': _.get(defaultData, 'pageSize')
     }
 }
@@ -42,6 +51,7 @@ export const resumePreviewFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
+        'update': _.get(defaultData, 'application'),
         'exclude_accepted': true,
         'positions': _.get(defaultData, 'positions'),
         'mode': _.get(defaultData, 'mode'),

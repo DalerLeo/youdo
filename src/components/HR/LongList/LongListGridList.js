@@ -34,7 +34,10 @@ import {
 import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
 import Person from '../../Images/person.png'
-import {HR_RESUME_MEETING, HR_RESUME_SHORT, ZERO} from '../../../constants/backendConstants'
+import {
+    HR_RESUME_LONG, HR_RESUME_MEETING, HR_RESUME_REMOVED, HR_RESUME_SHORT,
+    ZERO
+} from '../../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
@@ -59,13 +62,14 @@ const enhance = compose(
             '& h1': {
                 fontSize: '18px',
                 fontWeight: '600',
-                padding: '20px 30px',
                 whiteSpace: 'nowrap'
+            },
+            '& > div': {
+                padding: PADDING_STANDART
             }
         },
         demands: {
             padding: PADDING_STANDART,
-            borderLeft: BORDER_STYLE,
             width: '100%',
             '& h2': {
                 fontSize: '15px',
@@ -79,12 +83,25 @@ const enhance = compose(
             justifyContent: 'flex-end',
             '& ul': {
                 marginLeft: '20px',
-                listStyle: 'disc inside',
+                listStyle: 'none',
+                maxWidth: '250px',
                 '&:first-child': {
                     marginLeft: '0'
                 },
                 '& li': {
-                    lineHeight: '25px'
+                    color: COLOR_GREY,
+                    paddingLeft: '15px',
+                    lineHeight: '25px',
+                    position: 'relative',
+                    '&:after': {
+                        content: '""',
+                        position: 'absolute',
+                        left: '0',
+                        top: '12px',
+                        background: '#a6aebc',
+                        height: '2px',
+                        width: '8px'
+                    }
                 }
             }
         },
@@ -103,7 +120,7 @@ const enhance = compose(
                 height: '30px',
                 marginBottom: '10px',
                 '& h3': {
-                    color: '#a6aebc',
+                    color: COLOR_GREY,
                     fontSize: '14px',
                     fontWeight: '600',
                     whiteSpace: 'nowrap',
@@ -218,6 +235,7 @@ const enhance = compose(
     }),
     withState('anchorEl', 'setAnchorEl', null),
     withState('currentResume', 'setCurrentResume', null),
+    withState('currentStatus', 'setCurrentStatus', ''),
     withState('openActionMenu', 'setOpenActionMenu', false),
 )
 
@@ -237,7 +255,9 @@ const LongListGridList = enhance((props) => {
         meetingListData,
         shortListData,
         currentResume,
-        setCurrentResume
+        setCurrentResume,
+        currentStatus,
+        setCurrentStatus
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -247,6 +267,7 @@ const LongListGridList = enhance((props) => {
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
 
+    const application = _.get(data, ['id'])
     const ageMin = _.get(data, ['ageMin'])
     const ageMax = _.get(data, ['ageMax'])
     const sex = _.get(data, ['sex'])
@@ -270,7 +291,7 @@ const LongListGridList = enhance((props) => {
         }
     }
 
-    const getResumeItem = (list) => {
+    const getResumeItem = (list, status) => {
         return _.map(list, (item) => {
             const id = _.get(item, 'id')
             const fullName = _.get(item, 'fullName')
@@ -283,6 +304,7 @@ const LongListGridList = enhance((props) => {
                         <MoreIcon onTouchTap={(event) => {
                             setAnchorEl(event.currentTarget)
                             setOpenActionMenu(true)
+                            setCurrentStatus(status)
                             setCurrentResume(id)
                         }}/>
                     </div>
@@ -304,12 +326,47 @@ const LongListGridList = enhance((props) => {
         })
     }
 
+    const getPopoverMenus = () => {
+        switch (currentStatus) {
+            case HR_RESUME_LONG: return (
+                <Menu>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_MEETING)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Назначить собеседование')}/>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Добавить в "short list"')}/>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Удалить и лонг листа')}/>
+                </Menu>
+            )
+            case HR_RESUME_MEETING: return null
+            case HR_RESUME_SHORT: return null
+            default: return null
+        }
+    }
+
     return (
         <Container>
             <div className={classes.wrapper}>
                 <div className={classes.content}>
                     <div className={classes.header}>
-                        <h1>{position}</h1>
+                        <div>
+                            <h1>{t('Задание')} №{application}</h1>
+                        </div>
                         <div className={classes.demands}>
                             <h2>{t('Требования к кандидату')}</h2>
                             <div className={classes.demandsList}>
@@ -338,34 +395,7 @@ const LongListGridList = enhance((props) => {
                                     <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.resumeList}>
-                                    {getResumeItem(longListData.list)}
-                                    <Popover
-                                        open={openActionMenu}
-                                        anchorEl={anchorEl}
-                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                                        onRequestClose={() => { setOpenActionMenu(false) }}>
-                                        <Menu>
-                                            <MenuItem
-                                                style={popoverStyle.menuItem}
-                                                onTouchTap={() => {
-                                                    moveToDialog.handleOpen(currentResume, HR_RESUME_MEETING)
-                                                    return setOpenActionMenu(false)
-                                                }}
-                                                primaryText={t('Назначить собеседование')}/>
-                                            <MenuItem
-                                                style={popoverStyle.menuItem}
-                                                onTouchTap={() => {
-                                                    moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
-                                                    return setOpenActionMenu(false)
-                                                }}
-                                                primaryText={t('Добавить в "short list"')}/>
-                                            <MenuItem
-                                                style={popoverStyle.menuItem}
-                                                onTouchTap={() => null}
-                                                primaryText={t('Удалить и лонг листа')}/>
-                                        </Menu>
-                                    </Popover>
+                                    {getResumeItem(longListData.list, HR_RESUME_LONG)}
                                 </div>}
                         </div>
                         <div className={classes.column}>
@@ -377,17 +407,34 @@ const LongListGridList = enhance((props) => {
                                     <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.resumeList}>
-                                    {getResumeItem(meetingListData.list)}
+                                    {getResumeItem(meetingListData.list, HR_RESUME_MEETING)}
                                 </div>}
                         </div>
                         <div className={classes.column}>
                             <header>
                                 <h3>Short list {shortListData.count > ZERO && <span className={'count'}>{shortListData.count}</span>}</h3>
                             </header>
+                            {shortListData.loading
+                                ? <div className={classes.loader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : <div className={classes.resumeList}>
+                                    {getResumeItem(shortListData.list, HR_RESUME_SHORT)}
+                                </div>}
                         </div>
                     </div>
                 </div>
             </div>
+
+            {!_.isNull(getPopoverMenus()) &&
+            <Popover
+                open={openActionMenu}
+                anchorEl={anchorEl}
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}
+                onRequestClose={() => { setOpenActionMenu(false) }}>
+                {getPopoverMenus()}
+            </Popover>}
 
             <AddLongListDialog
                 open={addDialog.open}

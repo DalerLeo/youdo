@@ -142,6 +142,7 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
+            marginTop: '15px',
             '& button': {
                 width: '50% !important'
             }
