@@ -15,6 +15,7 @@ import t from '../../../helpers/translate'
 import {BORDER_STYLE, COLOR_DEFAULT, PADDING_STANDART} from '../../../constants/styleConstants'
 import ResumeFilterForm from '../Resume/ResumeFilterForm'
 import formValidate from '../../../helpers/formValidate'
+import NotFound from '../../Images/not-found.png'
 
 const enhance = compose(
     injectSheet({
@@ -175,6 +176,15 @@ const enhance = compose(
         title: {
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        emptyQuery: {
+            background: '#fff url(' + NotFound + ') no-repeat center 20px',
+            backgroundSize: '175px',
+            padding: '135px 0 0',
+            textAlign: 'center',
+            fontSize: '13px',
+            color: '#666',
+            zIndex: '30'
         }
     }),
     reduxForm({
@@ -217,31 +227,32 @@ const AddLongListDialog = enhance((props) => {
             </div>
 
             <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit}>
-                    <div className={classes.inContent}>
-                        <div className={classes.loader}>
-                            <Loader size={0.75}/>
-                        </div>
-                        <div className={classes.filters}>
-                            <ResumeFilterForm
-                                filter={filter}
-                                filterDialog={filterDialog}
-                                forDialog={true}/>
-                        </div>
-                        <div className={classes.list}>
-                            <div className={classes.title}>{t('Список резюме')}</div>
-                            <div className={classes.resumeList}>
-                                <Row className={'dottedList'}>
-                                    <Col xs={1}/>
-                                    <Col xs={4}>{t('Должность')}</Col>
-                                    <Col xs={5}>{t('Ф.И.О.')}</Col>
-                                    <Col xs={2}>{t('Статус')}</Col>
-                                </Row>
-                                {resumeLoading
-                                    ? <div className={classes.listLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>
-                                    : _.map(_.get(resumePreview, 'list'), (item) => {
+                <div className={classes.inContent}>
+                    <div className={classes.loader}>
+                        <Loader size={0.75}/>
+                    </div>
+                    <div className={classes.filters}>
+                        <ResumeFilterForm
+                            filter={filter}
+                            filterDialog={filterDialog}
+                            initialValues={filterDialog.initialValues}
+                            forDialog={true}/>
+                    </div>
+                    <div className={classes.list}>
+                        <div className={classes.title}>{t('Список резюме')}</div>
+                        <form className={classes.resumeList}>
+                            <Row className={'dottedList'}>
+                                <Col xs={1}/>
+                                <Col xs={4}>{t('Должность')}</Col>
+                                <Col xs={5}>{t('Ф.И.О.')}</Col>
+                                <Col xs={2}>{t('Статус')}</Col>
+                            </Row>
+                            {resumeLoading
+                                ? <div className={classes.listLoader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : !_.isEmpty(_.get(resumePreview, 'list'))
+                                    ? _.map(_.get(resumePreview, 'list'), (item) => {
                                         const id = _.get(item, ['id'])
                                         const position = _.get(item, ['position', 'name'])
                                         const fullName = _.get(item, ['fullName'])
@@ -258,19 +269,21 @@ const AddLongListDialog = enhance((props) => {
                                                 <Col xs={2}>{status}</Col>
                                             </Row>
                                         )
-                                    })}
-                            </div>
-                        </div>
+                                    })
+                                    : <div className={classes.emptyQuery}>
+                                        <div>{t('Не найдено резюме по данным фильтрам')}</div>
+                                    </div>}
+                        </form>
                     </div>
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label={t('Сохранить')}
-                            className={classes.actionButton}
-                            primary={true}
-                            type="submit"
-                        />
-                    </div>
-                </form>
+                </div>
+                <div className={classes.bottomButton}>
+                    <FlatButton
+                        label={t('Сохранить')}
+                        className={classes.actionButton}
+                        primary={true}
+                        onTouchTap={onSubmit}
+                    />
+                </div>
             </div>
         </Dialog>
     )

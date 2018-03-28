@@ -5,6 +5,43 @@ import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/longListSerializer'
 
+// CREATE LONG, INTERVIEW, SHORT LISTS
+
+export const addToLongList = (application, formValues) => {
+    const requestData = serializers.createLongSerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.HR_LONG_LIST_CREATE, application), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_LONG_LIST_CREATE,
+        payload
+    }
+}
+export const addToInterviewList = (application, resume, formValues) => {
+    const requestData = serializers.createMeetingSerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.HR_LONG_LIST_CREATE, application), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_LONG_LIST_CREATE,
+        payload
+    }
+}
+
+//
+
 export const getApplicationDetails = (id) => {
     const payload = axios()
         .get(sprintf(API.HR_APPLICATION_ITEM, id))
@@ -34,23 +71,6 @@ export const getResumePreviewList = (filter) => {
 
     return {
         type: actionTypes.HR_RESUME_PREVIEW_LIST,
-        payload
-    }
-}
-
-export const addToLongList = (application, formValues) => {
-    const requestData = serializers.createSerializer(formValues)
-    const payload = axios()
-        .post(sprintf(API.HR_LONG_LIST_CREATE, application), requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.HR_LONG_LIST_CREATE,
         payload
     }
 }

@@ -22,7 +22,7 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../../helpers/translate'
 import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
-import {LINK_COLOR} from '../../../constants/styleConstants'
+import {COLOR_RED, LINK_COLOR} from '../../../constants/styleConstants'
 
 export const RESUME_FILTER_OPEN = 'openFilterDialog'
 
@@ -138,6 +138,12 @@ const enhance = compose(
             },
             '& > span': {
                 margin: '0 15px'
+            }
+        },
+        buttons: {
+            display: 'flex',
+            '& button': {
+                width: '50% !important'
             }
         }
     }),
@@ -265,13 +271,16 @@ const ResumeFilterForm = enhance((props) => {
                     label={t('Навыки')}
                     fullWidth={true}/>
                 {forDialog
-                    ? <FlatButton
-                        label={t('Применить')}
-                        labelStyle={{color: LINK_COLOR, fontWeight: '600', verticalAlign: 'inherit'}}
-                        style={{marginTop: '15px'}}
-                        onTouchTap={handleSubmit(filterDialog.handleSubmitFilterDialog)}
-                        fullWidth={true}
-                    />
+                    ? <div className={classes.buttons}>
+                        <FlatButton
+                            label={t('Очистить')}
+                            labelStyle={{color: COLOR_RED, fontWeight: '600', verticalAlign: 'inherit'}}
+                            onTouchTap={filterDialog.handleClearFilterDialog}/>
+                        <FlatButton
+                            label={t('Применить')}
+                            labelStyle={{color: LINK_COLOR, fontWeight: '600', verticalAlign: 'inherit'}}
+                            onTouchTap={handleSubmit(filterDialog.handleSubmitFilterDialog)}/>
+                    </div>
                     : <RaisedButton
                         type="submit"
                         primary={true}

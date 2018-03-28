@@ -9,7 +9,8 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {
     LongListGridList,
-    OPEN_ADD_LONG_LIST_DIALOG
+    OPEN_ADD_LONG_LIST_DIALOG,
+    OPEN_MOVE_TO_DIALOG
 } from '../../components/HR/LongList'
 import {
     getApplicationDetails,
@@ -19,20 +20,25 @@ import {
     getShortList,
     addToLongList
 } from '../../actions/HR/longList'
-import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
-import {joinArray} from '../../helpers/joinSplitValues'
+import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
+import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
-import {langQueryFormat} from '../../helpers/joinSplitLanguages'
+import {langArrayFormat, langQueryFormat} from '../../helpers/joinSplitLanguages'
 import {HR_RESUME_LONG, HR_RESUME_MEETING, HR_RESUME_SHORT, ZERO} from '../../constants/backendConstants'
 import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
+import numberFormat from '../../helpers/numberFormat'
 
 const except = {
     application: null,
+    resume: null,
+    moveTo: null,
     openAddLongListDialog: null,
+    openMoveToDialog: null,
     // DETAIL URI
     sex: null,
+    skills: null,
     mode: null,
     age0: null,
     age1: null,
@@ -59,6 +65,7 @@ const enhance = compose(
         const detail = _.get(state, ['application', 'item', 'data'])
         const detailLoading = _.get(state, ['application', 'item', 'loading'])
         const createForm = _.get(state, ['form', 'AddLongListForm'])
+        const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
         const filter = filterHelper([], pathname, query)
         const filterResume = filterHelper(resumePreviewList, pathname, query)
 
@@ -74,6 +81,7 @@ const enhance = compose(
             detail,
             detailLoading,
             createForm,
+            filterForm,
             filter,
             filterResume
         }
@@ -117,9 +125,14 @@ const enhance = compose(
 
     // GET RESUME LIST ON DIALOG OPEN
     withPropsOnChange((props, nextProps) => {
+        const excludeFilters = {
+            application: null,
+            openAddLongListDialog: null
+        }
         const openDialog = toBoolean(_.get(props, ['location', 'query', OPEN_ADD_LONG_LIST_DIALOG]))
         const nextOpenDialog = toBoolean(_.get(nextProps, ['location', 'query', OPEN_ADD_LONG_LIST_DIALOG]))
-        return openDialog !== nextOpenDialog && nextOpenDialog === true
+        return (openDialog !== nextOpenDialog && nextOpenDialog === true) ||
+            (props.filter.filterRequest(excludeFilters) !== nextProps.filter.filterRequest(excludeFilters) && nextOpenDialog === true)
     }, ({dispatch, location: {query}, filterResume}) => {
         const openDialog = toBoolean(_.get(query, [OPEN_ADD_LONG_LIST_DIALOG]))
         if (openDialog) {
@@ -154,12 +167,46 @@ const enhance = compose(
                 })
         },
 
+        handleOpenMoveToDialog: props => (resume, moveTo) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({resume: resume, moveTo: moveTo, [OPEN_MOVE_TO_DIALOG]: true})})
+        },
+
+        handleCloseMoveToDialog: props => () => {
+            const {location: {pathname, query}} = props
+            const application = _.get(query, 'application')
+            hashHistory.push({pathname, query: {application}})
+        },
+
+        handleSubmitMoveToDialog: props => () => {
+            const {dispatch, createForm, filter, location: {pathname, query}} = props
+            const resume = _.toInteger(_.get(query, 'resume'))
+            const status = _.get(query, 'moveTo')
+            // return dispatch(addToLongList(application, _.get(createForm, ['values'])))
+            //     .then(() => {
+            //         dispatch(reset('AddLongListForm'))
+            //         return dispatch(openSnackbarAction({message: t('Выбранные резюме успешно добавлены')}))
+            //     })
+            //     .then(() => {
+            //         hashHistory.push({pathname, query: filter.getParams({[OPEN_ADD_LONG_LIST_DIALOG]: false})})
+            //         dispatch(getLongList(filter, application, HR_RESUME_LONG))
+            //     })
+        },
+
+        handleClearFilterDialog: props => () => {
+            const {dispatch, location: {pathname, query}} = props
+            const application = _.toInteger(_.get(query, 'application'))
+            dispatch(reset('ResumeFilterForm'))
+            return hashHistory.push({pathname, query: {application, [OPEN_ADD_LONG_LIST_DIALOG]: true}})
+        },
+
         handleSubmitFilterDialog: props => () => {
-            const {filter, filterForm} = props
+            const {filter, filterForm, location: {query}} = props
+            const application = _.get(query, 'application')
             const position = _.get(filterForm, ['values', 'position']) || null
             const mode = _.get(filterForm, ['values', 'mode']) || null
-            const ageMin = _.get(filterForm, ['values', 'age', 'min']) || null
-            const ageMax = _.get(filterForm, ['values', 'age', 'max']) || null
+            const ageMin = _.toNumber(_.get(filterForm, ['values', 'age', 'min'])) || null
+            const ageMax = _.toNumber(_.get(filterForm, ['values', 'age', 'max'])) || null
             const sex = _.get(filterForm, ['values', 'sex', 'value']) || null
             const education = _.get(filterForm, ['values', 'education']) || null
             const levelPc = _.get(filterForm, ['values', 'levelPc', 'value']) || null
@@ -169,6 +216,7 @@ const enhance = compose(
             const langToUrl = langQueryFormat(languages)
 
             filter.filterBy({
+                application,
                 [OPEN_ADD_LONG_LIST_DIALOG]: true,
                 [RESUME_FILTER_KEY.POSITIONS]: joinArray(position),
                 [RESUME_FILTER_KEY.MODE]: joinArray(mode),
@@ -206,6 +254,19 @@ const LongList = enhance((props) => {
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
     const openAddDialog = toBoolean(_.get(location, ['query', OPEN_ADD_LONG_LIST_DIALOG]))
+    const openMoveToDialog = toBoolean(_.get(location, ['query', OPEN_MOVE_TO_DIALOG]))
+
+    const position = filter.getParam(RESUME_FILTER_KEY.POSITIONS)
+    const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
+    const ageMin = filter.getParam(RESUME_FILTER_KEY.AGE_0)
+    const ageMax = filter.getParam(RESUME_FILTER_KEY.AGE_1)
+    const sex = filter.getParam(RESUME_FILTER_KEY.SEX)
+    const education = filter.getParam(RESUME_FILTER_KEY.EDUCATIONS)
+    const levelPc = filter.getParam(RESUME_FILTER_KEY.LEVEL_PC)
+    const languages = filter.getParam(RESUME_FILTER_KEY.LANG_LEVEL)
+    const experience = filter.getParam(RESUME_FILTER_KEY.TOTAL_EXP_0)
+    const skills = filter.getParam(RESUME_FILTER_KEY.SKILLS)
+    const langToForm = langArrayFormat(languages)
 
     const detailData = {
         id: detailId,
@@ -245,12 +306,37 @@ const LongList = enhance((props) => {
         handleSubmit: props.handleSubmitAddDialog
     }
 
+    const moveToDialog = {
+        open: openMoveToDialog,
+        handleOpen: props.handleOpenMoveToDialog,
+        handleClose: props.handleCloseMoveToDialog,
+        handleSubmit: props.handleSubmitMoveToDialog
+    }
+
     const filterDialog = {
         openFilterDialog: true,
         handleOpenFilterDialog: () => null,
         handleCloseFilterDialog: () => null,
-        handleClearFilterDialog: () => null,
-        handleSubmitFilterDialog: props.handleSubmitFilterDialog
+        handleClearFilterDialog: props.handleClearFilterDialog,
+        handleSubmitFilterDialog: props.handleSubmitFilterDialog,
+        initialValues: {
+            position: position && splitToArray(position),
+            mode: mode && splitToArray(mode),
+            age: {
+                min: ageMin && numberFormat(ageMin),
+                max: ageMax && numberFormat(ageMax)
+            },
+            sex: {
+                value: sex
+            },
+            education: education && splitToArray(education),
+            levelPc: {
+                value: levelPc
+            },
+            languages: langToForm,
+            experience: experience && numberFormat(experience),
+            skills: skills && splitToArray(skills)
+        }
     }
 
     return (
@@ -260,6 +346,7 @@ const LongList = enhance((props) => {
                 detailData={detailData}
                 filterDialog={filterDialog}
                 addDialog={addDialog}
+                moveToDialog={moveToDialog}
                 longListData={longListData}
                 meetingListData={meetingListData}
                 shortListData={shortListData}

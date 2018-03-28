@@ -11,14 +11,19 @@ const dateSerializer = (date, format) => {
     return output
 }
 
-export const createSerializer = (data) => {
+export const createLongSerializer = (data) => {
     const resumes = _.filter(_.map(_.get(data, 'resumes'), (item, index) => {
         return _.get(item, 'selected') ? index : null
     }), (item) => !_.isNull(item))
-    console.warn(resumes)
     return {
         resume: resumes,
         status: 'long'
+    }
+}
+export const createMeetingSerializer = (resume, data) => {
+    return {
+        resume,
+        status: 'meeting'
     }
 }
 
@@ -37,6 +42,7 @@ export const resumePreviewFilterSerializer = (data) => {
     const ordering = _.get(data, 'ordering')
 
     return {
+        'exclude_accepted': true,
         'positions': _.get(defaultData, 'positions'),
         'mode': _.get(defaultData, 'mode'),
         'age_0': _.get(defaultData, 'age0'),

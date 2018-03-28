@@ -50,6 +50,8 @@ const enhance = compose(
             display: 'flex',
             alignSelf: 'baseline',
             flexWrap: 'wrap',
+            overflowY: 'auto',
+            height: '100%',
             width: '75%'
         },
         header: {
@@ -68,9 +70,7 @@ const enhance = compose(
         tasks: {
             display: 'flex',
             flexWrap: 'wrap',
-            height: '100%',
             paddingBottom: '15px',
-            overflowY: 'auto',
             width: '100%'
         },
         task: {
@@ -207,6 +207,9 @@ const TasksGridList = enhance((props) => {
         const client = _.get(item, ['contact', 'client', 'name'])
         const position = _.get(item, ['position', 'name'])
         const deadline = dateFormat(_.get(item, 'deadline'))
+        const longCount = _.get(item, ['stats', 'long'])
+        const meetingCount = _.get(item, ['stats', 'meeting'])
+        const shortCount = _.get(item, ['stats', 'short'])
         return (
             <div key={id} className={classes.task}>
                 <Link target={'_blank'} to={{
@@ -214,7 +217,7 @@ const TasksGridList = enhance((props) => {
                     query: filter.getParams({application: id})}}/>
                 <header>
                     <div className={classes.deadline}><Calendar/>{deadline}</div>
-                    <div className={classes.status}>{isNew && t('новое')}</div>
+                    {isNew && <div className={classes.status}>{t('новое')}</div>}
                 </header>
                 <section>
                     <div className={classes.bodyBlock}>
@@ -223,9 +226,9 @@ const TasksGridList = enhance((props) => {
                     </div>
                 </section>
                 <footer>
-                    <div>Long list:<strong>4</strong></div>
-                    <div>Interview:<strong>3</strong></div>
-                    <div>Short list:<strong>0</strong></div>
+                    <div>Long list:<strong>{longCount}</strong></div>
+                    <div>Interview:<strong>{meetingCount}</strong></div>
+                    <div>Short list:<strong>{shortCount}</strong></div>
                 </footer>
             </div>
         )

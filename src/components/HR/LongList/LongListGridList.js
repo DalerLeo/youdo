@@ -16,6 +16,7 @@ import {compose, withState} from 'recompose'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Add from 'material-ui/svg-icons/content/add'
 import AddLongListDialog from './AddLongListDialog'
+import DateTimeCommentDialog from './DateTimeCommentDialog'
 import CalendarCreated from 'material-ui/svg-icons/notification/event-available'
 import ToolTip from '../../ToolTip'
 import {hashHistory, Link} from 'react-router'
@@ -33,7 +34,7 @@ import {
 import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
 import Person from '../../Images/person.png'
-import {ZERO} from '../../../constants/backendConstants'
+import {HR_RESUME_MEETING, HR_RESUME_SHORT, ZERO} from '../../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
@@ -216,6 +217,7 @@ const enhance = compose(
         }
     }),
     withState('anchorEl', 'setAnchorEl', null),
+    withState('currentResume', 'setCurrentResume', null),
     withState('openActionMenu', 'setOpenActionMenu', false),
 )
 
@@ -225,6 +227,7 @@ const LongListGridList = enhance((props) => {
         detailData,
         classes,
         addDialog,
+        moveToDialog,
         filterDialog,
         anchorEl,
         setAnchorEl,
@@ -232,8 +235,12 @@ const LongListGridList = enhance((props) => {
         setOpenActionMenu,
         longListData,
         meetingListData,
-        shortListData
+        shortListData,
+        currentResume,
+        setCurrentResume
     } = props
+
+    const moveToStatus = filter.getParam('moveTo')
 
     const data = _.get(detailData, 'data')
     const loading = _.get(detailData, 'loading')
@@ -276,6 +283,7 @@ const LongListGridList = enhance((props) => {
                         <MoreIcon onTouchTap={(event) => {
                             setAnchorEl(event.currentTarget)
                             setOpenActionMenu(true)
+                            setCurrentResume(id)
                         }}/>
                     </div>
                     <div className={classes.resumeBody}>
@@ -338,9 +346,24 @@ const LongListGridList = enhance((props) => {
                                         targetOrigin={{horizontal: 'right', vertical: 'top'}}
                                         onRequestClose={() => { setOpenActionMenu(false) }}>
                                         <Menu>
-                                            <MenuItem style={popoverStyle.menuItem} primaryText={t('Назначить собеседование')}/>
-                                            <MenuItem style={popoverStyle.menuItem} primaryText={t('Добавить в "short list"')}/>
-                                            <MenuItem style={popoverStyle.menuItem} primaryText={t('Удалить и лонг листа')}/>
+                                            <MenuItem
+                                                style={popoverStyle.menuItem}
+                                                onTouchTap={() => {
+                                                    moveToDialog.handleOpen(currentResume, HR_RESUME_MEETING)
+                                                    return setOpenActionMenu(false)
+                                                }}
+                                                primaryText={t('Назначить собеседование')}/>
+                                            <MenuItem
+                                                style={popoverStyle.menuItem}
+                                                onTouchTap={() => {
+                                                    moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
+                                                    return setOpenActionMenu(false)
+                                                }}
+                                                primaryText={t('Добавить в "short list"')}/>
+                                            <MenuItem
+                                                style={popoverStyle.menuItem}
+                                                onTouchTap={() => null}
+                                                primaryText={t('Удалить и лонг листа')}/>
                                         </Menu>
                                     </Popover>
                                 </div>}
@@ -374,6 +397,13 @@ const LongListGridList = enhance((props) => {
                 filterDialog={filterDialog}
                 loading={addDialog.loading}
                 resumePreview={addDialog.resumePreview}
+                uri={uri}
+            />
+            <DateTimeCommentDialog
+                open={moveToDialog.open}
+                onClose={moveToDialog.handleClose}
+                onSubmit={moveToDialog.handleSubmit}
+                status={moveToStatus}
             />
         </Container>
     )
