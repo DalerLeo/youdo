@@ -2,12 +2,8 @@ import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
-import * as ROUTES from '../../../constants/routes'
-import sprintf from 'sprintf'
 import Container from '../../Container'
 import Loader from '../../Loader'
-import IconButton from 'material-ui/IconButton'
-import Paper from 'material-ui/Paper'
 import Popover from 'material-ui/Popover'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
@@ -17,18 +13,10 @@ import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import Add from 'material-ui/svg-icons/content/add'
 import AddLongListDialog from './AddLongListDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
-import CalendarCreated from 'material-ui/svg-icons/notification/event-available'
-import ToolTip from '../../ToolTip'
-import {hashHistory, Link} from 'react-router'
-import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {
-    BORDER_STYLE,
-    COLOR_DEFAULT,
     COLOR_GREY,
-    COLOR_GREY_LIGHTEN,
     COLOR_WHITE,
-    LINK_COLOR,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
@@ -263,8 +251,8 @@ const LongListGridList = enhance((props) => {
     const moveToStatus = filter.getParam('moveTo')
 
     const data = _.get(detailData, 'data')
-    const loading = _.get(detailData, 'loading')
-    const position = _.get(data, ['position', 'name'])
+    // . const loading = _.get(detailData, 'loading')
+    // . const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
 
     const application = _.get(data, ['id'])

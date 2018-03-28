@@ -5,7 +5,6 @@ import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
-import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import {
     LongListGridList,
