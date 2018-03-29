@@ -4,7 +4,7 @@ import axios from '../../helpers/axios'
 import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/longListSerializer'
-import {HR_RESUME_MEETING, HR_RESUME_REMOVED, HR_RESUME_SHORT} from '../../constants/backendConstants'
+import {HR_RESUME_MEETING, HR_RESUME_SHORT} from '../../constants/backendConstants'
 
 // CREATE LONG, INTERVIEW, SHORT LISTS && DELETE
 
@@ -57,9 +57,9 @@ export const addToShortList = (application, resume, formValues) => {
     }
 }
 export const deleteResume = (application, resume, formValues) => {
-    const requestData = serializers.createMoveToSerializer(application, resume, HR_RESUME_REMOVED, formValues)
+    const requestData = serializers.removeResumeSerializer(resume, formValues)
     const payload = axios()
-        .post(API.HR_RESUME_MOVE, requestData)
+        .post(sprintf(API.HR_RESUME_REMOVE, application), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -68,7 +68,7 @@ export const deleteResume = (application, resume, formValues) => {
         })
 
     return {
-        type: actionTypes.HR_RESUME_MOVE,
+        type: actionTypes.HR_RESUME_REMOVE,
         payload
     }
 }
@@ -154,6 +154,22 @@ export const getShortList = (filter, appId, appStatus) => {
 
     return {
         type: actionTypes.HR_SHORT_LIST,
+        payload
+    }
+}
+
+export const formShortList = (application) => {
+    const payload = axios()
+        .post(sprintf(API.HR_FORM_SHORT_LIST, application))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_FORM_SHORT_LIST,
         payload
     }
 }

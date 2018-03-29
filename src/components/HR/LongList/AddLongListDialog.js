@@ -220,7 +220,7 @@ const AddLongListDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{t('Добавление в "long list"')}</span>
+                <span>{t('Добавление в лонглист')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>

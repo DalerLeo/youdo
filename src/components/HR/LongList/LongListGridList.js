@@ -3,23 +3,29 @@ import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Container from '../../Container'
+import ConfirmDialog from '../../ConfirmDialog'
 import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
 import Popover from 'material-ui/Popover'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Add from 'material-ui/svg-icons/content/add'
+import Add from 'material-ui/svg-icons/av/playlist-add'
+import Done from 'material-ui/svg-icons/av/playlist-add-check'
+import Time from 'material-ui/svg-icons/device/access-time'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import AddLongListDialog from './AddLongListDialog'
+import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
 import t from '../../../helpers/translate'
 import {
+    BORDER_DARKER,
     BORDER_STYLE,
     COLOR_DEFAULT,
-    COLOR_GREY,
+    COLOR_GREY, COLOR_GREY_LIGHTEN,
     COLOR_WHITE,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
@@ -27,12 +33,15 @@ import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
 import Person from '../../Images/person.png'
 import {
+    APPLICATION_COMPLETED,
     HR_RESUME_LONG,
     HR_RESUME_MEETING,
     HR_RESUME_REMOVED,
     HR_RESUME_SHORT,
     ZERO
 } from '../../../constants/backendConstants'
+import {hashHistory} from 'react-router'
+import dateFormat from '../../../helpers/dateFormat'
 
 const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 const enhance = compose(
@@ -61,6 +70,8 @@ const enhance = compose(
             width: '100%'
         },
         content: {
+            display: 'flex',
+            flexDirection: 'column',
             height: '100%'
         },
         header: {
@@ -72,10 +83,24 @@ const enhance = compose(
                 fontSize: '18px',
                 fontWeight: '600',
                 whiteSpace: 'nowrap'
-            },
-            '& > div': {
-                padding: PADDING_STANDART
             }
+        },
+        title: {
+            padding: '20px 60px 20px 30px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'relative'
+        },
+        toggle: {
+            cursor: 'pointer',
+            position: 'absolute',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0 18px',
+            right: '0',
+            top: '0',
+            bottom: '0'
         },
         demands: {
             borderTop: BORDER_STYLE,
@@ -134,15 +159,14 @@ const enhance = compose(
         },
         lists: {
             display: 'flex',
-            '& > div': {
-                marginRight: '30px',
-                width: 'calc(100% / 3)',
-                '&:last-child': {
-                    margin: '0'
-                }
-            }
+            height: '100%'
         },
         column: {
+            padding: '0 30px',
+            borderRight: BORDER_DARKER,
+            width: 'calc(100% / 3)',
+            '&:first-child': {paddingLeft: '0'},
+            '&:last-child': {paddingRight: '0', border: 'none'},
             '& header': {
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -186,32 +210,82 @@ const enhance = compose(
         resumeList: {
 
         },
+        interviewDay: {
+            marginBottom: '40px',
+            '&:last-child': {
+                marginBottom: '0',
+                '& > div:last-child:after': {
+                    bottom: '0 !important'
+                }
+            }
+        },
+        interviewDate: {
+            color: COLOR_GREY_LIGHTEN,
+            fontWeight: '600',
+            marginBottom: '10px'
+        },
+        interviewTime: {
+            color: COLOR_GREY_LIGHTEN,
+            fontSize: '12px',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            marginTop: '3px',
+            '& svg': {
+                color: COLOR_GREY_LIGHTEN + '!important',
+                marginRight: '3px',
+                width: '16px !important',
+                height: '16px !important'
+            }
+        },
+        resumeWrapper: {
+            display: 'flex',
+            alignItems: 'flex-end',
+            position: 'relative',
+            '& > div:last-child': {
+                width: '100%'
+            }
+        },
         resume: {
-            background: 'rgba(255,255,255, 0.5)',
+            background: COLOR_WHITE,
             borderRadius: '2px',
             boxShadow: CUSTOM_BOX_SHADOW,
             cursor: 'pointer',
-            padding: PADDING_STANDART,
+            padding: '15px 20px',
             position: 'relative',
             transition: 'all 200ms ease',
             marginBottom: '3px',
             '&:hover': {
-                background: COLOR_WHITE
+                boxShadow: CUSTOM_BOX_SHADOW
             },
             '&:last-child': {
                 margin: '0'
             }
         },
+        openResume: {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '1'
+        },
         moreButton: {
+            display: 'none',
             position: 'absolute',
             cursor: 'pointer',
             top: '15px',
             right: '12px',
+            zIndex: '2',
             '& svg': {
-                height: '22px !important',
-                width: '22px !important',
+                height: '20px !important',
+                width: '20px !important',
                 color: COLOR_GREY + '!important'
             }
+        },
+        moreButtonBlock: {
+            extend: 'moreButton',
+            position: 'unset'
         },
         resumeBody: {
             '& h4': {
@@ -234,8 +308,7 @@ const enhance = compose(
         resumeFooter: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '15px'
+            justifyContent: 'space-between'
         },
         resumeFullName: {
             color: COLOR_GREY,
@@ -252,8 +325,8 @@ const enhance = compose(
                 bottom: '0'
             },
             '& img': {
-                width: '30px',
-                height: '30px',
+                width: '35px',
+                height: '35px',
                 borderRadius: '50%',
                 marginRight: '10px'
             }
@@ -293,7 +366,9 @@ const LongListGridList = enhance((props) => {
         currentStatus,
         setCurrentStatus,
         showDetails,
-        setShowDetails
+        setShowDetails,
+        confirmDialog,
+        resumeDetails
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -302,6 +377,7 @@ const LongListGridList = enhance((props) => {
     const loading = _.get(detailData, 'loading')
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
+    const isCompleted = _.get(data, 'status') === APPLICATION_COMPLETED
 
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])
@@ -336,39 +412,82 @@ const LongListGridList = enhance((props) => {
         }
     }
 
-    const getResumeItem = (list, status) => {
+    const resumeLink = (id) => {
+        return hashHistory.push(filter.createURL({resume: id}))
+    }
+    const getResume = (list, status) => {
         return _.map(list, (item) => {
             const id = _.get(item, 'id')
             const fullName = _.get(item, 'fullName')
-            const dateOfBirth = moment(_.get(item, 'dateOfBirth')).format('YYYY-MM-DD')
-            const age = moment().diff(dateOfBirth, 'years')
-            const resumePosition = _.get(item, ['position', 'name'])
+
             return (
                 <div key={id} className={classes.resume}>
-                    <div className={classes.moreButton}>
+                    <div className={classes.moreButton} style={{display: isCompleted ? 'none' : 'block'}}>
+                        {!isCompleted &&
                         <MoreIcon onTouchTap={(event) => {
                             setAnchorEl(event.currentTarget)
                             setOpenActionMenu(true)
                             setCurrentStatus(status)
                             setCurrentResume(id)
-                        }}/>
+                        }}/>}
                     </div>
-                    <div className={classes.resumeBody}>
-                        <h4>{resumePosition}</h4>
-                        <div className={classes.resumeInfo}>
-                            <div>Опыт работы: 2 года и 8 месяцев</div>
-                        </div>
-                    </div>
+                    <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
                     <div className={classes.resumeFooter}>
                         <div className={classes.resumeFullName}>
                             <img src={Person} alt=""/>
                             <span>{fullName}</span>
                         </div>
-                        <div className={classes.resumeAge}>{getYearText(age)}</div>
                     </div>
                 </div>
             )
         })
+    }
+
+    const getResumeItem = (list, status) => {
+        const groupByDate = _.groupBy(list, (item) => {
+            const dateMeeting = _.get(item, 'dateMeeting')
+            return moment(dateMeeting).format('YYYY-MM-DD')
+        })
+        const interviewList = _.map(groupByDate, (item, date) => {
+            const interviewResume = _.map(item, (obj) => {
+                const id = _.get(obj, 'id')
+                const fullName = _.get(obj, 'fullName')
+                const time = moment(_.get(obj, 'dateMeeting')).format('HH:mm')
+                return (
+                    <div key={id} className={classes.resume}>
+                        <div className={classes.resumeFooter}>
+                            <div className={classes.resumeFullName}>
+                                <img src={Person} alt=""/>
+                                <div>
+                                    <div>{fullName}</div>
+                                    <div className={classes.interviewTime}><Time/>{time}</div>
+                                </div>
+                            </div>
+                            <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
+                            <div className={classes.moreButtonBlock} style={{display: isCompleted ? 'none' : 'block'}}>
+                                {!isCompleted &&
+                                <MoreIcon onTouchTap={(event) => {
+                                    setAnchorEl(event.currentTarget)
+                                    setOpenActionMenu(true)
+                                    setCurrentStatus(status)
+                                    setCurrentResume(id)
+                                }}/>}
+                            </div>
+                        </div>
+                    </div>
+                )
+            })
+            return (
+                <div key={date} className={classes.interviewDay}>
+                    <div className={classes.interviewDate}>{dateFormat(date)}</div>
+                    {interviewResume}
+                </div>
+            )
+        })
+        if (status === HR_RESUME_MEETING) {
+            return interviewList
+        }
+        return getResume(list, status)
     }
 
     const getPopoverMenus = () => {
@@ -388,18 +507,45 @@ const LongListGridList = enhance((props) => {
                             moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
                             return setOpenActionMenu(false)
                         }}
-                        primaryText={t('Добавить в "short list"')}/>
+                        primaryText={t('Добавить в шортлист')}/>
                     <MenuItem
                         style={popoverStyle.menuItem}
                         onTouchTap={() => {
                             moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
                             return setOpenActionMenu(false)
                         }}
-                        primaryText={t('Удалить и лонг листа')}/>
+                        primaryText={t('Удалить со списка')}/>
                 </Menu>
             )
-            case HR_RESUME_MEETING: return null
-            case HR_RESUME_SHORT: return null
+            case HR_RESUME_MEETING: return (
+                <Menu>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Добавить в шортлист')}/>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Удалить со списка')}/>
+                </Menu>
+            )
+            case HR_RESUME_SHORT: return (
+                <Menu>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => {
+                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
+                            return setOpenActionMenu(false)
+                        }}
+                        primaryText={t('Удалить со списка')}/>
+                </Menu>
+            )
             default: return null
         }
     }
@@ -414,8 +560,12 @@ const LongListGridList = enhance((props) => {
                         </div>}
                         <div className={classes.title}>
                             <h1>{t('Задание')} №{application} {position}</h1>
-                            <h1>{}</h1>
+                            <h1>{client}</h1>
+                            <div className={classes.toggle} onClick={() => { setShowDetails(!showDetails) }}>
+                                {showDetails ? <ArrowUp/> : <ArrowDown/>}
+                            </div>
                         </div>
+                        {showDetails &&
                         <div className={classes.demands}>
                             <h2>{t('Требования к кандидату')}</h2>
                             <div className={classes.demandsList}>
@@ -445,13 +595,16 @@ const LongListGridList = enhance((props) => {
                                 <h5>{t('Профессиональные навыки')}</h5>
                                 <div className={classes.tagsWrapper}>{skills}</div>
                             </div>
-                        </div>
+                        </div>}
                     </div>
                     <div className={classes.lists}>
                         <div className={classes.column}>
                             <header>
-                                <h3>Long list {longListData.count > ZERO && <span className={'count'}>{longListData.count}</span>}</h3>
-                                <div className={classes.add} onClick={() => { addDialog.handleOpen(uri) }}><Add/></div>
+                                <h3>{t('Лонглист')} {longListData.count > ZERO && <span className={'count'}>{longListData.count}</span>}</h3>
+                                {!isCompleted &&
+                                <ToolTip text={t('Добавить в лонглист')} position={'left'}>
+                                    <div className={classes.add} onClick={() => { addDialog.handleOpen(uri) }}><Add/></div>
+                                </ToolTip>}
                             </header>
                             {longListData.loading
                                 ? <div className={classes.loader}>
@@ -463,7 +616,7 @@ const LongListGridList = enhance((props) => {
                         </div>
                         <div className={classes.column}>
                             <header>
-                                <h3>Interview {meetingListData.count > ZERO && <span className={'count'}>{meetingListData.count}</span>}</h3>
+                                <h3>{t('Собеседования')} {meetingListData.count > ZERO && <span className={'count'}>{meetingListData.count}</span>}</h3>
                             </header>
                             {meetingListData.loading
                                 ? <div className={classes.loader}>
@@ -475,7 +628,11 @@ const LongListGridList = enhance((props) => {
                         </div>
                         <div className={classes.column}>
                             <header>
-                                <h3>Short list {shortListData.count > ZERO && <span className={'count'}>{shortListData.count}</span>}</h3>
+                                <h3>{t('Шортлист')} {shortListData.count > ZERO && <span className={'count'}>{shortListData.count}</span>}</h3>
+                                {shortListData.count > ZERO && !isCompleted &&
+                                <ToolTip text={t('Сформировать шортлист')} position={'left'}>
+                                    <div className={classes.add} onClick={confirmDialog.handleOpen}><Done/></div>
+                                </ToolTip>}
                             </header>
                             {shortListData.loading
                                 ? <div className={classes.loader}>
@@ -505,15 +662,29 @@ const LongListGridList = enhance((props) => {
                 onSubmit={addDialog.handleSubmit}
                 filter={filter}
                 filterDialog={filterDialog}
-                loading={addDialog.loading}
+                loading={false}
                 resumePreview={addDialog.resumePreview}
-                uri={uri}
-            />
+                uri={uri}/>
+
             <DateTimeCommentDialog
                 open={moveToDialog.open}
                 onClose={moveToDialog.handleClose}
                 onSubmit={moveToDialog.handleSubmit}
-                status={moveToStatus}
+                status={moveToStatus}/>
+
+            <ConfirmDialog
+                open={confirmDialog.open}
+                onClose={confirmDialog.handleClose}
+                onSubmit={confirmDialog.handleSubmit}
+                message={t('Сформировать шортлист на задание') + ' №' + application}
+                type={'submit'}
+                loading={false}/>
+
+            <ResumeDetailsDialog
+                loading={resumeDetails.loading}
+                data={resumeDetails.data || {}}
+                open={resumeDetails.open}
+                filter={filter}
             />
         </Container>
     )

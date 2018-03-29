@@ -21,19 +21,28 @@ export const createLongSerializer = (data) => {
         status: 'long'
     }
 }
+
 export const createMoveToSerializer = (application, resume, moveTo, data) => {
     const date = dateSerializer(_.get(data, 'date'))
     const time = moment(_.get(data, 'time')).format('HH:mm')
-    const comment = _.get(data, 'comment')
+    const note = _.get(data, 'note')
     const request = {
         application,
         resume,
-        comment,
+        note,
         status: moveTo
     }
     return moveTo === HR_RESUME_MEETING
         ? _.merge(request, {date_time: date + ' ' + time})
         : request
+}
+
+export const removeResumeSerializer = (resume, data) => {
+    const note = _.get(data, 'note')
+    return {
+        resume: [resume],
+        note
+    }
 }
 
 export const resumeListFilterSerializer = (data, application, appStatus) => {

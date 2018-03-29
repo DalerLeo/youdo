@@ -15,6 +15,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {
     BORDER_STYLE,
+    BORDER_DARKER,
     COLOR_DEFAULT, COLOR_GREEN,
     COLOR_GREY,
     COLOR_GREY_LIGHTEN,
@@ -22,11 +23,11 @@ import {
     LINK_COLOR,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
+import {APPLICATION_COMPLETED} from '../../../constants/backendConstants'
 
 const SORT_BY_DEADLINE = 'deadline'
 const SORT_BY_CREATED_DATE = 'createdDate'
 
-const BORDER_DARKER = '1px #e3e3e3 solid'
 const BORDER_TRANSPARENT = '1px transparent solid'
 const enhance = compose(
     injectSheet({
@@ -168,6 +169,10 @@ const enhance = compose(
             fontWeight: '600',
             padding: '2px 8px'
         },
+        completed: {
+            extend: 'status',
+            color: COLOR_GREEN
+        },
         client: {
             fontSize: '13px',
             color: COLOR_GREY,
@@ -210,6 +215,8 @@ const TasksGridList = enhance((props) => {
         const longCount = _.get(item, ['stats', 'long'])
         const meetingCount = _.get(item, ['stats', 'meeting'])
         const shortCount = _.get(item, ['stats', 'short'])
+        const status = _.get(item, 'status')
+        const isCompleted = status === APPLICATION_COMPLETED
         return (
             <div key={id} className={classes.task}>
                 <Link target={'_blank'} to={{
@@ -218,6 +225,7 @@ const TasksGridList = enhance((props) => {
                 <header>
                     <div className={classes.deadline}><Calendar/>{deadline}</div>
                     {isNew && <div className={classes.status}>{t('новое')}</div>}
+                    {isCompleted && <div className={classes.completed}>{t('завершено')}</div>}
                 </header>
                 <section>
                     <div className={classes.bodyBlock}>
@@ -245,6 +253,7 @@ const TasksGridList = enhance((props) => {
             height: 22
         }
     }
+    // . const DOING = 'выполняется'
     const currentOrdering = filter.getParam('ordering')
     const sortyBy = (value) => {
         return hashHistory.push(filter.createURL({ordering: value}))

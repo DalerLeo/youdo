@@ -234,6 +234,7 @@ const ResumeDetails = enhance((props) => {
     const educations = _.get(data, 'educations')
 
     const languagesLevel = _.get(data, 'languages')
+    const hobby = _.get(data, 'hobby') || t('Не указан')
     const driverLicense = _.join(_.map(_.get(data, 'driverLicense'), item => {
         return _.get(item, 'name')
     }), ', ') || t('нет водительских прав')
@@ -293,12 +294,12 @@ const ResumeDetails = enhance((props) => {
                                 const id = _.get(item, ['id'])
                                 const name = _.get(item, ['language', 'name'])
                                 const level = _.get(item, ['level', 'name'])
-                                return <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                return <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>{level && <span>({level})</span>}</strong></span>
                             })}
                         </div>
                         <div>{t('Водительские права')}: <strong>{driverLicense}</strong></div>
                         <div>{t('Уровень владения ПК')}: <strong>{}</strong></div>
-                        <div>{t('Интересы и хобби')}: <strong>{}</strong></div>
+                        <div>{t('Интересы и хобби')}: <strong>{hobby}</strong></div>
                     </div>
                 </div>
             </div>
@@ -374,7 +375,7 @@ ResumeDetails.propTypes = {
         handleOpenConfirmDialog: PropTypes.func.isRequired,
         handleCloseConfirmDialog: PropTypes.func.isRequired,
         handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired
+    })
 }
 
 export default ResumeDetails

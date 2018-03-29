@@ -140,7 +140,7 @@ const DateTimeCommentDialog = enhance((props) => {
     const getTitle = () => {
         switch (status) {
             case HR_RESUME_MEETING: return t('Назначить собеседование')
-            case HR_RESUME_SHORT: return t('Добавление в "short list"')
+            case HR_RESUME_SHORT: return t('Добавление в шортлист')
             case HR_RESUME_REMOVED: return t('Удаление резюме из списка')
             default: return null
         }
@@ -181,14 +181,15 @@ const DateTimeCommentDialog = enhance((props) => {
                             component={TimeField}
                             className={classes.inputDateCustom}
                             label={t('Время')}
+                            minutesStep={15}
                             errorStyle={{bottom: 2}}
                             fullWidth={true}/>
                     </div>}
                     <Field
-                        name="comment"
+                        name="note"
                         component={TextField}
                         className={classes.textFieldArea}
-                        label={t('Комментарий')}
+                        label={t('Заметки')}
                         fullWidth={true}
                         multiLine={true}
                         rows={1}

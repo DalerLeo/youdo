@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import filterHelper from '../../helpers/filter'
 import {
     LongListGridList,
@@ -20,8 +20,10 @@ import {
     addToLongList,
     addToInterviewList,
     addToShortList,
-    deleteResume
+    deleteResume,
+    formShortList
 } from '../../actions/HR/longList'
+import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
 import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
@@ -76,6 +78,8 @@ const enhance = compose(
         const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
         const filter = filterHelper([], pathname, query)
         const filterResume = filterHelper(resumePreviewList, pathname, query)
+        const resumeDetail = _.get(state, ['resume', 'item', 'data'])
+        const resumeDetailLoading = _.get(state, ['resume', 'item', 'loading'])
 
         return {
             resumePreviewList,
@@ -92,7 +96,9 @@ const enhance = compose(
             filterForm,
             moveToForm,
             filter,
-            filterResume
+            filterResume,
+            resumeDetail,
+            resumeDetailLoading
         }
     }),
 
@@ -132,6 +138,19 @@ const enhance = compose(
          }
      }),
 
+    // RESUME DETAILS
+     withPropsOnChange((props, nextProps) => {
+         const resume = _.toInteger(_.get(props, ['location', 'query', 'resume']))
+         const nextResume = _.toInteger(_.get(nextProps, ['location', 'query', 'resume']))
+         const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', OPEN_MOVE_TO_DIALOG]))
+         return resume !== nextResume && nextResume && !nextDialog
+     }, ({dispatch, location: {query}}) => {
+         const resume = _.toInteger(_.get(query, ['resume']))
+         if (resume > ZERO) {
+             dispatch(resumeItemFetchAction(resume))
+         }
+     }),
+
     // GET RESUME LIST ON DIALOG OPEN
     withPropsOnChange((props, nextProps) => {
         const excludeFilters = {
@@ -154,6 +173,7 @@ const enhance = compose(
         }
     }),
 
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withHandlers({
         handleOpenAddDialog: props => (uri) => {
             const {location: {pathname}, filter} = props
@@ -195,7 +215,7 @@ const enhance = compose(
 
         handleSubmitMoveToDialog: props => () => {
             const {dispatch, moveToForm, filter, location: {pathname, query}} = props
-            const application = _.get(query, 'application')
+            const application = _.toInteger(_.get(query, 'application'))
             const resume = _.toInteger(_.get(query, 'resume'))
             const status = _.get(query, 'moveTo')
             const formValues = _.get(moveToForm, ['values'])
@@ -226,6 +246,7 @@ const enhance = compose(
                         if (status === HR_RESUME_MEETING) {
                             dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
                         } else if (status === HR_RESUME_SHORT) {
+                            dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
                             dispatch(getShortList(filter, application, HR_RESUME_SHORT))
                         } else if (status === HR_RESUME_REMOVED) {
                             dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
@@ -270,6 +291,25 @@ const enhance = compose(
                 [RESUME_FILTER_KEY.TOTAL_EXP_0]: experience && numberWithoutSpaces(experience),
                 [RESUME_FILTER_KEY.SKILLS]: joinArray(skills)
             })
+        },
+
+        handleOpenConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(true)
+        },
+
+        handleCloseConfirmDialog: props => () => {
+            const {setOpenConfirmDialog} = props
+            setOpenConfirmDialog(false)
+        },
+        handleSendConfirmDialog: props => () => {
+            const {dispatch, setOpenConfirmDialog, location: {query}} = props
+            const application = _.toInteger(_.get(query, 'application'))
+            dispatch(formShortList(application))
+                .then(() => {
+                    setOpenConfirmDialog(false)
+                    return dispatch(openSnackbarAction({message: t('Шортлист успешно сформирован')}))
+                })
         }
     })
 )
@@ -288,6 +328,8 @@ const LongList = enhance((props) => {
         detail,
         detailLoading,
         createLoading,
+        resumeDetail,
+        resumeDetailLoading,
         filter,
         layout,
         params
@@ -296,6 +338,7 @@ const LongList = enhance((props) => {
     const detailId = _.toInteger(_.get(params, 'longListId'))
     const openAddDialog = toBoolean(_.get(location, ['query', OPEN_ADD_LONG_LIST_DIALOG]))
     const openMoveToDialog = toBoolean(_.get(location, ['query', OPEN_MOVE_TO_DIALOG]))
+    const openResumeDialog = !toBoolean(_.get(location, ['query', OPEN_MOVE_TO_DIALOG])) && _.toInteger(_.get(location, ['query', 'resume'])) > ZERO
 
     const position = filter.getParam(RESUME_FILTER_KEY.POSITIONS)
     const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
@@ -380,6 +423,19 @@ const LongList = enhance((props) => {
         }
     }
 
+    const confirmDialog = {
+        open: props.openConfirmDialog,
+        handleOpen: props.handleOpenConfirmDialog,
+        handleClose: props.handleCloseConfirmDialog,
+        handleSubmit: props.handleSendConfirmDialog
+    }
+
+    const resumeDetails = {
+        open: openResumeDialog,
+        data: resumeDetail,
+        loading: resumeDetailLoading
+    }
+
     return (
         <Layout {...layout}>
             <LongListGridList
@@ -391,6 +447,8 @@ const LongList = enhance((props) => {
                 longListData={longListData}
                 meetingListData={meetingListData}
                 shortListData={shortListData}
+                confirmDialog={confirmDialog}
+                resumeDetails={resumeDetails}
             />
         </Layout>
     )
