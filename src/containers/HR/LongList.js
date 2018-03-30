@@ -23,7 +23,8 @@ import {
     deleteResume,
     formShortList,
     addResumeComment,
-    getResumeComments
+    getResumeComments,
+    resumeAddNote
 } from '../../actions/HR/longList'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -79,6 +80,7 @@ const enhance = compose(
         const moveToForm = _.get(state, ['form', 'ResumeMoveForm'])
         const resumeDetailsForm = _.get(state, ['form', 'ResumeDetailsForm'])
         const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
+        const notesForm = _.get(state, ['form', 'ResumeItemForm'])
         const filter = filterHelper([], pathname, query)
         const filterResume = filterHelper(resumePreviewList, pathname, query)
         const resumeDetail = _.get(state, ['resume', 'item', 'data'])
@@ -101,6 +103,7 @@ const enhance = compose(
             createForm,
             filterForm,
             moveToForm,
+            notesForm,
             resumeDetailsForm,
             filter,
             filterResume,
@@ -334,6 +337,18 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getResumeComments(filter))
                 })
+        },
+
+        handleSubmitEditNote: props => (resume, value, prevValue) => {
+            const {dispatch, location: {query}} = props
+            const application = _.toInteger(_.get(query, 'application'))
+            if (value !== prevValue) {
+                return dispatch(resumeAddNote(application, resume, value))
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: t('Заметка успешно обновлена')}))
+                    })
+            }
+            return null
         }
     })
 )
@@ -467,6 +482,26 @@ const LongList = enhance((props) => {
         commentsLoading: resumeCommentsLoading
     }
 
+    const getNotesInitialValues = () => {
+        const note = {}
+        const setNoteValue = (data) => {
+            _.map(data.list, (item) => {
+                const id = _.get(item, 'id')
+                note[id] = _.get(item, 'note')
+            })
+        }
+        setNoteValue(longListData)
+        setNoteValue(meetingListData)
+        setNoteValue(shortListData)
+        return {
+            note
+        }
+    }
+
+    const resumeNoteData = {
+        handleEdit: props.handleSubmitEditNote
+    }
+
     return (
         <Layout {...layout}>
             <LongListGridList
@@ -480,6 +515,8 @@ const LongList = enhance((props) => {
                 shortListData={shortListData}
                 confirmDialog={confirmDialog}
                 resumeDetails={resumeDetails}
+                initialValues={getNotesInitialValues()}
+                resumeNoteData={resumeNoteData}
             />
         </Layout>
     )

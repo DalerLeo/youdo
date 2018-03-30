@@ -63,6 +63,13 @@ export const createCommentSerializer = (resume, data) => {
     }
 }
 
+export const createNoteSerializer = (resume, note) => {
+    return {
+        resume,
+        note
+    }
+}
+
 export const resumePreviewFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')

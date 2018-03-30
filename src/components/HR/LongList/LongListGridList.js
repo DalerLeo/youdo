@@ -7,6 +7,7 @@ import ConfirmDialog from '../../ConfirmDialog'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import Popover from 'material-ui/Popover'
+import FlatButton from 'material-ui/FlatButton'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
@@ -24,6 +25,7 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import AddLongListDialog from './AddLongListDialog'
 import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
+import {TextField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
     BORDER_DARKER,
@@ -46,6 +48,7 @@ import {
 } from '../../../constants/backendConstants'
 import {hashHistory} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
+import {reduxForm, Field} from 'redux-form'
 
 const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
@@ -81,7 +84,7 @@ const enhance = compose(
         },
         header: {
             background: COLOR_WHITE,
-            marginBottom: '30px',
+            margin: '-30px -28px 0 -28px',
             boxShadow: CUSTOM_BOX_SHADOW,
             position: 'relative',
             '& h1': {
@@ -163,20 +166,23 @@ const enhance = compose(
         },
         lists: {
             display: 'flex',
+            margin: '0 -28px',
             height: '100%'
         },
         column: {
-            padding: '0 30px',
-            borderRight: BORDER_DARKER,
             width: 'calc(100% / 3)',
-            '&:first-child': {paddingLeft: '0'},
-            '&:last-child': {paddingRight: '0', border: 'none'},
+            '&:first-child': {
+                '& header': {borderLeft: 'none !important'}
+            },
             '& header': {
+                borderLeft: BORDER_DARKER,
+                borderBottom: BORDER_DARKER,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 height: '30px',
                 marginBottom: '10px',
+                padding: '30px',
                 '& h3': {
                     color: COLOR_DEFAULT,
                     fontSize: '14px',
@@ -212,7 +218,7 @@ const enhance = compose(
             }
         },
         resumeList: {
-
+            padding: '0 30px'
         },
         interviewDay: {
             marginBottom: '40px',
@@ -254,7 +260,6 @@ const enhance = compose(
             background: COLOR_WHITE,
             borderRadius: '2px',
             boxShadow: CUSTOM_BOX_SHADOW,
-            cursor: 'pointer',
             padding: '15px 10px 15px 20px',
             position: 'relative',
             transition: 'all 300ms ease',
@@ -265,14 +270,6 @@ const enhance = compose(
             '&:last-child': {
                 margin: '0'
             }
-        },
-        openResume: {
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '1'
         },
         moreButton: {
             display: 'none',
@@ -317,7 +314,17 @@ const enhance = compose(
         resumeFooter: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
+            position: 'relative'
+        },
+        openResume: {
+            cursor: 'pointer',
+            position: 'absolute',
+            top: '-15px',
+            left: '-20px',
+            right: '-10px',
+            bottom: '-15px',
+            zIndex: '1'
         },
         resumeFullName: {
             color: COLOR_GREY,
@@ -340,6 +347,26 @@ const enhance = compose(
                 marginRight: '10px'
             }
         },
+        note: {
+            marginTop: '15px',
+            paddingTop: '10px',
+            borderTop: BORDER_STYLE,
+            '& h4': {
+                fontWeight: '600',
+                marginBottom: '5px'
+            }
+        },
+        inputField: {
+            color: COLOR_DEFAULT,
+            lineHeight: '20px !important',
+            marginBottom: '-20px',
+            '& textarea': {
+                marginTop: '0 !important'
+            },
+            '& hr': {
+                display: 'none !important'
+            }
+        },
         resumeAge: {
             color: '#a6aebc',
             fontWeight: '600'
@@ -355,11 +382,16 @@ const enhance = compose(
             }
         }
     }),
+    reduxForm({
+        form: 'ResumeItemForm',
+        enableReinitialize: true
+    }),
     withState('showDetails', 'setShowDetails', false),
     withState('anchorEl', 'setAnchorEl', null),
     withState('currentResume', 'setCurrentResume', null),
     withState('currentStatus', 'setCurrentStatus', ''),
     withState('openActionMenu', 'setOpenActionMenu', false),
+    withState('currentNote', 'updateCurrentNote', ''),
 )
 
 const LongListGridList = enhance((props) => {
@@ -384,7 +416,10 @@ const LongListGridList = enhance((props) => {
         showDetails,
         setShowDetails,
         confirmDialog,
-        resumeDetails
+        resumeDetails,
+        currentNote,
+        updateCurrentNote,
+        resumeNoteData
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -438,12 +473,13 @@ const LongListGridList = enhance((props) => {
         return _.map(list, (item) => {
             const id = _.get(item, 'id')
             const fullName = _.get(item, 'fullName')
+            const note = _.get(item, 'note')
             const time = moment(_.get(item, 'dateMeeting')).format('HH:mm')
 
             return (
                 <div key={id} className={classes.resume}>
-                    <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
                     <div className={classes.resumeFooter}>
+                        <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
                         <div className={classes.resumeFullName}>
                             <img src={Person} alt=""/>
                             <div>
@@ -467,6 +503,21 @@ const LongListGridList = enhance((props) => {
                             <MoreIcon/>
                         </div>}
                     </div>
+                    {note &&
+                    <form className={classes.note}>
+                        <h4>{t('Заметки')}</h4>
+                        <Field
+                            name={'note[' + id + ']'}
+                            className={classes.inputField}
+                            component={TextField}
+                            onBlur={(event, value) => { resumeNoteData.handleEdit(id, value, currentNote) }}
+                            onFocus={(event) => { updateCurrentNote(event.target.value) }}
+                            fullWidth
+                            multiLine
+                            rows={1}
+                            rowsMax={6}
+                        />
+                    </form>}
                 </div>
             )
         })
@@ -566,7 +617,7 @@ const LongListGridList = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>}
                         <div className={classes.title}>
-                            <h1>{t('Задание')} №{application} {position}</h1>
+                            <h1>{t('Задание')}: {position}</h1>
                             <h1>{client}</h1>
                             <div className={classes.toggle} onClick={() => { setShowDetails(!showDetails) }}>
                                 {showDetails ? <ArrowUp/> : <ArrowDown/>}
@@ -618,6 +669,10 @@ const LongListGridList = enhance((props) => {
                                     <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.resumeList}>
+                                    <FlatButton
+                                        label={t('Добавить в список')}
+                                        fullWidth
+                                    />
                                     {getResumeItem(longListData.list, HR_RESUME_LONG)}
                                 </div>}
                         </div>

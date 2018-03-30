@@ -635,3 +635,4 @@ export const HR_RESUME_COMMENT = 'hr/comment'
 export const HR_RESUME_COMMENT_CREATE = `/${HR_RESUME_COMMENT}/`
 export const HR_RESUME_COMMENT_LIST = `/${HR_RESUME_COMMENT}/`
 
+export const HR_RESUME_NOTE_CREATE = `/${HR_APPLICATION}/%d/note/`

@@ -207,3 +207,20 @@ export const getResumeComments = (filter) => {
         payload
     }
 }
+
+export const resumeAddNote = (application, resume, value) => {
+    const requestData = serializers.createNoteSerializer(resume, value)
+    const payload = axios()
+        .post(sprintf(API.HR_RESUME_NOTE_CREATE, application), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_NOTE_CREATE,
+        payload
+    }
+}
