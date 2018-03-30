@@ -173,3 +173,37 @@ export const formShortList = (application) => {
         payload
     }
 }
+
+export const addResumeComment = (resume, formValues) => {
+    const requestData = serializers.createCommentSerializer(resume, formValues)
+    const payload = axios()
+        .post(API.HR_RESUME_COMMENT_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_COMMENT_CREATE,
+        payload
+    }
+}
+
+export const getResumeComments = (filter) => {
+    const params = serializers.resumeCommentsSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.HR_RESUME_COMMENT_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_COMMENT_LIST,
+        payload
+    }
+}

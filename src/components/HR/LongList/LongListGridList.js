@@ -9,6 +9,7 @@ import ToolTip from '../../ToolTip'
 import Popover from 'material-ui/Popover'
 import Menu from 'material-ui/Menu'
 import MenuItem from 'material-ui/MenuItem'
+import Divider from 'material-ui/Divider'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
@@ -17,6 +18,9 @@ import Done from 'material-ui/svg-icons/av/playlist-add-check'
 import Time from 'material-ui/svg-icons/device/access-time'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
+import Event from 'material-ui/svg-icons/action/event'
+import AddNote from 'material-ui/svg-icons/editor/mode-edit'
+import Delete from 'material-ui/svg-icons/action/delete'
 import AddLongListDialog from './AddLongListDialog'
 import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
@@ -44,6 +48,7 @@ import {hashHistory} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 
 const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
+const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -128,7 +133,6 @@ const enhance = compose(
                     marginLeft: '0'
                 },
                 '& li': {
-                    color: COLOR_GREY,
                     paddingLeft: '15px',
                     lineHeight: '25px',
                     position: 'relative',
@@ -251,12 +255,12 @@ const enhance = compose(
             borderRadius: '2px',
             boxShadow: CUSTOM_BOX_SHADOW,
             cursor: 'pointer',
-            padding: '15px 20px',
+            padding: '15px 10px 15px 20px',
             position: 'relative',
-            transition: 'all 200ms ease',
+            transition: 'all 300ms ease',
             marginBottom: '3px',
             '&:hover': {
-                boxShadow: CUSTOM_BOX_SHADOW
+                boxShadow: CUSTOM_BOX_SHADOW_HOVER
             },
             '&:last-child': {
                 margin: '0'
@@ -272,11 +276,16 @@ const enhance = compose(
         },
         moreButton: {
             display: 'none',
+            borderRadius: '50%',
             position: 'absolute',
             cursor: 'pointer',
             top: '15px',
             right: '12px',
+            width: '30px',
+            height: '30px',
+            padding: '5px',
             zIndex: '2',
+            transition: 'all 200ms ease',
             '& svg': {
                 height: '20px !important',
                 width: '20px !important',
@@ -337,6 +346,13 @@ const enhance = compose(
         },
         block: {
             display: 'block !important'
+        },
+        popover: {
+            '& svg': {
+                margin: '8px 16px !important',
+                width: '20px !important',
+                height: '20px !important'
+            }
         }
     }),
     withState('showDetails', 'setShowDetails', false),
@@ -407,8 +423,11 @@ const LongListGridList = enhance((props) => {
     const popoverStyle = {
         menuItem: {
             fontSize: '13px',
-            minHeight: '35px',
-            lineHeight: '35px'
+            minHeight: '36px',
+            lineHeight: '36px'
+        },
+        innerDiv: {
+            padding: '0px 16px 0px 60px'
         }
     }
 
@@ -419,24 +438,34 @@ const LongListGridList = enhance((props) => {
         return _.map(list, (item) => {
             const id = _.get(item, 'id')
             const fullName = _.get(item, 'fullName')
+            const time = moment(_.get(item, 'dateMeeting')).format('HH:mm')
 
             return (
                 <div key={id} className={classes.resume}>
-                    <div className={classes.moreButton} style={{display: isCompleted ? 'none' : 'block'}}>
-                        {!isCompleted &&
-                        <MoreIcon onTouchTap={(event) => {
-                            setAnchorEl(event.currentTarget)
-                            setOpenActionMenu(true)
-                            setCurrentStatus(status)
-                            setCurrentResume(id)
-                        }}/>}
-                    </div>
                     <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
                     <div className={classes.resumeFooter}>
                         <div className={classes.resumeFullName}>
                             <img src={Person} alt=""/>
-                            <span>{fullName}</span>
+                            <div>
+                                <div>{fullName}</div>
+                                {status === HR_RESUME_MEETING &&
+                                <div className={classes.interviewTime}><Time/>{time}</div>}
+                            </div>
                         </div>
+                        {!isCompleted &&
+                        <div
+                            className={classes.moreButtonBlock}
+                            onClick={(event) => {
+                                setAnchorEl(event.currentTarget)
+                                setOpenActionMenu(true)
+                                setCurrentStatus(status)
+                                setCurrentResume(id)
+                            }}
+                            style={{
+                                display: isCompleted ? 'none' : 'block',
+                                background: id === currentResume ? '#efefef' : '#fff'}}>
+                            <MoreIcon/>
+                        </div>}
                     </div>
                 </div>
             )
@@ -449,38 +478,10 @@ const LongListGridList = enhance((props) => {
             return moment(dateMeeting).format('YYYY-MM-DD')
         })
         const interviewList = _.map(groupByDate, (item, date) => {
-            const interviewResume = _.map(item, (obj) => {
-                const id = _.get(obj, 'id')
-                const fullName = _.get(obj, 'fullName')
-                const time = moment(_.get(obj, 'dateMeeting')).format('HH:mm')
-                return (
-                    <div key={id} className={classes.resume}>
-                        <div className={classes.resumeFooter}>
-                            <div className={classes.resumeFullName}>
-                                <img src={Person} alt=""/>
-                                <div>
-                                    <div>{fullName}</div>
-                                    <div className={classes.interviewTime}><Time/>{time}</div>
-                                </div>
-                            </div>
-                            <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
-                            <div className={classes.moreButtonBlock} style={{display: isCompleted ? 'none' : 'block'}}>
-                                {!isCompleted &&
-                                <MoreIcon onTouchTap={(event) => {
-                                    setAnchorEl(event.currentTarget)
-                                    setOpenActionMenu(true)
-                                    setCurrentStatus(status)
-                                    setCurrentResume(id)
-                                }}/>}
-                            </div>
-                        </div>
-                    </div>
-                )
-            })
             return (
                 <div key={date} className={classes.interviewDay}>
                     <div className={classes.interviewDate}>{dateFormat(date)}</div>
-                    {interviewResume}
+                    {getResume(item, HR_RESUME_MEETING)}
                 </div>
             )
         })
@@ -490,30 +491,39 @@ const LongListGridList = enhance((props) => {
         return getResume(list, status)
     }
 
+    const handleClickMenuItem = (status) => {
+        moveToDialog.handleOpen(currentResume, status)
+        setCurrentResume(null)
+        return setOpenActionMenu(false)
+    }
+
     const getPopoverMenus = () => {
         switch (currentStatus) {
             case HR_RESUME_LONG: return (
                 <Menu>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_MEETING)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Event/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_MEETING) }}
                         primaryText={t('Назначить собеседование')}/>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Add/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_SHORT) }}
                         primaryText={t('Добавить в шортлист')}/>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<AddNote/>}
+                        primaryText={t('Добавить заметку')}/>
+                    <Divider/>
+                    <MenuItem
+                        style={popoverStyle.menuItem}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Delete/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_REMOVED) }}
                         primaryText={t('Удалить со списка')}/>
                 </Menu>
             )
@@ -521,17 +531,15 @@ const LongListGridList = enhance((props) => {
                 <Menu>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_SHORT)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Add/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_SHORT) }}
                         primaryText={t('Добавить в шортлист')}/>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Delete/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_REMOVED) }}
                         primaryText={t('Удалить со списка')}/>
                 </Menu>
             )
@@ -539,10 +547,9 @@ const LongListGridList = enhance((props) => {
                 <Menu>
                     <MenuItem
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => {
-                            moveToDialog.handleOpen(currentResume, HR_RESUME_REMOVED)
-                            return setOpenActionMenu(false)
-                        }}
+                        innerDivStyle={popoverStyle.innerDiv}
+                        leftIcon={<Delete/>}
+                        onTouchTap={() => { handleClickMenuItem(HR_RESUME_REMOVED) }}
                         primaryText={t('Удалить со списка')}/>
                 </Menu>
             )
@@ -649,10 +656,14 @@ const LongListGridList = enhance((props) => {
             {!_.isNull(getPopoverMenus()) &&
             <Popover
                 open={openActionMenu}
+                className={classes.popover}
                 anchorEl={anchorEl}
-                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}
-                onRequestClose={() => { setOpenActionMenu(false) }}>
+                onRequestClose={() => {
+                    setOpenActionMenu(false)
+                    setCurrentResume(null)
+                }}>
                 {getPopoverMenus()}
             </Popover>}
 
@@ -685,6 +696,10 @@ const LongListGridList = enhance((props) => {
                 data={resumeDetails.data || {}}
                 open={resumeDetails.open}
                 filter={filter}
+                createCommentLoading={resumeDetails.createCommentLoading}
+                handleCreateComment={resumeDetails.handleCreateComment}
+                commentsList={resumeDetails.commentsList}
+                commentsLoading={resumeDetails.commentsLoading}
             />
         </Container>
     )

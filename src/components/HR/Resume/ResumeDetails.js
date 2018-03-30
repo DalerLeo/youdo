@@ -333,7 +333,7 @@ const ResumeDetails = enhance((props) => {
                         })}
                 </div>
             </div>
-            <div className={classes.contactBlock}>
+            <div className={classes.containerBlock}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Образование')}</div>
                     {_.isEmpty(educations)

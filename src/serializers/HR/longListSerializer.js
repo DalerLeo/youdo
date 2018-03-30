@@ -55,6 +55,14 @@ export const resumeListFilterSerializer = (data, application, appStatus) => {
     }
 }
 
+export const createCommentSerializer = (resume, data) => {
+    const comment = _.get(data, 'comment')
+    return {
+        resume,
+        comment
+    }
+}
+
 export const resumePreviewFilterSerializer = (data) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
@@ -77,6 +85,18 @@ export const resumePreviewFilterSerializer = (data) => {
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
         'ordering': ordering && orderingSnakeCase(ordering)
+    }
+}
+
+export const resumeCommentsSerializer = (data) => {
+    const {...defaultData} = data
+    const ordering = _.get(data, 'ordering')
+
+    return {
+        'resume': _.get(defaultData, 'resume'),
+        'page': _.get(defaultData, 'page'),
+        'page_size': _.get(defaultData, 'pageSize') || '20',
+        'ordering': orderingSnakeCase(ordering) || '-created_date'
     }
 }
 

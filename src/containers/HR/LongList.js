@@ -21,7 +21,9 @@ import {
     addToInterviewList,
     addToShortList,
     deleteResume,
-    formShortList
+    formShortList,
+    addResumeComment,
+    getResumeComments
 } from '../../actions/HR/longList'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -75,11 +77,15 @@ const enhance = compose(
         const detailLoading = _.get(state, ['application', 'item', 'loading'])
         const createForm = _.get(state, ['form', 'AddLongListForm'])
         const moveToForm = _.get(state, ['form', 'ResumeMoveForm'])
+        const resumeDetailsForm = _.get(state, ['form', 'ResumeDetailsForm'])
         const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
         const filter = filterHelper([], pathname, query)
         const filterResume = filterHelper(resumePreviewList, pathname, query)
         const resumeDetail = _.get(state, ['resume', 'item', 'data'])
         const resumeDetailLoading = _.get(state, ['resume', 'item', 'loading'])
+        const createCommentLoading = _.get(state, ['longList', 'createComment', 'loading'])
+        const resumeCommentsList = _.get(state, ['longList', 'resumeComments', 'data'])
+        const resumeCommentsLoading = _.get(state, ['longList', 'resumeComments', 'loading'])
 
         return {
             resumePreviewList,
@@ -95,10 +101,14 @@ const enhance = compose(
             createForm,
             filterForm,
             moveToForm,
+            resumeDetailsForm,
             filter,
             filterResume,
             resumeDetail,
-            resumeDetailLoading
+            resumeDetailLoading,
+            createCommentLoading,
+            resumeCommentsList,
+            resumeCommentsLoading
         }
     }),
 
@@ -144,10 +154,11 @@ const enhance = compose(
          const nextResume = _.toInteger(_.get(nextProps, ['location', 'query', 'resume']))
          const nextDialog = toBoolean(_.get(nextProps, ['location', 'query', OPEN_MOVE_TO_DIALOG]))
          return resume !== nextResume && nextResume && !nextDialog
-     }, ({dispatch, location: {query}}) => {
+     }, ({dispatch, location: {query}, filter}) => {
          const resume = _.toInteger(_.get(query, ['resume']))
          if (resume > ZERO) {
              dispatch(resumeItemFetchAction(resume))
+             dispatch(getResumeComments(filter))
          }
      }),
 
@@ -310,6 +321,19 @@ const enhance = compose(
                     setOpenConfirmDialog(false)
                     return dispatch(openSnackbarAction({message: t('Шортлист успешно сформирован')}))
                 })
+        },
+
+        handleSubmitResumeComment: props => () => {
+            const {dispatch, resumeDetailsForm, location: {query}, filter} = props
+            const resume = _.toInteger(_.get(query, 'resume'))
+            return dispatch(addResumeComment(resume, _.get(resumeDetailsForm, ['values'])))
+                .then(() => {
+                    dispatch(reset('ResumeDetailsForm'))
+                    return dispatch(openSnackbarAction({message: t('Комментарий успешно добавлен')}))
+                })
+                .then(() => {
+                    dispatch(getResumeComments(filter))
+                })
         }
     })
 )
@@ -330,6 +354,9 @@ const LongList = enhance((props) => {
         createLoading,
         resumeDetail,
         resumeDetailLoading,
+        createCommentLoading,
+        resumeCommentsList,
+        resumeCommentsLoading,
         filter,
         layout,
         params
@@ -433,7 +460,11 @@ const LongList = enhance((props) => {
     const resumeDetails = {
         open: openResumeDialog,
         data: resumeDetail,
-        loading: resumeDetailLoading
+        loading: resumeDetailLoading,
+        createCommentLoading,
+        handleCreateComment: props.handleSubmitResumeComment,
+        commentsList: _.get(resumeCommentsList, 'results'),
+        commentsLoading: resumeCommentsLoading
     }
 
     return (

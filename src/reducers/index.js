@@ -551,7 +551,9 @@ const rootReducer = combineReducers({
         resumePreview: createThunkReducer(actionTypes.HR_RESUME_PREVIEW_LIST),
         longList: createThunkReducer(actionTypes.HR_LONG_LIST),
         interviewList: createThunkReducer(actionTypes.HR_INTERVIEW_LIST),
-        shortList: createThunkReducer(actionTypes.HR_SHORT_LIST)
+        shortList: createThunkReducer(actionTypes.HR_SHORT_LIST),
+        createComment: createThunkReducer(actionTypes.HR_RESUME_COMMENT_CREATE),
+        resumeComments: createThunkReducer(actionTypes.HR_RESUME_COMMENT_LIST)
     }),
     // HR!
 

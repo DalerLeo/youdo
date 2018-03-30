@@ -631,3 +631,7 @@ export const HR_RESUME_MOVE = `/${HR_APPLICATION}/change_status_of_resume/`
 export const HR_RESUME_REMOVE = `/${HR_APPLICATION}/%d/remove_from_app/`
 export const HR_FORM_SHORT_LIST = `/${HR_APPLICATION}/%d/close/`
 
+export const HR_RESUME_COMMENT = 'hr/comment'
+export const HR_RESUME_COMMENT_CREATE = `/${HR_RESUME_COMMENT}/`
+export const HR_RESUME_COMMENT_LIST = `/${HR_RESUME_COMMENT}/`
+
