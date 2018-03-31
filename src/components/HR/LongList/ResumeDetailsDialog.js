@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
@@ -11,7 +13,7 @@ import ResumeDetails from '../Resume/ResumeDetails'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {
     BORDER_STYLE,
-    COLOR_DEFAULT,
+    COLOR_DEFAULT, COLOR_GREY,
     COLOR_GREY_LIGHTEN,
     COLOR_WHITE,
     LINK_COLOR,
@@ -63,6 +65,7 @@ const enhance = compose(
         titleContent: {
             background: COLOR_WHITE,
             color: COLOR_DEFAULT,
+            fontSize: '15px',
             fontWeight: 'bold',
             textTransform: 'uppercase',
             display: 'flex',
@@ -77,22 +80,27 @@ const enhance = compose(
             display: 'flex'
         },
         details: {
-            width: '700px',
+            width: '100%',
             '& > div > div:first-child': {
                 display: 'none'
+            },
+            '& > div > div:last-child': {
+                width: 'auto'
             }
         },
         position: {
-            color: COLOR_GREY_LIGHTEN,
-            fontSize: '12px',
+            color: COLOR_GREY,
+            fontSize: '13px',
             fontWeight: '600',
             textTransform: 'none'
         },
         comments: {
+            position: 'fixed',
+            right: '-315px',
+            top: '0',
+            bottom: '0',
             borderLeft: BORDER_STYLE,
-            maxHeight: '600px',
-            width: 'calc(100% - 700px)',
-            overflowY: 'auto'
+            width: '300px'
         },
         block: {
             padding: PADDING_STANDART
@@ -120,21 +128,46 @@ const enhance = compose(
                 paddingBottom: '0',
                 borderBottom: 'none'
             },
-            '& h2': {
-                fontSize: '13px',
-                fontWeight: '600',
-                marginBottom: '5px'
+            '& header': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '5px',
+                '& h2': {
+                    fontSize: '13px',
+                    fontWeight: '600'
+                },
+                '& span': {
+                    color: COLOR_GREY_LIGHTEN,
+                    display: 'block',
+                    textAlign: 'right',
+                    fontSize: '11px'
+                }
             },
             '& div': {
                 lineHeight: '1.5',
                 whiteSpace: 'pre-wrap'
-            },
-            '& span': {
-                color: COLOR_GREY_LIGHTEN,
-                display: 'block',
-                textAlign: 'right',
-                fontSize: '11px',
-                marginTop: '10px'
+            }
+        },
+        tab: {
+            height: '100%',
+            '& button': {
+                borderRight: BORDER_STYLE + '!important',
+                '&:last-child': {
+                    borderRight: 'none !important'
+                }
+            }
+        },
+        tabContainer: {
+            height: 'calc(100% - 49px)',
+            overflowY: 'auto'
+        },
+        questions: {
+            padding: PADDING_STANDART
+        },
+        question: {
+            '& > span': {
+                fontWeight: '600'
             }
         }
     }),
@@ -179,12 +212,26 @@ const ResumeDetailsDialog = enhance((props) => {
         }
     }
 
+    const tabStyle = {
+        button: {
+            textTransform: 'none'
+        },
+        ink: {
+            background: COLOR_WHITE,
+            marginTop: '-1px',
+            height: '1px'
+        },
+        tabItem: {
+            borderBottom: BORDER_STYLE
+        }
+    }
+
     return (
         <Dialog
             modal={true}
             open={open}
             className={classes.dialog}
-            contentStyle={{width: '1000px', maxWidth: 'none'}}
+            contentStyle={{width: '800px', marginLeft: 'calc(50% - 558px)', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
@@ -206,63 +253,97 @@ const ResumeDetailsDialog = enhance((props) => {
                                 data={data}
                                 loading={loading}/>
                         </div>
-                        <div className={classes.comments}>
-                            <form className={classes.block}>
-                                <div className={classes.innerTitle}>{t('Комментарии')}</div>
-                                {openAddComment && !createCommentLoading &&
-                                <div>
-                                    <Field
-                                        name={'comment'}
-                                        component={TextField}
-                                        className={classes.textFieldArea}
-                                        hintStyle={{bottom: 'auto', top: '12px'}}
-                                        fullWidth
-                                        multiLine
-                                        rows={2}
-                                        rowsMax={4}/>
-                                    <FlatButton
-                                        label={'Сохранить'}
-                                        labelStyle={flatButtonStyle.label}
-                                        backgroundColor={LINK_COLOR}
-                                        fullWidth={true}
-                                        hoverColor={LINK_COLOR}
-                                        rippleColor={COLOR_WHITE}
-                                        onClick={submitComment}/>
-                                </div>}
-                                {createCommentLoading &&
-                                <div className={classes.staticLoader}>
-                                    <Loader size={0.75}/>
-                                </div>}
-                                {!openAddComment &&
-                                <FlatButton
-                                    label={'Добавить'}
-                                    labelStyle={flatButtonStyle.label}
-                                    backgroundColor={LINK_COLOR}
-                                    fullWidth={true}
-                                    hoverColor={LINK_COLOR}
-                                    rippleColor={COLOR_WHITE}
-                                    onClick={() => { setOpenAddComment(true) }}/>}
-                                <div className={classes.commentsList}>
-                                    {commentsLoading
-                                        ? <div className={classes.staticLoader}>
+                        <Paper zDepth={4} className={classes.comments}>
+                            <Tabs
+                                inkBarStyle={tabStyle.ink}
+                                tabItemContainerStyle={tabStyle.tabItem}
+                                className={classes.tab}
+                                contentContainerClassName={classes.tabContainer}>
+                                <Tab label={t('Комментарии')} buttonStyle={tabStyle.button} disableTouchRipple>
+                                    <form className={classes.block}>
+                                        {openAddComment && !createCommentLoading &&
+                                        <div>
+                                            <Field
+                                                name={'comment'}
+                                                component={TextField}
+                                                className={classes.textFieldArea}
+                                                hintText={t('Комментарий') + '...'}
+                                                hintStyle={{bottom: 'auto', top: '12px'}}
+                                                fullWidth
+                                                multiLine
+                                                rows={2}
+                                                rowsMax={4}/>
+                                            <FlatButton
+                                                label={'Сохранить'}
+                                                labelStyle={flatButtonStyle.label}
+                                                backgroundColor={LINK_COLOR}
+                                                fullWidth={true}
+                                                hoverColor={LINK_COLOR}
+                                                rippleColor={COLOR_WHITE}
+                                                onClick={submitComment}/>
+                                        </div>}
+                                        {createCommentLoading &&
+                                        <div className={classes.staticLoader}>
                                             <Loader size={0.75}/>
-                                        </div>
-                                        : _.map(commentsList, (item) => {
-                                            const id = _.get(item, 'id')
-                                            const comment = _.get(item, 'comment')
-                                            const createdDate = dateFormat(_.get(item, 'createdDate'), true)
-                                            const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                                            return (
-                                                <div key={id} className={classes.comment}>
-                                                    <h2>{user}</h2>
-                                                    <div>{comment}</div>
-                                                    <span>{createdDate}</span>
+                                        </div>}
+                                        {!openAddComment &&
+                                        <FlatButton
+                                            label={'Добавить'}
+                                            labelStyle={flatButtonStyle.label}
+                                            backgroundColor={LINK_COLOR}
+                                            fullWidth={true}
+                                            hoverColor={LINK_COLOR}
+                                            rippleColor={COLOR_WHITE}
+                                            onClick={() => {
+                                                setOpenAddComment(true)
+                                            }}/>}
+                                        <div className={classes.commentsList}>
+                                            {commentsLoading
+                                                ? <div className={classes.staticLoader}>
+                                                    <Loader size={0.75}/>
                                                 </div>
+                                                : _.map(commentsList, (item) => {
+                                                    const id = _.get(item, 'id')
+                                                    const comment = _.get(item, 'comment')
+                                                    const createdDate = dateFormat(_.get(item, 'createdDate'))
+                                                    const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                                                    return (
+                                                        <div key={id} className={classes.comment}>
+                                                            <header>
+                                                                <h2>{user}</h2>
+                                                                <span>{createdDate}</span>
+                                                            </header>
+                                                            <div>{comment}</div>
+                                                        </div>
+                                                    )
+                                                })}
+                                        </div>
+                                    </form>
+                                </Tab>
+                                <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
+                                    <ul className={classes.questions}>
+                                        {_.map(_.range(Number('5')), (item, index) => {
+                                            const ONE = 1
+                                            const count = index + ONE
+                                            return (
+                                                <li key={item} className={classes.question}>
+                                                    <span>{count}. Lorem ipsum dolor sit.</span>
+                                                    <Field
+                                                        name={'questions[' + item + '][answer]'}
+                                                        component={TextField}
+                                                        className={classes.textFieldArea}
+                                                        fullWidth
+                                                        multiLine
+                                                        rows={2}
+                                                        rowsMax={4}
+                                                    />
+                                                </li>
                                             )
                                         })}
-                                </div>
-                            </form>
-                        </div>
+                                    </ul>
+                                </Tab>
+                            </Tabs>
+                        </Paper>
                     </div>
                 </div>
             </div>

@@ -14,30 +14,33 @@ import Divider from 'material-ui/Divider'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
-import Add from 'material-ui/svg-icons/av/playlist-add'
+import AddToList from 'material-ui/svg-icons/av/playlist-add'
+import AddContent from 'material-ui/svg-icons/content/add'
 import Done from 'material-ui/svg-icons/av/playlist-add-check'
-import Time from 'material-ui/svg-icons/device/access-time'
+import Assignment from 'material-ui/svg-icons/action/assignment'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import Event from 'material-ui/svg-icons/action/event'
 import AddNote from 'material-ui/svg-icons/editor/mode-edit'
 import Delete from 'material-ui/svg-icons/action/delete'
+import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import AddLongListDialog from './AddLongListDialog'
 import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
 import {TextField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
-    BORDER_DARKER,
     BORDER_STYLE,
+    COLOR_BLUE_GREY,
+    COLOR_BLUE_LOGO,
     COLOR_DEFAULT,
-    COLOR_GREY, COLOR_GREY_LIGHTEN,
+    COLOR_GREY,
+    COLOR_GREY_LIGHTEN,
     COLOR_WHITE,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
-import Person from '../../Images/person.png'
 import {
     APPLICATION_COMPLETED,
     HR_RESUME_LONG,
@@ -170,55 +173,67 @@ const enhance = compose(
             height: '100%'
         },
         column: {
+            padding: '15px 15px 20px',
             width: 'calc(100% / 3)',
-            '&:first-child': {
-                '& header': {borderLeft: 'none !important'}
+            '&:first-child': {paddingLeft: '30px'},
+            '&:last-child': {paddingRight: '30px'},
+            '&:nth-child(even)': {
+                background: '#f2f5f8'
             },
             '& header': {
-                borderLeft: BORDER_DARKER,
-                borderBottom: BORDER_DARKER,
+                background: COLOR_BLUE_LOGO,
+                borderRadius: '2px',
+                color: COLOR_WHITE,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                height: '30px',
+                height: '60px',
                 marginBottom: '10px',
-                padding: '30px',
+                padding: '0 30px',
                 '& h3': {
-                    color: COLOR_DEFAULT,
                     fontSize: '14px',
-                    fontWeight: '600',
-                    whiteSpace: 'nowrap',
-                    '& .count': {
-                        background: '#eceff2',
-                        padding: '3px 7px',
-                        marginLeft: '5px',
-                        borderRadius: '20px'
-                    }
+                    fontWeight: '700',
+                    whiteSpace: 'nowrap'
                 }
+            }
+        },
+        countWrapper: {
+            display: 'flex'
+        },
+        count: {
+            display: 'block',
+            fontWeight: 'normal',
+            marginRight: '5px',
+            '&:after': {
+                content: '"|"',
+                margin: '0 3px'
+            },
+            '&:last-child:after': {
+                display: 'none'
+            }
+        },
+        countClickable: {
+            extend: 'count',
+            cursor: 'pointer',
+            '&:hover': {
+                textDecoration: 'underline'
             }
         },
         add: {
-            background: '#eceff2',
             cursor: 'pointer',
-            height: '26px',
-            width: '36px',
-            padding: '3px 8px',
+            height: '34px',
+            marginRight: '-15px',
+            padding: '0px 5px',
             borderRadius: '4px',
             transition: 'all 200ms ease',
             '& svg': {
-                height: '20px !important',
-                width: '20px !important',
-                color: '#5d6474 !important'
-            },
-            '&:hover': {
-                background: '#e7e8ea',
-                '& svg': {
-                    opacity: '1'
-                }
+                height: '34px !important',
+                width: '34px !important',
+                color: '#f2f5f8 !important'
             }
         },
         resumeList: {
-            padding: '0 30px'
+
         },
         interviewDay: {
             marginBottom: '40px',
@@ -235,18 +250,16 @@ const enhance = compose(
             marginBottom: '10px'
         },
         interviewTime: {
-            color: COLOR_GREY_LIGHTEN,
-            fontSize: '12px',
-            fontWeight: '600',
+            color: COLOR_WHITE,
             display: 'flex',
+            fontSize: '14px',
+            margin: '-10px -12px',
+            padding: '6px 15px',
+            fontWeight: '700',
             alignItems: 'center',
-            marginTop: '3px',
-            '& svg': {
-                color: COLOR_GREY_LIGHTEN + '!important',
-                marginRight: '3px',
-                width: '16px !important',
-                height: '16px !important'
-            }
+            justifyContent: 'center',
+            background: COLOR_BLUE_GREY,
+            borderRadius: '4px'
         },
         resumeWrapper: {
             display: 'flex',
@@ -260,7 +273,7 @@ const enhance = compose(
             background: COLOR_WHITE,
             borderRadius: '2px',
             boxShadow: CUSTOM_BOX_SHADOW,
-            padding: '15px 10px 15px 20px',
+            padding: '15px 20px',
             position: 'relative',
             transition: 'all 300ms ease',
             marginBottom: '3px',
@@ -270,6 +283,11 @@ const enhance = compose(
             '&:last-child': {
                 margin: '0'
             }
+        },
+        createdDate: {
+            color: COLOR_GREY_LIGHTEN,
+            fontSize: '12px',
+            fontWeight: '600'
         },
         moreButton: {
             display: 'none',
@@ -322,9 +340,14 @@ const enhance = compose(
             position: 'absolute',
             top: '-15px',
             left: '-20px',
-            right: '-10px',
+            right: '-20px',
             bottom: '-15px',
             zIndex: '1'
+        },
+        openResumeInterview: {
+            extend: 'openResume',
+            left: '-15px',
+            right: '-20px'
         },
         resumeFullName: {
             color: COLOR_GREY,
@@ -349,17 +372,32 @@ const enhance = compose(
         },
         note: {
             marginTop: '15px',
-            paddingTop: '10px',
-            borderTop: BORDER_STYLE,
-            '& h4': {
-                fontWeight: '600',
-                marginBottom: '5px'
+            display: 'flex',
+            '& svg': {
+                color: COLOR_GREY_LIGHTEN + '!important',
+                marginTop: '5px',
+                width: '22px !important',
+                height: '22px !important',
+                minWidth: '22px'
             }
         },
         inputField: {
             color: COLOR_DEFAULT,
+            marginLeft: '10px',
             lineHeight: '20px !important',
-            marginBottom: '-20px',
+            background: '#f9f9f9 !important',
+            borderRadius: '6px',
+            padding: '10px 12px',
+            position: 'relative',
+            '&:after': {
+                content: '""',
+                position: 'absolute',
+                left: '-9px',
+                top: '6px',
+                borderRight: '10px #f9f9f9 solid',
+                borderTop: '10px transparent solid',
+                borderBottom: '10px transparent solid'
+            },
             '& textarea': {
                 marginTop: '0 !important'
             },
@@ -466,6 +504,25 @@ const LongListGridList = enhance((props) => {
         }
     }
 
+    const flatButtonStyle = {
+        background: '#dadada',
+        button: {
+            marginBottom: '10px'
+        },
+        label: {
+            color: COLOR_DEFAULT,
+            textTransform: 'none',
+            verticalAlign: 'baseline',
+            fontWeight: '600'
+        },
+        icon: {
+            fill: COLOR_DEFAULT,
+            width: '20px',
+            height: '20px',
+            verticalAlign: 'text-top'
+        }
+    }
+
     const resumeLink = (id) => {
         return hashHistory.push(filter.createURL({resume: id}))
     }
@@ -475,20 +532,20 @@ const LongListGridList = enhance((props) => {
             const fullName = _.get(item, 'fullName')
             const note = _.get(item, 'note')
             const time = moment(_.get(item, 'dateMeeting')).format('HH:mm')
+            const createdDate = dateFormat(_.get(item, 'createdDate'))
+            const isInterview = status === HR_RESUME_MEETING
 
             return (
-                <div key={id} className={classes.resume}>
+                <div key={id} className={classes.resume} style={{paddingLeft: isInterview ? '15px' : 'auto'}}>
                     <div className={classes.resumeFooter}>
-                        <div className={classes.openResume} onClick={() => { resumeLink(id) }}/>
+                        <div className={isInterview ? classes.openResumeInterview : classes.openResume} onClick={() => { resumeLink(id) }}/>
                         <div className={classes.resumeFullName}>
-                            <img src={Person} alt=""/>
-                            <div>
-                                <div>{fullName}</div>
-                                {status === HR_RESUME_MEETING &&
-                                <div className={classes.interviewTime}><Time/>{time}</div>}
-                            </div>
+                            <div>{fullName}</div>
                         </div>
-                        {!isCompleted &&
+                        {isInterview
+                            ? <div className={classes.interviewTime}>{time}</div>
+                            : <div className={classes.createdDate}>{createdDate}</div>}
+                        {!isCompleted && false &&
                         <div
                             className={classes.moreButtonBlock}
                             onClick={(event) => {
@@ -505,7 +562,7 @@ const LongListGridList = enhance((props) => {
                     </div>
                     {note &&
                     <form className={classes.note}>
-                        <h4>{t('Заметки')}</h4>
+                        <ChatBubble/>
                         <Field
                             name={'note[' + id + ']'}
                             className={classes.inputField}
@@ -561,7 +618,7 @@ const LongListGridList = enhance((props) => {
                     <MenuItem
                         style={popoverStyle.menuItem}
                         innerDivStyle={popoverStyle.innerDiv}
-                        leftIcon={<Add/>}
+                        leftIcon={<AddToList/>}
                         onTouchTap={() => { handleClickMenuItem(HR_RESUME_SHORT) }}
                         primaryText={t('Добавить в шортлист')}/>
                     <MenuItem
@@ -583,7 +640,7 @@ const LongListGridList = enhance((props) => {
                     <MenuItem
                         style={popoverStyle.menuItem}
                         innerDivStyle={popoverStyle.innerDiv}
-                        leftIcon={<Add/>}
+                        leftIcon={<AddToList/>}
                         onTouchTap={() => { handleClickMenuItem(HR_RESUME_SHORT) }}
                         primaryText={t('Добавить в шортлист')}/>
                     <MenuItem
@@ -658,11 +715,12 @@ const LongListGridList = enhance((props) => {
                     <div className={classes.lists}>
                         <div className={classes.column}>
                             <header>
-                                <h3>{t('Лонглист')} {longListData.count > ZERO && <span className={'count'}>{longListData.count}</span>}</h3>
-                                {!isCompleted &&
-                                <ToolTip text={t('Добавить в лонглист')} position={'left'}>
-                                    <div className={classes.add} onClick={() => { addDialog.handleOpen(uri) }}><Add/></div>
-                                </ToolTip>}
+                                <div>
+                                    <h3>{t('Лонглист')}</h3>
+                                    <div className={classes.countWrapper}>
+                                        {longListData.count > ZERO && <span className={classes.count}>{longListData.count} {t('чел.')}</span>}
+                                    </div>
+                                </div>
                             </header>
                             {longListData.loading
                                 ? <div className={classes.loader}>
@@ -671,14 +729,30 @@ const LongListGridList = enhance((props) => {
                                 : <div className={classes.resumeList}>
                                     <FlatButton
                                         label={t('Добавить в список')}
+                                        labelStyle={flatButtonStyle.label}
+                                        icon={<AddContent style={flatButtonStyle.icon}/>}
+                                        style={flatButtonStyle.button}
+                                        backgroundColor={flatButtonStyle.background}
+                                        hoverColor={flatButtonStyle.background}
+                                        rippleColor={COLOR_WHITE}
                                         fullWidth
+                                        onClick={() => { addDialog.handleOpen(uri) }}
                                     />
                                     {getResumeItem(longListData.list, HR_RESUME_LONG)}
                                 </div>}
                         </div>
                         <div className={classes.column}>
                             <header>
-                                <h3>{t('Собеседования')} {meetingListData.count > ZERO && <span className={'count'}>{meetingListData.count}</span>}</h3>
+                                <div>
+                                    <h3>{t('Собеседования')}</h3>
+                                    <div className={classes.countWrapper}>
+                                        <span className={classes.countClickable}>2 заверш.</span>
+                                        <span className={classes.countClickable}>5 незаверш.</span>
+                                    </div>
+                                </div>
+                                <ToolTip text={t('Вопросник')} position={'left'}>
+                                    <div className={classes.add} onClick={() => { addDialog.handleOpen(uri) }}><Assignment/></div>
+                                </ToolTip>
                             </header>
                             {meetingListData.loading
                                 ? <div className={classes.loader}>
@@ -690,17 +764,30 @@ const LongListGridList = enhance((props) => {
                         </div>
                         <div className={classes.column}>
                             <header>
-                                <h3>{t('Шортлист')} {shortListData.count > ZERO && <span className={'count'}>{shortListData.count}</span>}</h3>
-                                {shortListData.count > ZERO && !isCompleted &&
-                                <ToolTip text={t('Сформировать шортлист')} position={'left'}>
-                                    <div className={classes.add} onClick={confirmDialog.handleOpen}><Done/></div>
-                                </ToolTip>}
+                                <div>
+                                    <h3>{t('Шортлист')}</h3>
+                                    <div className={classes.countWrapper}>
+                                        {shortListData.count > ZERO && <span className={classes.count}>{shortListData.count} {t('чел.')}</span>}
+                                    </div>
+                                </div>
                             </header>
                             {shortListData.loading
                                 ? <div className={classes.loader}>
                                     <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.resumeList}>
+                                    {shortListData.count > ZERO &&
+                                    <FlatButton
+                                        label={isCompleted ? t('Отчет') : t('Сформировать отчет')}
+                                        labelStyle={flatButtonStyle.label}
+                                        icon={<Done style={flatButtonStyle.icon}/>}
+                                        style={flatButtonStyle.button}
+                                        backgroundColor={flatButtonStyle.background}
+                                        hoverColor={flatButtonStyle.background}
+                                        rippleColor={COLOR_WHITE}
+                                        fullWidth
+                                        onClick={confirmDialog.handleOpen}
+                                    />}
                                     {getResumeItem(shortListData.list, HR_RESUME_SHORT)}
                                 </div>}
                         </div>

@@ -79,10 +79,15 @@ const enhance = compose(
         block: {
             padding: PADDING_STANDART
         },
+        innerBlock: {
+            marginBottom: '20px'
+        },
         info: {
-            '& > div': {
-                marginBottom: '10px',
-                lineHeight: '1.5',
+            display: 'flex',
+            '& > ul': {
+                marginRight: '40px',
+                lineHeight: '22px',
+                minWidth: '160px',
                 '&:last-child': {
                     margin: '0'
                 }
@@ -93,18 +98,18 @@ const enhance = compose(
             justifyContent: 'space-between',
             flexWrap: 'wrap'
         },
+        skills: {
+            display: 'flex',
+            flexWrap: 'wrap'
+        },
         skill: {
-            fontWeight: '600',
-            marginLeft: '5px',
-            '& strong': {
-                color: COLOR_GREY_LIGHTEN
-            },
-            '&:after': {
-                content: '","'
-            },
-            '&:last-child:after': {
-                display: 'none'
-            }
+            margin: '0 8px 8px 0',
+            padding: '3px 10px',
+            background: '#e8e8e8'
+        },
+        lang: {
+            listStyle: 'disc inside',
+            lineHeight: '25px'
         },
         titleLabel: {
             fontSize: '18px',
@@ -134,44 +139,31 @@ const enhance = compose(
             zIndex: '1'
         },
         experience: {
-            display: 'flex',
             marginBottom: '15px',
             paddingBottom: '15px',
             borderBottom: BORDER_STYLE,
             '&:last-child': {
-                padding: '0',
-                margin: '0',
-                border: 'none'
+                marginBottom: '0',
+                paddingBottom: '0',
+                borderBottom: 'none'
             }
         },
-        expDates: {
-            width: '250px'
-        },
-        expInfo: {
-            width: 'calc(100% - 250px)'
-        },
-        expOrganization: {
-            fontWeight: '600',
+        condition: {
             marginBottom: '10px',
-            '& strong': {
-                color: COLOR_GREY_LIGHTEN,
-                marginRight: '5px',
-                '&:after': {
-                    content: '":"'
-                }
-            }
-        },
-        expResponsibility: {
+            '&:last-child': {
+                marginBottom: '0'
+            },
             '& h4': {
-                fontWeight: '600',
-                marginBottom: '5px'
+                fontWeight: '600'
             }
         },
-        education: {extend: 'experience'},
-        eduDates: {extend: 'expDates'},
-        eduInfo: {extend: 'expInfo'},
-        eduInstitution: {extend: 'expOrganization'},
-        eduSpeciality: {extend: 'expResponsibility'}
+        overflowText: {
+            display: '-webkit-box',
+            WebkitLineClamp: '3',
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+        }
     }),
     withState('openDetails', 'setOpenDetails', false)
 )
@@ -234,7 +226,8 @@ const ResumeDetails = enhance((props) => {
     const educations = _.get(data, 'educations')
 
     const languagesLevel = _.get(data, 'languages')
-    const hobby = _.get(data, 'hobby') || t('Не указан')
+    const levelPc = _.get(data, 'levelPc')
+    const hobby = _.get(data, 'hobby') || t('Не указано')
     const driverLicense = _.join(_.map(_.get(data, 'driverLicense'), item => {
         return _.get(item, 'name')
     }), ', ') || t('нет водительских прав')
@@ -246,6 +239,16 @@ const ResumeDetails = enhance((props) => {
             </div>
         )
     }
+
+    const skills = _.isEmpty(_.get(data, 'skills'))
+        ? <span> {t('Не указаны')}</span>
+        : _.map(_.get(data, 'skills'), (item) => {
+            const id = _.get(item, 'id')
+            const name = _.get(item, 'name')
+            return (
+                <span key={id} className={classes.skill}>{name}</span>
+            )
+        })
 
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
@@ -275,92 +278,130 @@ const ResumeDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Личные данные')}</div>
-                    <div className={classes.info}>
-                        <div>{t('Дата рождения')}: <strong>{dateOfBirth}</strong></div>
-                        <div>{t('Пол')}: <strong className={classes.lowercase}>{genderFormat[sex]}</strong></div>
-                        <div>{t('Семейное положение')}: <strong className={classes.lowercase}>{familyStatusText(sex, familyStatus)}</strong></div>
-                        <div>{t('Адрес')}: <strong>{address}</strong></div>
-                        <div>{t('Телефон')}: <strong>{phone}</strong></div>
-                        <div>{t('Email')}: <strong>{email}</strong></div>
-                        <div>{t('Страна проживания')}: {(country && city) ? <strong>{country}, {city}</strong> : <strong>{t('Не указана')}</strong>}</div>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Личные данные')}</div>
+                        <div className={classes.info}>
+                            <ul>
+                                <li>{t('Дата рождения')}:</li>
+                                <li>{t('Пол')}:</li>
+                                <li>{t('Семейное положение')}:</li>
+                                <li>{t('Адрес')}:</li>
+                                <li>{t('Телефон')}:</li>
+                                <li>{t('Email')}:</li>
+                                <li>{t('Страна проживания')}:</li>
+                            </ul>
+                            <ul>
+                                <li>{dateOfBirth}}</li>
+                                <li><span className={classes.lowercase}>{genderFormat[sex]}</span></li>
+                                <li><span className={classes.lowercase}>{familyStatusText(sex, familyStatus)}</span></li>
+                                <li>{address}</li>
+                                <li>{phone}</li>
+                                <li>{email}</li>
+                                <li>{(country && city) ? <span>{country}, {city}</span> : <span>{t('Не указана')}</span>}</li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Навыки и умения')}</div>
-                    <div className={classes.info}>
-                        <div>{t('Знание языков')}:
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Навыки и умения')}</div>
+                        <div className={classes.skills}>{skills}</div>
+                    </div>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Знание языков')}</div>
+                        <ul>
                             {_.map(languagesLevel, (item) => {
                                 const id = _.get(item, ['id'])
                                 const name = _.get(item, ['language', 'name'])
                                 const level = _.get(item, ['level', 'name'])
-                                return <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>{level && <span>({level})</span>}</strong></span>
+                                return <li key={id} className={classes.lang}>{name} {level && <span className={classes.lowercase}>({level})</span>}</li>
                             })}
+                        </ul>
+                    </div>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Дополнительная информация')}</div>
+                        <div className={classes.info}>
+                            <ul>
+                                <li>{t('Водительские права')}:</li>
+                                <li>{t('Уровень владения ПК')}:</li>
+                            </ul>
+                            <ul>
+                                <li>{driverLicense}</li>
+                                <li>{levelPc}</li>
+                            </ul>
                         </div>
-                        <div>{t('Водительские права')}: <strong>{driverLicense}</strong></div>
-                        <div>{t('Уровень владения ПК')}: <strong>{}</strong></div>
-                        <div>{t('Интересы и хобби')}: <strong>{hobby}</strong></div>
+                    </div>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Интересы и хобби')}</div>
+                        <div>{hobby}</div>
                     </div>
                 </div>
-            </div>
-            <div className={classes.containerBlock}>
                 <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Опыт работы')}</div>
-                    {_.isEmpty(experiences)
-                        ? t('Нет опыта работы')
-                        : _.map(experiences, (item, index) => {
-                            const workStart = dateFormat(_.get(item, 'workStart'))
-                            const workTillNow = _.get(item, 'workTillNow')
-                            const workEnd = workTillNow
-                                ? t('По сегодняшний день')
-                                : dateFormat(_.get(item, 'workEnd'))
-                            const organization = _.get(item, 'organization')
-                            const expPosition = _.get(item, ['position', 'name'])
-                            const responsibility = _.get(item, 'responsibility')
-                            return (
-                                <div key={index} className={classes.experience}>
-                                    <div className={classes.expDates}>{workStart} - {workEnd}</div>
-                                    <div className={classes.expInfo}>
-                                        <div className={classes.expOrganization}>
-                                            <strong>{t('Организация')}</strong>{organization}</div>
-                                        <div className={classes.expResponsibility}>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Опыт работы')}</div>
+                        {_.isEmpty(experiences)
+                            ? t('Нет опыта работы')
+                            : _.map(experiences, (item, index) => {
+                                const workStart = dateFormat(_.get(item, 'workStart'))
+                                const workTillNow = _.get(item, 'workTillNow')
+                                const workEnd = workTillNow
+                                    ? t('По сегодняшний день')
+                                    : dateFormat(_.get(item, 'workEnd'))
+                                const organization = _.get(item, 'organization')
+                                const expPosition = _.get(item, ['position', 'name'])
+                                const responsibility = _.get(item, 'responsibility')
+                                return (
+                                    <div key={index} className={classes.experience}>
+                                        <div className={classes.condition}>
+                                            <h4>{organization}</h4>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <h4>{workStart} - {workEnd}</h4>
+                                        </div>
+                                        <div className={classes.condition}>
                                             <h4>{expPosition}</h4>
-                                            <div>{responsibility}</div>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <h4>{t('Должностные обязанности')}</h4>
+                                            <div className={classes.overflowText}>{responsibility}</div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })}
-                </div>
-            </div>
-            <div className={classes.containerBlock}>
-                <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Образование')}</div>
-                    {_.isEmpty(educations)
-                        ? t('Нет образования')
-                        : _.map(educations, (item, index) => {
-                            const studyStart = dateFormat(_.get(item, 'studyStart'))
-                            const studyTillNow = _.get(item, 'studyTillNow')
-                            const studyEnd = studyTillNow
-                                ? t('По сегодняшний день')
-                                : dateFormat(_.get(item, 'studyEnd'))
-                            const institution = _.get(item, 'institution')
-                            const speciality = _.get(item, 'speciality')
-                            const eduCountry = _.get(item, ['country', 'name'])
-                            const eduCity = _.get(item, ['city', 'name'])
-                            return (
-                                <div key={index} className={classes.education}>
-                                    <div className={classes.eduDates}>{studyStart} - {studyEnd}</div>
-                                    <div className={classes.eduInfo}>
-                                        <div className={classes.eduInstitution}><strong>{t('Учебное заведение')}</strong>{institution}</div>
-                                        <div className={classes.eduSpeciality}>
-                                            <h4>{speciality}</h4>
+                                )
+                            })}
+                    </div>
+                    <div className={classes.innerBlock}>
+                        <div className={classes.bodyTitle}>{t('Образование')}</div>
+                        {_.isEmpty(educations)
+                            ? t('Нет образования')
+                            : _.map(educations, (item, index) => {
+                                const studyStart = dateFormat(_.get(item, 'studyStart'))
+                                const studyTillNow = _.get(item, 'studyTillNow')
+                                const studyEnd = studyTillNow
+                                    ? t('По сегодняшний день')
+                                    : dateFormat(_.get(item, 'studyEnd'))
+                                const institution = _.get(item, 'institution')
+                                const speciality = _.get(item, 'speciality')
+                                const eduCountry = _.get(item, ['country', 'name'])
+                                const eduCity = _.get(item, ['city', 'name'])
+                                return (
+                                    <div key={index} className={classes.experience}>
+                                        <div className={classes.condition}>
+                                            <h4>{t('Учебное заведение')}</h4>
+                                            <div>{institution}</div>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <h4>{studyStart} - {studyEnd}</h4>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <h4>{t('Специальность')}</h4>
+                                            <div>{speciality}</div>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <h4>{t('Страна обучения')}</h4>
                                             <div>{eduCountry}, {eduCity}</div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })}
+                                )
+                            })}
+                    </div>
                 </div>
             </div>
         </div>

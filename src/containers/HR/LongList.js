@@ -322,7 +322,10 @@ const enhance = compose(
             dispatch(formShortList(application))
                 .then(() => {
                     setOpenConfirmDialog(false)
-                    return dispatch(openSnackbarAction({message: t('Шортлист успешно сформирован')}))
+                    return dispatch(openSnackbarAction({message: t('Отчет успешно сформирован')}))
+                })
+                .then(() => {
+                    dispatch(getApplicationDetails(application))
                 })
         },
 
