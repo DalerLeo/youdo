@@ -4,14 +4,14 @@ import axios from '../../helpers/axios'
 import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/longListSerializer'
-import {HR_RESUME_MEETING, HR_RESUME_SHORT} from '../../constants/backendConstants'
+import {HR_RESUME_NOTE} from '../../constants/backendConstants'
 
-// CREATE LONG, INTERVIEW, SHORT LISTS && DELETE
+// CREATE LONG, INTERVIEW, SHORT LISTS, REPORT LIST, DELETE && COMPLETE INTERVIEW
 
 export const addToLongList = (application, formValues) => {
-    const requestData = serializers.createLongSerializer(formValues)
+    const requestData = serializers.createLongSerializer(application, formValues)
     const payload = axios()
-        .post(sprintf(API.HR_LONG_LIST_CREATE, application), requestData)
+        .post(API.HR_LONG_LIST_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -24,8 +24,43 @@ export const addToLongList = (application, formValues) => {
         payload
     }
 }
-export const addToInterviewList = (application, resume, formValues) => {
-    const requestData = serializers.createMoveToSerializer(application, resume, HR_RESUME_MEETING, formValues)
+export const addReportList = (application, resumes) => {
+    const requestData = serializers.createReportSerializer(application, resumes)
+    const payload = axios()
+        .post(API.HR_REPORT_LIST_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_REPORT_LIST_CREATE,
+        payload
+    }
+}
+export const addToShortList = (application, resumes) => {
+    const requestData = serializers.createShortSerializer(application, resumes)
+    const payload = axios()
+        .post(API.HR_SHORT_LIST_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_SHORT_LIST_CREATE,
+        payload
+    }
+}
+export const changeResumeStatus = (application, resume, formValues, filter) => {
+    const status = filter.getParam('moveTo')
+    const currentStatus = filter.getParam('status')
+    const statusToChange = status === HR_RESUME_NOTE ? currentStatus : status
+    const requestData = serializers.createMoveToSerializer(application, resume, statusToChange, currentStatus, formValues)
     const payload = axios()
         .post(API.HR_RESUME_MOVE, requestData)
         .then((response) => {
@@ -40,26 +75,13 @@ export const addToInterviewList = (application, resume, formValues) => {
         payload
     }
 }
-export const addToShortList = (application, resume, formValues) => {
-    const requestData = serializers.createMoveToSerializer(application, resume, HR_RESUME_SHORT, formValues)
+export const deleteResume = (application, resume, formValues, filter, relation) => {
+    const status = filter.getParam('moveTo')
+    const currentStatus = filter.getParam('status')
+    const statusToChange = status === HR_RESUME_NOTE ? currentStatus : status
+    const requestData = serializers.createMoveToSerializer(application, resume, statusToChange, currentStatus, formValues)
     const payload = axios()
-        .post(API.HR_RESUME_MOVE, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.HR_RESUME_MOVE,
-        payload
-    }
-}
-export const deleteResume = (application, resume, formValues) => {
-    const requestData = serializers.removeResumeSerializer(resume, formValues)
-    const payload = axios()
-        .post(sprintf(API.HR_RESUME_REMOVE, application), requestData)
+        .delete(sprintf(API.HR_RESUME_REMOVE, relation), requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -158,6 +180,23 @@ export const getShortList = (filter, appId, appStatus) => {
     }
 }
 
+export const getReportList = (filter, appId, appStatus) => {
+    const params = serializers.resumeListFilterSerializer(filter.getParams(), appId, appStatus)
+    const payload = axios()
+        .get(API.HR_RESUME_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_REPORT_LIST,
+        payload
+    }
+}
+
 export const formShortList = (application) => {
     const payload = axios()
         .post(sprintf(API.HR_FORM_SHORT_LIST, application))
@@ -208,10 +247,10 @@ export const getResumeComments = (filter) => {
     }
 }
 
-export const resumeAddNote = (application, resume, value) => {
-    const requestData = serializers.createNoteSerializer(resume, value)
+export const resumeAddNote = (application, resume, value, status, {date, time}) => {
+    const requestData = serializers.createNoteSerializer(application, resume, value, status, {date, time})
     const payload = axios()
-        .post(sprintf(API.HR_RESUME_NOTE_CREATE, application), requestData)
+        .post(API.HR_RESUME_NOTE_CREATE, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -221,6 +260,91 @@ export const resumeAddNote = (application, resume, value) => {
 
     return {
         type: actionTypes.HR_RESUME_NOTE_CREATE,
+        payload
+    }
+}
+
+export const createQuestions = (application, formValues) => {
+    const requestData = serializers.createQuestionsSerializer(application, formValues)
+    const payload = axios()
+        .post(API.HR_APPLICATION_QUESTIONS_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APPLICATION_QUESTIONS_CREATE,
+        payload
+    }
+}
+
+export const getQuestionsList = (application) => {
+    const params = serializers.questionsListSerializer(application)
+    const payload = axios()
+        .get(API.HR_APPLICATION_QUESTIONS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APPLICATION_QUESTIONS_LIST,
+        payload
+    }
+}
+
+export const sendResumeAnswers = (application, resume, formData) => {
+    const requestData = serializers.sendAnswersSerializer(application, resume, formData)
+    const payload = axios()
+        .post(API.HR_RESUME_ANSWERS_CREATE, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_ANSWERS_CREATE,
+        payload
+    }
+}
+
+export const getResumeAnswersList = (resume) => {
+    const params = serializers.answersListSerializer(resume)
+    const payload = axios()
+        .get(API.HR_RESUME_ANSWERS_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_ANSWERS_LIST,
+        payload
+    }
+}
+
+export const updateReportList = (application, reportIds, shortIds) => {
+    const requestData = serializers.updateReportSerializer(application, reportIds, shortIds)
+    const payload = axios()
+        .post(API.HR_UPDATE_REPORT_LIST, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_UPDATE_REPORT_LIST,
         payload
     }
 }

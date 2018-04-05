@@ -13,8 +13,7 @@ import {genderFormat} from '../../../constants/gender'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
-    BORDER_STYLE,
-    COLOR_GREY_LIGHTEN
+    BORDER_STYLE
 } from '../../../constants/styleConstants'
 
 const colorBlue = '#12aaeb !important'
@@ -80,7 +79,14 @@ const enhance = compose(
             padding: PADDING_STANDART
         },
         innerBlock: {
-            marginBottom: '20px'
+            marginBottom: '20px',
+            paddingBottom: '20px',
+            borderBottom: BORDER_STYLE,
+            '&:last-child': {
+                marginBottom: '0',
+                paddingBottom: '0',
+                borderBottom: 'none'
+            }
         },
         info: {
             display: 'flex',
@@ -125,7 +131,7 @@ const enhance = compose(
             textTransform: 'lowercase'
         },
         bodyTitle: {
-            fontSize: '14px',
+            fontSize: '16px',
             fontWeight: '600',
             marginBottom: '10px'
         },
@@ -139,13 +145,9 @@ const enhance = compose(
             zIndex: '1'
         },
         experience: {
-            marginBottom: '15px',
-            paddingBottom: '15px',
-            borderBottom: BORDER_STYLE,
+            marginBottom: '25px',
             '&:last-child': {
-                marginBottom: '0',
-                paddingBottom: '0',
-                borderBottom: 'none'
+                marginBottom: '0'
             }
         },
         condition: {
@@ -291,7 +293,7 @@ const ResumeDetails = enhance((props) => {
                                 <li>{t('Страна проживания')}:</li>
                             </ul>
                             <ul>
-                                <li>{dateOfBirth}}</li>
+                                <li>{dateOfBirth}</li>
                                 <li><span className={classes.lowercase}>{genderFormat[sex]}</span></li>
                                 <li><span className={classes.lowercase}>{familyStatusText(sex, familyStatus)}</span></li>
                                 <li>{address}</li>

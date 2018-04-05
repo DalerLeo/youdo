@@ -278,7 +278,7 @@ const AddLongListDialog = enhance((props) => {
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
-                        label={t('Сохранить')}
+                        label={t('Добавить в лонглист')}
                         className={classes.actionButton}
                         primary={true}
                         onTouchTap={onSubmit}

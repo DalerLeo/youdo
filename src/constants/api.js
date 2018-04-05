@@ -626,13 +626,24 @@ export const HR_CITY = 'hr/city'
 export const HR_CITY_LIST = `/${HR_CITY}/`
 export const HR_CITY_ITEM = `/${HR_CITY}/%d/`
 
-export const HR_LONG_LIST_CREATE = `/${HR_APPLICATION}/%d/moving_resume/`
-export const HR_RESUME_MOVE = `/${HR_APPLICATION}/change_status_of_resume/`
-export const HR_RESUME_REMOVE = `/${HR_APPLICATION}/%d/remove_from_app/`
+export const HR_RESUME_CHANGE_STATUS = 'hr/application_resume'
+export const HR_UPDATE_REPORT_LIST = `/${HR_RESUME_CHANGE_STATUS}/`
+export const HR_LONG_LIST_CREATE = `/${HR_RESUME_CHANGE_STATUS}/moving/`
+export const HR_REPORT_LIST_CREATE = `/${HR_RESUME_CHANGE_STATUS}/moving/`
+export const HR_SHORT_LIST_CREATE = `/${HR_RESUME_CHANGE_STATUS}/moving/`
+export const HR_RESUME_MOVE = `/${HR_RESUME_CHANGE_STATUS}/`
+export const HR_RESUME_REMOVE = `/${HR_RESUME_CHANGE_STATUS}/%d/`
 export const HR_FORM_SHORT_LIST = `/${HR_APPLICATION}/%d/close/`
 
 export const HR_RESUME_COMMENT = 'hr/comment'
 export const HR_RESUME_COMMENT_CREATE = `/${HR_RESUME_COMMENT}/`
 export const HR_RESUME_COMMENT_LIST = `/${HR_RESUME_COMMENT}/`
+export const HR_RESUME_NOTE_CREATE = HR_RESUME_MOVE
 
-export const HR_RESUME_NOTE_CREATE = `/${HR_APPLICATION}/%d/note/`
+export const HR_APPLICATION_QUESTIONS = 'hr/application_question'
+export const HR_APPLICATION_QUESTIONS_CREATE = `/${HR_APPLICATION_QUESTIONS}/multi_create/`
+export const HR_APPLICATION_QUESTIONS_LIST = `/${HR_APPLICATION_QUESTIONS}/`
+
+export const HR_RESUME_ANSWERS = 'hr/application_answer'
+export const HR_RESUME_ANSWERS_CREATE = `/${HR_RESUME_ANSWERS}/multi_answer/`
+export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`

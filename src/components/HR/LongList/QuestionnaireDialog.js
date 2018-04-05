@@ -6,22 +6,18 @@ import Dialog from 'material-ui/Dialog'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader/index'
-import {reduxForm, Field} from 'redux-form'
-import {DateField, TextField, TimeField} from '../../ReduxForm'
+import {reduxForm, FieldArray} from 'redux-form'
+import QuestionsField from '../../ReduxForm/HR/LongList/QuestionsField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
 import {BORDER_STYLE, COLOR_DEFAULT, PADDING_STANDART} from '../../../constants/styleConstants'
 import formValidate from '../../../helpers/formValidate'
-import {
-    HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
-    HR_RESUME_SHORT
-} from '../../../constants/backendConstants'
 
 const enhance = compose(
     injectSheet({
         dialog: {
             overflowY: 'auto',
-            zIndex: '1410 !important'
+            paddingTop: '0 !important'
         },
         loader: {
             position: 'absolute',
@@ -123,33 +119,23 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ResumeMoveForm',
+        form: 'QuestionnaireForm',
         enableReinitialize: true
     })
 )
 
-const DateTimeCommentDialog = enhance((props) => {
+const QuestionnaireDialog = enhance((props) => {
     const {
         open,
         onClose,
         classes,
         handleSubmit,
-        dispatch,
-        status
+        dispatch
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
             formValidate([], dispatch, error)
         }))
-    const getTitle = () => {
-        switch (status) {
-            case HR_RESUME_MEETING: return t('Назначить собеседование')
-            case HR_RESUME_SHORT: return t('Добавление в шортлист')
-            case HR_RESUME_REMOVED: return t('Удаление резюме из списка')
-            case HR_RESUME_NOTE: return t('Добавление заметки')
-            default: return null
-        }
-    }
 
     return (
         <Dialog
@@ -161,7 +147,7 @@ const DateTimeCommentDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{getTitle()}</span>
+                <span>{t('Вопросник')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -172,33 +158,10 @@ const DateTimeCommentDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>
-                    {status === HR_RESUME_MEETING &&
-                    <div>
-                        <Field
-                            name="date"
-                            component={DateField}
-                            className={classes.inputDateCustom}
-                            label={t('Дата')}
-                            errorStyle={{bottom: 2}}
-                            fullWidth={true}/>
-                        <Field
-                            name="time"
-                            component={TimeField}
-                            className={classes.inputDateCustom}
-                            label={t('Время')}
-                            minutesStep={15}
-                            errorStyle={{bottom: 2}}
-                            fullWidth={true}/>
-                    </div>}
-                    <Field
-                        name="note"
-                        component={TextField}
-                        className={classes.textFieldArea}
-                        label={t('Заметки')}
-                        fullWidth={true}
-                        multiLine={true}
-                        rows={1}
-                        rowsMax={4}/>
+                    <FieldArray
+                        name={'questions'}
+                        component={QuestionsField}
+                    />
                 </div>
                 <div className={classes.bottomButton}>
                     <FlatButton
@@ -213,10 +176,10 @@ const DateTimeCommentDialog = enhance((props) => {
     )
 })
 
-DateTimeCommentDialog.propTypes = {
+QuestionnaireDialog.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     loading: PropTypes.bool
 }
 
-export default DateTimeCommentDialog
+export default QuestionnaireDialog

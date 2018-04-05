@@ -22,21 +22,23 @@ import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import Event from 'material-ui/svg-icons/action/event'
 import AddNote from 'material-ui/svg-icons/editor/mode-edit'
+import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import AddLongListDialog from './AddLongListDialog'
 import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
+import QuestionnaireDialog from './QuestionnaireDialog'
+import ReportDialog from './ReportDialog'
 import {TextField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
     BORDER_STYLE,
-    COLOR_BLUE_GREY,
     COLOR_BLUE_LOGO,
-    COLOR_DEFAULT,
+    COLOR_DEFAULT, COLOR_GREEN,
     COLOR_GREY,
-    COLOR_GREY_LIGHTEN,
-    COLOR_WHITE,
+    COLOR_GREY_LIGHTEN, COLOR_RED,
+    COLOR_WHITE, LINK_COLOR,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
@@ -45,7 +47,7 @@ import {
     APPLICATION_COMPLETED,
     HR_RESUME_LONG,
     HR_RESUME_MEETING,
-    HR_RESUME_REMOVED,
+    HR_RESUME_REMOVED, HR_RESUME_REPORT,
     HR_RESUME_SHORT,
     ZERO
 } from '../../../constants/backendConstants'
@@ -53,8 +55,9 @@ import {hashHistory} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 import {reduxForm, Field} from 'redux-form'
 
-const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
-const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
+export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
+export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
+
 const enhance = compose(
     injectSheet({
         loader: {
@@ -76,8 +79,10 @@ const enhance = compose(
             zIndex: '2'
         },
         wrapper: {
+            position: 'absolute',
+            top: '0',
+            bottom: '-28px',
             paddingTop: '30px',
-            height: '100%',
             width: '100%'
         },
         content: {
@@ -90,6 +95,7 @@ const enhance = compose(
             margin: '-30px -28px 0 -28px',
             boxShadow: CUSTOM_BOX_SHADOW,
             position: 'relative',
+            zIndex: '1',
             '& h1': {
                 fontSize: '18px',
                 fontWeight: '600',
@@ -175,18 +181,22 @@ const enhance = compose(
         column: {
             padding: '15px 15px 20px',
             width: 'calc(100% / 3)',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
             '&:first-child': {paddingLeft: '30px'},
             '&:last-child': {paddingRight: '30px'},
             '&:nth-child(even)': {
                 background: '#f2f5f8'
             },
-            '& header': {
+            '& > header': {
                 background: COLOR_BLUE_LOGO,
                 borderRadius: '2px',
                 color: COLOR_WHITE,
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                minHeight: '60px',
                 height: '60px',
                 marginBottom: '10px',
                 padding: '0 30px',
@@ -196,6 +206,50 @@ const enhance = compose(
                     whiteSpace: 'nowrap'
                 }
             }
+        },
+        reportInfo: {
+            background: '#f7f8f9',
+            borderRadius: '2px',
+            position: 'absolute',
+            padding: '15px',
+            top: '132px',
+            right: 'calc(100% + 20px)',
+            textAlign: 'center',
+            width: '300px',
+            '&:after': {
+                position: 'absolute',
+                content: '""',
+                borderTop: '10px transparent solid',
+                borderBottom: '10px transparent solid',
+                borderLeft: '10px #f7f8f9 solid',
+                right: '-10px',
+                top: '15px'
+            },
+            '& h4': {
+                fontWeight: '600',
+                fontSize: '14px',
+                marginBottom: '20px'
+            },
+            '& button:last-child': {
+                marginBottom: '0 !important'
+            }
+        },
+        overlay: {
+            background: 'rgba(0, 0, 0, 0.55)',
+            cursor: 'pointer',
+            position: 'fixed',
+            top: '0',
+            right: '0',
+            left: '0',
+            bottom: '0',
+            width: '100%',
+            zIndex: '15'
+        },
+        brightColumn: {
+            background: '#f7f8f9 !important',
+            paddingRight: '15px !important',
+            marginRight: '15px',
+            zIndex: '20'
         },
         countWrapper: {
             display: 'flex'
@@ -233,10 +287,40 @@ const enhance = compose(
             }
         },
         resumeList: {
-
+            height: '100%',
+            overflowY: 'auto'
+        },
+        reportList: {
+            padding: '15px',
+            border: '2px #e3e3e3 dashed',
+            marginBottom: '15px',
+            '& > header': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '10px',
+                '& > h4': {
+                    fontWeight: '700'
+                },
+                '& > div': {
+                    display: 'flex',
+                    alignItems: 'center'
+                }
+            }
+        },
+        reportButton: {
+            width: '36px',
+            height: '36px',
+            padding: '7px',
+            cursor: 'pointer',
+            '& svg': {
+                width: '22px !important',
+                height: '22px !important',
+                color: COLOR_GREY + '!important'
+            }
         },
         interviewDay: {
-            marginBottom: '40px',
+            marginBottom: '20px',
             '&:last-child': {
                 marginBottom: '0',
                 '& > div:last-child:after': {
@@ -250,7 +334,7 @@ const enhance = compose(
             marginBottom: '10px'
         },
         interviewTime: {
-            color: COLOR_WHITE,
+            color: COLOR_GREY,
             display: 'flex',
             fontSize: '14px',
             margin: '-10px -12px',
@@ -258,7 +342,6 @@ const enhance = compose(
             fontWeight: '700',
             alignItems: 'center',
             justifyContent: 'center',
-            background: COLOR_BLUE_GREY,
             borderRadius: '4px'
         },
         resumeWrapper: {
@@ -284,13 +367,16 @@ const enhance = compose(
                 margin: '0'
             }
         },
+        activeResume: {
+            extend: 'resume',
+            borderLeft: '4px ' + COLOR_GREEN + ' solid'
+        },
         createdDate: {
             color: COLOR_GREY_LIGHTEN,
             fontSize: '12px',
             fontWeight: '600'
         },
         moreButton: {
-            display: 'none',
             borderRadius: '50%',
             position: 'absolute',
             cursor: 'pointer',
@@ -430,6 +516,9 @@ const enhance = compose(
     withState('currentStatus', 'setCurrentStatus', ''),
     withState('openActionMenu', 'setOpenActionMenu', false),
     withState('currentNote', 'updateCurrentNote', ''),
+
+    withState('openAddReport', 'setOpenAddReport', false),
+    withState('checkedList', 'updateCheckedList', [])
 )
 
 const LongListGridList = enhance((props) => {
@@ -447,6 +536,7 @@ const LongListGridList = enhance((props) => {
         longListData,
         meetingListData,
         shortListData,
+        reportListData,
         currentResume,
         setCurrentResume,
         currentStatus,
@@ -457,7 +547,16 @@ const LongListGridList = enhance((props) => {
         resumeDetails,
         currentNote,
         updateCurrentNote,
-        resumeNoteData
+        resumeNoteData,
+        questionsDialog,
+        questionsData,
+        openAddReport,
+        setOpenAddReport,
+        checkedList,
+        updateCheckedList,
+        reportDialog,
+        editReportDialog,
+        deleteReportDialog
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -493,6 +592,9 @@ const LongListGridList = enhance((props) => {
     const responsibility = _.get(data, ['responsibility'])
     const privileges = _.map(_.get(data, ['privileges']), (item) => _.get(item, 'name'))
 
+    const checkedAllResumes = _.map(shortListData.list, (item) => _.get(item, 'id'))
+    const reportListIds = _.map(reportListData.list, (item) => _.get(item, 'id'))
+
     const popoverStyle = {
         menuItem: {
             fontSize: '13px',
@@ -507,10 +609,17 @@ const LongListGridList = enhance((props) => {
     const flatButtonStyle = {
         background: '#dadada',
         button: {
-            marginBottom: '10px'
+            marginBottom: '10px',
+            minHeight: '36px'
         },
         label: {
             color: COLOR_DEFAULT,
+            textTransform: 'none',
+            verticalAlign: 'baseline',
+            fontWeight: '600'
+        },
+        labelWhite: {
+            color: COLOR_WHITE,
             textTransform: 'none',
             verticalAlign: 'baseline',
             fontWeight: '600'
@@ -523,29 +632,47 @@ const LongListGridList = enhance((props) => {
         }
     }
 
-    const resumeLink = (id) => {
-        return hashHistory.push(filter.createURL({resume: id}))
+    const resumeLink = (id, status, relation) => {
+        return hashHistory.push(filter.createURL({resume: id, status: status, relation: relation}))
     }
     const getResume = (list, status) => {
         return _.map(list, (item) => {
             const id = _.get(item, 'id')
+            const relationId = _.get(item, 'relationId')
             const fullName = _.get(item, 'fullName')
             const note = _.get(item, 'note')
+            const date = moment(_.get(item, 'dateMeeting')).format('YYYY-MM-DD')
             const time = moment(_.get(item, 'dateMeeting')).format('HH:mm')
-            const createdDate = dateFormat(_.get(item, 'createdDate'))
+            const createdDate = dateFormat(_.get(item, 'dateUpdate'))
             const isInterview = status === HR_RESUME_MEETING
 
+            const updatedList = _.uniq(_.concat(checkedList, id))
+            const isActive = _.includes(checkedList, id) && openAddReport
+
             return (
-                <div key={id} className={classes.resume} style={{paddingLeft: isInterview ? '15px' : 'auto'}}>
+                <div
+                    key={id}
+                    className={isActive ? classes.activeResume : classes.resume}
+                    style={{paddingLeft: isInterview ? '15px' : 'auto', cursor: openAddReport ? 'pointer' : 'auto'}}
+                    onClick={() => {
+                        openAddReport
+                        ? isActive
+                            ? updateCheckedList(_.pull(updatedList, id))
+                            : updateCheckedList(updatedList)
+                        : null
+                    }}>
                     <div className={classes.resumeFooter}>
-                        <div className={isInterview ? classes.openResumeInterview : classes.openResume} onClick={() => { resumeLink(id) }}/>
+                        {!openAddReport &&
+                        <div
+                            className={isInterview ? classes.openResumeInterview : classes.openResume}
+                            onClick={() => { resumeLink(id, status, relationId) }}/>}
                         <div className={classes.resumeFullName}>
                             <div>{fullName}</div>
                         </div>
                         {isInterview
                             ? <div className={classes.interviewTime}>{time}</div>
                             : <div className={classes.createdDate}>{createdDate}</div>}
-                        {!isCompleted && false &&
+                        {false &&
                         <div
                             className={classes.moreButtonBlock}
                             onClick={(event) => {
@@ -554,20 +681,18 @@ const LongListGridList = enhance((props) => {
                                 setCurrentStatus(status)
                                 setCurrentResume(id)
                             }}
-                            style={{
-                                display: isCompleted ? 'none' : 'block',
-                                background: id === currentResume ? '#efefef' : '#fff'}}>
+                            style={{background: id === currentResume ? '#efefef' : '#fff'}}>
                             <MoreIcon/>
                         </div>}
                     </div>
-                    {note &&
+                    {note && !isActive && status !== HR_RESUME_REPORT &&
                     <form className={classes.note}>
                         <ChatBubble/>
                         <Field
                             name={'note[' + id + ']'}
                             className={classes.inputField}
                             component={TextField}
-                            onBlur={(event, value) => { resumeNoteData.handleEdit(id, value, currentNote) }}
+                            onBlur={(event, value) => { resumeNoteData.handleEdit(id, value, currentNote, status, {date, time}) }}
                             onFocus={(event) => { updateCurrentNote(event.target.value) }}
                             fullWidth
                             multiLine
@@ -586,9 +711,19 @@ const LongListGridList = enhance((props) => {
             return moment(dateMeeting).format('YYYY-MM-DD')
         })
         const interviewList = _.map(groupByDate, (item, date) => {
+            const dayOutput = () => {
+                const TOMORROW = 1
+                if (date === moment().format('YYYY-MM-DD')) {
+                    return 'Сегодня'
+                }
+                if (date === moment().add(TOMORROW, 'days').format('YYYY-MM-DD')) {
+                    return 'Завтра'
+                }
+                return dateFormat(date)
+            }
             return (
                 <div key={date} className={classes.interviewDay}>
-                    <div className={classes.interviewDate}>{dateFormat(date)}</div>
+                    <div className={classes.interviewDate}>{dayOutput()}</div>
                     {getResume(item, HR_RESUME_MEETING)}
                 </div>
             )
@@ -600,9 +735,7 @@ const LongListGridList = enhance((props) => {
     }
 
     const handleClickMenuItem = (status) => {
-        moveToDialog.handleOpen(currentResume, status)
-        setCurrentResume(null)
-        return setOpenActionMenu(false)
+        return moveToDialog.handleOpen(status)
     }
 
     const getPopoverMenus = () => {
@@ -751,7 +884,7 @@ const LongListGridList = enhance((props) => {
                                     </div>
                                 </div>
                                 <ToolTip text={t('Вопросник')} position={'left'}>
-                                    <div className={classes.add} onClick={() => { addDialog.handleOpen(uri) }}><Assignment/></div>
+                                    <div className={classes.add} onClick={() => { questionsDialog.handleOpen() }}><Assignment/></div>
                                 </ToolTip>
                             </header>
                             {meetingListData.loading
@@ -762,7 +895,8 @@ const LongListGridList = enhance((props) => {
                                     {getResumeItem(meetingListData.list, HR_RESUME_MEETING)}
                                 </div>}
                         </div>
-                        <div className={classes.column}>
+                        {openAddReport && <div className={classes.overlay} onClick={() => { setOpenAddReport(false) }}/>}
+                        <div className={classes.column + ' ' + (openAddReport ? classes.brightColumn : '')}>
                             <header>
                                 <div>
                                     <h3>{t('Шортлист')}</h3>
@@ -771,25 +905,85 @@ const LongListGridList = enhance((props) => {
                                     </div>
                                 </div>
                             </header>
-                            {shortListData.loading
-                                ? <div className={classes.loader}>
-                                    <Loader size={0.75}/>
-                                </div>
-                                : <div className={classes.resumeList}>
-                                    {shortListData.count > ZERO &&
-                                    <FlatButton
-                                        label={isCompleted ? t('Отчет') : t('Сформировать отчет')}
-                                        labelStyle={flatButtonStyle.label}
-                                        icon={<Done style={flatButtonStyle.icon}/>}
-                                        style={flatButtonStyle.button}
-                                        backgroundColor={flatButtonStyle.background}
-                                        hoverColor={flatButtonStyle.background}
-                                        rippleColor={COLOR_WHITE}
-                                        fullWidth
-                                        onClick={confirmDialog.handleOpen}
-                                    />}
-                                    {getResumeItem(shortListData.list, HR_RESUME_SHORT)}
-                                </div>}
+                            <FlatButton
+                                label={reportListData.count > ZERO ? t('Отправить отчет') : t('Сформировать отчет')}
+                                labelStyle={flatButtonStyle.label}
+                                icon={<Done style={flatButtonStyle.icon}/>}
+                                style={flatButtonStyle.button}
+                                backgroundColor={flatButtonStyle.background}
+                                hoverColor={flatButtonStyle.background}
+                                rippleColor={COLOR_WHITE}
+                                fullWidth
+                                onClick={() => {
+                                    reportListData.count > ZERO
+                                        ? confirmDialog.handleOpen()
+                                        : setOpenAddReport(true)
+                                }}
+                            />
+                            <div className={classes.resumeList}>
+                                {reportListData.loading
+                                    ? <div className={classes.loader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : reportListData.count > ZERO && !openAddReport &&
+                                    <div className={classes.reportList}>
+                                        <header>
+                                            <h4>{t('Отчет')} ({reportListData.count + ' ' + t('чел.')})</h4>
+                                            <div>
+                                                <ToolTip text={t('Изменить')} position={'bottom'}>
+                                                    <div className={classes.reportButton} onClick={editReportDialog.handleOpen}>
+                                                        <Edit/>
+                                                    </div>
+                                                </ToolTip>
+                                                <ToolTip text={t('Удалить')} position={'bottom'}>
+                                                    <div className={classes.reportButton} onClick={deleteReportDialog.handleOpen}>
+                                                        <Delete/>
+                                                    </div>
+                                                </ToolTip>
+                                            </div>
+                                        </header>
+                                        {getResumeItem(reportListData.list, HR_RESUME_REPORT)}
+                                    </div>}
+                                {shortListData.loading
+                                    ? <div className={classes.loader}>
+                                        <Loader size={0.75}/>
+                                    </div>
+                                    : getResumeItem(shortListData.list, HR_RESUME_SHORT)}
+                            </div>
+                            {openAddReport &&
+                            <div className={classes.reportInfo}>
+                                <h4>{t('Выберите из списка резюме для сформирования отчета')}</h4>
+                                <FlatButton
+                                    label={_.isEqual(checkedList, checkedAllResumes) ? t('Снять все') : t('Выбрать все')}
+                                    labelStyle={flatButtonStyle.labelWhite}
+                                    style={flatButtonStyle.button}
+                                    backgroundColor={_.isEqual(checkedList, checkedAllResumes) ? COLOR_RED : COLOR_GREEN}
+                                    hoverColor={_.isEqual(checkedList, checkedAllResumes) ? COLOR_RED : COLOR_GREEN}
+                                    rippleColor={COLOR_WHITE}
+                                    fullWidth
+                                    onClick={() => {
+                                        _.isEqual(checkedList, checkedAllResumes)
+                                        ? updateCheckedList([])
+                                        : updateCheckedList(checkedAllResumes)
+                                    }}/>
+                                {!_.isEmpty(checkedList) &&
+                                <FlatButton
+                                    label={t('Сохранить')}
+                                    labelStyle={flatButtonStyle.labelWhite}
+                                    style={flatButtonStyle.button}
+                                    backgroundColor={LINK_COLOR}
+                                    hoverColor={LINK_COLOR}
+                                    rippleColor={COLOR_WHITE}
+                                    fullWidth
+                                    onClick={() => {
+                                        shortListData.handleSubmitReport(checkedList)
+                                            .then(() => {
+                                                setOpenAddReport(false)
+                                                updateCheckedList([])
+                                            })
+                                    }}
+                                />}
+                            </div>}
                         </div>
                     </div>
                 </div>
@@ -820,6 +1014,7 @@ const LongListGridList = enhance((props) => {
                 uri={uri}/>
 
             <DateTimeCommentDialog
+                initialValues={moveToDialog.initialValues}
                 open={moveToDialog.open}
                 onClose={moveToDialog.handleClose}
                 onSubmit={moveToDialog.handleSubmit}
@@ -829,7 +1024,15 @@ const LongListGridList = enhance((props) => {
                 open={confirmDialog.open}
                 onClose={confirmDialog.handleClose}
                 onSubmit={confirmDialog.handleSubmit}
-                message={t('Сформировать шортлист на задание') + ' №' + application}
+                message={t('Отправить отчет на задание') + ' №' + application}
+                type={'submit'}
+                loading={false}/>
+
+            <ConfirmDialog
+                open={deleteReportDialog.open}
+                onClose={deleteReportDialog.handleClose}
+                onSubmit={() => { deleteReportDialog.handleSubmit(reportListIds) }}
+                message={t('Удалить отчет') + '?'}
                 type={'submit'}
                 loading={false}/>
 
@@ -840,8 +1043,31 @@ const LongListGridList = enhance((props) => {
                 filter={filter}
                 createCommentLoading={resumeDetails.createCommentLoading}
                 handleCreateComment={resumeDetails.handleCreateComment}
+                handleSubmitResumeAnswers={resumeDetails.handleSubmitResumeAnswers}
                 commentsList={resumeDetails.commentsList}
                 commentsLoading={resumeDetails.commentsLoading}
+                handleClickButton={handleClickMenuItem}
+                questionsData={questionsData}
+                initialValues={resumeDetails.initialValues}/>
+
+            <QuestionnaireDialog
+                open={questionsDialog.open}
+                onClose={questionsDialog.handleClose}
+                onSubmit={questionsDialog.handleSubmit}
+                initialValues={questionsDialog.initialValues}/>
+
+            <ReportDialog
+                open={reportDialog.open}
+                onClose={reportDialog.handleClose}
+                onSubmit={reportDialog.handleSubmit}/>
+
+            <ReportDialog
+                isUpdate
+                open={editReportDialog.open}
+                onClose={editReportDialog.handleClose}
+                onSubmit={editReportDialog.handleSubmit}
+                reportList={_.clone(reportListData.list)}
+                shortList={_.clone(shortListData.list)}
             />
         </Container>
     )

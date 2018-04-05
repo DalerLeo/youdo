@@ -9,8 +9,14 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
+import ToolTip from '../../ToolTip'
 import ResumeDetails from '../Resume/ResumeDetails'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
+import AddToList from 'material-ui/svg-icons/av/playlist-add'
+import Event from 'material-ui/svg-icons/action/event'
+import AddNote from 'material-ui/svg-icons/editor/mode-edit'
+import Delete from 'material-ui/svg-icons/action/delete'
+import EventDone from 'material-ui/svg-icons/notification/event-available'
 import {
     BORDER_STYLE,
     COLOR_DEFAULT, COLOR_GREY,
@@ -21,24 +27,28 @@ import {
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
 import {hashHistory} from 'react-router'
-import {reduxForm, Field} from 'redux-form'
+import {reduxForm, Field, FieldArray} from 'redux-form'
 import {TextField} from '../../ReduxForm'
 import formValidate from '../../../helpers/formValidate'
 import dateFormat from '../../../helpers/dateFormat'
+import {
+    HR_RESUME_LONG,
+    HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
+    HR_RESUME_SHORT
+} from '../../../constants/backendConstants'
+import ResumeNewQuestionsField from '../../ReduxForm/HR/LongList/ResumeNewQuestionsField'
 
 const enhance = compose(
     injectSheet({
         dialog: {
             overflowY: 'auto',
-            paddingTop: '0 !important'
+            paddingTop: '0 !important',
+            zIndex: '1400 !important'
         },
         loader: {
-            position: 'absolute',
             width: '100%',
-            height: '100%',
+            height: '400px',
             background: COLOR_WHITE,
-            top: '0',
-            left: '0',
             alignItems: 'center',
             zIndex: '999',
             justifyContent: 'center',
@@ -76,6 +86,36 @@ const enhance = compose(
             height: '60px',
             zIndex: '999'
         },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center',
+            fontWeight: 'normal',
+            textTransform: 'none',
+            '& > div button': {
+                padding: '13px !important',
+                '& svg': {
+                    width: '20px !important',
+                    height: '22px !important'
+                }
+            },
+            '& > button:last-child': {
+                marginLeft: '10px !important',
+                padding: '12px !important',
+                '& svg': {
+                    width: '24px !important',
+                    height: '24px !important'
+                },
+                '&:after': {
+                    position: 'absolute',
+                    content: '""',
+                    top: '0',
+                    bottom: '0',
+                    left: '-5px',
+                    width: '1px',
+                    background: '#efefef'
+                }
+            }
+        },
         wrapper: {
             display: 'flex'
         },
@@ -83,9 +123,6 @@ const enhance = compose(
             width: '100%',
             '& > div > div:first-child': {
                 display: 'none'
-            },
-            '& > div > div:last-child': {
-                width: 'auto'
             }
         },
         position: {
@@ -103,7 +140,13 @@ const enhance = compose(
             width: '300px'
         },
         block: {
-            padding: PADDING_STANDART
+            padding: PADDING_STANDART,
+            paddingTop: '0',
+            position: 'absolute',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            overflowY: 'auto'
         },
         innerTitle: {
             fontSize: '14px',
@@ -115,8 +158,16 @@ const enhance = compose(
             lineHeight: '20px !important',
             fontSize: '13px !important'
         },
+        addComment: {
+            background: COLOR_WHITE,
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            padding: '20px 30px'
+        },
         commentsList: {
-            marginTop: '20px'
+
         },
         comment: {
             marginBottom: '10px',
@@ -146,7 +197,8 @@ const enhance = compose(
             },
             '& div': {
                 lineHeight: '1.5',
-                whiteSpace: 'pre-wrap'
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word'
             }
         },
         tab: {
@@ -160,15 +212,35 @@ const enhance = compose(
         },
         tabContainer: {
             height: 'calc(100% - 49px)',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            position: 'relative',
+            '& > div': {
+                height: '100%'
+            }
         },
         questions: {
-            padding: PADDING_STANDART
+            padding: '20px 30px',
+            position: 'absolute',
+            top: '0',
+            bottom: '55px',
+            overflowY: 'auto'
         },
         question: {
+            marginBottom: '15px',
+            '&:last-child': {
+                marginBottom: '0'
+            },
             '& > span': {
                 fontWeight: '600'
             }
+        },
+        saveButton: {
+            background: COLOR_WHITE,
+            position: 'absolute',
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '0 10px 10px 10px'
         }
     }),
     reduxForm({
@@ -189,12 +261,16 @@ const ResumeDetailsDialog = enhance((props) => {
         dispatch,
         createCommentLoading,
         handleCreateComment,
+        handleSubmitResumeAnswers,
         commentsList,
         commentsLoading,
         openAddComment,
-        setOpenAddComment
+        setOpenAddComment,
+        handleClickButton,
+        questionsData
     } = props
 
+    const currentStatus = filter.getParam('status')
     const submitComment = handleSubmit(() => handleCreateComment()
         .catch((error) => {
             formValidate(['comment'], dispatch, error)
@@ -236,115 +312,170 @@ const ResumeDetailsDialog = enhance((props) => {
 
             <div className={classes.titleContent}>
                 <span>{fullName} <span className={classes.position}>({position})</span></span>
-                <IconButton onTouchTap={() => hashHistory.push(filter.createURL({resume: null}))}>
-                    <CloseIcon color="#666666"/>
-                </IconButton>
+                <div className={classes.buttons}>
+                    {currentStatus === HR_RESUME_MEETING &&
+                    <ToolTip position={'bottom'} text={t('Завершить собеселование')}>
+                        <IconButton onTouchTap={() => null}>
+                            <EventDone color={COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>}
+                    {currentStatus === HR_RESUME_LONG &&
+                    <ToolTip position={'bottom'} text={t('Назначить собеседование')}>
+                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_MEETING) }}>
+                            <Event color={COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>}
+                    {(currentStatus === HR_RESUME_LONG || currentStatus === HR_RESUME_MEETING) &&
+                    <ToolTip position={'bottom'} text={t('Добавить в шортлист')}>
+                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_SHORT) }}>
+                            <AddToList color={COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>}
+                    <ToolTip position={'bottom'} text={t('Добавить заметку')}>
+                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_NOTE) }}>
+                            <AddNote color={COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>
+                    <ToolTip position={'bottom'} text={t('Удалить со списка')}>
+                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
+                            <Delete color={COLOR_GREY}/>
+                        </IconButton>
+                    </ToolTip>
+
+                    <IconButton onTouchTap={() => hashHistory.push(filter.createURL({resume: null, status: null, relation: null}))}>
+                        <CloseIcon color={COLOR_GREY}/>
+                    </IconButton>
+                </div>
             </div>
 
             <div className={classes.bodyContent}>
                 <div className={classes.inContent}>
-                    {loading &&
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
-                    </div>}
-                    <div className={classes.wrapper}>
-                        <div className={classes.details}>
-                            <ResumeDetails
-                                data={data}
-                                loading={loading}/>
+                    {loading
+                        ? <div className={classes.loader}>
+                            <Loader size={0.75}/>
                         </div>
-                        <Paper zDepth={4} className={classes.comments}>
-                            <Tabs
-                                inkBarStyle={tabStyle.ink}
-                                tabItemContainerStyle={tabStyle.tabItem}
-                                className={classes.tab}
-                                contentContainerClassName={classes.tabContainer}>
-                                <Tab label={t('Комментарии')} buttonStyle={tabStyle.button} disableTouchRipple>
-                                    <form className={classes.block}>
-                                        {openAddComment && !createCommentLoading &&
-                                        <div>
-                                            <Field
-                                                name={'comment'}
-                                                component={TextField}
-                                                className={classes.textFieldArea}
-                                                hintText={t('Комментарий') + '...'}
-                                                hintStyle={{bottom: 'auto', top: '12px'}}
-                                                fullWidth
-                                                multiLine
-                                                rows={2}
-                                                rowsMax={4}/>
-                                            <FlatButton
-                                                label={'Сохранить'}
-                                                labelStyle={flatButtonStyle.label}
-                                                backgroundColor={LINK_COLOR}
-                                                fullWidth={true}
-                                                hoverColor={LINK_COLOR}
-                                                rippleColor={COLOR_WHITE}
-                                                onClick={submitComment}/>
-                                        </div>}
-                                        {createCommentLoading &&
-                                        <div className={classes.staticLoader}>
-                                            <Loader size={0.75}/>
-                                        </div>}
-                                        {!openAddComment &&
+                        : <div className={classes.wrapper}>
+                            <div className={classes.details}>
+                                <ResumeDetails
+                                    data={data}
+                                    loading={loading}/>
+                            </div>
+                        </div>}
+                    <Paper zDepth={4} className={classes.comments}>
+                        <Tabs
+                            inkBarStyle={tabStyle.ink}
+                            tabItemContainerStyle={tabStyle.tabItem}
+                            className={classes.tab}
+                            contentContainerClassName={classes.tabContainer}>
+                            <Tab label={t('Комментарии')} buttonStyle={tabStyle.button} disableTouchRipple>
+                                {!openAddComment &&
+                                <div className={classes.addComment}>
+                                    <FlatButton
+                                        label={'Добавить'}
+                                        labelStyle={flatButtonStyle.label}
+                                        backgroundColor={LINK_COLOR}
+                                        fullWidth={true}
+                                        hoverColor={LINK_COLOR}
+                                        rippleColor={COLOR_WHITE}
+                                        onClick={() => {
+                                            setOpenAddComment(true)
+                                        }}/>
+                                </div>}
+                                <form className={classes.block} style={{top: openAddComment ? '20px' : '75px'}}>
+                                    {openAddComment && !createCommentLoading &&
+                                    <div>
+                                        <Field
+                                            name={'comment'}
+                                            component={TextField}
+                                            className={classes.textFieldArea}
+                                            hintText={t('Комментарий') + '...'}
+                                            hintStyle={{bottom: 'auto', top: '12px'}}
+                                            fullWidth
+                                            multiLine
+                                            rows={2}
+                                            rowsMax={4}/>
                                         <FlatButton
-                                            label={'Добавить'}
+                                            label={'Сохранить'}
                                             labelStyle={flatButtonStyle.label}
                                             backgroundColor={LINK_COLOR}
                                             fullWidth={true}
                                             hoverColor={LINK_COLOR}
                                             rippleColor={COLOR_WHITE}
-                                            onClick={() => {
-                                                setOpenAddComment(true)
-                                            }}/>}
-                                        <div className={classes.commentsList}>
-                                            {commentsLoading
-                                                ? <div className={classes.staticLoader}>
-                                                    <Loader size={0.75}/>
-                                                </div>
-                                                : _.map(commentsList, (item) => {
-                                                    const id = _.get(item, 'id')
-                                                    const comment = _.get(item, 'comment')
-                                                    const createdDate = dateFormat(_.get(item, 'createdDate'))
-                                                    const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                                                    return (
-                                                        <div key={id} className={classes.comment}>
-                                                            <header>
-                                                                <h2>{user}</h2>
-                                                                <span>{createdDate}</span>
-                                                            </header>
-                                                            <div>{comment}</div>
-                                                        </div>
-                                                    )
-                                                })}
+                                            onClick={submitComment}/>
+                                    </div>}
+                                    {createCommentLoading &&
+                                    <div className={classes.staticLoader}>
+                                        <Loader size={0.75}/>
+                                    </div>}
+                                    <div className={classes.commentsList}
+                                         style={{marginTop: openAddComment ? '20px' : '0'}}>
+                                        {commentsLoading
+                                            ? <div className={classes.staticLoader}>
+                                                <Loader size={0.75}/>
+                                            </div>
+                                            : _.map(commentsList, (item) => {
+                                                const id = _.get(item, 'id')
+                                                const comment = _.get(item, 'comment')
+                                                const createdDate = dateFormat(_.get(item, 'createdDate'))
+                                                const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                                                return (
+                                                    <div key={id} className={classes.comment}>
+                                                        <header>
+                                                            <h2>{user}</h2>
+                                                            <span>{createdDate}</span>
+                                                        </header>
+                                                        <div>{comment}</div>
+                                                    </div>
+                                                )
+                                            })}
+                                    </div>
+                                </form>
+                            </Tab>
+                            {currentStatus === HR_RESUME_MEETING &&
+                            <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
+                                <ul className={classes.questions}>
+                                    {questionsData.loading
+                                        ? <div className={classes.staticLoader}>
+                                            <Loader size={0.75}/>
                                         </div>
-                                    </form>
-                                </Tab>
-                                <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
-                                    <ul className={classes.questions}>
-                                        {_.map(_.range(Number('5')), (item, index) => {
+                                        : _.map(questionsData.list, (item, index) => {
                                             const ONE = 1
                                             const count = index + ONE
+                                            const id = _.get(item, 'id')
+                                            const question = _.get(item, 'question')
                                             return (
-                                                <li key={item} className={classes.question}>
-                                                    <span>{count}. Lorem ipsum dolor sit.</span>
+                                                <li key={id} className={classes.question}>
+                                                    <span>{count}. {question}</span>
                                                     <Field
-                                                        name={'questions[' + item + '][answer]'}
+                                                        name={'answers[' + id + '][answer]'}
                                                         component={TextField}
                                                         className={classes.textFieldArea}
                                                         fullWidth
                                                         multiLine
-                                                        rows={2}
+                                                        rows={1}
                                                         rowsMax={4}
                                                     />
                                                 </li>
                                             )
                                         })}
-                                    </ul>
-                                </Tab>
-                            </Tabs>
-                        </Paper>
-                    </div>
+                                        <FieldArray
+                                            name="newQuestions"
+                                            component={ResumeNewQuestionsField}
+                                        />
+                                </ul>
+                                <div className={classes.saveButton}>
+                                    <FlatButton
+                                        label={'Сохранить'}
+                                        labelStyle={flatButtonStyle.label}
+                                        backgroundColor={LINK_COLOR}
+                                        fullWidth={true}
+                                        hoverColor={LINK_COLOR}
+                                        rippleColor={COLOR_WHITE}
+                                        onClick={handleSubmitResumeAnswers}/>
+                                </div>
+                            </Tab>}
+                        </Tabs>
+                    </Paper>
                 </div>
             </div>
         </Dialog>

@@ -1,48 +1,53 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
-import {HR_RESUME_MEETING} from '../../constants/backendConstants'
+import {
+    HR_RESUME_LONG,
+    HR_RESUME_MEETING,
+    HR_RESUME_REPORT,
+    HR_RESUME_SHORT
+} from '../../constants/backendConstants'
 
-const dateSerializer = (date, format) => {
-    const defaultFormat = format || 'YYYY-MM-DD'
-    const output = moment(date, defaultFormat, true).format(defaultFormat)
-    if (output === 'Invalid date') {
-        return null
-    }
-    return output
-}
-
-export const createLongSerializer = (data) => {
+export const createLongSerializer = (application, data) => {
     const resumes = _.filter(_.map(_.get(data, 'resumes'), (item, index) => {
         return _.get(item, 'selected') ? index : null
     }), (item) => !_.isNull(item))
     return {
+        application,
         resume: resumes,
-        status: 'long'
+        status: HR_RESUME_LONG
     }
 }
 
-export const createMoveToSerializer = (application, resume, moveTo, data) => {
-    const date = dateSerializer(_.get(data, 'date'))
+export const createReportSerializer = (application, resumes) => {
+    return {
+        application,
+        resume: resumes,
+        status: HR_RESUME_REPORT
+    }
+}
+
+export const createShortSerializer = (application, resumes) => {
+    return {
+        application,
+        resume: resumes,
+        status: HR_RESUME_SHORT
+    }
+}
+
+export const createMoveToSerializer = (application, resume, statusToChange, currentStatus, data) => {
+    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD')
     const time = moment(_.get(data, 'time')).format('HH:mm')
     const note = _.get(data, 'note')
     const request = {
         application,
         resume,
         note,
-        status: moveTo
+        status: statusToChange
     }
-    return moveTo === HR_RESUME_MEETING
+    return statusToChange === HR_RESUME_MEETING
         ? _.merge(request, {date_time: date + ' ' + time})
         : request
-}
-
-export const removeResumeSerializer = (resume, data) => {
-    const note = _.get(data, 'note')
-    return {
-        resume: [resume],
-        note
-    }
 }
 
 export const resumeListFilterSerializer = (data, application, appStatus) => {
@@ -63,11 +68,15 @@ export const createCommentSerializer = (resume, data) => {
     }
 }
 
-export const createNoteSerializer = (resume, note) => {
-    return {
+export const createNoteSerializer = (application, resume, note, status, {date, time}) => {
+    const dateTime = date + ' ' + time
+    const request = {
+        application,
         resume,
+        status,
         note
     }
+    return status === HR_RESUME_MEETING ? _.merge(request, {date_time: dateTime}) : request
 }
 
 export const resumePreviewFilterSerializer = (data) => {
@@ -76,7 +85,7 @@ export const resumePreviewFilterSerializer = (data) => {
 
     return {
         'update': _.get(defaultData, 'application'),
-        'exclude_accepted': true,
+        'exclude_accepted': _.get(defaultData, 'application'),
         'positions': _.get(defaultData, 'positions'),
         'mode': _.get(defaultData, 'mode'),
         'age_0': _.get(defaultData, 'age0'),
@@ -105,5 +114,78 @@ export const resumeCommentsSerializer = (data) => {
         'page_size': _.get(defaultData, 'pageSize') || '20',
         'ordering': orderingSnakeCase(ordering) || '-created_date'
     }
+}
+
+export const createQuestionsSerializer = (application, data) => {
+    const questions = _.filter(_.map(_.get(data, 'questions'), (item) => {
+        return _.get(item, 'question')
+    }), (item) => {
+        return !_.isEmpty(item)
+    })
+
+    return {
+        application,
+        questions
+    }
+}
+
+export const questionsListSerializer = (application) => {
+    return {
+        application,
+        page_size: 20,
+        ordering: 'id'
+    }
+}
+
+export const sendAnswersSerializer = (application, resume, data) => {
+    const answers = _.map(_.get(data, 'answers'), (item, index) => {
+        const answer = _.get(item, 'answer')
+        if (_.isEmpty(answer)) {
+            return null
+        }
+        return {
+            resume,
+            question: index,
+            answer
+        }
+    })
+    const newAnswers = _.map(_.get(data, 'newQuestions'), (item) => {
+        const question = _.get(item, 'question')
+        const answer = _.get(item, 'answer')
+        return {
+            application,
+            resume,
+            question,
+            answer
+        }
+    })
+    const filteredAnswers = _.filter(answers, (item) => !_.isNull(item))
+
+    return _.concat(filteredAnswers, newAnswers)
+}
+
+export const answersListSerializer = (resume) => {
+    return {
+        resume,
+        page_size: 20
+    }
+}
+
+export const updateReportSerializer = (application, reportIds, shortIds) => {
+    const reportListArray = _.map(reportIds, (item) => {
+        return {
+            application,
+            resume: item,
+            status: HR_RESUME_REPORT
+        }
+    })
+    const shortListArray = _.map(shortIds, (item) => {
+        return {
+            application,
+            resume: item,
+            status: HR_RESUME_SHORT
+        }
+    })
+    return _.concat(reportListArray, shortListArray)
 }
 
