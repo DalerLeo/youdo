@@ -102,14 +102,15 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        actionBtn: {
-            height: '48px'
+        header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '60px',
+            '& h2': {
+                fontWeight: '600',
+                fontSize: '18px'
+            }
         },
         listRow: {
             position: 'relative',
@@ -390,8 +391,8 @@ const ApplicationGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.HR_APPLICATION_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
+            <div className={classes.header}>
+                <h2>{t('Заявки')}</h2>
                 <ToolTip position="left" text={t('Добавить заявку')}>
                     <FloatingActionButton
                         mini={true}

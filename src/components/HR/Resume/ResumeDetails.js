@@ -125,7 +125,8 @@ const enhance = compose(
         },
         titleButtons: {
             display: 'flex',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            zIndex: '2'
         },
         lowercase: {
             textTransform: 'lowercase'

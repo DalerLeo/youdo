@@ -271,7 +271,6 @@ const ResumeCreateDialog = enhance((props) => {
         'familyStatus',
         'address',
         'phone',
-        'email',
         'email'
     ]
     const onSubmit = handleSubmit(() => props.onSubmit()
@@ -486,7 +485,7 @@ const ResumeCreateDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{isUpdate ? t('Изменение резюме') : t('Создание резюме')}</span>
+                <span>{isUpdate ? t('Изменение анкеты') : t('Создание анкеты')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
