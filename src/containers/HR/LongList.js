@@ -484,15 +484,15 @@ const enhance = compose(
                 })
         },
 
-        handleCompleteResumeInterview: props => () => {
-            const {dispatch, resumeDetailsForm, location: {query}} = props
-            const application = _.toInteger(_.get(query, 'application'))
-            const resume = _.toInteger(_.get(query, 'resume'))
-            return dispatch(sendResumeAnswers(resume, _.get(resumeDetailsForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
-                })
-        },
+        // . handleCompleteResumeInterview: props => () => {
+        // .     const {dispatch, resumeDetailsForm, location: {query}} = props
+        // .     const application = _.toInteger(_.get(query, 'application'))
+        // .     const resume = _.toInteger(_.get(query, 'resume'))
+        // .     return dispatch(sendResumeAnswers(resume, _.get(resumeDetailsForm, ['values'])))
+        // .         .then(() => {
+        // .             return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
+        // .         })
+        // . },
 
         handleAddReportList: props => (resume) => {
             const {dispatch, filter, location: {query}} = props

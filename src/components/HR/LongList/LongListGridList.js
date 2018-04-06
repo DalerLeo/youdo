@@ -44,7 +44,6 @@ import {
 import {genderFormat} from '../../../constants/gender'
 import {getYearText} from '../../../helpers/yearsToText'
 import {
-    APPLICATION_COMPLETED,
     HR_RESUME_LONG,
     HR_RESUME_MEETING,
     HR_RESUME_REMOVED, HR_RESUME_REPORT,
@@ -565,7 +564,7 @@ const LongListGridList = enhance((props) => {
     const loading = _.get(detailData, 'loading')
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
-    const isCompleted = _.get(data, 'status') === APPLICATION_COMPLETED
+    // . const isCompleted = _.get(data, 'status') === APPLICATION_COMPLETED
 
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])

@@ -372,7 +372,7 @@ const ResumeList = enhance((props) => {
                 sex: {
                     value: _.get(detail, 'sex')
                 },
-                skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name')),
+                skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name'))
 
             }
         })(),
