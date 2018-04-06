@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 
 const dateSerializer = (date, format) => {
     const defaultFormat = format || 'YYYY-MM-DD'
@@ -76,8 +77,8 @@ export const createSerializer = (data) => {
         modes,
         relocation: _.get(data, ['relocation']),
         business_trip: _.get(data, ['businessTrip']),
-        salary_min: _.get(data, ['salary', 'min']),
-        salary_max: _.get(data, ['salary', 'max']),
+        salary_min: numberWithoutSpaces(_.get(data, ['salary', 'min'])),
+        salary_max: numberWithoutSpaces(_.get(data, ['salary', 'max'])),
         status: 'top'
     }
 }

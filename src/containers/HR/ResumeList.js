@@ -1,5 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
+import moment from 'moment'
 import sprintf from 'sprintf'
 import {reset} from 'redux-form'
 import {connect} from 'react-redux'
@@ -293,7 +294,86 @@ const ResumeList = enhance((props) => {
                 }
             }
             return {
-                modes: isSelectedModes
+                address: _.get(detail, 'address'),
+                businessTrip: _.get(detail, 'businessTrip'),
+                city: {
+                    value: _.get(detail, ['city', 'id'])
+                },
+                country: {
+                    value: _.get(detail, ['country', 'id'])
+                },
+                dateOfBirth: moment(_.get(detail, 'dateOfBirth')).toDate(),
+                driverLicense: _.map(_.get(detail, 'driverLicense'), (item) => {
+                    return {
+                        id: _.get(item, 'name'),
+                        name: _.get(item, 'name'),
+                        active: true
+                    }
+                }),
+                educations: _.map(_.get(detail, 'educations'), (item) => {
+                    return {
+                        city: {
+                            value: _.get(item, ['city', 'id'])
+                        },
+                        country: {
+                            value: _.get(item, ['country', 'id'])
+                        },
+                        education: {
+                            value: _.get(item, 'education')
+                        },
+                        institution: _.get(item, 'institution'),
+                        speciality: _.get(item, 'speciality'),
+                        studyTillNow: _.get(item, 'studyTillNow'),
+                        studyStart: moment(_.get(item, 'studyStart')).toDate(),
+                        studyEnd: moment(_.get(item, 'studyEnd')).toDate()
+                    }
+                }),
+                email: _.get(detail, 'email'),
+                experiences: _.map(_.get(detail, 'experiences'), (item) => {
+                    return {
+                        position: {
+                            value: _.get(item, ['position', 'id'])
+                        },
+                        organisation: _.get(item, 'organisation'),
+                        responsibility: _.get(item, 'responsibility'),
+                        workTillNow: _.get(item, 'workTillNow'),
+                        workStart: moment(_.get(item, 'workStart')).toDate(),
+                        workEnd: moment(_.get(item, 'workEnd')).toDate()
+                    }
+                }),
+                familyStatus: {
+                    value: _.get(detail, 'familyStatus')
+                },
+                fullName: _.get(detail, 'fullName'),
+                hobby: _.get(detail, 'hobby'),
+                languages: _.map(_.get(detail, 'languages'), (item) => {
+                    return {
+                        name: {
+                            value: _.get(item, ['language', 'id'])
+                        },
+                        level: {
+                            value: _.get(item, ['level'])
+                        }
+                    }
+                }),
+                levelPc: {
+                    value: _.get(detail, 'levelPc')
+                },
+                modes: isSelectedModes,
+                phone: _.get(detail, 'phone'),
+                position: {
+                    value: _.get(detail, ['position', 'id'])
+                },
+                relocation: _.get(detail, 'relocation'),
+                salary: {
+                    min: numberFormat(_.get(detail, 'salaryMin')),
+                    max: numberFormat(_.get(detail, 'salaryMax'))
+                },
+                sex: {
+                    value: _.get(detail, 'sex')
+                },
+                skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name'))
+
             }
         })(),
         updateLoading: detailLoading || updateLoading,

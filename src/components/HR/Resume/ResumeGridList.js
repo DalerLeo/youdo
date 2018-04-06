@@ -8,7 +8,6 @@ import GridList from '../../GridList'
 import Container from '../../Container'
 import ResumeCreateDialog from './ResumeCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
-import SubMenu from '../../SubMenu'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
@@ -56,14 +55,15 @@ const listHeader = [
 
 const enhance = compose(
     injectSheet({
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        actionBtn: {
-            height: '48px'
+        header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '60px',
+            '& h2': {
+                fontWeight: '600',
+                fontSize: '18px'
+            }
         },
         listRow: {
             position: 'relative',
@@ -157,9 +157,9 @@ const ResumeGridList = enhance((props) => {
 
     return (
         <Container>
-            <SubMenu url={ROUTES.HR_RESUME_LIST_URL}/>
-            <div className={classes.addButtonWrapper}>
-                <ToolTip position="left" text={t('Добавить резюме')}>
+            <div className={classes.header}>
+                <h2>{t('Анкеты')}</h2>
+                <ToolTip position="left" text={t('Добавить анкету')}>
                     <FloatingActionButton
                         mini={true}
                         zDepth={1}

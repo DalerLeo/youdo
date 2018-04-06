@@ -51,7 +51,8 @@ const enhance = compose(
     injectSheet({
         wrapper: {
             position: 'absolute',
-            width: '355px',
+            width: '355px !important',
+            display: 'block !important',
             background: '#fff',
             zIndex: 99,
             top: 0,

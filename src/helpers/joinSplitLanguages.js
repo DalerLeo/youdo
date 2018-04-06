@@ -3,7 +3,9 @@ export const langQueryFormat = (value) => {
     return _.map(value, (item) => {
         const name = _.get(item, ['name', 'value'])
         const level = _.get(item, ['level', 'value'])
-        return name + '-' + level
+        return name && level
+            ? name + '-' + level
+            : null
     })
 }
 

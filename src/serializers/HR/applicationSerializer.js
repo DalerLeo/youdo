@@ -70,6 +70,7 @@ export const listFilterSerializer = (data) => {
         'begin_date': _.get(defaultData, 'fromDate'),
         'end_date': _.get(defaultData, 'toDate'),
         'status': _.get(defaultData, 'status'),
+        'is_new': _.get(defaultData, 'isNew'),
         'doing': _.get(defaultData, 'doing'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
