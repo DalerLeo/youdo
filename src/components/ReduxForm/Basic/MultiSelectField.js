@@ -33,13 +33,29 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            minHeight: 52,
+            position: 'relative',
             width: '100%',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
+            },
+            '& > div:first-child': {
+                position: 'absolute',
+                top: 30,
+                color: 'rgba(0, 0, 0, 0.3)',
+                transition: '0.2s ease all',
+                '-mozTransition': '0.2s ease all',
+                '-webkitTransition': '0.2s ease all'
             }
         },
+        label: {
+            top: '0 !important',
+            fontSize: '11px',
+            color: 'rgb(93, 100, 116)'
+        },
         select: {
+            paddingTop: 18,
             '& .Select-menu': {
                 background: '#fff',
                 maxHeight: '200px'
@@ -58,7 +74,6 @@ const enhance = compose(
                 border: '0',
                 borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
-                height: '44px',
                 marginBottom: '8px',
                 '& .Select-value': {
                     paddingLeft: '0',
@@ -81,10 +96,7 @@ const enhance = compose(
                     top: '12px'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0',
-                    paddingTop: '12px',
-                    marginLeft: '0',
-                    height: '44px'
+                    marginLeft: 0
                 },
                 '& .Select--multi .Select-value': {
                     backgroundColor: '#f2f5f8',
@@ -93,8 +105,6 @@ const enhance = compose(
                 }
             },
             '& .Select-input > input': {
-                width: '100% !important',
-                overflow: 'hidden'
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
                 background: 'unset'
@@ -189,20 +199,25 @@ const MultiSelectField = enhance((props) => {
         handleChange,
         disabled,
         input,
+        meta,
         filterOptionRender
     } = props
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
+
     return (
         <div className={classes.wrapper}>
+            <div className={meta.active || !_.isEmpty(input.value) ? classes.label : ''}>{label}</div>
             <Select
                 className={classes.select}
                 options={state.dataSource}
                 value={input.value}
                 onInputChange={text => { dispatch({text: text}) }}
                 onChange={handleChange}
+                onBlur={() => input.onBlur()}
+                onFocus={input.onFocus}
                 removeSelected={true}
                 deleteRemoves={false}
-                placeholder={label}
+                placeholder={''}
                 noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
