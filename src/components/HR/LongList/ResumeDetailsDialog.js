@@ -420,9 +420,9 @@ const ResumeDetailsDialog = enhance((props) => {
                                         <FlatButton
                                             label={'Сохранить'}
                                             labelStyle={flatButtonStyle.label}
-                                            backgroundColor={LINK_COLOR}
+                                            backgroundColor={'#607D8B'}
                                             fullWidth={true}
-                                            hoverColor={LINK_COLOR}
+                                            hoverColor={'#607D8B'}
                                             rippleColor={COLOR_WHITE}
                                             onClick={submitComment}/>
                                     </div>}

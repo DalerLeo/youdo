@@ -5,6 +5,7 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
+import {Tabs, Tab} from 'material-ui/Tabs'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
@@ -18,7 +19,8 @@ import {
     PADDING_STANDART,
     BORDER_STYLE,
     COLOR_GREY_LIGHTEN,
-    COLOR_GREY
+    COLOR_GREY,
+    COLOR_WHITE, LINK_COLOR
 } from '../../../constants/styleConstants'
 import {SUM_CURRENCY} from '../../../constants/backendConstants'
 
@@ -55,6 +57,10 @@ const enhance = compose(
         createdDate: {
             fontSize: '12px',
             color: '#999'
+        },
+        tab: {
+            height: '100%',
+            width: '100%'
         },
         container: {
             display: 'flex',
@@ -167,6 +173,18 @@ const popoverStyle = {
 }
 withState('openDetails', 'setOpenDetails', false)
 
+const tabStyle = {
+    button: {
+        textTransform: 'none'
+    },
+    ink: {
+        background: LINK_COLOR
+    },
+    tabItem: {
+        width: '420px'
+    }
+}
+
 const ApplicationDetails = enhance((props) => {
     const {classes,
         loading,
@@ -248,74 +266,85 @@ const ApplicationDetails = enhance((props) => {
                     </IconMenu>
                 </div>
             </div>
-            <div className={classes.companyInfo}>
-                <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Описание компании')}</div>
-                    <div className={classes.info + ' ' + classes.flexBetween}>
-                        <div>{t('Клиент')}: <strong>{client}</strong></div>
-                        <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
-                        <div>{t('Телефон')}: <strong>{phone}</strong></div>
-                        <div>{t('Адрес')}: <strong>{address}</strong></div>
-                        <div>{t('Email')}: <strong>{email}</strong></div>
-                    </div>
-                </div>
-            </div>
-            <div className={classes.container}>
-                <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
-                    <div className={classes.info}>
-                        <div>{t('Наименование должности')}: <strong>{position}</strong></div>
-                        <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
-                        <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
-                        <div>{t('Предоставляемые льготы')}:
-                            {_.map(privileges, (item) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <span key={id} className={classes.skill}>{name}</span>
-                                )
-                            })}
-                        </div>
-                        <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
-                        <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>
-                        <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
-                        <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
-                    </div>
-                </div>
-                <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
-                    <div className={classes.info}>
-                        <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
-                        <div>{t('Пол')}: <strong>{sex}</strong></div>
-                        <div>{t('Образование')}: <strong>{education}</strong></div>
-                        <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
-                        <div>{t('Знание языков')}:
-                            {_.isEmpty(languages)
-                                ? <strong> {t('Не указано')}</strong>
-                                : _.map(languages, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, ['language', 'name'])
-                                    const level = _.get(item, ['level', 'name'])
-                                    return (
-                                        <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
-                                    )
-                                })}
-                        </div>
-                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
-                        <div>{t('Профессиональные навыки')}:
-                            {_.isEmpty(skills)
-                                ? <strong> {t('Не указаны')}</strong>
-                                : _.map(skills, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, 'name')
-                                    return (
-                                        <span key={id} className={classes.skill}>{name}</span>
-                                    )
-                                })}
+            <Tabs
+                inkBarStyle={tabStyle.ink}
+                tabItemContainerStyle={tabStyle.tabItem}
+                className={classes.tab}
+                contentContainerClassName={classes.tabContainer}>
+                <Tab label={t('Детали заявки')} buttonStyle={tabStyle.button} disableTouchRipple>
+                    <div className={classes.companyInfo}>
+                        <div className={classes.block}>
+                            <div className={classes.bodyTitle}>{t('Описание компании')}</div>
+                            <div className={classes.info + ' ' + classes.flexBetween}>
+                                <div>{t('Клиент')}: <strong>{client}</strong></div>
+                                <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
+                                <div>{t('Телефон')}: <strong>{phone}</strong></div>
+                                <div>{t('Адрес')}: <strong>{address}</strong></div>
+                                <div>{t('Email')}: <strong>{email}</strong></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                    <div className={classes.container}>
+                        <div className={classes.block}>
+                            <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
+                            <div className={classes.info}>
+                                <div>{t('Наименование должности')}: <strong>{position}</strong></div>
+                                <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
+                                <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
+                                <div>{t('Предоставляемые льготы')}:
+                                    {_.map(privileges, (item) => {
+                                        const id = _.get(item, 'id')
+                                        const name = _.get(item, 'name')
+                                        return (
+                                            <span key={id} className={classes.skill}>{name}</span>
+                                        )
+                                    })}
+                                </div>
+                                <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
+                                <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>
+                                <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
+                                <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
+                            </div>
+                        </div>
+                        <div className={classes.block}>
+                            <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
+                            <div className={classes.info}>
+                                <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
+                                <div>{t('Пол')}: <strong>{sex}</strong></div>
+                                <div>{t('Образование')}: <strong>{education}</strong></div>
+                                <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
+                                <div>{t('Знание языков')}:
+                                    {_.isEmpty(languages)
+                                        ? <strong> {t('Не указано')}</strong>
+                                        : _.map(languages, (item) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, ['language', 'name'])
+                                            const level = _.get(item, ['level', 'name'])
+                                            return (
+                                                <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                            )
+                                        })}
+                                </div>
+                                <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
+                                <div>{t('Профессиональные навыки')}:
+                                    {_.isEmpty(skills)
+                                        ? <strong> {t('Не указаны')}</strong>
+                                        : _.map(skills, (item) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, 'name')
+                                            return (
+                                                <span key={id} className={classes.skill}>{name}</span>
+                                            )
+                                        })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Tab>
+                <Tab label={t('Процесс выполнения')} buttonStyle={tabStyle.button} disableTouchRipple>
+
+                </Tab>
+            </Tabs>
         </div>
     )
 })

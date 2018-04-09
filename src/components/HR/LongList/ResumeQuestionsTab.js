@@ -33,6 +33,7 @@ const enhance = compose(
         },
         question: {
             marginBottom: '15px',
+            listStyle: 'none',
             position: 'relative',
             '&:last-child': {
                 marginBottom: '0'
@@ -91,6 +92,25 @@ const enhance = compose(
                 }
             }))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const list = _.get(props, ['answerListClone'])
+        const nextList = _.get(nextProps, ['answerListClone'])
+        return !_.isEqual(list, nextList)
+    }, ({input, answerListClone}) => {
+        if (!_.isEmpty(answerListClone)) {
+            console.warn(answerListClone)
+            const getAnswers = () => {
+                const answers = {}
+                _.map(answerListClone, (item) => {
+                    const answer = _.get(item, 'answer')
+                    answers[_.get(item, 'question')] = {answer}
+                })
+                return answers
+            }
+            input.onChange(getAnswers())
+        }
     })
 )
 
@@ -115,21 +135,11 @@ const ResumeQuestionsTab = enhance((props) => {
             return String(_.get(item, 'question')) !== String(id)
         })
         updateAnswerList(clearedAnswers)
-        const getAnswers = () => {
-            const answers = {}
-            _.map(answerListClone, (item) => {
-                const answer = _.get(item, 'answer')
-                answers[_.get(item, 'question')] = {answer}
-            })
-            return answers
-        }
-        input.onChange(getAnswers())
-        console.warn(getAnswers())
         return _.differenceBy(questionListClone, removedArray)
     }
 
     return (
-        <ul className={classes.questions}>
+        <div className={classes.questions}>
             {loading
                 ? <div className={classes.staticLoader}>
                     <Loader size={0.75}/>
@@ -160,7 +170,7 @@ const ResumeQuestionsTab = enhance((props) => {
                     )
                 })}
             {/*<FieldArray name="newQuestions" component={ResumeNewQuestionsField}/>*/}
-        </ul>
+        </div>
     )
 })
 
