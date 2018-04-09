@@ -2,6 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
+import classNames from 'classnames'
 import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
 import Select from 'react-select'
 import 'react-select/dist/react-select.css'
@@ -51,7 +52,9 @@ const enhance = compose(
         },
         label: {
             top: '0 !important',
-            fontSize: '11px',
+            fontSize: '11px'
+        },
+        labelColor: {
             color: 'rgb(93, 100, 116) !important'
         },
         select: {
@@ -206,7 +209,10 @@ const MultiSelectField = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={meta.active || !_.isEmpty(input.value) ? classes.label : ''}>{label}</div>
+            <div className={classNames({
+                [classes.label]: meta.active || !_.isEmpty(input.value),
+                [classes.labelColor]: meta.active
+            })}>{label}</div>
             <Select
                 className={classes.select}
                 options={state.dataSource}
