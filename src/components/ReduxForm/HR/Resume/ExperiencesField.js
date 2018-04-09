@@ -182,7 +182,6 @@ const ExperiencesField = enhance((props) => {
                         className={classes.textFieldArea}
                         multiLine={true}
                         rows={1}
-                        rowsMax={4}
                         fullWidth={true}/>
                 </div>
                 {arrayLength > ONE &&

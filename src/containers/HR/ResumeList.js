@@ -297,7 +297,8 @@ const ResumeList = enhance((props) => {
                 address: _.get(detail, 'address'),
                 businessTrip: _.get(detail, 'businessTrip'),
                 city: {
-                    value: _.get(detail, ['city', 'id'])
+                    value: _.get(detail, ['city', 'id']),
+                    text: _.get(detail, ['city', 'name'])
                 },
                 country: {
                     value: _.get(detail, ['country', 'id'])
@@ -313,7 +314,8 @@ const ResumeList = enhance((props) => {
                 educations: _.map(_.get(detail, 'educations'), (item) => {
                     return {
                         city: {
-                            value: _.get(item, ['city', 'id'])
+                            value: _.get(item, ['city', 'id']),
+                            text: _.get(detail, ['city', 'name'])
                         },
                         country: {
                             value: _.get(item, ['country', 'id'])
@@ -334,7 +336,7 @@ const ResumeList = enhance((props) => {
                         position: {
                             value: _.get(item, ['position', 'id'])
                         },
-                        organisation: _.get(item, 'organisation'),
+                        organization: _.get(item, 'organization'),
                         responsibility: _.get(item, 'responsibility'),
                         workTillNow: _.get(item, 'workTillNow'),
                         workStart: moment(_.get(item, 'workStart')).toDate(),
@@ -346,7 +348,7 @@ const ResumeList = enhance((props) => {
                 },
                 fullName: _.get(detail, 'fullName'),
                 hobby: _.get(detail, 'hobby'),
-                languages: _.map(_.get(detail, 'languages'), (item) => {
+                languagesLevel: _.map(_.get(detail, 'languages'), (item) => {
                     return {
                         name: {
                             value: _.get(item, ['language', 'id'])

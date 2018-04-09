@@ -20,20 +20,11 @@ const enhance = compose(
             justifyContent: 'center',
             width: '100%'
         },
-        inputFieldCustom: {
+        textFieldArea: {
+            top: '-20px !important',
+            lineHeight: '20px !important',
             fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
+            marginBottom: '-22px'
         },
         subTitle: {
             fontWeight: '600'
@@ -104,7 +95,9 @@ const QuestionsField = enhance((props) => {
                         label={t('Вопрос') + ' №' + count}
                         name={`${detail}.question`}
                         component={TextField}
-                        className={classes.inputFieldCustom}
+                        className={classes.textFieldArea}
+                        multiLine
+                        rows={1}
                         fullWidth={true}/>
                 </div>
                 <IconButton

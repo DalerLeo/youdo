@@ -315,8 +315,8 @@ export const sendResumeAnswers = (application, resume, formData) => {
     }
 }
 
-export const getResumeAnswersList = (resume) => {
-    const params = serializers.answersListSerializer(resume)
+export const getResumeAnswersList = (application, resume) => {
+    const params = serializers.answersListSerializer(application, resume)
     const payload = axios()
         .get(API.HR_RESUME_ANSWERS_LIST, {params})
         .then((response) => {

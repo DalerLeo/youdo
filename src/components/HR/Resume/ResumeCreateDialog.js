@@ -408,8 +408,7 @@ const ResumeCreateDialog = enhance((props) => {
                         label={t('Интересы и хобби')}
                         fullWidth={true}
                         multiLine={true}
-                        rows={1}
-                        rowsMax={4}/>
+                        rows={1}/>
                 </div>
             )
             case EXPECTATIONS: return (

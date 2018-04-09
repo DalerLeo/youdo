@@ -5,14 +5,15 @@ import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import TextField from '../../Basic/TextField'
+import {COLOR_RED, COLOR_WHITE} from '../../../../constants/styleConstants'
 
 const enhance = compose(
     injectSheet({
         wrapper: {
-            margin: '15px -30px 0',
-            padding: '15px 30px 0',
-            borderTop: '1px #e0e0e0 solid',
+            margin: '0 -30px',
+            padding: '0 30px',
             position: 'relative',
             zIndex: '2'
         },
@@ -53,41 +54,20 @@ const enhance = compose(
             }
         },
         detail: {
-            display: 'flex',
-            alignItems: 'flex-end',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
             marginTop: '10px',
             '&:first-child': {
                 marginTop: '0'
-            },
-            '& > div:first-child': {
-                width: 'calc(100% - 40px)'
             }
         },
-        addAnother: {
-            width: '100%',
-            margin: '5px 0 0',
-            zIndex: '5',
-            '& a': {
-                fontWeight: '600'
-            }
+        remove: {
+            color: COLOR_RED,
+            cursor: 'pointer',
+            fontWeight: '600',
+            textAlign: 'center',
+            margin: '10px 0'
         }
     })
 )
-
-const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 22,
-        height: 22
-    },
-    button: {
-        width: 40,
-        height: 40,
-        padding: 9
-    }
-}
 
 const ResumeNewQuestionsField = enhance((props) => {
     const {
@@ -102,6 +82,15 @@ const ResumeNewQuestionsField = enhance((props) => {
         return fields.remove(index)
     }
 
+    const flatButtonStyle = {
+        label: {
+            color: COLOR_WHITE,
+            fontWeight: '600',
+            textTransform: 'none',
+            verticalAlign: 'baseline'
+        }
+    }
+
     const details = fields.map((detail, index) => {
         return (
             <div key={index} className={classes.detail}>
@@ -110,7 +99,9 @@ const ResumeNewQuestionsField = enhance((props) => {
                         label={t('Вопрос')}
                         name={`${detail}.question`}
                         component={TextField}
-                        className={classes.inputFieldCustom}
+                        className={classes.textFieldArea}
+                        multiLine
+                        rows={1}
                         fullWidth={true}/>
                     <Field
                         label={t('Ответ')}
@@ -119,15 +110,9 @@ const ResumeNewQuestionsField = enhance((props) => {
                         className={classes.textFieldArea}
                         multiLine
                         rows={1}
-                        rowsMax={4}
                         fullWidth/>
                 </div>
-                <IconButton
-                    onTouchTap={() => handleTouchTap(index, false)}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}>
-                    <ContentRemove/>
-                </IconButton>
+                <div className={classes.remove} onClick={() => handleTouchTap(index, false)}>{t('Удалить')}</div>
             </div>
         )
     })
@@ -135,9 +120,16 @@ const ResumeNewQuestionsField = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             {details}
-            <div className={classes.addAnother}>
-                <a onClick={() => handleTouchTap(null, true)}>{t('Добавить вопрос')}</a>
-            </div>
+            <FlatButton
+                label={'Добавить вопрос'}
+                labelStyle={flatButtonStyle.label}
+                backgroundColor={'#607D8B'}
+                fullWidth={true}
+                hoverColor={'#607D8B'}
+                rippleColor={COLOR_WHITE}
+                onClick={() => {
+                    handleTouchTap(null, true)
+                }}/>
         </div>
     )
 })

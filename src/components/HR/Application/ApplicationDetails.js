@@ -6,15 +6,20 @@ import injectSheet from 'react-jss'
 import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import Delete from 'material-ui/svg-icons/action/delete'
-import Person from 'material-ui/svg-icons/social/person'
-import Deadline from 'material-ui/svg-icons/image/timelapse'
-import ToolTip from '../../ToolTip'
+import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {getYearText} from '../../../helpers/yearsToText'
+import {getYearText} from '../../../helpers/hrcHelpers'
 import t from '../../../helpers/translate'
-import {PADDING_STANDART, BORDER_STYLE, COLOR_GREY_LIGHTEN} from '../../../constants/styleConstants'
+import {
+    PADDING_STANDART,
+    BORDER_STYLE,
+    COLOR_GREY_LIGHTEN,
+    COLOR_GREY
+} from '../../../constants/styleConstants'
 import {SUM_CURRENCY} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
@@ -108,7 +113,13 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             justifyContent: 'flex-end',
+            alignItems: 'center',
             zIndex: '2'
+        },
+        titleExtra: {
+            fontSize: '14px',
+            fontWeight: '600',
+            margin: '0 10px'
         },
         bodyTitle: {
             fontWeight: '600',
@@ -129,14 +140,29 @@ const enhance = compose(
 
 const iconStyle = {
     icon: {
-        color: '#666',
-        width: 20,
-        height: 20
+        color: COLOR_GREY,
+        width: 24,
+        height: 24
     },
     button: {
         width: 48,
         height: 48,
-        padding: 0
+        padding: 12
+    }
+}
+const popoverStyle = {
+    menuItem: {
+        fontSize: '13px',
+        minHeight: '36px',
+        lineHeight: '36px'
+    },
+    innerDiv: {
+        padding: '0px 16px 0px 60px'
+    },
+    icon: {
+        margin: '7px',
+        width: '22px',
+        height: '22px'
     }
 }
 withState('openDetails', 'setOpenDetails', false)
@@ -159,8 +185,7 @@ const ApplicationDetails = enhance((props) => {
     const email = _.get(data, ['contact', 'email']) || t('Не указан')
     const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
     const address = _.get(data, ['contact', 'address']) || t('Не указан')
-    const createdDate = dateFormat(_.get(data, 'createdDate'))
-    const deadline = dateFormat(_.get(data, 'deadline'), true)
+    const deadline = dateFormat(_.get(data, 'deadline'))
     const education = _.get(data, 'education')
     const experience = _.toNumber(_.get(data, 'experience'))
     const levelPc = _.get(data, 'levelPc')
@@ -191,47 +216,36 @@ const ApplicationDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId} <span className={classes.createdDate}>({createdDate})</span></div>
+                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text={t('Дэдлайн') + ': ' + deadline}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Deadline />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Рекрутер') + ': ' + recruiter}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Person />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Изменить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}>
-                            <Edit />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Удалить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}>
-                            <Delete />
-                        </IconButton>
-                    </ToolTip>
+                    <div className={classes.titleExtra}>{t('Дэдлайн')}: {deadline}</div>
+                    <div className={classes.titleExtra}>{t('Рекрутер')}: {recruiter}</div>
+
+                    <IconMenu
+                        className={classes.popover}
+                        iconButtonElement={
+                            <IconButton iconStyle={iconStyle.icon} style={iconStyle.button}>
+                                <MoreIcon/>
+                            </IconButton>
+                        }
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<Edit style={popoverStyle.icon}/>}
+                            onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}
+                            primaryText={t('Изменить')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<Delete style={popoverStyle.icon}/>}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}
+                            primaryText={t('Удалить')}/>
+                    </IconMenu>
                 </div>
             </div>
             <div className={classes.companyInfo}>
