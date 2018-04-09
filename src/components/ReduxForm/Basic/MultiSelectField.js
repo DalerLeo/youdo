@@ -52,7 +52,7 @@ const enhance = compose(
         label: {
             top: '0 !important',
             fontSize: '11px',
-            color: 'rgb(93, 100, 116)'
+            color: 'rgb(93, 100, 116) !important'
         },
         select: {
             paddingTop: 18,

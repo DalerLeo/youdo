@@ -28,12 +28,26 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            position: 'relative',
             height: 'auto',
             width: '100%',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
+            },
+            '& > div:first-child': {
+                position: 'absolute',
+                top: 20,
+                color: 'rgba(0, 0, 0, 0.3)',
+                transition: '0.2s ease all',
+                '-mozTransition': '0.2s ease all',
+                '-webkitTransition': '0.2s ease all'
             }
+        },
+        label: {
+            top: '0 !important',
+            fontSize: '11px',
+            color: 'rgb(93, 100, 116) !important'
         },
         select: {
             position: 'relative',
@@ -166,15 +180,19 @@ const SearchField = enhance((props) => {
         withoutErrorText
     } = props
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
+
     return (
         <div className={classes.wrapper}>
+            <div className={meta.active || !_.isEmpty(input.value) ? classes.label : ''}>{label}</div>
             <Select
                 className={meta.error ? classes.selectError : classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
                 onChange={value => input.onChange(value)}
-                placeholder={<span>{label}</span>}
+                onBlur={() => input.onBlur()}
+                onFocus={input.onFocus}
+                placeholder={''}
                 noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}
