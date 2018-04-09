@@ -146,11 +146,10 @@ export const sendAnswersSerializer = (application, resume, data) => {
         return {
             application,
             resume,
-            question: index,
+            question: _.toNumber(index),
             answer
         }
     })
-    console.warn(data)
     const newAnswers = _.map(_.get(data, 'newQuestions'), (item) => {
         const question = _.get(item, 'question')
         const answer = _.get(item, 'answer')

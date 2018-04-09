@@ -81,7 +81,7 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const list = _.get(props, ['input', 'value'])
         const nextList = _.get(nextProps, ['input', 'value'])
-        return !_.isEqual(list, nextList) && nextList
+        return !_.isEqual(list, nextList) && !_.isEmpty(nextList)
     }, ({input: {value}, updateAnswerList}) => {
         if (!_.isEmpty(value)) {
             updateAnswerList(_.map(value, (item, index) => {
@@ -107,14 +107,14 @@ const ResumeQuestionsTab = enhance((props) => {
         answerListClone,
         updateAnswerList
     } = props
-    const removeQuestion = (id, question) => {
+    const removeQuestion = (id) => {
         const removedArray = _.remove(questionListClone, (item) => {
             return _.get(item, 'id') === id
         })
-        const clearedAnswers = _.remove(answerListClone, (item) => {
-            return _.get(item, 'question') === question
+        const clearedAnswers = _.filter(answerListClone, (item) => {
+            return String(_.get(item, 'question')) !== String(id)
         })
-        updateAnswerList(_.differenceBy(answerListClone, clearedAnswers))
+        updateAnswerList(clearedAnswers)
         const getAnswers = () => {
             const answers = {}
             _.map(answerListClone, (item) => {
@@ -124,9 +124,9 @@ const ResumeQuestionsTab = enhance((props) => {
             return answers
         }
         input.onChange(getAnswers())
+        console.warn(getAnswers())
         return _.differenceBy(questionListClone, removedArray)
     }
-    console.warn(answerListClone)
 
     return (
         <ul className={classes.questions}>
@@ -141,12 +141,12 @@ const ResumeQuestionsTab = enhance((props) => {
                     const question = _.get(item, 'question')
                     return (
                         <li key={id} className={classes.question}>
-                            <div onClick={() => { updateQuestionList(removeQuestion(id, question)) }} className={classes.remove}>
+                            <div onClick={() => { updateQuestionList(removeQuestion(id)) }} className={classes.remove}>
                                 <RemoveIcon/>
                             </div>
                             <span>{count}. {question}</span>
                             <Field
-                                name={'answers[' + question + '][answer]'}
+                                name={'answers[' + id + '][answer]'}
                                 component={TextField}
                                 className={classes.textFieldArea}
                                 onBlur={(event, value) => {
