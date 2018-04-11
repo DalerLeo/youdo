@@ -32,6 +32,12 @@ const enhance = compose(
             textAlign: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
+        textFieldArea: {
+            top: '-20px !important',
+            lineHeight: '20px !important',
+            fontSize: '13px !important',
+            marginBottom: '-22px'
+        },
         contacts: {
             background: '#f1f5f8',
             color: '#333',
@@ -81,6 +87,14 @@ const ClientCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Организация')}
                                 fullWidth={true}/>
+                            <Field
+                                name="sphere"
+                                component={TextField}
+                                className={classes.textFieldArea}
+                                label={t('Сфера деятельности')}
+                                fullWidth={true}
+                                multiLine={true}
+                                rows={1}/>
                             <Field
                                 name="address"
                                 component={TextField}

@@ -206,7 +206,7 @@ const enhance = compose(
              dispatch(resumeItemFetchAction(resume))
              dispatch(getResumeComments(filter))
              dispatch(getQuestionsList(application))
-             dispatch(getResumeAnswersList(resume))
+             dispatch(getResumeAnswersList(application, resume))
          }
      }),
 
@@ -474,14 +474,17 @@ const enhance = compose(
                 })
         },
 
-        handleSubmitResumeAnswers: props => () => {
+        handleSubmitResumeAnswers: props => (answer, prevAnswer) => {
             const {dispatch, resumeDetailsForm, location: {query}} = props
             const application = _.toInteger(_.get(query, 'application'))
             const resume = _.toInteger(_.get(query, 'resume'))
-            return dispatch(sendResumeAnswers(application, resume, _.get(resumeDetailsForm, ['values'])))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
-                })
+            if (!_.isEmpty(answer) && answer !== prevAnswer) {
+                return dispatch(sendResumeAnswers(application, resume, _.get(resumeDetailsForm, ['values'])))
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
+                    })
+            }
+            return null
         },
 
         // . handleCompleteResumeInterview: props => () => {

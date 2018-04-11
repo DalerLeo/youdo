@@ -134,7 +134,7 @@ const SearchField = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <Select
-                className={meta.error ? classes.selectError : classes.select}
+                className={(meta.error && meta.touched) ? classes.selectError : classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
@@ -149,7 +149,7 @@ const SearchField = enhance((props) => {
                 disabled={props.disabled || state.loading}
                 filterOptions={options => options}
             />
-            {meta.error && <span className={classes.error}>{meta.error}</span>}
+            {meta.error && meta.touched && <span className={classes.error}>{meta.error}</span>}
         </div>
     )
 })

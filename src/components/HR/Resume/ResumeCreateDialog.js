@@ -19,19 +19,14 @@ import {
     COLOR_GREY
 } from '../../../constants/styleConstants'
 import {ZERO, HR_WORK_SCHEDULE} from '../../../constants/backendConstants'
-import {connect} from 'react-redux'
-import {TextField, DateField, CheckBox} from '../../ReduxForm'
+import {TextField, CheckBox} from '../../ReduxForm'
 import ToolTip from '../../ToolTip'
-import MaritalStatusSearchField from '../../ReduxForm/HR/Resume/MaritalStatusSearchField'
-import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
 import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
 import LanguageField from '../../ReduxForm/HR/LanguageField'
-import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
 import ExperiencesField from '../../ReduxForm/HR/Resume/ExperiencesField'
 import EducationsField from '../../ReduxForm/HR/Resume/EducationsField'
 import DriverLicenceCheck from '../../ReduxForm/HR/Resume/DriverLicenceCheck'
-import CountrySearchField from '../../ReduxForm/HR/CountrySearchField'
-import CitySearchField from '../../ReduxForm/HR/CitySearchField'
+import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import {
     Step,
     Stepper,
@@ -44,6 +39,7 @@ import Education from 'material-ui/svg-icons/social/school'
 import Skills from 'material-ui/svg-icons/action/loyalty'
 import Expectations from 'material-ui/svg-icons/action/trending-up'
 import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
+import ResumeCreatePersonal from './ResumeCreatePersonal'
 
 export const RESUME_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const RESUME_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -120,7 +116,6 @@ const enhance = compose(
         },
         inputDateCustom: {
             fontSize: '13px !important',
-            height: '45px !important',
             marginTop: '7px',
             '& > div:first-child': {
                 fontSize: '13px !important'
@@ -239,12 +234,7 @@ const enhance = compose(
     }),
     withState('openExpDialog', 'setOpenExpDialog', false),
     withState('stepIndex', 'setStepIndex', ZERO),
-    connect((state) => {
-        const country = _.get(state, ['form', 'ResumeCreateForm', 'values', 'country', 'value'])
-        return {
-            country
-        }
-    })
+    withState('personalError', 'updatePersonalError', false),
 )
 
 const ResumeCreateDialog = enhance((props) => {
@@ -257,7 +247,11 @@ const ResumeCreateDialog = enhance((props) => {
         isUpdate,
         stepIndex,
         setStepIndex,
-        country
+        initialValues,
+
+        // ERRORS
+        // . personalError,
+        updatePersonalError
     } = props
 
     const EXPERIENCE = 1
@@ -303,79 +297,17 @@ const ResumeCreateDialog = enhance((props) => {
         switch (stepIndex) {
             case ZERO: return (
                 <div className={classes.container}>
-                    <h4>{t('Личные данные')}</h4>
-                    <Field
-                        name="fullName"
-                        label={t('Ф.И.О')}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    <Field
-                        name="dateOfBirth"
-                        label={t('Дата рождения')}
-                        component={DateField}
-                        className={classes.inputDateCustom}
-                        errorStyle={{bottom: 2}}
-                        fullWidth={true}/>
-                    <Field
-                        name="sex"
-                        label={t('Пол')}
-                        component={GenderSearchField}
-                        className={classes.inputFieldCustom}
-                        removeNoMatter={true}
-                        fullWidth={true}/>
-                    <Field
-                        name="familyStatus"
-                        label={t('Семейное положение')}
-                        component={MaritalStatusSearchField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    <Field
-                        name="address"
-                        label={t('Адрес проживания')}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    <Field
-                        name="phone"
-                        label={t('Телефонный номер')}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    <Field
-                        name="email"
-                        label={t('Email адрес')}
-                        component={TextField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    <Field
-                        name="country"
-                        label={t('Страна проживания')}
-                        component={CountrySearchField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
-                    {country &&
-                    <Field
-                        name="city"
-                        label={t('Город')}
-                        component={CitySearchField}
-                        params={{country: country}}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>}
-                    <Field
-                        name="position"
-                        label={t('Желаемая должность')}
-                        component={PositionSearchField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
+                    <ResumeCreatePersonal
+                        classes={classes}
+                        initialValues={initialValues}
+                        updatePersonalError={updatePersonalError}/>
                 </div>
             )
             case EXPERIENCE: return (
                 <div className={classes.container}>
                     <FieldArray
                         name="experiences"
-                        component={ExperiencesField}
-                    />
+                        component={ExperiencesField}/>
                 </div>
             )
             case EDUCATION: return (
@@ -408,8 +340,13 @@ const ResumeCreateDialog = enhance((props) => {
                         label={t('Интересы и хобби')}
                         fullWidth={true}
                         multiLine={true}
-                        rows={1}
-                        rowsMax={4}/>
+                        rows={1}/>
+                    <Field
+                        name="skills"
+                        component={SkillsTagSearchField}
+                        className={classes.inputFieldCustom}
+                        label={t('Профессиональные навыки')}
+                        fullWidth={true}/>
                 </div>
             )
             case EXPECTATIONS: return (

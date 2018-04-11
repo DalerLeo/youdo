@@ -13,6 +13,8 @@ import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
 import injectSheet from 'react-jss'
 import {compose, withState} from 'recompose'
+import {hashHistory, Link} from 'react-router'
+import Return from 'material-ui/svg-icons/content/reply'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddContent from 'material-ui/svg-icons/content/add'
@@ -22,6 +24,7 @@ import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import Event from 'material-ui/svg-icons/action/event'
 import AddNote from 'material-ui/svg-icons/editor/mode-edit'
+import Send from 'material-ui/svg-icons/content/reply-all'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
@@ -34,25 +37,29 @@ import {TextField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
     BORDER_STYLE,
-    COLOR_BLUE_LOGO,
-    COLOR_DEFAULT, COLOR_GREEN,
+    COLOR_BLUE_GREY,
+    COLOR_DEFAULT,
+    COLOR_GREEN,
     COLOR_GREY,
-    COLOR_GREY_LIGHTEN, COLOR_RED,
-    COLOR_WHITE, LINK_COLOR,
+    COLOR_GREY_LIGHTEN,
+    COLOR_RED,
+    COLOR_WHITE,
+    LINK_COLOR,
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
-import {getYearText} from '../../../helpers/yearsToText'
+import {getYearText} from '../../../helpers/hrcHelpers'
 import {
     HR_RESUME_LONG,
     HR_RESUME_MEETING,
-    HR_RESUME_REMOVED, HR_RESUME_REPORT,
+    HR_RESUME_REMOVED,
+    HR_RESUME_REPORT,
     HR_RESUME_SHORT,
     ZERO
 } from '../../../constants/backendConstants'
-import {hashHistory} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 import {reduxForm, Field} from 'redux-form'
+import * as ROUTES from '../../../constants/routes'
 
 export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
@@ -94,42 +101,101 @@ const enhance = compose(
             margin: '-30px -28px 0 -28px',
             boxShadow: CUSTOM_BOX_SHADOW,
             position: 'relative',
-            zIndex: '1',
-            '& h1': {
-                fontSize: '18px',
-                fontWeight: '600',
-                whiteSpace: 'nowrap'
-            }
+            zIndex: '1'
         },
         title: {
-            padding: '20px 60px 20px 30px',
+            color: COLOR_GREY,
+            fontSize: '14px',
+            fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            position: 'relative'
+            position: 'relative',
+            height: '60px',
+            width: '100%',
+            '& h1': {
+                fontSize: '15px',
+                fontWeight: '700',
+                whiteSpace: 'nowrap'
+            },
+            '& > div': {
+                padding: '0 30px',
+                width: 'calc(100% / 3)'
+            }
         },
-        toggle: {
-            cursor: 'pointer',
-            position: 'absolute',
+        return: {
+            color: COLOR_GREY,
             display: 'flex',
             alignItems: 'center',
-            padding: '0 18px',
-            right: '0',
+            borderRight: BORDER_STYLE,
+            height: '100%',
+            position: 'relative',
+            '& svg': {
+                color: COLOR_GREY + '!important',
+                marginRight: '5px',
+                width: 'auto',
+                height: 'auto'
+            }
+        },
+        backToTasks: {
+            position: 'absolute',
             top: '0',
+            left: '0',
+            right: '0',
             bottom: '0'
         },
-        demands: {
-            borderTop: BORDER_STYLE,
-            padding: PADDING_STANDART,
+        appStatus: {
+
+        },
+        toggle: {
+            height: '100%',
+            position: 'relative',
+            padding: '0 !important',
+            borderLeft: BORDER_STYLE
+        },
+        toggleButton: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            padding: '0 30px',
+            cursor: 'pointer',
+            height: '100%',
             width: '100%',
+            '& svg': {
+                color: COLOR_GREY + '!important',
+                marginLeft: '5px'
+            }
+        },
+        detailOverlay: {
+            background: 'black',
+            position: 'fixed',
+            top: '60px',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            opacity: '0.5',
+            zIndex: '2'
+        },
+        demands: {
+            background: COLOR_WHITE,
+            borderTop: BORDER_STYLE,
+            color: COLOR_GREY,
+            fontSize: '13px',
+            fontWeight: 'normal',
+            padding: PADDING_STANDART,
+            position: 'absolute',
+            top: '100%',
+            left: '0',
+            right: '0',
+            height: 'calc(100vh - 60px)',
+            zIndex: '4',
             '& h2': {
                 fontSize: '15px',
-                fontWeight: '600',
-                marginBottom: '15px'
+                fontWeight: '700',
+                marginBottom: '7px'
             }
         },
         demandsList: {
-            display: 'flex',
             marginBottom: '20px',
             '& h5': {
                 fontSize: '13px',
@@ -137,25 +203,12 @@ const enhance = compose(
                 marginBottom: '5px'
             },
             '& ul': {
-                marginLeft: '20px',
                 listStyle: 'none',
-                minWidth: '200px',
                 '&:first-child': {
                     marginLeft: '0'
                 },
                 '& li': {
-                    paddingLeft: '15px',
-                    lineHeight: '25px',
-                    position: 'relative',
-                    '&:after': {
-                        content: '""',
-                        position: 'absolute',
-                        left: '0',
-                        top: '12px',
-                        background: '#a6aebc',
-                        height: '2px',
-                        width: '8px'
-                    }
+                    lineHeight: '25px'
                 }
             },
             '&:last-child': {
@@ -189,7 +242,7 @@ const enhance = compose(
                 background: '#f2f5f8'
             },
             '& > header': {
-                background: COLOR_BLUE_LOGO,
+                background: COLOR_BLUE_GREY,
                 borderRadius: '2px',
                 color: COLOR_WHITE,
                 display: 'flex',
@@ -564,10 +617,14 @@ const LongListGridList = enhance((props) => {
     const loading = _.get(detailData, 'loading')
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
-    // . const isCompleted = _.get(data, 'status') === APPLICATION_COMPLETED
+    const applicationStatus = _.get(data, 'status')
 
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])
+    const contact = _.get(data, ['contact', 'name'])
+    const contactPhone = _.get(data, ['contact', 'telephone'])
+    const contactEmail = _.get(data, ['contact', 'email'])
+
     const ageMin = _.get(data, ['ageMin'])
     const ageMax = _.get(data, ['ageMax'])
     const sex = _.get(data, ['sex'])
@@ -696,7 +753,6 @@ const LongListGridList = enhance((props) => {
                             fullWidth
                             multiLine
                             rows={1}
-                            rowsMax={6}
                         />
                     </form>}
                 </div>
@@ -806,43 +862,60 @@ const LongListGridList = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>}
                         <div className={classes.title}>
-                            <h1>{t('Задание')}: {position}</h1>
-                            <h1>{client}</h1>
-                            <div className={classes.toggle} onClick={() => { setShowDetails(!showDetails) }}>
-                                {showDetails ? <ArrowUp/> : <ArrowDown/>}
+                            <div className={classes.return}>
+                                <Return/>
+                                <h1>{t('Задания')} <span style={{margin: '0 5px'}}>|</span> {position}</h1>
+                                <Link to={{pathname: ROUTES.HR_TASKS_LIST_URL}} className={classes.backToTasks}/>
+                            </div>
+                            <div className={classes.appStatus}>{t('Статус')}: {applicationStatus}</div>
+                            <div className={classes.toggle}>
+                                <div className={classes.toggleButton} onClick={() => { setShowDetails(!showDetails) }}>
+                                    <span>{t('Детали')}</span>
+                                    {showDetails ? <ArrowUp/> : <ArrowDown/>}
+                                </div>
+                                {showDetails && <div className={classes.detailOverlay}/>}
+                                {showDetails &&
+                                <div className={classes.demands}>
+                                    <h2>{t('Описание компании')}</h2>
+                                    <div className={classes.demandsList}>
+                                        <ul>
+                                            <li>{t('Клиент')}: {client}</li>
+                                            <li>{t('Контактное лицо')}: {contact}</li>
+                                            <li>{t('Телефон')}: {contactPhone}</li>
+                                            <li>{t('Email')}: {contactEmail}</li>
+                                        </ul>
+                                    </div>
+                                    <h2>{t('Требования к кандидату')}</h2>
+                                    <div className={classes.demandsList}>
+                                        <ul>
+                                            <li>{t('Возраст')}: {ageMin} - {getYearText(ageMax)}</li>
+                                            <li>{t('Пол')}: {genderFormat[sex]}</li>
+                                        </ul>
+                                        <ul>
+                                            <li>{t('Образование')}: {education}</li>
+                                            <li>{t('Знание языков')}: {_.isEmpty(languages) ? t('Не указано') : languages}</li>
+                                            <li>{t('Знание ПК')}: {levelPc}</li>
+                                        </ul>
+                                        <ul>
+                                            <li>{t('Режим работы')}: {mode}</li>
+                                            <li>{t('Минимальный опыт работы')}: {getYearText(experience)}</li>
+                                        </ul>
+                                    </div>
+                                    <div className={classes.demandsList + ' ' + classes.block}>
+                                        <h5>{t('Функциональные обязанности')}</h5>
+                                        <div>{responsibility}</div>
+                                    </div>
+                                    <div className={classes.demandsList + ' ' + classes.block}>
+                                        <h5>{t('Социальный пакет')}</h5>
+                                        <div>{_.join(privileges, ', ') || t('Не указан')}</div>
+                                    </div>
+                                    <div className={classes.demandsList + ' ' + classes.block}>
+                                        <h5>{t('Профессиональные навыки')}</h5>
+                                        <div className={classes.tagsWrapper}>{skills}</div>
+                                    </div>
+                                </div>}
                             </div>
                         </div>
-                        {showDetails &&
-                        <div className={classes.demands}>
-                            <h2>{t('Требования к кандидату')}</h2>
-                            <div className={classes.demandsList}>
-                                <ul>
-                                    <li>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></li>
-                                    <li>{t('Пол')}: <strong>{genderFormat[sex]}</strong></li>
-                                </ul>
-                                <ul>
-                                    <li>{t('Образование')}: <strong>{education}</strong></li>
-                                    <li>{t('Знание языков')}: <strong>{_.isEmpty(languages) ? t('Не указано') : languages}</strong></li>
-                                    <li>{t('Знание ПК')}: <strong>{levelPc}</strong></li>
-                                </ul>
-                                <ul>
-                                    <li>{t('Режим работы')}: <strong>{mode}</strong></li>
-                                    <li>{t('Минимальный опыт работы')}: <strong>{getYearText(experience)}</strong></li>
-                                </ul>
-                            </div>
-                            <div className={classes.demandsList + ' ' + classes.block}>
-                                <h5>{t('Функциональные обязанности')}</h5>
-                                <div>{responsibility}</div>
-                            </div>
-                            <div className={classes.demandsList + ' ' + classes.block}>
-                                <h5>{t('Социальный пакет')}</h5>
-                                <div>{_.join(privileges, ', ') || t('Не указан')}</div>
-                            </div>
-                            <div className={classes.demandsList + ' ' + classes.block}>
-                                <h5>{t('Профессиональные навыки')}</h5>
-                                <div className={classes.tagsWrapper}>{skills}</div>
-                            </div>
-                        </div>}
                     </div>
                     <div className={classes.lists}>
                         <div className={classes.column}>
@@ -904,8 +977,9 @@ const LongListGridList = enhance((props) => {
                                     </div>
                                 </div>
                             </header>
+                            {shortListData.count > ZERO && reportListData.count === ZERO &&
                             <FlatButton
-                                label={reportListData.count > ZERO ? t('Отправить отчет') : t('Сформировать отчет')}
+                                label={t('Сформировать отчет')}
                                 labelStyle={flatButtonStyle.label}
                                 icon={<Done style={flatButtonStyle.icon}/>}
                                 style={flatButtonStyle.button}
@@ -913,12 +987,8 @@ const LongListGridList = enhance((props) => {
                                 hoverColor={flatButtonStyle.background}
                                 rippleColor={COLOR_WHITE}
                                 fullWidth
-                                onClick={() => {
-                                    reportListData.count > ZERO
-                                        ? confirmDialog.handleOpen()
-                                        : setOpenAddReport(true)
-                                }}
-                            />
+                                onClick={() => { setOpenAddReport(true) }}
+                            />}
                             <div className={classes.resumeList}>
                                 {reportListData.loading
                                     ? <div className={classes.loader}>
@@ -929,6 +999,11 @@ const LongListGridList = enhance((props) => {
                                         <header>
                                             <h4>{t('Отчет')} ({reportListData.count + ' ' + t('чел.')})</h4>
                                             <div>
+                                                <ToolTip text={t('Отправить')} position={'bottom'}>
+                                                    <div className={classes.reportButton} onClick={confirmDialog.handleOpen}>
+                                                        <Send/>
+                                                    </div>
+                                                </ToolTip>
                                                 <ToolTip text={t('Изменить')} position={'bottom'}>
                                                     <div className={classes.reportButton} onClick={editReportDialog.handleOpen}>
                                                         <Edit/>
@@ -951,7 +1026,7 @@ const LongListGridList = enhance((props) => {
                             </div>
                             {openAddReport &&
                             <div className={classes.reportInfo}>
-                                <h4>{t('Выберите из списка резюме для сформирования отчета')}</h4>
+                                <h4>{t('Выберите из списка резюме для формирования отчета')}</h4>
                                 <FlatButton
                                     label={_.isEqual(checkedList, checkedAllResumes) ? t('Снять все') : t('Выбрать все')}
                                     labelStyle={flatButtonStyle.labelWhite}
@@ -1031,8 +1106,7 @@ const LongListGridList = enhance((props) => {
                 open={deleteReportDialog.open}
                 onClose={deleteReportDialog.handleClose}
                 onSubmit={() => { deleteReportDialog.handleSubmit(reportListIds) }}
-                message={t('Удалить отчет') + '?'}
-                type={'submit'}
+                type={'delete'}
                 loading={false}/>
 
             <ResumeDetailsDialog

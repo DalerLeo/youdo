@@ -8,7 +8,9 @@ import GridList from '../../GridList'
 import Container from '../../Container'
 import ApplicationCreateDialog from './ApplicationCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
-import Badge from 'material-ui/Badge'
+import FlatButton from 'material-ui/FlatButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -21,43 +23,23 @@ import ApplicationFilterForm from './ApplicationFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {
-    APPLICATION_NOT_ASSIGNED,
     APPLICATION_ASSIGNED,
     APPLICATION_CANCELED,
     APPLICATION_COMPLETED
 } from '../../../constants/backendConstants'
 import {
     COLOR_GREEN,
-    COLOR_RED,
     COLOR_BLUE_GREY,
-    COLOR_WHITE
+    COLOR_WHITE,
+    COLOR_YELLOW,
+    COLOR_GREY
 } from '../../../constants/styleConstants'
-import Done from 'material-ui/svg-icons/action/check-circle'
-import List from 'material-ui/svg-icons/action/list'
-import NotAssigned from 'material-ui/svg-icons/social/person-outline'
-import Assigned from 'material-ui/svg-icons/social/person'
+import List from 'material-ui/svg-icons/action/assignment'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
-
-export const getStatusName = (status) => {
-    switch (status) {
-        case APPLICATION_NOT_ASSIGNED: return t('Неприсвоен')
-        case APPLICATION_ASSIGNED: return t('Присвоен рекрутеру')
-        case APPLICATION_CANCELED: return t('Отменен')
-        case APPLICATION_COMPLETED: return t('Выполнен')
-        default: return null
-    }
-}
-
-export const getStatusIcon = (status) => {
-    switch (status) {
-        case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_BLUE_GREY}/>
-        case APPLICATION_ASSIGNED: return <Assigned color={COLOR_BLUE_GREY}/>
-        case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
-        case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
-        default: return null
-    }
-}
+import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import InProcess from 'material-ui/svg-icons/av/loop'
+import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
 
 const listHeader = [
     {
@@ -155,14 +137,7 @@ const ApplicationGridList = enhance((props) => {
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
-    const statusIsNotAssigned = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_NOT_ASSIGNED
-    const statusIsAssigned = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_ASSIGNED
     const statusIsCanceled = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_CANCELED
-    const statusIsCompleted = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_COMPLETED
-    const notAssignedCount = 3
-    const assignedCount = 1
-    const canceledCount = 5
-    const completedCount = 2
 
     const applicationfilterDialog = (
         <ApplicationFilterForm
@@ -205,6 +180,7 @@ const ApplicationGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
+        const doing = _.get(item, 'doing')
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
@@ -217,11 +193,11 @@ const ApplicationGridList = enhance((props) => {
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={2}>{deadline}</Col>
                     <Col xs={1} className={classes.buttons}>
-                        <ToolTip position={'left'} text={getStatusName(status)}>
+                        <ToolTip position={'left'} text={getAppStatusName(status, false, doing)}>
                             <IconButton
                                 style={iconStyle.button}
                                 iconStyle={iconStyle.icon}>
-                                {getStatusIcon(status)}
+                                {getAppStatusIcon(status, doing)}
                             </IconButton>
                         </ToolTip>
                     </Col>
@@ -230,85 +206,28 @@ const ApplicationGridList = enhance((props) => {
         )
     })
 
-    const badgeTransition = 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+    const popoverStyle = {
+        menuItem: {
+            fontSize: '13px',
+            minHeight: '36px',
+            lineHeight: '36px'
+        },
+        innerDiv: {
+            padding: '0px 16px 0px 60px'
+        },
+        icon: {
+            margin: '7px',
+            width: '22px',
+            height: '22px'
+        }
+    }
+
     const badgeStyle = {
         wrapper: {
             padding: 0
         },
-        badgeIsNull: {
-            top: 4,
-            right: 4,
-            width: 18,
-            height: 18,
-            fontSize: 9,
-            fontWeight: 600,
-            border: statusIsNull ? 'none' : '1px #fff solid',
-            background: statusIsNull ? COLOR_WHITE : COLOR_RED,
-            transition: badgeTransition,
-            zIndex: 1
-        },
-        iconNull: {
-            color: statusIsNull ? COLOR_GREEN : COLOR_BLUE_GREY
-        },
-        badgeNotAssigned: {
-            top: 4,
-            right: 4,
-            width: 18,
-            height: 18,
-            fontSize: 9,
-            fontWeight: 600,
-            border: statusIsNotAssigned ? 'none' : '1px #fff solid',
-            background: statusIsNotAssigned ? COLOR_WHITE : COLOR_RED,
-            transition: badgeTransition,
-            zIndex: 1
-        },
-        iconNotAssigned: {
-            color: statusIsNotAssigned ? COLOR_GREEN : COLOR_BLUE_GREY
-        },
-        badgeAssigned: {
-            top: 4,
-            right: 4,
-            width: 18,
-            height: 18,
-            fontSize: 9,
-            fontWeight: 600,
-            border: statusIsAssigned ? 'none' : '1px #fff solid',
-            background: statusIsAssigned ? COLOR_WHITE : COLOR_RED,
-            transition: badgeTransition,
-            zIndex: 1
-        },
-        iconAssigned: {
-            color: statusIsAssigned ? COLOR_GREEN : COLOR_BLUE_GREY
-        },
-        badgeCanceled: {
-            top: 4,
-            right: 4,
-            width: 18,
-            height: 18,
-            fontSize: 9,
-            fontWeight: 600,
-            border: statusIsCanceled ? 'none' : '1px #fff solid',
-            background: statusIsCanceled ? COLOR_WHITE : COLOR_RED,
-            transition: badgeTransition,
-            zIndex: 1
-        },
-        iconCanceled: {
-            color: statusIsCanceled ? COLOR_GREEN : COLOR_BLUE_GREY
-        },
-        badgeCompleted: {
-            top: 4,
-            right: 4,
-            width: 18,
-            height: 18,
-            fontSize: 9,
-            fontWeight: 600,
-            border: statusIsCompleted ? 'none' : '1px #fff solid',
-            background: statusIsCompleted ? COLOR_WHITE : COLOR_RED,
-            transition: badgeTransition,
-            zIndex: 1
-        },
-        iconCompleted: {
-            color: statusIsCompleted ? COLOR_GREEN : COLOR_BLUE_GREY
+        iconStyle: (condition) => {
+            return {color: condition ? COLOR_GREEN : COLOR_BLUE_GREY}
         }
     }
 
@@ -321,70 +240,66 @@ const ApplicationGridList = enhance((props) => {
     const filterByStatus = (status) => {
         return hashHistory.push(filter.createURL({status: status}))
     }
+    const getIconByStatus = (style) => {
+        if (filter.getParam('status') === APPLICATION_ASSIGNED) {
+            return <InProcess color={COLOR_YELLOW} style={style}/>
+        }
+        if (filter.getParam('status') === APPLICATION_COMPLETED) {
+            return <Completed color={COLOR_GREEN} style={style}/>
+        }
+        return <MenuItemIcon color={COLOR_GREY} style={style}/>
+    }
 
     const extraButtons = (
         <div className={classes.buttons}>
-            {statusIsNull
-                ? null
-                : <ToolTip position="left" text={t('Показать все заявки')}>
-                    <IconButton
-                        onTouchTap={() => { filterByStatus(null) }}
-                        iconStyle={badgeStyle.iconNull}>
-                        <List/>
-                    </IconButton>
-                </ToolTip>}
-            <ToolTip position="left" text={t('Отфильтровать по неприсвоенным заявкам')}>
-                <Badge
-                    primary={true}
-                    badgeContent={statusIsNotAssigned ? <Done style={badgeStyle.iconNotAssigned}/> : notAssignedCount}
-                    style={badgeStyle.wrapper}
-                    badgeStyle={badgeStyle.badgeNotAssigned}>
-                    <IconButton
-                        onTouchTap={() => { filterByStatus(APPLICATION_NOT_ASSIGNED) }}
-                        iconStyle={badgeStyle.iconNotAssigned}>
-                        <NotAssigned/>
-                    </IconButton>
-                </Badge>
-            </ToolTip>
-            <ToolTip position="left" text={t('Отфильтровать по присвоенным заявкам')}>
-                <Badge
-                    primary={true}
-                    badgeContent={statusIsAssigned ? <Done style={badgeStyle.iconAssigned}/> : assignedCount}
-                    style={badgeStyle.wrapper}
-                    badgeStyle={badgeStyle.badgeAssigned}>
-                    <IconButton
-                        onTouchTap={() => { filterByStatus(APPLICATION_ASSIGNED) }}
-                        iconStyle={badgeStyle.iconAssigned}>
-                        <Assigned/>
-                    </IconButton>
-                </Badge>
-            </ToolTip>
+            <IconMenu
+                className={classes.popover}
+                iconButtonElement={
+                    <FlatButton
+                        label={t('Статус')}
+                        style={{display: 'flex', alignItems: 'center'}}
+                        backgroundColor={COLOR_WHITE}
+                        hoverColor={COLOR_WHITE}
+                        disableTouchRipple
+                        labelStyle={{
+                            textTransform: 'none',
+                            verticalAlign: 'baseline',
+                            fontWeight: '600'
+                        }}
+                        icon={getIconByStatus({verticalAlign: 'unset'})}
+                    />
+                }
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                {!statusIsNull &&
+                <MenuItem
+                    style={popoverStyle.menuItem}
+                    innerDivStyle={popoverStyle.innerDiv}
+                    leftIcon={<List style={popoverStyle.icon}/>}
+                    onTouchTap={() => { filterByStatus(null) }}
+                    primaryText={t('Все заявки')}/>}
+                <MenuItem
+                    style={popoverStyle.menuItem}
+                    innerDivStyle={popoverStyle.innerDiv}
+                    leftIcon={<InProcess style={popoverStyle.icon}/>}
+                    onTouchTap={() => { filterByStatus(APPLICATION_ASSIGNED) }}
+                    primaryText={t('Все активные')}/>
+                <MenuItem
+                    style={popoverStyle.menuItem}
+                    innerDivStyle={popoverStyle.innerDiv}
+                    leftIcon={<Completed style={popoverStyle.icon}/>}
+                    onTouchTap={() => { filterByStatus(APPLICATION_COMPLETED) }}
+                    primaryText={t('Завершенные')}/>
+            </IconMenu>
+
+            {false &&
             <ToolTip position="left" text={t('Отфильтровать по отмененным заявкам')}>
-                <Badge
-                    primary={true}
-                    badgeContent={statusIsCanceled ? <Done style={badgeStyle.iconCanceled}/> : canceledCount}
-                    style={badgeStyle.wrapper}
-                    badgeStyle={badgeStyle.badgeCanceled}>
-                    <IconButton
-                        onTouchTap={() => { filterByStatus(APPLICATION_CANCELED) }}
-                        iconStyle={badgeStyle.iconCanceled}>
-                        <Canceled/>
-                    </IconButton>
-                </Badge>
-            </ToolTip>
-            <ToolTip position="left" text={t('Отфильтровать по завершенным заявкам')}>
-                <Badge
-                    primary={true}
-                    badgeContent={statusIsCompleted ? <Done style={badgeStyle.iconCompleted}/> : completedCount}
-                    style={badgeStyle.wrapper}
-                    badgeStyle={badgeStyle.badgeCompleted}>
-                    <IconButton
-                        onTouchTap={() => { filterByStatus(APPLICATION_COMPLETED) }}
-                        iconStyle={badgeStyle.iconCompleted}>
-                        <Completed/>
-                    </IconButton>
-                </Badge>
-            </ToolTip>
+                <IconButton
+                    onTouchTap={() => { filterByStatus(APPLICATION_CANCELED) }}
+                    iconStyle={badgeStyle.iconStyle(statusIsCanceled)}>
+                    <Canceled/>
+                </IconButton>
+            </ToolTip>}
         </div>
     )
 

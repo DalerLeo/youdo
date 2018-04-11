@@ -5,13 +5,10 @@ import PropTypes from 'prop-types'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container'
 import Loader from '../../Loader'
-import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Calendar from 'material-ui/svg-icons/action/event'
-import CalendarCreated from 'material-ui/svg-icons/notification/event-available'
-import ToolTip from '../../ToolTip'
 import {hashHistory, Link} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 import toBoolean from '../../../helpers/toBoolean'
@@ -19,6 +16,7 @@ import t from '../../../helpers/translate'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import FullList from 'material-ui/svg-icons/action/assignment'
 import NewIcon from 'material-ui/svg-icons/av/new-releases'
 import InProcess from 'material-ui/svg-icons/av/loop'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
@@ -29,13 +27,10 @@ import {
     COLOR_GREEN,
     COLOR_GREY,
     COLOR_WHITE,
-    LINK_COLOR, COLOR_YELLOW
+    LINK_COLOR, COLOR_YELLOW, COLOR_RED
 } from '../../../constants/styleConstants'
-import {APPLICATION_COMPLETED} from '../../../constants/backendConstants'
+import {APPLICATION_COMPLETED, ZERO} from '../../../constants/backendConstants'
 import {CUSTOM_BOX_SHADOW, CUSTOM_BOX_SHADOW_HOVER} from '../LongList/LongListGridList'
-
-const SORT_BY_DEADLINE = 'deadline'
-const SORT_BY_CREATED_DATE = 'createdDate'
 
 const enhance = compose(
     injectSheet({
@@ -158,6 +153,14 @@ const enhance = compose(
                 marginRight: '5px'
             }
         },
+        missedDeadline: {
+            extend: 'deadline',
+            color: COLOR_RED,
+            fontWeight: '600',
+            '& svg': {
+                color: COLOR_RED + '!important'
+            }
+        },
         bodyBlock: {
             textAlign: 'center'
         },
@@ -172,6 +175,10 @@ const enhance = compose(
         completed: {
             extend: 'status',
             color: COLOR_GREEN
+        },
+        doing: {
+            extend: 'status',
+            color: COLOR_YELLOW
         },
         client: {
             fontSize: '13px',
@@ -193,12 +200,7 @@ const enhance = compose(
             borderRadius: '40px',
             background: COLOR_WHITE,
             marginRight: '30px',
-            paddingLeft: '10px'
-        },
-        popover: {
-            borderRight: BORDER_STYLE,
-            marginRight: '5px',
-            paddingRight: '5px'
+            padding: '0 10px'
         },
         calendarDay: {
             marginBottom: '25px',
@@ -269,21 +271,26 @@ const TasksGridList = enhance((props) => {
         const isNew = _.get(item, 'isNew')
         const client = _.get(item, ['contact', 'client', 'name'])
         const position = _.get(item, ['position', 'name'])
-        const deadline = dateFormat(_.get(item, 'deadline'))
+        const deadline = moment(_.get(item, 'deadline')).format('YYYY-MM-DD')
         const longCount = _.get(item, ['stats', 'long'])
         const meetingCount = _.get(item, ['stats', 'meeting'])
         const shortCount = _.get(item, ['stats', 'short'])
         const status = _.get(item, 'status')
         const isCompleted = status === APPLICATION_COMPLETED
+        const now = moment().format('YYYY-MM-DD')
+        const deadlineDifference = moment(_.get(item, 'deadline')).diff(now, 'days', true)
         return (
             <div key={id} className={classes.task}>
-                <Link target={'_blank'} to={{
+                <Link to={{
                     pathname: ROUTES.HR_LONG_LIST_URL,
                     query: filter.getParams({application: id})}}/>
                 <header>
-                    <div className={classes.deadline}><Calendar/>{deadline}</div>
+                    <div className={deadlineDifference < ZERO ? classes.missedDeadline : classes.deadline}>
+                        <Calendar/>{dateFormat(deadline)}
+                    </div>
                     {isNew && <div className={classes.status}>{t('новое')}</div>}
                     {isCompleted && <div className={classes.completed}>{t('завершено')}</div>}
+                    {!isCompleted && !isNew && <div className={classes.doing}>{t('выполняется')}</div>}
                 </header>
                 <section>
                     <div className={classes.bodyBlock}>
@@ -299,20 +306,7 @@ const TasksGridList = enhance((props) => {
             </div>
         )
     })
-
-    const buttonStyle = {
-        button: {
-            width: 42,
-            height: 42,
-            padding: 10
-        },
-        icon: {
-            width: 22,
-            height: 22
-        }
-    }
     // . const DOING = 'выполняется'
-    const currentOrdering = filter.getParam('ordering')
     const getIconByStatus = (style) => {
         if (toBoolean(filter.getParam('doing')) === true) {
             return <InProcess color={COLOR_YELLOW} style={style}/>
@@ -324,9 +318,6 @@ const TasksGridList = enhance((props) => {
             return <DoneIcon color={COLOR_GREEN} style={style}/>
         }
         return <MenuItemIcon color={COLOR_GREY} style={style}/>
-    }
-    const sortyBy = (value) => {
-        return hashHistory.push(filter.createURL({ordering: value}))
     }
     const filterByStatus = (status) => {
         return hashHistory.push(filter.createURL(status))
@@ -398,6 +389,12 @@ const TasksGridList = enhance((props) => {
                                 <MenuItem
                                     style={popoverStyle.menuItem}
                                     innerDivStyle={popoverStyle.innerDiv}
+                                    leftIcon={<FullList style={popoverStyle.icon}/>}
+                                    primaryText={t('Все')}
+                                    onClick={() => { filterByStatus({isNew: null, doing: null, status: null}) }}/>
+                                <MenuItem
+                                    style={popoverStyle.menuItem}
+                                    innerDivStyle={popoverStyle.innerDiv}
                                     leftIcon={<NewIcon style={popoverStyle.icon}/>}
                                     primaryText={t('Новые')}
                                     onClick={() => { filterByStatus({isNew: 'true', doing: null, status: null}) }}/>
@@ -414,22 +411,6 @@ const TasksGridList = enhance((props) => {
                                     primaryText={t('Завершенные')}
                                     onClick={() => { filterByStatus({status: APPLICATION_COMPLETED, isNew: null, doing: null}) }}/>
                             </IconMenu>
-                            <ToolTip position={'left'} text={t('Сортировать по дэдлайну')}>
-                                <IconButton
-                                    style={buttonStyle.button}
-                                    iconStyle={buttonStyle.icon}
-                                    onTouchTap={() => { sortyBy(SORT_BY_DEADLINE) }}>
-                                    <Calendar color={currentOrdering === SORT_BY_DEADLINE ? COLOR_GREEN : COLOR_GREY}/>
-                                </IconButton>
-                            </ToolTip>
-                            <ToolTip position={'left'} text={t('Сортировать по дате создания')}>
-                                <IconButton
-                                    style={buttonStyle.button}
-                                    iconStyle={buttonStyle.icon}
-                                    onTouchTap={() => { sortyBy(SORT_BY_CREATED_DATE) }}>
-                                    <CalendarCreated color={currentOrdering === SORT_BY_CREATED_DATE ? COLOR_GREEN : COLOR_GREY}/>
-                                </IconButton>
-                            </ToolTip>
                         </div>
                     </div>
                     {loading

@@ -3,19 +3,34 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import classNames from 'classnames'
 import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
 import Delete from 'material-ui/svg-icons/action/delete'
-import Person from 'material-ui/svg-icons/social/person'
-import Deadline from 'material-ui/svg-icons/image/timelapse'
-import ToolTip from '../../ToolTip'
+import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
+import ReworkIcon from 'material-ui/svg-icons/content/reply'
+import AcceptIcon from 'material-ui/svg-icons/action/done-all'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {getYearText} from '../../../helpers/yearsToText'
+import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import t from '../../../helpers/translate'
-import {PADDING_STANDART, BORDER_STYLE, COLOR_GREY_LIGHTEN} from '../../../constants/styleConstants'
-import {SUM_CURRENCY} from '../../../constants/backendConstants'
+import {
+    PADDING_STANDART,
+    BORDER_STYLE,
+    COLOR_GREY_LIGHTEN,
+    COLOR_GREY,
+    COLOR_WHITE
+} from '../../../constants/styleConstants'
+import {
+    SUM_CURRENCY,
+    HR_WORK_SCHEDULE,
+    HR_EDUCATION,
+    HR_GENDER,
+    HR_LEVEL_PC
+} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -51,13 +66,36 @@ const enhance = compose(
             fontSize: '12px',
             color: '#999'
         },
+        tab: {
+            height: '100%',
+            width: '100%'
+        },
         container: {
             display: 'flex',
             justifyContent: 'space-between',
+            position: 'relative',
+            overflow: 'hidden',
             width: '100%',
             '& > div': {
                 width: '50%'
             }
+        },
+        logs: {
+            background: COLOR_WHITE,
+            opacity: '0',
+            position: 'absolute',
+            boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.22)',
+            top: '-100%',
+            left: '150px',
+            right: '0',
+            zIndex: '2',
+            height: '100%',
+            width: '500px !important',
+            transition: 'all 300ms ease'
+        },
+        logsOpen: {
+            top: '0 !important',
+            opacity: '1 !important'
         },
         companyInfo: {
             borderBottom: BORDER_STYLE,
@@ -108,11 +146,23 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             justifyContent: 'flex-end',
+            alignItems: 'center',
             zIndex: '2'
         },
-        bodyTitle: {
+        titleExtra: {
+            fontSize: '13px',
+            color: COLOR_GREY,
             fontWeight: '600',
-            marginBottom: '10px'
+            margin: '0 10px'
+        },
+        bodyTitle: {
+            fontSize: '14px',
+            fontWeight: '600',
+            marginBottom: '15px',
+            marginTop: '20px',
+            '&:first-child': {
+                marginTop: '0'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -122,24 +172,59 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        subTitle: {
+            display: 'flex',
+            borderBottom: BORDER_STYLE,
+            padding: '0 30px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '55px',
+            width: '100%'
+        },
+        status: {
+            fontWeight: '600'
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        button: {
+            fontWeight: '600',
+            fontSize: '14px',
+            marginRight: '20px'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openLogs', 'setOpenLogs', false)
 )
 
 const iconStyle = {
     icon: {
-        color: '#666',
-        width: 20,
-        height: 20
+        color: COLOR_GREY,
+        width: 24,
+        height: 24
     },
     button: {
         width: 48,
         height: 48,
-        padding: 0
+        padding: 12
     }
 }
-withState('openDetails', 'setOpenDetails', false)
+const popoverStyle = {
+    menuItem: {
+        fontSize: '13px',
+        minHeight: '36px',
+        lineHeight: '36px'
+    },
+    innerDiv: {
+        padding: '0px 16px 0px 60px'
+    },
+    icon: {
+        margin: '7px',
+        width: '22px',
+        height: '22px'
+    }
+}
 
 const ApplicationDetails = enhance((props) => {
     const {classes,
@@ -147,7 +232,9 @@ const ApplicationDetails = enhance((props) => {
         data,
         confirmDialog,
         handleOpenUpdateDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        openLogs,
+        setOpenLogs
     } = props
 
     const applicationId = _.get(data, 'id')
@@ -159,12 +246,11 @@ const ApplicationDetails = enhance((props) => {
     const email = _.get(data, ['contact', 'email']) || t('Не указан')
     const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
     const address = _.get(data, ['contact', 'address']) || t('Не указан')
-    const createdDate = dateFormat(_.get(data, 'createdDate'))
-    const deadline = dateFormat(_.get(data, 'deadline'), true)
-    const education = _.get(data, 'education')
+    const deadline = dateFormat(_.get(data, 'deadline'))
+    const education = getBackendNames(HR_EDUCATION, _.get(data, 'education'))
     const experience = _.toNumber(_.get(data, 'experience'))
-    const levelPc = _.get(data, 'levelPc')
-    const workSchedule = _.get(data, 'mode')
+    const levelPc = getBackendNames(HR_LEVEL_PC, _.get(data, 'levelPc'))
+    const workSchedule = getBackendNames(HR_WORK_SCHEDULE, _.get(data, 'mode'))
     const planningDate = dateFormat(_.get(data, 'planningDate'))
     const position = _.get(data, ['position', 'name'])
     const privileges = _.get(data, 'privileges')
@@ -174,11 +260,13 @@ const ApplicationDetails = enhance((props) => {
         ? _.get(data, ['recruiter', 'firstName']) + ' ' + _.get(data, ['recruiter', 'secondName'])
         : t('Не назначен')
     const responsibility = _.get(data, 'responsibility')
-    const sex = _.get(data, 'sex')
+    const sex = getBackendNames(HR_GENDER, _.get(data, 'sex'))
     const skills = _.get(data, 'skills')
+    const status = _.get(data, 'status')
     const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
+    const reportDownloadLink = _.get(data, 'downloadReport')
 
     if (loading) {
         return (
@@ -191,62 +279,69 @@ const ApplicationDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId} <span className={classes.createdDate}>({createdDate})</span></div>
+                <div className={classes.titleLabel}>{t('Заявка')} №{applicationId}</div>
                 <div className={classes.closeDetail}
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <ToolTip position="bottom" text={t('Дэдлайн') + ': ' + deadline}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Deadline />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Рекрутер') + ': ' + recruiter}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            disableTouchRipple={true}
-                            touch={true}>
-                            <Person />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Изменить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}>
-                            <Edit />
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Удалить')}>
-                        <IconButton
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}>
-                            <Delete />
-                        </IconButton>
-                    </ToolTip>
+                    <div className={classNames(classes.status, classes.titleExtra)}>{t('Статус')}: {getAppStatusName(status, true)}</div>
+                    <div className={classes.titleExtra}>{t('Дэдлайн')}: {deadline}</div>
+                    <div className={classes.titleExtra}>{t('Рекрутер')}: {recruiter}</div>
+
+                    <IconMenu
+                        className={classes.popover}
+                        iconButtonElement={
+                            <IconButton iconStyle={iconStyle.icon} style={iconStyle.button}>
+                                <MoreIcon/>
+                            </IconButton>
+                        }
+                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<ReworkIcon style={popoverStyle.icon}/>}
+                            primaryText={t('Отправить на доработку')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<AcceptIcon style={popoverStyle.icon}/>}
+                            primaryText={t('Принять заявку')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<Edit style={popoverStyle.icon}/>}
+                            onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}
+                            primaryText={t('Изменить')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<Delete style={popoverStyle.icon}/>}
+                            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}
+                            primaryText={t('Удалить')}/>
+                    </IconMenu>
                 </div>
             </div>
-            <div className={classes.companyInfo}>
+            <div className={classes.subTitle}>
+                <div className={classes.buttons}>
+                    {reportDownloadLink &&
+                    <a href={reportDownloadLink} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
+                    <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>{openLogs ? t('Закрыть логи') : t('Посмотреть логи')}</a>
+                </div>
+            </div>
+            <div className={classes.container}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
-                    <div className={classes.info + ' ' + classes.flexBetween}>
+                    <div className={classes.info}>
                         <div>{t('Клиент')}: <strong>{client}</strong></div>
                         <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
                         <div>{t('Телефон')}: <strong>{phone}</strong></div>
                         <div>{t('Адрес')}: <strong>{address}</strong></div>
                         <div>{t('Email')}: <strong>{email}</strong></div>
                     </div>
+                    <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
+                    <div className={classes.info}></div>
                 </div>
-            </div>
-            <div className={classes.container}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
                     <div className={classes.info}>
@@ -300,6 +395,12 @@ const ApplicationDetails = enhance((props) => {
                                 })}
                         </div>
                     </div>
+                </div>
+
+                <div className={classNames(classes.logs, {
+                    [classes.logsOpen]: openLogs
+                })}>
+
                 </div>
             </div>
         </div>

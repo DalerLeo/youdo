@@ -156,6 +156,10 @@ const enhance = compose(
             '&:last-child': {
                 marginBottom: '0'
             },
+            '& h3': {
+                fontSize: '15px',
+                fontWeight: '600'
+            },
             '& h4': {
                 fontWeight: '600'
             }
@@ -221,7 +225,6 @@ const ResumeDetails = enhance((props) => {
     const phone = _.get(data, ['phone'])
     const email = _.get(data, ['email'])
     const familyStatus = _.get(data, ['familyStatus'])
-    const position = _.get(data, ['position', 'name'])
     const country = _.get(data, ['country', 'name'])
     const city = _.get(data, ['city', 'name'])
 
@@ -256,7 +259,7 @@ const ResumeDetails = enhance((props) => {
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
-                <div className={classes.titleLabel}>{fullName}<span className={classes.createdDate}>({position})</span></div>
+                <div className={classes.titleLabel}>{fullName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
                     <ToolTip position="bottom" text={t('Изменить')}>
@@ -354,13 +357,13 @@ const ResumeDetails = enhance((props) => {
                                 return (
                                     <div key={index} className={classes.experience}>
                                         <div className={classes.condition}>
+                                            <h3>{expPosition}</h3>
+                                        </div>
+                                        <div className={classes.condition}>
                                             <h4>{organization}</h4>
                                         </div>
                                         <div className={classes.condition}>
-                                            <h4>{workStart} - {workEnd}</h4>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <h4>{expPosition}</h4>
+                                            <div>{t('Период')}: {workStart} - {workEnd}</div>
                                         </div>
                                         <div className={classes.condition}>
                                             <h4>{t('Должностные обязанности')}</h4>
@@ -391,11 +394,11 @@ const ResumeDetails = enhance((props) => {
                                             <div>{institution}</div>
                                         </div>
                                         <div className={classes.condition}>
-                                            <h4>{studyStart} - {studyEnd}</h4>
-                                        </div>
-                                        <div className={classes.condition}>
                                             <h4>{t('Специальность')}</h4>
                                             <div>{speciality}</div>
+                                        </div>
+                                        <div className={classes.condition}>
+                                            <div>{t('Период')}: {studyStart} - {studyEnd}</div>
                                         </div>
                                         <div className={classes.condition}>
                                             <h4>{t('Страна обучения')}</h4>

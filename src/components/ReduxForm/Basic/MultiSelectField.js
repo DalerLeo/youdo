@@ -34,6 +34,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            marginTop: '5px',
             minHeight: 52,
             position: 'relative',
             width: '100%',
@@ -45,14 +46,16 @@ const enhance = compose(
                 position: 'absolute',
                 top: 30,
                 color: 'rgba(0, 0, 0, 0.3)',
-                transition: '0.2s ease all',
-                '-mozTransition': '0.2s ease all',
-                '-webkitTransition': '0.2s ease all'
+                transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                MozTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                WebkitTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                transformOrigin: 'left top 0px',
+                transform: 'scale(1)'
             }
         },
         label: {
             top: '0 !important',
-            fontSize: '11px'
+            transform: 'scale(0.75) !important'
         },
         labelColor: {
             color: 'rgb(93, 100, 116) !important'

@@ -37,7 +37,7 @@ const enhance = compose(
             }
         },
         subTitle: {
-            paddingTop: '10px'
+            padding: '10px 0 5px'
         },
         flex: {
             display: 'flex',

@@ -6,7 +6,8 @@ import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/applicationSerializer'
 
 export const tasksListFetchAction = (filter) => {
-    const params = serializers.listFilterSerializer(filter.getParams())
+    const defaultOrderirng = 'deadline'
+    const params = serializers.listFilterSerializer(filter.getParams(), defaultOrderirng)
     const payload = axios()
         .get(API.HR_APPLICATION_LIST, {params})
         .then((response) => {

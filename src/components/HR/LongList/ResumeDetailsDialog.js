@@ -11,10 +11,10 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import ResumeDetails from '../Resume/ResumeDetails'
+import ResumeQuestionsTab from './ResumeQuestionsTab'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddToList from 'material-ui/svg-icons/av/playlist-add'
-import Event from 'material-ui/svg-icons/action/event'
-import AddNote from 'material-ui/svg-icons/editor/mode-edit'
+import AddNote from 'material-ui/svg-icons/communication/chat'
 import Delete from 'material-ui/svg-icons/action/delete'
 import EventDone from 'material-ui/svg-icons/notification/event-available'
 import {
@@ -27,7 +27,7 @@ import {
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
 import {hashHistory} from 'react-router'
-import {reduxForm, Field, FieldArray} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm'
 import formValidate from '../../../helpers/formValidate'
 import dateFormat from '../../../helpers/dateFormat'
@@ -36,7 +36,6 @@ import {
     HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
     HR_RESUME_SHORT
 } from '../../../constants/backendConstants'
-import ResumeNewQuestionsField from '../../ReduxForm/HR/LongList/ResumeNewQuestionsField'
 
 const enhance = compose(
     injectSheet({
@@ -203,8 +202,12 @@ const enhance = compose(
         },
         tab: {
             height: '100%',
-            '& button': {
+            '& > div:first-child > button': {
                 borderRight: BORDER_STYLE + '!important',
+                '& > div': {
+                    display: 'inline-flex !important',
+                    padding: '0 30px'
+                },
                 '&:last-child': {
                     borderRight: 'none !important'
                 }
@@ -222,8 +225,9 @@ const enhance = compose(
             padding: '20px 30px',
             position: 'absolute',
             top: '0',
-            bottom: '55px',
-            overflowY: 'auto'
+            bottom: '0',
+            overflowY: 'auto',
+            width: '100%'
         },
         question: {
             marginBottom: '15px',
@@ -277,20 +281,25 @@ const ResumeDetailsDialog = enhance((props) => {
         }))
 
     const fullName = _.get(data, 'fullName')
-    const position = _.get(data, ['position', 'name'])
 
     const flatButtonStyle = {
         label: {
             color: COLOR_WHITE,
             fontWeight: '600',
             textTransform: 'none',
-            vertivalAlign: 'baseline'
+            verticalAlign: 'baseline'
         }
     }
 
     const tabStyle = {
         button: {
             textTransform: 'none'
+        },
+        customButton: {
+            color: COLOR_DEFAULT,
+            fontSize: '15px',
+            fontWeight: 'bold',
+            textTransform: 'uppercase'
         },
         ink: {
             background: COLOR_WHITE,
@@ -311,20 +320,22 @@ const ResumeDetailsDialog = enhance((props) => {
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
-                <span>{fullName} <span className={classes.position}>({position})</span></span>
+                <span>{fullName}</span>
                 <div className={classes.buttons}>
                     {currentStatus === HR_RESUME_MEETING &&
-                    <ToolTip position={'bottom'} text={t('Завершить собеселование')}>
+                    <ToolTip position={'bottom'} text={t('Завершить собеседование')}>
                         <IconButton onTouchTap={() => null}>
                             <EventDone color={COLOR_GREY}/>
                         </IconButton>
                     </ToolTip>}
                     {currentStatus === HR_RESUME_LONG &&
-                    <ToolTip position={'bottom'} text={t('Назначить собеседование')}>
-                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_MEETING) }}>
-                            <Event color={COLOR_GREY}/>
-                        </IconButton>
-                    </ToolTip>}
+                    <FlatButton
+                        label={'Назначить собеседование'}
+                        labelStyle={flatButtonStyle.label}
+                        backgroundColor={LINK_COLOR}
+                        hoverColor={LINK_COLOR}
+                        rippleColor={COLOR_WHITE}
+                        onTouchTap={() => { handleClickButton(HR_RESUME_MEETING) }}/>}
                     {(currentStatus === HR_RESUME_LONG || currentStatus === HR_RESUME_MEETING) &&
                     <ToolTip position={'bottom'} text={t('Добавить в шортлист')}>
                         <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_SHORT) }}>
@@ -367,15 +378,28 @@ const ResumeDetailsDialog = enhance((props) => {
                             tabItemContainerStyle={tabStyle.tabItem}
                             className={classes.tab}
                             contentContainerClassName={classes.tabContainer}>
-                            <Tab label={t('Комментарии')} buttonStyle={tabStyle.button} disableTouchRipple>
+                            {currentStatus === HR_RESUME_MEETING &&
+                            <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
+                                <Field
+                                    name="answers"
+                                    component={ResumeQuestionsTab}
+                                    questionsData={questionsData}
+                                    handleSubmitResumeAnswers={handleSubmitResumeAnswers}
+                                />
+                            </Tab>}
+                            <Tab
+                                label={t('Комментарии')}
+                                buttonStyle={currentStatus === HR_RESUME_MEETING
+                                    ? tabStyle.button : tabStyle.customButton}
+                                disableTouchRipple>
                                 {!openAddComment &&
                                 <div className={classes.addComment}>
                                     <FlatButton
                                         label={'Добавить'}
                                         labelStyle={flatButtonStyle.label}
-                                        backgroundColor={LINK_COLOR}
+                                        backgroundColor={'#607D8B'}
                                         fullWidth={true}
-                                        hoverColor={LINK_COLOR}
+                                        hoverColor={'#607D8B'}
                                         rippleColor={COLOR_WHITE}
                                         onClick={() => {
                                             setOpenAddComment(true)
@@ -392,14 +416,13 @@ const ResumeDetailsDialog = enhance((props) => {
                                             hintStyle={{bottom: 'auto', top: '12px'}}
                                             fullWidth
                                             multiLine
-                                            rows={2}
-                                            rowsMax={4}/>
+                                            rows={2}/>
                                         <FlatButton
                                             label={'Сохранить'}
                                             labelStyle={flatButtonStyle.label}
-                                            backgroundColor={LINK_COLOR}
+                                            backgroundColor={'#607D8B'}
                                             fullWidth={true}
-                                            hoverColor={LINK_COLOR}
+                                            hoverColor={'#607D8B'}
                                             rippleColor={COLOR_WHITE}
                                             onClick={submitComment}/>
                                     </div>}
@@ -431,49 +454,6 @@ const ResumeDetailsDialog = enhance((props) => {
                                     </div>
                                 </form>
                             </Tab>
-                            {currentStatus === HR_RESUME_MEETING &&
-                            <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
-                                <ul className={classes.questions}>
-                                    {questionsData.loading
-                                        ? <div className={classes.staticLoader}>
-                                            <Loader size={0.75}/>
-                                        </div>
-                                        : _.map(questionsData.list, (item, index) => {
-                                            const ONE = 1
-                                            const count = index + ONE
-                                            const id = _.get(item, 'id')
-                                            const question = _.get(item, 'question')
-                                            return (
-                                                <li key={id} className={classes.question}>
-                                                    <span>{count}. {question}</span>
-                                                    <Field
-                                                        name={'answers[' + id + '][answer]'}
-                                                        component={TextField}
-                                                        className={classes.textFieldArea}
-                                                        fullWidth
-                                                        multiLine
-                                                        rows={1}
-                                                        rowsMax={4}
-                                                    />
-                                                </li>
-                                            )
-                                        })}
-                                        <FieldArray
-                                            name="newQuestions"
-                                            component={ResumeNewQuestionsField}
-                                        />
-                                </ul>
-                                <div className={classes.saveButton}>
-                                    <FlatButton
-                                        label={'Сохранить'}
-                                        labelStyle={flatButtonStyle.label}
-                                        backgroundColor={LINK_COLOR}
-                                        fullWidth={true}
-                                        hoverColor={LINK_COLOR}
-                                        rippleColor={COLOR_WHITE}
-                                        onClick={handleSubmitResumeAnswers}/>
-                                </div>
-                            </Tab>}
                         </Tabs>
                     </Paper>
                 </div>

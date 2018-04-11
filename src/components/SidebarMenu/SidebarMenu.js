@@ -7,7 +7,7 @@ import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import SettingsPower from 'material-ui/svg-icons/action/settings-power'
+import SettingsPower from 'material-ui/svg-icons/action/power-settings-new'
 import ToolTip from '../ToolTip'
 import {getMenus} from './MenuItems'
 import Logo from '../Images/logo.svg'
@@ -128,7 +128,10 @@ const SideBarMenu = enhance((props) => {
     } = props
 
     const noNumbersString = (text) => {
-        return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
+        if (text) {
+            return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
+        }
+        return false
     }
     const menu = getMenus(permissions, isAdmin)
     const parent = _

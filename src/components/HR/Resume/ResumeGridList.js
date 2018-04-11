@@ -18,25 +18,26 @@ import ResumeDetail from './ResumeDetails'
 import ResumeFilterForm from './ResumeFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
+import {getExperienceText} from '../../../helpers/hrcHelpers'
 
 const listHeader = [
     {
         sorting: true,
-        name: 'position',
         xs: 3,
-        title: t('Должность')
+        name: 'fullName',
+        title: t('Ф.И.О.')
+    },
+    {
+        sorting: true,
+        name: 'skills',
+        xs: 3,
+        title: t('Навыки')
     },
     {
         sorting: true,
         name: 'experience',
         xs: 2,
         title: t('Опыт работы')
-    },
-    {
-        sorting: true,
-        xs: 3,
-        name: 'fullName',
-        title: t('Ф.И.О.')
     },
     {
         sorting: true,
@@ -128,8 +129,9 @@ const ResumeGridList = enhance((props) => {
 
     const resumeList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const position = _.get(item, ['position', 'name'])
-        const experience = _.get(item, ['experience'])
+        const status = _.get(item, 'status')
+        const skills = _.map(_.get(item, ['skills']), (obj) => _.get(obj, 'name'))
+        const experience = getExperienceText(_.get(item, ['totalExp']))
         const fullName = _.get(item, ['fullName'])
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
@@ -138,11 +140,12 @@ const ResumeGridList = enhance((props) => {
                     pathname: sprintf(ROUTES.HR_RESUME_ITEM_PATH, id),
                     query: filter.getParams()
                 }}>
-                    <Col xs={3}>{position}</Col>
-                    <Col xs={2}>{experience}</Col>
                     <Col xs={3}>{fullName}</Col>
+                    <Col xs={3}>{skills}</Col>
+                    <Col xs={2}>{experience}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={2} className={classes.buttons}>
+                        {status}
                     </Col>
                 </Link>
             </Row>
@@ -178,7 +181,7 @@ const ResumeGridList = enhance((props) => {
             />
 
             <ResumeCreateDialog
-                initialValues={createDialog.initialValues}
+                initialValues={updateDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}

@@ -38,6 +38,8 @@ export const APPLICATION_NOT_ASSIGNED = 'not_assigned'
 export const APPLICATION_ASSIGNED = 'assigned'
 export const APPLICATION_CANCELED = 'canceled'
 export const APPLICATION_COMPLETED = 'completed'
+export const APPLICATION_PENDING = 'pending'
+export const APPLICATION_REWORK = 'rework'
 
 export const HR_DRIVER_LICENSE = [
     {id: 'A', name: 'A', active: false},
@@ -48,12 +50,27 @@ export const HR_DRIVER_LICENSE = [
     {id: 'CE', name: 'CE', active: false},
     {id: 'DE', name: 'DE', active: false}
 ]
+
 export const HR_WORK_SCHEDULE = [
     {id: 'full_time', name: t('Полный рабочий день')},
     {id: 'shift_work', name: t('Сменный график')},
     {id: 'remote', name: t('Удаленно')},
     {id: 'part_time', name: t('Частичная занятость')}
 ]
+
+export const HR_LEVEL_PC = [
+    {id: 'user', name: t('Пользователь')},
+    {id: 'confident_user', name: t('Уверенный пользователь')},
+    {id: 'advanced_user', name: t('Продвинутый пользователь')},
+    {id: 'professional_level', name: t('Профессиональный уровень')}
+]
+
+export const HR_GENDER = [
+    {id: 'no_matter', name: t('Не имеет значения')},
+    {id: 'male', name: t('Мужской')},
+    {id: 'female', name: t('Женский')}
+]
+
 export const HR_EDUCATION = [
     {id: 'no_matter', name: t('Не имеет значения')},
     {id: 'secondary', name: t('Среднее')},

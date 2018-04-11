@@ -58,7 +58,7 @@ export const createSerializer = (data) => {
     }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, defaultOrdering) => {
     const {...defaultData} = data
     const ordering = _.get(data, 'ordering')
 
@@ -74,7 +74,7 @@ export const listFilterSerializer = (data) => {
         'doing': _.get(defaultData, 'doing'),
         'page': _.get(defaultData, 'page'),
         'page_size': _.get(defaultData, 'pageSize'),
-        'ordering': ordering && orderingSnakeCase(ordering)
+        'ordering': ordering ? orderingSnakeCase(ordering) : defaultOrdering
     }
 }
 

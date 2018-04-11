@@ -389,21 +389,19 @@ export const CELL_ITEM_PATH = `${CELL}/%d`
 export const HR = 'hr'
 export const HR_URL = `/${HR}`
 export const HR_APPLICATION = `${HR_URL}/application`
-export const HR_APPLICATION_LIST_URL = `${HR_APPLICATION}/`
+export const HR_APPLICATION_LIST_URL = `${HR_APPLICATION}`
 export const HR_APPLICATION_ITEM_URL = `${HR_APPLICATION}/:applicationId`
 export const HR_APPLICATION_ITEM_PATH = `${HR_APPLICATION}/%d`
 
 export const HR_RESUME = `${HR_URL}/resume`
-export const HR_RESUME_LIST_URL = `${HR_RESUME}/`
+export const HR_RESUME_LIST_URL = `${HR_RESUME}`
 export const HR_RESUME_ITEM_URL = `${HR_RESUME}/:resumeId`
 export const HR_RESUME_ITEM_PATH = `${HR_RESUME}/%d`
 
 export const HR_TASKS = `${HR_URL}/tasks`
-export const HR_TASKS_LIST_URL = `${HR_TASKS}/`
+export const HR_TASKS_LIST_URL = `${HR_TASKS}`
 export const HR_TASKS_ITEM_URL = `${HR_TASKS}/:tasksId`
-export const HR_TASKS_ITEM_PATH = `${HR_TASKS}/%d`
 
 export const HR_LONG_LIST = `${HR_URL}/long-list`
-export const HR_LONG_LIST_URL = `${HR_LONG_LIST}/`
+export const HR_LONG_LIST_URL = `${HR_LONG_LIST}`
 export const HR_LONG_LIST_ITEM_URL = `${HR_LONG_LIST}/:listId`
-export const HR_LONG_LIST_ITEM_PATH = `${HR_LONG_LIST}/%d`

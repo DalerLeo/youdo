@@ -35,8 +35,7 @@ const enhance = compose(
             zIndex: '999'
         },
         inContent: {
-            maxHeight: '50vh',
-            minHeight: '184px',
+            minHeight: '50px',
             overflow: 'unset',
             padding: '0 30px',
             color: '#333',
@@ -130,18 +129,17 @@ const ConfirmDialog = enhance((props) => {
     const {open, onClose, classes, type, message, onSubmit, loading, warning} = props
     const typesList = {
         delete: {
-            name: t('Подтверждение удаления'), submitName: t('Удалить'), text: t('Вы уверены что хотите удалить эти данные?')
+            name: t('Подтверждение удаления'), submitName: t('Удалить')
         },
         cancel: {
-            name: t('Подтверждение отмены'), submitName: t('Подтвердить'), text: t('Вы уверены что хотите отменить эти данные?')
+            name: t('Подтверждение отмены'), submitName: t('Подтвердить')
         },
         submit: {
-            name: t('Выполнить'), submitName: t('Да'), text: t('Подтверждение запроса')
+            name: t('Подтверждение запроса'), submitName: t('Подтвердить')
         }
     }
     const title = _.get(typesList, [type, 'name'])
     const buttonLabel = _.get(typesList, [type, 'submitName'])
-    const text = _.get(typesList, [type, 'text'])
 
     return (
         <Dialog
@@ -163,9 +161,6 @@ const ConfirmDialog = enhance((props) => {
                     <div className={classes.loader}>
                         <Loader size={0.75}/>
                     </div>}
-                    {!warning && <div className={classes.confirm}>
-                        {text}
-                    </div>}
                     {message && <div className={warning ? classes.warningBackground : classes.background}>
                         {message}
                     </div>}
@@ -186,7 +181,7 @@ const ConfirmDialog = enhance((props) => {
 
 ConfirmDialog.propTypes = {
     type: PropTypes.oneOf(['delete', 'cancel', 'submit']).isRequired,
-    message: PropTypes.any.isRequired,
+    message: PropTypes.any,
     loading: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,

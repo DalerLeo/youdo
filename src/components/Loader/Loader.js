@@ -10,7 +10,6 @@ const enhance = compose(
             alignItems: 'center',
             justifyContent: 'center',
             '& > div': {
-                borderRadius: '50%',
                 position: 'relative',
                 width: '6px',
                 margin: '0 1.8px',

@@ -144,8 +144,9 @@ export const sendAnswersSerializer = (application, resume, data) => {
             return null
         }
         return {
+            application,
             resume,
-            question: index,
+            question: _.toNumber(index),
             answer
         }
     })
@@ -160,13 +161,15 @@ export const sendAnswersSerializer = (application, resume, data) => {
         }
     })
     const filteredAnswers = _.filter(answers, (item) => !_.isNull(item))
+    const filteredNewAnswers = _.filter(newAnswers, (item) => _.get(item, 'answer') && _.get(item, 'question'))
 
-    return _.concat(filteredAnswers, newAnswers)
+    return _.concat(filteredAnswers, filteredNewAnswers)
 }
 
-export const answersListSerializer = (resume) => {
+export const answersListSerializer = (application, resume) => {
     return {
         resume,
+        application,
         page_size: 20
     }
 }
