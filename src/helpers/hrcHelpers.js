@@ -1,7 +1,22 @@
 import _ from 'lodash'
 import React from 'react'
 import t from './translate'
-import {ZERO} from '../constants/backendConstants'
+import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
+import Completed from 'material-ui/svg-icons/action/done-all'
+import InProgress from 'material-ui/svg-icons/action/cached'
+import NotAssigned from '../components/CustomIcons/PersonWarn'
+import {
+    APPLICATION_CANCELED,
+    APPLICATION_COMPLETED,
+    APPLICATION_NOT_ASSIGNED,
+    APPLICATION_PENDING,
+    APPLICATION_REWORK,
+    ZERO
+} from '../constants/backendConstants'
+import {
+    COLOR_GREEN, COLOR_GREY,
+    COLOR_RED, COLOR_YELLOW
+} from '../constants/styleConstants'
 
 const ONE = 1
 const TWO = 2
@@ -42,4 +57,30 @@ export const getExperienceText = (totalExp) => {
         return <span>{getMonthText(checkIfMonthExpLessZero)}</span>
     }
     return t('без опыта работы')
+}
+
+export const getAppStatusName = (status, colored, doing) => {
+    switch (status) {
+        case APPLICATION_NOT_ASSIGNED: return colored ? <span style={{color: COLOR_GREY}}>{t('Неприсвоен')}</span> : t('Неприсвоен')
+        case APPLICATION_COMPLETED: return colored ? <span style={{color: COLOR_GREEN}}>{t('Выполнен')}</span> : t('Выполнен')
+        case APPLICATION_PENDING: return colored ? <span style={{color: COLOR_YELLOW}}>{t('Ожидает подтверждения')}</span> : t('Ожидает подтверждения')
+        case APPLICATION_REWORK: return colored ? <span style={{color: COLOR_YELLOW}}>{t('Отправлен на доработку')}</span> : t('Отправлен на доработку')
+        case APPLICATION_CANCELED: return colored ? <span style={{color: COLOR_RED}}>{t('Отменен')}</span> : t('Отменен')
+        default: return colored
+            ? <span style={{color: COLOR_YELLOW}}>{t('Выполняется')}</span>
+            : t('Выполняется')
+    }
+}
+
+export const getAppStatusIcon = (status, doing) => {
+    switch (status) {
+        case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
+        case APPLICATION_NOT_ASSIGNED: return <NotAssigned color={COLOR_YELLOW}/>
+        case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
+        default: return <InProgress color={COLOR_YELLOW}/>
+    }
+}
+
+export const getBackendNames = (iteratingArray, key) => {
+    return _.get(_.find(iteratingArray, {id: key}), 'name')
 }

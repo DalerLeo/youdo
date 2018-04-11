@@ -3,26 +3,34 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
+import classNames from 'classnames'
 import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
-import {Tabs, Tab} from 'material-ui/Tabs'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import Delete from 'material-ui/svg-icons/action/delete'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
+import ReworkIcon from 'material-ui/svg-icons/content/reply'
+import AcceptIcon from 'material-ui/svg-icons/action/done-all'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {getYearText} from '../../../helpers/hrcHelpers'
+import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
     BORDER_STYLE,
     COLOR_GREY_LIGHTEN,
     COLOR_GREY,
-    COLOR_WHITE, LINK_COLOR
+    COLOR_WHITE
 } from '../../../constants/styleConstants'
-import {SUM_CURRENCY} from '../../../constants/backendConstants'
+import {
+    SUM_CURRENCY,
+    HR_WORK_SCHEDULE,
+    HR_EDUCATION,
+    HR_GENDER,
+    HR_LEVEL_PC
+} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -65,10 +73,29 @@ const enhance = compose(
         container: {
             display: 'flex',
             justifyContent: 'space-between',
+            position: 'relative',
+            overflow: 'hidden',
             width: '100%',
             '& > div': {
                 width: '50%'
             }
+        },
+        logs: {
+            background: COLOR_WHITE,
+            opacity: '0',
+            position: 'absolute',
+            boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.22)',
+            top: '-100%',
+            left: '150px',
+            right: '0',
+            zIndex: '2',
+            height: '100%',
+            width: '500px !important',
+            transition: 'all 300ms ease'
+        },
+        logsOpen: {
+            top: '0 !important',
+            opacity: '1 !important'
         },
         companyInfo: {
             borderBottom: BORDER_STYLE,
@@ -123,13 +150,19 @@ const enhance = compose(
             zIndex: '2'
         },
         titleExtra: {
-            fontSize: '14px',
+            fontSize: '13px',
+            color: COLOR_GREY,
             fontWeight: '600',
             margin: '0 10px'
         },
         bodyTitle: {
+            fontSize: '14px',
             fontWeight: '600',
-            marginBottom: '10px'
+            marginBottom: '15px',
+            marginTop: '20px',
+            '&:first-child': {
+                marginTop: '0'
+            }
         },
         closeDetail: {
             position: 'absolute',
@@ -139,9 +172,30 @@ const enhance = compose(
             bottom: '0',
             cursor: 'pointer',
             zIndex: '1'
+        },
+        subTitle: {
+            display: 'flex',
+            borderBottom: BORDER_STYLE,
+            padding: '0 30px',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '55px',
+            width: '100%'
+        },
+        status: {
+            fontWeight: '600'
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        button: {
+            fontWeight: '600',
+            fontSize: '14px',
+            marginRight: '20px'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openLogs', 'setOpenLogs', false)
 )
 
 const iconStyle = {
@@ -171,19 +225,6 @@ const popoverStyle = {
         height: '22px'
     }
 }
-withState('openDetails', 'setOpenDetails', false)
-
-const tabStyle = {
-    button: {
-        textTransform: 'none'
-    },
-    ink: {
-        background: LINK_COLOR
-    },
-    tabItem: {
-        width: '420px'
-    }
-}
 
 const ApplicationDetails = enhance((props) => {
     const {classes,
@@ -191,7 +232,9 @@ const ApplicationDetails = enhance((props) => {
         data,
         confirmDialog,
         handleOpenUpdateDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        openLogs,
+        setOpenLogs
     } = props
 
     const applicationId = _.get(data, 'id')
@@ -204,10 +247,10 @@ const ApplicationDetails = enhance((props) => {
     const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
     const address = _.get(data, ['contact', 'address']) || t('Не указан')
     const deadline = dateFormat(_.get(data, 'deadline'))
-    const education = _.get(data, 'education')
+    const education = getBackendNames(HR_EDUCATION, _.get(data, 'education'))
     const experience = _.toNumber(_.get(data, 'experience'))
-    const levelPc = _.get(data, 'levelPc')
-    const workSchedule = _.get(data, 'mode')
+    const levelPc = getBackendNames(HR_LEVEL_PC, _.get(data, 'levelPc'))
+    const workSchedule = getBackendNames(HR_WORK_SCHEDULE, _.get(data, 'mode'))
     const planningDate = dateFormat(_.get(data, 'planningDate'))
     const position = _.get(data, ['position', 'name'])
     const privileges = _.get(data, 'privileges')
@@ -217,11 +260,13 @@ const ApplicationDetails = enhance((props) => {
         ? _.get(data, ['recruiter', 'firstName']) + ' ' + _.get(data, ['recruiter', 'secondName'])
         : t('Не назначен')
     const responsibility = _.get(data, 'responsibility')
-    const sex = _.get(data, 'sex')
+    const sex = getBackendNames(HR_GENDER, _.get(data, 'sex'))
     const skills = _.get(data, 'skills')
+    const status = _.get(data, 'status')
     const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
+    const reportDownloadLink = _.get(data, 'downloadReport')
 
     if (loading) {
         return (
@@ -239,6 +284,7 @@ const ApplicationDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
+                    <div className={classNames(classes.status, classes.titleExtra)}>{t('Статус')}: {getAppStatusName(status, true)}</div>
                     <div className={classes.titleExtra}>{t('Дэдлайн')}: {deadline}</div>
                     <div className={classes.titleExtra}>{t('Рекрутер')}: {recruiter}</div>
 
@@ -254,6 +300,16 @@ const ApplicationDetails = enhance((props) => {
                         <MenuItem
                             style={popoverStyle.menuItem}
                             innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<ReworkIcon style={popoverStyle.icon}/>}
+                            primaryText={t('Отправить на доработку')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
+                            leftIcon={<AcceptIcon style={popoverStyle.icon}/>}
+                            primaryText={t('Принять заявку')}/>
+                        <MenuItem
+                            style={popoverStyle.menuItem}
+                            innerDivStyle={popoverStyle.innerDiv}
                             leftIcon={<Edit style={popoverStyle.icon}/>}
                             onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}
                             primaryText={t('Изменить')}/>
@@ -266,85 +322,87 @@ const ApplicationDetails = enhance((props) => {
                     </IconMenu>
                 </div>
             </div>
-            <Tabs
-                inkBarStyle={tabStyle.ink}
-                tabItemContainerStyle={tabStyle.tabItem}
-                className={classes.tab}
-                contentContainerClassName={classes.tabContainer}>
-                <Tab label={t('Детали заявки')} buttonStyle={tabStyle.button} disableTouchRipple>
-                    <div className={classes.companyInfo}>
-                        <div className={classes.block}>
-                            <div className={classes.bodyTitle}>{t('Описание компании')}</div>
-                            <div className={classes.info + ' ' + classes.flexBetween}>
-                                <div>{t('Клиент')}: <strong>{client}</strong></div>
-                                <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
-                                <div>{t('Телефон')}: <strong>{phone}</strong></div>
-                                <div>{t('Адрес')}: <strong>{address}</strong></div>
-                                <div>{t('Email')}: <strong>{email}</strong></div>
-                            </div>
+            <div className={classes.subTitle}>
+                <div className={classes.buttons}>
+                    {reportDownloadLink &&
+                    <a href={reportDownloadLink} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
+                    <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>{openLogs ? t('Закрыть логи') : t('Посмотреть логи')}</a>
+                </div>
+            </div>
+            <div className={classes.container}>
+                <div className={classes.block}>
+                    <div className={classes.bodyTitle}>{t('Описание компании')}</div>
+                    <div className={classes.info}>
+                        <div>{t('Клиент')}: <strong>{client}</strong></div>
+                        <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
+                        <div>{t('Телефон')}: <strong>{phone}</strong></div>
+                        <div>{t('Адрес')}: <strong>{address}</strong></div>
+                        <div>{t('Email')}: <strong>{email}</strong></div>
+                    </div>
+                    <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
+                    <div className={classes.info}></div>
+                </div>
+                <div className={classes.block}>
+                    <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
+                    <div className={classes.info}>
+                        <div>{t('Наименование должности')}: <strong>{position}</strong></div>
+                        <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
+                        <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
+                        <div>{t('Предоставляемые льготы')}:
+                            {_.map(privileges, (item) => {
+                                const id = _.get(item, 'id')
+                                const name = _.get(item, 'name')
+                                return (
+                                    <span key={id} className={classes.skill}>{name}</span>
+                                )
+                            })}
+                        </div>
+                        <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
+                        <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>
+                        <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
+                        <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
+                    </div>
+                </div>
+                <div className={classes.block}>
+                    <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
+                    <div className={classes.info}>
+                        <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
+                        <div>{t('Пол')}: <strong>{sex}</strong></div>
+                        <div>{t('Образование')}: <strong>{education}</strong></div>
+                        <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
+                        <div>{t('Знание языков')}:
+                            {_.isEmpty(languages)
+                                ? <strong> {t('Не указано')}</strong>
+                                : _.map(languages, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, ['language', 'name'])
+                                    const level = _.get(item, ['level', 'name'])
+                                    return (
+                                        <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                    )
+                                })}
+                        </div>
+                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
+                        <div>{t('Профессиональные навыки')}:
+                            {_.isEmpty(skills)
+                                ? <strong> {t('Не указаны')}</strong>
+                                : _.map(skills, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <span key={id} className={classes.skill}>{name}</span>
+                                    )
+                                })}
                         </div>
                     </div>
-                    <div className={classes.container}>
-                        <div className={classes.block}>
-                            <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
-                            <div className={classes.info}>
-                                <div>{t('Наименование должности')}: <strong>{position}</strong></div>
-                                <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
-                                <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
-                                <div>{t('Предоставляемые льготы')}:
-                                    {_.map(privileges, (item) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, 'name')
-                                        return (
-                                            <span key={id} className={classes.skill}>{name}</span>
-                                        )
-                                    })}
-                                </div>
-                                <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
-                                <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>
-                                <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
-                                <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
-                            </div>
-                        </div>
-                        <div className={classes.block}>
-                            <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
-                            <div className={classes.info}>
-                                <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
-                                <div>{t('Пол')}: <strong>{sex}</strong></div>
-                                <div>{t('Образование')}: <strong>{education}</strong></div>
-                                <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
-                                <div>{t('Знание языков')}:
-                                    {_.isEmpty(languages)
-                                        ? <strong> {t('Не указано')}</strong>
-                                        : _.map(languages, (item) => {
-                                            const id = _.get(item, 'id')
-                                            const name = _.get(item, ['language', 'name'])
-                                            const level = _.get(item, ['level', 'name'])
-                                            return (
-                                                <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
-                                            )
-                                        })}
-                                </div>
-                                <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
-                                <div>{t('Профессиональные навыки')}:
-                                    {_.isEmpty(skills)
-                                        ? <strong> {t('Не указаны')}</strong>
-                                        : _.map(skills, (item) => {
-                                            const id = _.get(item, 'id')
-                                            const name = _.get(item, 'name')
-                                            return (
-                                                <span key={id} className={classes.skill}>{name}</span>
-                                            )
-                                        })}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Tab>
-                <Tab label={t('Процесс выполнения')} buttonStyle={tabStyle.button} disableTouchRipple>
+                </div>
 
-                </Tab>
-            </Tabs>
+                <div className={classNames(classes.logs, {
+                    [classes.logsOpen]: openLogs
+                })}>
+
+                </div>
+            </div>
         </div>
     )
 })

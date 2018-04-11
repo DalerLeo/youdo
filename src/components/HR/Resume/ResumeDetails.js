@@ -225,7 +225,6 @@ const ResumeDetails = enhance((props) => {
     const phone = _.get(data, ['phone'])
     const email = _.get(data, ['email'])
     const familyStatus = _.get(data, ['familyStatus'])
-    const position = _.get(data, ['position', 'name'])
     const country = _.get(data, ['country', 'name'])
     const city = _.get(data, ['city', 'name'])
 

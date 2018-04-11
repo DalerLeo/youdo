@@ -11,10 +11,10 @@ const textFieldStyles = {
     }
 }
 
-const TextField = ({input, label, meta: {error}, withoutErrorText, ...defaultProps}) => {
+const TextField = ({input, label, meta: {error, touched}, withoutErrorText, ...defaultProps}) => {
     return (
         <MUITextField
-            errorText={withoutErrorText && error ? ' ' : error}
+            errorText={withoutErrorText ? ' ' : touched && error}
             errorStyle={textFieldStyles.error}
             inputStyle={textFieldStyles.input}
             floatingLabelText={label}

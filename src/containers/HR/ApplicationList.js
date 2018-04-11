@@ -302,7 +302,8 @@ const ApplicationList = enhance((props) => {
             const ageMin = _.get(detail, 'ageMin')
             const ageMax = _.get(detail, 'ageMax')
             const businessTrip = _.get(detail, 'businessTrip')
-            const client = _.get(detail, ['client', 'id'])
+            const client = _.get(detail, ['contact', 'client', 'id'])
+            const contact = String(_.get(detail, ['contact', 'id']))
             const deadline = moment(_.get(detail, 'deadline')).toDate()
             const deadlineTime = moment(_.get(detail, 'deadline')).toDate()
             const education = _.get(detail, 'education')
@@ -328,6 +329,7 @@ const ApplicationList = enhance((props) => {
                 client: {
                     value: client
                 },
+                contact,
                 education: {
                     value: education
                 },

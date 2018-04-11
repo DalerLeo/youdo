@@ -128,7 +128,10 @@ const SideBarMenu = enhance((props) => {
     } = props
 
     const noNumbersString = (text) => {
-        return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
+        if (text) {
+            return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
+        }
+        return false
     }
     const menu = getMenus(permissions, isAdmin)
     const parent = _

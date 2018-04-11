@@ -3,9 +3,8 @@ import React from 'react'
 import {compose, withState, withPropsOnChange} from 'recompose'
 import injectSheet from 'react-jss'
 import Loader from '../../Loader'
-import {reduxForm, Field, FieldArray} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm'
-import ResumeNewQuestionsField from '../../ReduxForm/HR/LongList/ResumeNewQuestionsField'
 import {COLOR_GREY, COLOR_WHITE} from '../../../constants/styleConstants'
 import RemoveIcon from 'material-ui/svg-icons/navigation/close'
 
@@ -100,7 +99,6 @@ const enhance = compose(
         return !_.isEqual(list, nextList)
     }, ({input, answerListClone}) => {
         if (!_.isEmpty(answerListClone)) {
-            console.warn(answerListClone)
             const getAnswers = () => {
                 const answers = {}
                 _.map(answerListClone, (item) => {
@@ -116,7 +114,6 @@ const enhance = compose(
 
 const ResumeQuestionsTab = enhance((props) => {
     const {
-        input,
         classes,
         handleSubmitResumeAnswers,
         questionsData: {loading},
@@ -169,7 +166,6 @@ const ResumeQuestionsTab = enhance((props) => {
                         </li>
                     )
                 })}
-            {/*<FieldArray name="newQuestions" component={ResumeNewQuestionsField}/>*/}
         </div>
     )
 })

@@ -1,14 +1,9 @@
 import _ from 'lodash'
 import React from 'react'
 import SearchField from '../Basic/SearchField'
-import t from '../../../helpers/translate'
+import {HR_LEVEL_PC} from '../../../constants/backendConstants'
 
-const Items = [
-    {id: 'user', name: t('Пользователь')},
-    {id: 'confident_user', name: t('Уверенный пользователь')},
-    {id: 'advanced_user', name: t('Продвинутый пользователь')},
-    {id: 'professional_level', name: t('Профессиональный уровень')}
-]
+const Items = HR_LEVEL_PC
 
 const getOptions = () => {
     return Promise.resolve(Items)

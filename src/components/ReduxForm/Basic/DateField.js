@@ -12,7 +12,7 @@ const errorStyle = {
     textAlign: 'left'
 }
 
-const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
+const DateField = ({classes, input, label, meta: {error, touched}, ...defaultProps}) => {
     _.unset(defaultProps, 'sheet')
     if (!_.isObject(input.value)) {
         _.unset(input, 'value')
@@ -25,7 +25,7 @@ const DateField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
         <div className={classes.wrapper}>
             <div style={{position: 'relative'}}>
                 <DatePicker
-                    errorText={error}
+                    errorText={touched && error}
                     errorStyle={errorStyle}
                     floatingLabelText={label}
                     inputStyle={{fontSize: 13}}

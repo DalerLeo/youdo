@@ -476,8 +476,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 label={t('Функциональные обязанности')}
                                 fullWidth={true}
                                 multiLine={true}
-                                rows={1}
-                                rowsMax={4}/>
+                                rows={1}/>
                             <Field
                                 name="planningDate"
                                 component={DateField}

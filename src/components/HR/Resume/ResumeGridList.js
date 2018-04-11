@@ -181,7 +181,7 @@ const ResumeGridList = enhance((props) => {
             />
 
             <ResumeCreateDialog
-                initialValues={createDialog.initialValues}
+                initialValues={updateDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}

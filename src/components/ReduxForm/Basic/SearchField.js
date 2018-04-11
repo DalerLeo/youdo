@@ -29,6 +29,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            marginTop: '5px',
             position: 'relative',
             height: 'auto',
             width: '100%',
@@ -40,14 +41,16 @@ const enhance = compose(
                 position: 'absolute',
                 top: 20,
                 color: 'rgba(0, 0, 0, 0.3)',
-                transition: '0.2s ease all',
-                '-mozTransition': '0.2s ease all',
-                '-webkitTransition': '0.2s ease all'
+                transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                MozTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                WebkitTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                transformOrigin: 'left top 0px',
+                transform: 'scale(1)'
             }
         },
         label: {
             top: '0 !important',
-            fontSize: '11px'
+            transform: 'scale(0.75) !important'
         },
         labelColor: {
             color: 'rgb(93, 100, 116) !important'
@@ -191,7 +194,7 @@ const SearchField = enhance((props) => {
                 [classes.labelColor]: meta.active
             })}>{label}</div>
             <Select
-                className={meta.error ? classes.selectError : classes.select}
+                className={(meta.error && meta.touched) ? classes.selectError : classes.select}
                 options={state.dataSource}
                 value={input.value.value || null}
                 onInputChange={text => dispatch({text: text})}
@@ -210,7 +213,7 @@ const SearchField = enhance((props) => {
                 clearable={clearValue}
                 loadingPlaceholder={t('Загрузка') + '...'}
             />
-            {meta.error &&
+            {meta.error && meta.touched &&
             <div className={withoutErrorText ? classes.noTextError : classes.error}>
                 {withoutErrorText ? null : meta.error}
             </div>}

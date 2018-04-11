@@ -23,14 +23,12 @@ import ApplicationFilterForm from './ApplicationFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {
-    APPLICATION_NOT_ASSIGNED,
     APPLICATION_ASSIGNED,
     APPLICATION_CANCELED,
     APPLICATION_COMPLETED
 } from '../../../constants/backendConstants'
 import {
     COLOR_GREEN,
-    COLOR_RED,
     COLOR_BLUE_GREY,
     COLOR_WHITE,
     COLOR_YELLOW,
@@ -41,24 +39,7 @@ import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
 import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import InProcess from 'material-ui/svg-icons/av/loop'
-
-export const getStatusName = (status) => {
-    switch (status) {
-        case APPLICATION_NOT_ASSIGNED: return t('Неприсвоен')
-        case APPLICATION_ASSIGNED: return t('Присвоен рекрутеру')
-        case APPLICATION_CANCELED: return t('Отменен')
-        case APPLICATION_COMPLETED: return t('Выполнен')
-        default: return null
-    }
-}
-
-export const getStatusIcon = (status) => {
-    switch (status) {
-        case APPLICATION_CANCELED: return <Canceled color={COLOR_RED}/>
-        case APPLICATION_COMPLETED: return <Completed color={COLOR_GREEN}/>
-        default: return null
-    }
-}
+import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
 
 const listHeader = [
     {
@@ -199,6 +180,7 @@ const ApplicationGridList = enhance((props) => {
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
+        const doing = _.get(item, 'doing')
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
@@ -211,11 +193,11 @@ const ApplicationGridList = enhance((props) => {
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={2}>{deadline}</Col>
                     <Col xs={1} className={classes.buttons}>
-                        <ToolTip position={'left'} text={getStatusName(status)}>
+                        <ToolTip position={'left'} text={getAppStatusName(status, false, doing)}>
                             <IconButton
                                 style={iconStyle.button}
                                 iconStyle={iconStyle.icon}>
-                                {getStatusIcon(status)}
+                                {getAppStatusIcon(status, doing)}
                             </IconButton>
                         </ToolTip>
                     </Col>

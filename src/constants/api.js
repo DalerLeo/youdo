@@ -647,3 +647,5 @@ export const HR_APPLICATION_QUESTIONS_LIST = `/${HR_APPLICATION_QUESTIONS}/`
 export const HR_RESUME_ANSWERS = 'hr/application_answer'
 export const HR_RESUME_ANSWERS_CREATE = `/${HR_RESUME_ANSWERS}/multi_answer/`
 export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`
+
+export const HR_APP_LOGS = 'hr/application_status_log'
