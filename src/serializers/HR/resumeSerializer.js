@@ -12,8 +12,13 @@ const dateSerializer = (date, format) => {
     return output
 }
 
-export const createSerializer = (data) => {
-    const experiences = _.map(_.get(data, ['experiences']), (item) => {
+export const createSerializer = (forms) => {
+    const createForm = _.get(forms, 'createForm')
+    const educationForm = _.get(forms, 'educationForm')
+    const experienceForm = _.get(forms, 'experienceForm')
+    const personalForm = _.get(forms, 'personalForm')
+    const skillsForm = _.get(forms, 'skillsForm')
+    const experiences = _.map(_.get(experienceForm, ['experiences']), (item) => {
         return {
             work_start: dateSerializer(_.get(item, 'workStart')),
             work_end: dateSerializer(_.get(item, 'workEnd')),
@@ -23,7 +28,7 @@ export const createSerializer = (data) => {
             responsibility: _.get(item, ['responsibility'])
         }
     })
-    const educations = _.map(_.get(data, ['educations']), (item) => {
+    const educations = _.map(_.get(educationForm, ['educations']), (item) => {
         return {
             education: _.get(item, ['education', 'value']),
             study_start: dateSerializer(_.get(item, 'studyStart')),
@@ -35,11 +40,11 @@ export const createSerializer = (data) => {
             city: _.get(item, ['city', 'text'])
         }
     })
-    const driverLicense = _(data)
+    const driverLicense = _(skillsForm)
         .get('driverLicense', [])
         .filter((item) => _.get(item, 'active'))
         .map((item) => _.get(item, 'id'))
-    const languagesLevel = _(data)
+    const languagesLevel = _(skillsForm)
         .get('languagesLevel', [])
         .filter((item) => !_.isEmpty(item))
         .map((item) => {
@@ -48,22 +53,22 @@ export const createSerializer = (data) => {
                 level: _.get(item, ['level', 'value'])
             }
         })
-    const modes = _(data)
+    const modes = _(createForm)
         .get('modes')
         .filter((item) => _.get(item, 'selected'))
         .map((item) => _.get(item, 'id'))
     return {
         // PERSONAL
-        full_name: _.get(data, ['fullName']),
-        date_of_birth: dateSerializer(_.get(data, ['dateOfBirth'])),
-        sex: _.get(data, ['sex', 'value']),
-        family_status: _.get(data, ['familyStatus', 'value']),
-        address: _.get(data, ['address']),
-        phone: _.get(data, ['phone']),
-        email: _.get(data, ['email']),
-        country: _.get(data, ['country', 'value']),
-        city: _.get(data, ['city', 'text']),
-        position: _.get(data, ['position', 'value']),
+        full_name: _.get(personalForm, ['fullName']),
+        date_of_birth: dateSerializer(_.get(personalForm, ['dateOfBirth'])),
+        sex: _.get(personalForm, ['sex', 'value']),
+        family_status: _.get(personalForm, ['familyStatus', 'value']),
+        address: _.get(personalForm, ['address']),
+        phone: _.get(personalForm, ['phone']),
+        email: _.get(personalForm, ['email']),
+        country: _.get(personalForm, ['country', 'value']),
+        city: _.get(personalForm, ['city', 'text']),
+        position: _.get(personalForm, ['position', 'value']),
         // EXPERIENSES
         experiences,
         // EDUCATIONS
@@ -71,14 +76,14 @@ export const createSerializer = (data) => {
         // SKILLS
         driver_license: driverLicense,
         languages_level: languagesLevel,
-        level_pc: _.get(data, ['levelPc', 'value']),
-        hobby: _.get(data, ['hobby']),
+        level_pc: _.get(skillsForm, ['levelPc', 'value']),
+        hobby: _.get(skillsForm, ['hobby']),
         // EXPECTATIONS
         modes,
-        relocation: _.get(data, ['relocation']),
-        business_trip: _.get(data, ['businessTrip']),
-        salary_min: numberWithoutSpaces(_.get(data, ['salary', 'min'])),
-        salary_max: numberWithoutSpaces(_.get(data, ['salary', 'max'])),
+        relocation: _.get(createForm, ['relocation']),
+        business_trip: _.get(createForm, ['businessTrip']),
+        salary_min: numberWithoutSpaces(_.get(createForm, ['salary', 'min'])),
+        salary_max: numberWithoutSpaces(_.get(createForm, ['salary', 'max'])),
         status: 'top'
     }
 }

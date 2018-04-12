@@ -41,8 +41,12 @@ const enhance = compose(
         const updateLoading = _.get(state, ['resume', 'update', 'loading'])
         const list = _.get(state, ['resume', 'list', 'data'])
         const listLoading = _.get(state, ['resume', 'list', 'loading'])
-        const createForm = _.get(state, ['form', 'ResumeCreateForm'])
-        const filterForm = _.get(state, ['form', 'ResumeFilterForm'])
+        const createForm = _.get(state, ['form', 'ResumeCreateForm', 'values'])
+        const educationForm = _.get(state, ['form', 'ResumeEducationForm', 'values'])
+        const experienceForm = _.get(state, ['form', 'ResumeExperienceForm', 'values'])
+        const personalForm = _.get(state, ['form', 'ResumePersonalForm', 'values'])
+        const skillsForm = _.get(state, ['form', 'ResumeSkillsForm', 'values'])
+        const filterForm = _.get(state, ['form', 'ResumeFilterForm', 'values'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -54,6 +58,10 @@ const enhance = compose(
             updateLoading,
             filter,
             createForm,
+            educationForm,
+            experienceForm,
+            personalForm,
+            skillsForm,
             filterForm
         }
     }),
@@ -153,9 +161,10 @@ const enhance = compose(
         },
 
         handleSubmitCreateDialog: props => () => {
-            const {dispatch, createForm, filter, location: {pathname}} = props
+            const {dispatch, createForm, educationForm, experienceForm, personalForm, skillsForm, filter, location: {pathname}} = props
+            const forms = {createForm, educationForm, experienceForm, personalForm, skillsForm}
 
-            return dispatch(resumeCreateAction(_.get(createForm, ['values'])))
+            return dispatch(resumeCreateAction(forms))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })

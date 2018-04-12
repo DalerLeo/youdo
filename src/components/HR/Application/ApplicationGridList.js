@@ -133,7 +133,8 @@ const ApplicationGridList = enhance((props) => {
         openRecruiterList,
         setOpenRecruiterList,
         usersData,
-        privilegeData
+        privilegeData,
+        logsData
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
@@ -154,7 +155,8 @@ const ApplicationGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             confirmDialog={confirmDialog}
-            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            logsData={logsData}/>
     )
 
     const iconStyle = {

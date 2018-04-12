@@ -48,13 +48,14 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
-import {getYearText} from '../../../helpers/hrcHelpers'
+import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import {
+    HR_EDUCATION, HR_LEVEL_PC,
     HR_RESUME_LONG,
     HR_RESUME_MEETING,
     HR_RESUME_REMOVED,
     HR_RESUME_REPORT,
-    HR_RESUME_SHORT,
+    HR_RESUME_SHORT, HR_WORK_SCHEDULE,
     ZERO
 } from '../../../constants/backendConstants'
 import dateFormat from '../../../helpers/dateFormat'
@@ -101,7 +102,7 @@ const enhance = compose(
             margin: '-30px -28px 0 -28px',
             boxShadow: CUSTOM_BOX_SHADOW,
             position: 'relative',
-            zIndex: '1'
+            zIndex: '2'
         },
         title: {
             color: COLOR_GREY,
@@ -753,6 +754,7 @@ const LongListGridList = enhance((props) => {
                             fullWidth
                             multiLine
                             rows={1}
+                            rowsMax={99}
                         />
                     </form>}
                 </div>
@@ -867,7 +869,7 @@ const LongListGridList = enhance((props) => {
                                 <h1>{t('Задания')} <span style={{margin: '0 5px'}}>|</span> {position}</h1>
                                 <Link to={{pathname: ROUTES.HR_TASKS_LIST_URL}} className={classes.backToTasks}/>
                             </div>
-                            <div className={classes.appStatus}>{t('Статус')}: {applicationStatus}</div>
+                            <div className={classes.appStatus}>{t('Статус')}: {getAppStatusName(applicationStatus, true)}</div>
                             <div className={classes.toggle}>
                                 <div className={classes.toggleButton} onClick={() => { setShowDetails(!showDetails) }}>
                                     <span>{t('Детали')}</span>
@@ -892,12 +894,12 @@ const LongListGridList = enhance((props) => {
                                             <li>{t('Пол')}: {genderFormat[sex]}</li>
                                         </ul>
                                         <ul>
-                                            <li>{t('Образование')}: {education}</li>
+                                            <li>{t('Образование')}: {getBackendNames(HR_EDUCATION, education)}</li>
                                             <li>{t('Знание языков')}: {_.isEmpty(languages) ? t('Не указано') : languages}</li>
-                                            <li>{t('Знание ПК')}: {levelPc}</li>
+                                            <li>{t('Знание ПК')}: {getBackendNames(HR_LEVEL_PC, levelPc)}</li>
                                         </ul>
                                         <ul>
-                                            <li>{t('Режим работы')}: {mode}</li>
+                                            <li>{t('Режим работы')}: {getBackendNames(HR_WORK_SCHEDULE, mode)}</li>
                                             <li>{t('Минимальный опыт работы')}: {getYearText(experience)}</li>
                                         </ul>
                                     </div>

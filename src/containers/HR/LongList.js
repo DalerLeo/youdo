@@ -289,7 +289,7 @@ const enhance = compose(
             hashHistory.push({pathname, query: filter.getParams({moveTo: null, [OPEN_MOVE_TO_DIALOG]: false})})
         },
 
-        handleSubmitMoveToDialog: props => () => {
+        handleSubmitMoveToDialog: props => (datetime) => {
             const {dispatch, moveToForm, filter, location: {pathname, query}} = props
             const application = _.toInteger(_.get(query, 'application'))
             const resume = _.toInteger(_.get(query, 'resume'))
@@ -300,7 +300,7 @@ const enhance = compose(
             const dispatchByStatus = (customStatus) => {
                 const outputStatus = customStatus || toStatus
                 switch (outputStatus) {
-                    case HR_RESUME_MEETING: return dispatch(changeResumeStatus(application, resume, formValues, filter))
+                    case HR_RESUME_MEETING: return dispatch(changeResumeStatus(application, resume, formValues, filter, datetime))
                     case HR_RESUME_SHORT: return dispatch(changeResumeStatus(application, resume, formValues, filter))
                     case HR_RESUME_REMOVED: return dispatch(deleteResume(application, resume, formValues, filter, relation))
                     case HR_RESUME_NOTE: return dispatch(changeResumeStatus(application, resume, formValues, filter))
@@ -686,7 +686,7 @@ const LongList = enhance((props) => {
                     ? moment(_.get(meetingResumeDetails, 'dateMeeting')).toDate()
                     : '',
                 time: _.get(meetingResumeDetails, 'dateMeeting')
-                    ? moment(_.get(meetingResumeDetails, 'dateMeeting')).toDate()
+                    ? moment(_.get(meetingResumeDetails, 'dateMeeting')).format('HH:mm')
                     : ''
             }
         })()

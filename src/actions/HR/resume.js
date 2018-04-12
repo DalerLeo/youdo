@@ -5,8 +5,8 @@ import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/resumeSerializer'
 
-export const resumeCreateAction = (formValues) => {
-    const requestData = serializers.createSerializer(formValues)
+export const resumeCreateAction = (forms) => {
+    const requestData = serializers.createSerializer(forms)
     const payload = axios()
         .post(API.HR_RESUME_CREATE, requestData)
         .then((response) => {

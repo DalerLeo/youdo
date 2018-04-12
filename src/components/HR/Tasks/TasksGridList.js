@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import moment from 'moment'
 import React from 'react'
+import classNames from 'classnames'
 import PropTypes from 'prop-types'
 import * as ROUTES from '../../../constants/routes'
 import Container from '../../Container'
@@ -9,6 +10,7 @@ import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Calendar from 'material-ui/svg-icons/action/event'
+import CalendarDone from 'material-ui/svg-icons/notification/event-available'
 import {hashHistory, Link} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 import toBoolean from '../../../helpers/toBoolean'
@@ -29,7 +31,7 @@ import {
     COLOR_WHITE,
     LINK_COLOR, COLOR_YELLOW, COLOR_RED
 } from '../../../constants/styleConstants'
-import {APPLICATION_COMPLETED, ZERO} from '../../../constants/backendConstants'
+import {APPLICATION_ASSIGNED, APPLICATION_COMPLETED, ZERO} from '../../../constants/backendConstants'
 import {CUSTOM_BOX_SHADOW, CUSTOM_BOX_SHADOW_HOVER} from '../LongList/LongListGridList'
 
 const enhance = compose(
@@ -154,11 +156,17 @@ const enhance = compose(
             }
         },
         missedDeadline: {
-            extend: 'deadline',
-            color: COLOR_RED,
+            color: COLOR_RED + '!important',
             fontWeight: '600',
             '& svg': {
                 color: COLOR_RED + '!important'
+            }
+        },
+        completedDeadline: {
+            color: COLOR_GREEN + '!important',
+            fontWeight: '600',
+            '& svg': {
+                color: COLOR_GREEN + '!important'
             }
         },
         bodyBlock: {
@@ -277,6 +285,7 @@ const TasksGridList = enhance((props) => {
         const shortCount = _.get(item, ['stats', 'short'])
         const status = _.get(item, 'status')
         const isCompleted = status === APPLICATION_COMPLETED
+        const completedDate = isCompleted && moment(_.get(item, 'completedDate')).format('YYYY-MM-DD')
         const now = moment().format('YYYY-MM-DD')
         const deadlineDifference = moment(_.get(item, 'deadline')).diff(now, 'days', true)
         return (
@@ -285,8 +294,12 @@ const TasksGridList = enhance((props) => {
                     pathname: ROUTES.HR_LONG_LIST_URL,
                     query: filter.getParams({application: id})}}/>
                 <header>
-                    <div className={deadlineDifference < ZERO ? classes.missedDeadline : classes.deadline}>
-                        <Calendar/>{dateFormat(deadline)}
+                    <div className={classNames(classes.deadline, {
+                        [classes.missedDeadline]: deadlineDifference < ZERO && !isCompleted,
+                        [classes.completedDeadline]: isCompleted
+                    })}>
+                        {completedDate ? <CalendarDone/> : <Calendar/>}
+                        {completedDate ? dateFormat(completedDate) : dateFormat(deadline)}
                     </div>
                     {isNew && <div className={classes.status}>{t('новое')}</div>}
                     {isCompleted && <div className={classes.completed}>{t('завершено')}</div>}
@@ -403,7 +416,7 @@ const TasksGridList = enhance((props) => {
                                     innerDivStyle={popoverStyle.innerDiv}
                                     leftIcon={<InProcess style={popoverStyle.icon}/>}
                                     primaryText={t('В процессе')}
-                                    onClick={() => { filterByStatus({doing: 'true', isNew: null, status: null}) }}/>
+                                    onClick={() => { filterByStatus({doing: 'true', isNew: null, status: APPLICATION_ASSIGNED}) }}/>
                                 <MenuItem
                                     style={popoverStyle.menuItem}
                                     innerDivStyle={popoverStyle.innerDiv}

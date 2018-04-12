@@ -120,3 +120,23 @@ export const privilegeListFetchAction = () => {
         payload
     }
 }
+
+export const getApplicationLogs = (application) => {
+    const payload = axios()
+        .get(API.HR_APP_LOGS_LIST, {params: {
+            page_size: 20,
+            application,
+            ordering: 'created_date'
+        }})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_LOGS_LIST,
+        payload
+    }
+}

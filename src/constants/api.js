@@ -649,3 +649,4 @@ export const HR_RESUME_ANSWERS_CREATE = `/${HR_RESUME_ANSWERS}/multi_answer/`
 export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`
 
 export const HR_APP_LOGS = 'hr/application_status_log'
+export const HR_APP_LOGS_LIST = `/${HR_APP_LOGS}`

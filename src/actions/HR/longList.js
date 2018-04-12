@@ -56,11 +56,11 @@ export const addToShortList = (application, resumes) => {
         payload
     }
 }
-export const changeResumeStatus = (application, resume, formValues, filter) => {
+export const changeResumeStatus = (application, resume, formValues, filter, datetime) => {
     const status = filter.getParam('moveTo')
     const currentStatus = filter.getParam('status')
     const statusToChange = status === HR_RESUME_NOTE ? currentStatus : status
-    const requestData = serializers.createMoveToSerializer(application, resume, statusToChange, currentStatus, formValues)
+    const requestData = serializers.createMoveToSerializer(application, resume, datetime, statusToChange, currentStatus, formValues)
     const payload = axios()
         .post(API.HR_RESUME_MOVE, requestData)
         .then((response) => {
