@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
 import PositionSearchField from '../Position/PositionSearchField'
@@ -10,14 +10,34 @@ import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
 const ONE = 1
+const validate = values => {
+    const formNames = [
+        'workStart',
+        'organization',
+        'position',
+        'responsibility'
+    ]
+    const errors = {}
+    const experienceArrayErrors = []
+    const initialValues = _.isEmpty(values) ? {experiences: [{}]} : values
+    const getError = (field, experience, index, experienceErrors) => {
+        if (!_.get(experience, field)) {
+            experienceErrors[field] = t('Обязательное поле')
+            experienceArrayErrors[index] = experienceErrors
+        }
+    }
+    _.forEach(_.get(initialValues, 'experiences'), (exp, index) => {
+        const experienceErrors = {}
+        _.map(formNames, (item) => {
+            getError(item, exp, index, experienceErrors)
+        })
+    })
+    errors.experiences = experienceArrayErrors
+    return errors
+}
+
 const enhance = compose(
     injectSheet({
-        usersLoader: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%'
-        },
         inputFieldCustom: {
             fontSize: '13px !important',
             height: '45px !important',
@@ -82,7 +102,7 @@ const enhance = compose(
         },
         detail: {
             margin: '0 -30px',
-            padding: '0 30px 10px',
+            padding: '5px 30px 10px',
             transition: 'all 200ms ease',
             '&:hover': {
                 background: 'rgba(242, 245, 248, 0.5)'
@@ -109,9 +129,22 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const allFields = _.get(state, ['form', 'ResumeCreateForm', 'values', 'experiences'])
+        const allFields = _.get(state, ['form', 'ResumeExperienceForm', 'values', 'experiences'])
         return {
             allFields
+        }
+    }),
+    reduxForm({
+        form: 'ResumeExperienceForm',
+        destroyOnUnmount: false,
+        validate
+    }),
+    lifecycle({
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updateExperienceError(nextProps.invalid)
+            }
         }
     })
 )
@@ -120,7 +153,8 @@ const ExperiencesField = enhance((props) => {
     const {
         fields,
         allFields,
-        classes
+        classes,
+        nextButton
     } = props
 
     const handleTouchTap = (index, addAnother) => {
@@ -140,12 +174,13 @@ const ExperiencesField = enhance((props) => {
         return (
             <div key={index} className={classes.detail}>
                 <div>
-                    <div className={classes.flexHalf + ' ' + classes.alignEnd}>
+                    <div className={classes.flexHalf + ' ' + classes.alignCenter}>
                         <Field
                             label={t('Начало работы')}
                             name={`${detail}.workStart`}
                             component={DateField}
                             className={classes.inputDateCustom}
+                            errorStyle={{bottom: 2}}
                             fullWidth={true}/>
                         <Field
                             label={t('По настоящее время')}
@@ -161,6 +196,7 @@ const ExperiencesField = enhance((props) => {
                                 name={`${detail}.workEnd`}
                                 component={DateField}
                                 className={classes.inputDateCustom}
+                                errorStyle={{bottom: 2}}
                                 fullWidth={true}/>
                         </div>}
                     <Field
@@ -199,6 +235,7 @@ const ExperiencesField = enhance((props) => {
             <div className={classes.addAnother}>
                 <a onClick={() => handleTouchTap(null, true)}>{t('Добавить опыт работы')}</a>
             </div>
+            {nextButton}
         </div>
     )
 })

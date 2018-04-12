@@ -35,9 +35,9 @@ export const createShortSerializer = (application, resumes) => {
     }
 }
 
-export const createMoveToSerializer = (application, resume, statusToChange, currentStatus, data) => {
-    const date = moment(_.get(data, 'date')).format('YYYY-MM-DD')
-    const time = moment(_.get(data, 'time')).format('HH:mm')
+export const createMoveToSerializer = (application, resume, datetime, statusToChange, currentStatus, data) => {
+    const date = datetime || moment(_.get(data, 'date')).format('YYYY-MM-DD')
+    const time = _.get(data, 'time')
     const note = _.get(data, 'note')
     const request = {
         application,

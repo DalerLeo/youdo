@@ -44,7 +44,7 @@ export const getMonthText = (value) => {
 
 export const getExperienceText = (totalExp) => {
     const experienceYear = _.floor(totalExp)
-    const experienceMonth = totalExp - experienceYear
+    const experienceMonth = _.round(totalExp - experienceYear, ONE)
     const MULTIPLY = 10
     const expMonthOutput = experienceMonth * MULTIPLY
     const checkIfMonthExpLessZero = expMonthOutput > ZERO ? _.floor(expMonthOutput) : _.floor(expMonthOutput * MULTIPLY)

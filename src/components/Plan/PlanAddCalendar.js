@@ -6,6 +6,7 @@ import moment from 'moment'
 import IconButton from 'material-ui/IconButton'
 import LeftArrow from 'material-ui/svg-icons/navigation/chevron-left'
 import RightArrow from 'material-ui/svg-icons/navigation/chevron-right'
+import {getCalendar, weekNames} from '../../helpers/planCalendar'
 
 const enhance = compose(
     injectSheet({
@@ -129,50 +130,10 @@ const PlanAddCalendar = enhance((props) => {
     const selectedYear = moment(_.get(calendar, 'selectedCreateDate')).format('YYYY')
 
     // Calendar
-
-    const TEN = 10
-    const DAYS_PER_WEEK = 7
-    const ONE = 1
-
     const daysInMonth = moment(selectedMonth).daysInMonth()
     const firstDayWeek = moment(moment(selectedMonth).format('YYYY-MM-01')).isoWeekday()
     const lastDayWeek = moment(moment(selectedMonth).format('YYYY-MM-' + daysInMonth)).isoWeekday()
     const selectedWeek = moment(moment(selectedMonth).format('YYYY-MM-' + selectedDay)).isoWeekday()
-
-    const getCalendar = () => {
-        const calendarDays = []
-        if (firstDayWeek !== ONE) {
-            for (let i = 1; i < firstDayWeek; i++) {
-                calendarDays.push({isEmpty: true})
-            }
-        } else if (firstDayWeek === ONE) {
-            // DO NOTHING
-        } else {
-            for (let i = 1; i < DAYS_PER_WEEK; i++) {
-                calendarDays.push({isEmpty: true})
-            }
-        }
-        for (let i = 1; i <= daysInMonth; i++) {
-            const dayItem = i < TEN ? '0' + i : i
-            calendarDays.push({day: dayItem})
-        }
-        if (lastDayWeek !== DAYS_PER_WEEK) {
-            for (let i = lastDayWeek; i < DAYS_PER_WEEK; i++) {
-                calendarDays.push({isEmpty: true})
-            }
-        }
-        return calendarDays
-    }
-
-    const weekNames = [
-        {id: 1, name: 'Пн'},
-        {id: 2, name: 'Вт'},
-        {id: 3, name: 'Ср'},
-        {id: 4, name: 'Чт'},
-        {id: 5, name: 'Пт'},
-        {id: 6, name: 'Сб'},
-        {id: 7, name: 'Вс'}
-    ]
 
     return (
         <div className={classes.dateBlock}>
@@ -207,7 +168,7 @@ const PlanAddCalendar = enhance((props) => {
                 })}
             </div>
             <div className={classes.days}>
-                {_.map(getCalendar(), (d, i) => {
+                {_.map(getCalendar(firstDayWeek, daysInMonth, lastDayWeek), (d, i) => {
                     const day = _.get(d, 'day')
                     const parsedDay = _.parseInt(day)
                     const parsedSelectedDay = _.parseInt(selectedDay)

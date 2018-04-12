@@ -1,5 +1,5 @@
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import t from '../../../helpers/translate'
@@ -63,6 +63,14 @@ const enhance = compose(
             zIndex: '5',
             '& a': {
                 fontWeight: '600'
+            }
+        }
+    }),
+    lifecycle({
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updateSkillsError(nextProps.invalid && nextProps.skillsError)
             }
         }
     })

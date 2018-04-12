@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose} from 'recompose'
+import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field} from 'redux-form'
+import {reduxForm, Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
 import EducationSearchField from '../EducationSearchField'
@@ -12,6 +12,34 @@ import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
 const ONE = 1
+const validate = values => {
+    const formNames = [
+        'education',
+        'studyStart',
+        'institution',
+        'speciality',
+        'country',
+        'city'
+    ]
+    const errors = {}
+    const educationArrayErrors = []
+    const initialValues = _.isEmpty(values) ? {educations: [{}]} : values
+    const getError = (field, education, index, educationErrors) => {
+        if (!_.get(education, field)) {
+            educationErrors[field] = t('Обязательное поле')
+            educationArrayErrors[index] = educationErrors
+        }
+    }
+    _.forEach(_.get(initialValues, 'educations'), (education, index) => {
+        const educationErrors = {}
+        _.map(formNames, (item) => {
+            getError(item, education, index, educationErrors)
+        })
+    })
+    errors.educations = educationArrayErrors
+    return errors
+}
+
 const enhance = compose(
     injectSheet({
         usersLoader: {
@@ -111,9 +139,22 @@ const enhance = compose(
         }
     }),
     connect((state) => {
-        const allFields = _.get(state, ['form', 'ResumeCreateForm', 'values', 'educations'])
+        const allFields = _.get(state, ['form', 'ResumeEducationForm', 'values', 'educations'])
         return {
             allFields
+        }
+    }),
+    reduxForm({
+        form: 'ResumeEducationForm',
+        destroyOnUnmount: false,
+        validate
+    }),
+    lifecycle({
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updateEducationError(nextProps.invalid)
+            }
         }
     })
 )
@@ -122,7 +163,8 @@ const EducationsField = enhance((props) => {
     const {
         fields,
         allFields,
-        classes
+        classes,
+        nextButton
     } = props
 
     const handleTouchTap = (index, addAnother) => {
@@ -160,6 +202,7 @@ const EducationsField = enhance((props) => {
                             name={`${detail}.studyStart`}
                             component={DateField}
                             className={classes.inputDateCustom}
+                            errorStyle={{bottom: 2}}
                             fullWidth={true}/>
                         <Field
                             label={t('По настоящее время')}
@@ -175,6 +218,7 @@ const EducationsField = enhance((props) => {
                                 name={`${detail}.studyEnd`}
                                 component={DateField}
                                 className={classes.inputDateCustom}
+                                errorStyle={{bottom: 2}}
                                 fullWidth={true}/>
                         </div>}
                     <Field
@@ -218,6 +262,7 @@ const EducationsField = enhance((props) => {
             <div className={classes.addAnother}>
                 <a onClick={() => handleTouchTap(null, true)}>{t('Добавить образование')}</a>
             </div>
+            {nextButton}
         </div>
     )
 })

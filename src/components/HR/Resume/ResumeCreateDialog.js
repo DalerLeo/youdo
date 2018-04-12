@@ -5,7 +5,7 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
-import {Field, FieldArray, reduxForm} from 'redux-form'
+import {FieldArray, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
@@ -16,17 +16,13 @@ import {
     COLOR_DEFAULT,
     LINK_COLOR,
     BORDER_COLOR,
-    COLOR_GREY
+    COLOR_GREY,
+    COLOR_GREY_LIGHTEN
 } from '../../../constants/styleConstants'
-import {ZERO, HR_WORK_SCHEDULE} from '../../../constants/backendConstants'
-import {TextField, CheckBox} from '../../ReduxForm'
+import {ZERO} from '../../../constants/backendConstants'
 import ToolTip from '../../ToolTip'
-import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
-import LanguageField from '../../ReduxForm/HR/LanguageField'
 import ExperiencesField from '../../ReduxForm/HR/Resume/ExperiencesField'
 import EducationsField from '../../ReduxForm/HR/Resume/EducationsField'
-import DriverLicenceCheck from '../../ReduxForm/HR/Resume/DriverLicenceCheck'
-import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import {
     Step,
     Stepper,
@@ -38,8 +34,9 @@ import Experience from 'material-ui/svg-icons/places/business-center'
 import Education from 'material-ui/svg-icons/social/school'
 import Skills from 'material-ui/svg-icons/action/loyalty'
 import Expectations from 'material-ui/svg-icons/action/trending-up'
-import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
 import ResumeCreatePersonal from './ResumeCreatePersonal'
+import ResumeCreateSkills from './ResumeCreateSkills'
+import ResumeCreateExpectations from './ResumeCreateExpectations'
 
 export const RESUME_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const RESUME_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -140,11 +137,18 @@ const enhance = compose(
             borderTop: BORDER_STYLE,
             background: COLOR_WHITE,
             textAlign: 'right',
+            margin: '20px -30px -20px',
             '& span': {
                 fontSize: '13px !important',
                 fontWeight: '600 !important',
                 color: '#129fdd',
                 verticalAlign: 'inherit !important'
+            }
+        },
+        disabledButton: {
+            extend: 'bottomButton',
+            '& span': {
+                color: COLOR_GREY_LIGHTEN
             }
         },
         actionButton: {
@@ -234,7 +238,11 @@ const enhance = compose(
     }),
     withState('openExpDialog', 'setOpenExpDialog', false),
     withState('stepIndex', 'setStepIndex', ZERO),
+
     withState('personalError', 'updatePersonalError', false),
+    withState('experienceError', 'updateExperienceError', false),
+    withState('educationError', 'updateEducationError', false),
+    withState('skillsError', 'updateSkillsError', false)
 )
 
 const ResumeCreateDialog = enhance((props) => {
@@ -250,10 +258,17 @@ const ResumeCreateDialog = enhance((props) => {
         initialValues,
 
         // ERRORS
-        // . personalError,
-        updatePersonalError
+        personalError,
+        updatePersonalError,
+        experienceError,
+        updateExperienceError,
+        educationError,
+        updateEducationError,
+        skillsError,
+        updateSkillsError
     } = props
 
+    const ONE = 1
     const EXPERIENCE = 1
     const EDUCATION = 2
     const SKILLS = 3
@@ -271,16 +286,20 @@ const ResumeCreateDialog = enhance((props) => {
         .catch((error) => {
             formValidate(formNames, dispatch, error)
         }))
-    const getIconColor = (index) => {
-        return index === stepIndex ? LINK_COLOR : COLOR_GREY
+    const getIconColor = (index, error) => {
+        return index === stepIndex
+            ? LINK_COLOR
+            : error
+                ? '#EF5350'
+                : COLOR_GREY
     }
     const getIcon = (index, icon) => {
         switch (icon) {
-            case 'person': return <Person color={getIconColor(index)}/>
-            case 'experience': return <Experience color={getIconColor(index)}/>
-            case 'education': return <Education color={getIconColor(index)}/>
-            case 'skills': return <Skills color={getIconColor(index)}/>
-            case 'expectations': return <Expectations color={getIconColor(index)}/>
+            case 'person': return <Person color={getIconColor(index, personalError)}/>
+            case 'experience': return <Experience color={getIconColor(index, experienceError)}/>
+            case 'education': return <Education color={getIconColor(index, educationError)}/>
+            case 'skills': return <Skills color={getIconColor(index, skillsError)}/>
+            case 'expectations': return <Expectations color={getIconColor(index, false)}/>
             default: return null
         }
     }
@@ -293,6 +312,27 @@ const ResumeCreateDialog = enhance((props) => {
         {label: t('Профессиональные ожидания'), icon: 'expectations'}
     ]
 
+    const invalidForm = _.includes([personalError, experienceError, educationError, skillsError], true)
+    const nextButton = (error, isSave) => {
+        return (
+            <div className={error ? classes.disabledButton : classes.bottomButton}>
+                {isSave
+                    ? <FlatButton
+                        label={t('Сохранить')}
+                        disabled={error}
+                        className={classes.actionButton}
+                        type={'submit'}
+                    />
+                    : <FlatButton
+                        label={t('Далее')}
+                        disabled={error}
+                        className={classes.actionButton}
+                        onClick={() => { setStepIndex(stepIndex + ONE) }}
+                    />}
+            </div>
+        )
+    }
+
     const getStepperContent = () => {
         switch (stepIndex) {
             case ZERO: return (
@@ -300,14 +340,17 @@ const ResumeCreateDialog = enhance((props) => {
                     <ResumeCreatePersonal
                         classes={classes}
                         initialValues={initialValues}
-                        updatePersonalError={updatePersonalError}/>
+                        updatePersonalError={updatePersonalError}
+                        nextButton={nextButton(personalError)}/>
                 </div>
             )
             case EXPERIENCE: return (
                 <div className={classes.container}>
                     <FieldArray
                         name="experiences"
-                        component={ExperiencesField}/>
+                        component={ExperiencesField}
+                        updateExperienceError={updateExperienceError}
+                        nextButton={nextButton(experienceError)}/>
                 </div>
             )
             case EDUCATION: return (
@@ -315,92 +358,26 @@ const ResumeCreateDialog = enhance((props) => {
                     <FieldArray
                         name="educations"
                         component={EducationsField}
-                    />
+                        updateEducationError={updateEducationError}
+                        nextButton={nextButton(educationError)}/>
                 </div>
             )
             case SKILLS: return (
                 <div className={classes.container}>
-                    <h4>{t('Навыки и умения')}</h4>
-                    <Field
-                        name="driverLicense"
-                        component={DriverLicenceCheck}/>
-                    <FieldArray
-                        name="languagesLevel"
-                        component={LanguageField}/>
-                    <Field
-                        name="levelPc"
-                        component={ComputerLevelSearchField}
-                        className={classes.inputFieldCustom}
-                        label={t('Уровень владения ПК')}
-                        fullWidth={true}/>
-                    <Field
-                        name="hobby"
-                        component={TextField}
-                        className={classes.textFieldArea}
-                        label={t('Интересы и хобби')}
-                        fullWidth={true}
-                        multiLine={true}
-                        rows={1}/>
-                    <Field
-                        name="skills"
-                        component={SkillsTagSearchField}
-                        className={classes.inputFieldCustom}
-                        label={t('Профессиональные навыки')}
-                        fullWidth={true}/>
+                    <ResumeCreateSkills
+                        classes={classes}
+                        initialValues={initialValues}
+                        skillsError={skillsError}
+                        updateSkillsError={updateSkillsError}
+                        nextButton={nextButton(skillsError)}/>
                 </div>
             )
             case EXPECTATIONS: return (
                 <div className={classes.container}>
-                    <h4>{t('Профессиональные ожидания')}</h4>
-                    <div>
-                        <div className={classes.subTitle}>{t('График работы')}</div>
-                        <div className={classes.flex + ' ' + classes.halfChild}>
-                            {_.map(HR_WORK_SCHEDULE, (item, index) => {
-                                return (
-                                    <Field
-                                        key={item.id}
-                                        name={'modes[' + index + '][selected]'}
-                                        label={item.name}
-                                        component={CheckBox}/>
-                                )
-                            })}
-                        </div>
-                    </div>
-                    <div className={classes.readyFor}>
-                        <div className={classes.flex + ' ' + classes.halfChild}>
-                            <Field
-                                name="relocation"
-                                label={t('Готовность к переезду')}
-                                component={CheckBox}/>
-                            <Field
-                                name="businessTrip"
-                                label={t('Готовность к командировкам')}
-                                component={CheckBox}/>
-                        </div>
-                    </div>
-                    <div>
-                        <div className={classes.subTitle}>{t('Желаемая заработная плата')}</div>
-                        <div className={classes.flexBetween + ' ' + classes.halfChild}>
-                            <div>
-                                <Field
-                                    name="salary[min]"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    normalize={normalizeNumber}
-                                    label={t('Мин') + '.'}
-                                    fullWidth={true}/>
-                            </div>
-                            <div>
-                                <Field
-                                    name="salary[max]"
-                                    component={TextField}
-                                    className={classes.inputFieldCustom}
-                                    normalize={normalizeNumber}
-                                    label={t('Макс') + '.'}
-                                    fullWidth={true}/>
-                            </div>
-                        </div>
-                    </div>
+                    <ResumeCreateExpectations
+                        classes={classes}
+                        initialValues={initialValues}
+                        nextButton={nextButton(invalidForm, true)}/>
                 </div>
             )
             default: return null
@@ -452,14 +429,6 @@ const ResumeCreateDialog = enhance((props) => {
                 </div>
                 <form onSubmit={onSubmit} className={classes.form}>
                     {getStepperContent()}
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label={t('Сохранить')}
-                            className={classes.actionButton}
-                            primary={true}
-                            type="submit"
-                        />
-                    </div>
                 </form>
             </div>
         </Dialog>

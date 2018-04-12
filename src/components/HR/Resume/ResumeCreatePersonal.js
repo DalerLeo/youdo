@@ -28,7 +28,7 @@ const validate = values => {
     const errors = {}
     const getError = (field) => {
         if (!_.get(values, field)) {
-            errors[field] = 'This field is required'
+            errors[field] = t('Обязательное поле')
         }
     }
     _.map(formNames, (item) => getError(item))
@@ -45,12 +45,13 @@ const enhance = compose(
     }),
     reduxForm({
         form: 'ResumePersonalForm',
+        destroyOnUnmount: false,
         validate
     }),
     lifecycle({
         componentWillReceiveProps (nextProps) {
             const props = this.props
-            if (props.invalid !== nextProps.invalid && nextProps.anyTouched) {
+            if ((props.invalid !== nextProps.invalid)) {
                 nextProps.updatePersonalError(nextProps.invalid)
             }
         }
@@ -60,7 +61,8 @@ const enhance = compose(
 const ResumeCreatePersonal = enhance((props) => {
     const {
         classes,
-        country
+        country,
+        nextButton
     } = props
 
     return (
@@ -130,6 +132,7 @@ const ResumeCreatePersonal = enhance((props) => {
                 component={PositionSearchField}
                 className={classes.inputFieldCustom}
                 fullWidth={true}/>
+            {nextButton}
         </div>
     )
 })

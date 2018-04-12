@@ -30,7 +30,7 @@ const listHeader = [
     {
         sorting: true,
         name: 'skills',
-        xs: 3,
+        xs: 4,
         title: t('Навыки')
     },
     {
@@ -48,7 +48,7 @@ const listHeader = [
     {
         sorting: true,
         alignRight: true,
-        xs: 2,
+        xs: 1,
         name: 'status',
         title: t('Статус')
     }
@@ -141,10 +141,10 @@ const ResumeGridList = enhance((props) => {
                     query: filter.getParams()
                 }}>
                     <Col xs={3}>{fullName}</Col>
-                    <Col xs={3}>{skills}</Col>
+                    <Col xs={4}>{_.join(skills, ', ') || t('Не указаны')}</Col>
                     <Col xs={2}>{experience}</Col>
                     <Col xs={2}>{createdDate}</Col>
-                    <Col xs={2} className={classes.buttons}>
+                    <Col xs={1} className={classes.buttons}>
                         {status}
                     </Col>
                 </Link>

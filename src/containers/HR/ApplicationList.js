@@ -21,7 +21,8 @@ import {
     applicationDeleteAction,
     applicationItemFetchAction,
     usersListFetchAction,
-    privilegeListFetchAction
+    privilegeListFetchAction,
+    getApplicationLogs
 } from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -29,6 +30,7 @@ import {APPLICATION_FILTER_KEY, APPLICATION_FILTER_OPEN} from '../../components/
 import {PRICE_FILTER_KEY} from '../../components/Price'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
+import {ZERO} from '../../constants/backendConstants'
 
 const enhance = compose(
     connect((state, props) => {
@@ -42,6 +44,8 @@ const enhance = compose(
         const listLoading = _.get(state, ['application', 'list', 'loading'])
         const privilegeList = _.get(state, ['application', 'privilege', 'data'])
         const privilegeListLoading = _.get(state, ['application', 'privilege', 'loading'])
+        const logsList = _.get(state, ['application', 'logs', 'data'])
+        const logsListLoading = _.get(state, ['application', 'logs', 'loading'])
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'ApplicationCreateForm'])
@@ -58,6 +62,8 @@ const enhance = compose(
             usersListLoading,
             privilegeList,
             privilegeListLoading,
+            logsList,
+            logsListLoading,
             filter,
             createForm
         }
@@ -76,7 +82,10 @@ const enhance = compose(
         return applicationId && _.get(props, ['params', 'applicationId']) !== applicationId
     }, ({dispatch, params}) => {
         const applicationId = _.toInteger(_.get(params, 'applicationId'))
-        applicationId && dispatch(applicationItemFetchAction(applicationId))
+        if (applicationId > ZERO) {
+            dispatch(applicationItemFetchAction(applicationId))
+            dispatch(getApplicationLogs(applicationId))
+        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -238,7 +247,9 @@ const ApplicationList = enhance((props) => {
         usersList,
         usersListLoading,
         privilegeList,
-        privilegeListLoading
+        privilegeListLoading,
+        logsList,
+        logsListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', APPLICATION_FILTER_OPEN]))
@@ -299,68 +310,56 @@ const ApplicationList = enhance((props) => {
                     privileges: isSelectedPrivileges
                 }
             }
-            const ageMin = _.get(detail, 'ageMin')
-            const ageMax = _.get(detail, 'ageMax')
-            const businessTrip = _.get(detail, 'businessTrip')
-            const client = _.get(detail, ['contact', 'client', 'id'])
-            const contact = String(_.get(detail, ['contact', 'id']))
-            const deadline = moment(_.get(detail, 'deadline')).toDate()
-            const deadlineTime = moment(_.get(detail, 'deadline')).toDate()
-            const education = _.get(detail, 'education')
-            const experience = _.get(detail, 'experience')
-            const levelPc = _.get(detail, 'levelPc')
-            const workSchedule = _.get(detail, 'mode')
-            const planningDate = moment(_.get(detail, 'planningDate')).toDate()
-            const position = _.get(detail, ['position', 'id'])
-            const realSalaryMin = numberFormat(_.get(detail, 'realSalaryMin'))
-            const realSalaryMax = numberFormat(_.get(detail, 'realSalaryMax'))
-            const recruiter = _.get(detail, ['recruiter'])
-            const responsibility = _.get(detail, 'responsibility')
-            const sex = _.get(detail, 'sex')
-            const skills = _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name'))
-            const trialSalaryMin = numberFormat(_.get(detail, 'trialSalaryMin'))
-            const trialSalaryMax = numberFormat(_.get(detail, 'trialSalaryMax'))
             return {
                 age: {
-                    min: ageMin,
-                    max: ageMax
+                    min: _.get(detail, 'ageMin'),
+                    max: _.get(detail, 'ageMax')
                 },
-                businessTrip,
+                businessTrip: _.get(detail, 'businessTrip'),
                 client: {
-                    value: client
+                    value: _.get(detail, ['contact', 'client', 'id'])
                 },
-                contact,
+                contact: String(_.get(detail, ['contact', 'id'])),
                 education: {
-                    value: education
+                    value: _.get(detail, 'education')
                 },
-                experience,
-                deadline,
-                deadlineTime,
+                experience: _.get(detail, 'experience'),
+                deadline: moment(_.get(detail, 'deadline')).toDate(),
+                languages: _.map(_.get(detail, 'languages'), (item) => {
+                    return {
+                        name: {
+                            value: _.get(item, ['language', 'id'])
+                        },
+                        level: {
+                            value: _.get(item, 'level')
+                        }
+                    }
+                }),
                 levelPc: {
-                    value: levelPc
+                    value: _.get(detail, 'levelPc')
                 },
-                planningDate,
+                planningDate: moment(_.get(detail, 'planningDate')).toDate(),
                 position: {
-                    value: position
+                    value: _.get(detail, ['position', 'id'])
                 },
                 privileges: isSelectedPrivileges,
                 trialSalary: {
-                    min: trialSalaryMin,
-                    max: trialSalaryMax
+                    min: numberFormat(_.get(detail, 'trialSalaryMin')),
+                    max: numberFormat(_.get(detail, 'trialSalaryMax'))
                 },
                 realSalary: {
-                    min: realSalaryMin,
-                    max: realSalaryMax
+                    min: numberFormat(_.get(detail, 'realSalaryMin')),
+                    max: numberFormat(_.get(detail, 'realSalaryMax'))
                 },
-                responsibility,
+                responsibility: _.get(detail, 'responsibility'),
                 sex: {
-                    value: sex
+                    value: _.get(detail, 'sex')
                 },
                 schedule: {
-                    value: workSchedule
+                    value: _.get(detail, 'mode')
                 },
-                skills,
-                recruiter
+                skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name')),
+                recruiter: _.get(detail, ['recruiter'])
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -392,6 +391,11 @@ const ApplicationList = enhance((props) => {
         handleCloseDetail: props.handleCloseDetail
     }
 
+    const logsData = {
+        list: _.get(logsList, 'results'),
+        loading: logsListLoading
+    }
+
     return (
         <Layout {...layout}>
             <ApplicationGridList
@@ -406,6 +410,7 @@ const ApplicationList = enhance((props) => {
                 setOpenRecruiterList={setOpenRecruiterList}
                 usersData={usersData}
                 privilegeData={privilegeData}
+                logsData={logsData}
             />
         </Layout>
     )

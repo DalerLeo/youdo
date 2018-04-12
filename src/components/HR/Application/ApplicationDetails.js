@@ -5,10 +5,12 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import classNames from 'classnames'
 import LinearProgress from '../../LinearProgress'
+import Loader from '../../Loader'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
+import Divider from 'material-ui/Divider'
 import Delete from 'material-ui/svg-icons/action/delete'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ReworkIcon from 'material-ui/svg-icons/content/reply'
@@ -22,7 +24,8 @@ import {
     BORDER_STYLE,
     COLOR_GREY_LIGHTEN,
     COLOR_GREY,
-    COLOR_WHITE
+    COLOR_WHITE,
+    LINK_COLOR
 } from '../../../constants/styleConstants'
 import {
     SUM_CURRENCY,
@@ -32,7 +35,6 @@ import {
     HR_LEVEL_PC
 } from '../../../constants/backendConstants'
 
-const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
         loader: {
@@ -49,7 +51,7 @@ const enhance = compose(
             display: 'flex',
             flexWrap: 'wrap',
             '& a': {
-                color: colorBlue
+                color: LINK_COLOR
             }
         },
         title: {
@@ -84,9 +86,10 @@ const enhance = compose(
             background: COLOR_WHITE,
             opacity: '0',
             position: 'absolute',
-            boxShadow: '0px 0px 6px rgba(0, 0, 0, 0.22)',
+            padding: PADDING_STANDART,
+            boxShadow: '3px 0px 5px rgba(0, 0, 0, 0.22)',
             top: '-100%',
-            left: '150px',
+            left: '0',
             right: '0',
             zIndex: '2',
             height: '100%',
@@ -96,6 +99,20 @@ const enhance = compose(
         logsOpen: {
             top: '0 !important',
             opacity: '1 !important'
+        },
+        log: {
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '15px',
+            '&:last-child': {
+                marginBottom: '0'
+            }
+        },
+        logDate: {
+            marginRight: '15px'
+        },
+        logStatus: {
+            fontWeight: '600'
         },
         companyInfo: {
             borderBottom: BORDER_STYLE,
@@ -234,7 +251,8 @@ const ApplicationDetails = enhance((props) => {
         handleOpenUpdateDialog,
         handleCloseDetail,
         openLogs,
-        setOpenLogs
+        setOpenLogs,
+        logsData
     } = props
 
     const applicationId = _.get(data, 'id')
@@ -242,6 +260,7 @@ const ApplicationDetails = enhance((props) => {
     const ageMax = _.toNumber(_.get(data, 'ageMax'))
     const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
     const client = _.get(data, ['contact', 'client', 'name'])
+    const sphere = _.get(data, ['contact', 'client', 'sphere']) || t('Не указана')
     const contact = _.get(data, ['contact', 'name'])
     const email = _.get(data, ['contact', 'email']) || t('Не указан')
     const phone = _.get(data, ['contact', 'telephone']) || t('Не указан')
@@ -307,6 +326,7 @@ const ApplicationDetails = enhance((props) => {
                             innerDivStyle={popoverStyle.innerDiv}
                             leftIcon={<AcceptIcon style={popoverStyle.icon}/>}
                             primaryText={t('Принять заявку')}/>
+                        <Divider/>
                         <MenuItem
                             style={popoverStyle.menuItem}
                             innerDivStyle={popoverStyle.innerDiv}
@@ -324,9 +344,11 @@ const ApplicationDetails = enhance((props) => {
             </div>
             <div className={classes.subTitle}>
                 <div className={classes.buttons}>
+                    <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>
+                        {openLogs ? t('Закрыть логи') : t('Посмотреть логи')}
+                    </a>
                     {reportDownloadLink &&
                     <a href={reportDownloadLink} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
-                    <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>{openLogs ? t('Закрыть логи') : t('Посмотреть логи')}</a>
                 </div>
             </div>
             <div className={classes.container}>
@@ -340,7 +362,7 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Email')}: <strong>{email}</strong></div>
                     </div>
                     <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
-                    <div className={classes.info}></div>
+                    <div className={classes.info}>{sphere}</div>
                 </div>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
@@ -400,7 +422,23 @@ const ApplicationDetails = enhance((props) => {
                 <div className={classNames(classes.logs, {
                     [classes.logsOpen]: openLogs
                 })}>
-
+                    {logsData.loading
+                        ? <div className={classes.loader}>
+                            <Loader size={0.75}/>
+                        </div>
+                        : !_.isEmpty(logsData.list)
+                            ? _.map(logsData.list, (item) => {
+                                const createdDate = dateFormat(_.get(item, 'createdDate'), true)
+                                const logStatus = _.get(item, 'status')
+                                const id = _.get(item, 'id')
+                                return (
+                                    <div key={id} className={classes.log}>
+                                        <div className={classes.logDate}>{createdDate}</div>
+                                        <div className={classes.logStatus}>{getAppStatusName(logStatus)}</div>
+                                    </div>
+                                )
+                            })
+                            : <div>{t('Нет активности по этой заявке')}</div>}
                 </div>
             </div>
         </div>
