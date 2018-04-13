@@ -12,9 +12,8 @@ import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 import Telegram from '../CustomIcons/Telegram'
-import Application from 'material-ui/svg-icons/action/receipt'
-import Resume from 'material-ui/svg-icons/action/assignment'
-import Tasks from 'material-ui/svg-icons/editor/format-list-bulleted'
+import Resume from '../CustomIcons/ResumeIcon'
+import Tasks from 'material-ui/svg-icons/action/assignment'
 import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
@@ -201,7 +200,7 @@ export const MenuItems = [
     },
     {
         name: t('Заявки'),
-        icon: (<Application/>),
+        icon: (<Tasks/>),
         url: ROUTES.HR_APPLICATION_LIST_URL,
         childs: [{
             url: ROUTES.HR_APPLICATION_LIST_URL,
