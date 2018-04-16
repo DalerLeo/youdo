@@ -17,6 +17,7 @@ import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import LanguageField from '../../ReduxForm/HR/LanguageField'
 import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
 import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
+import RequirementsField from '../../ReduxForm/HR/Application/RequirementsField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddPerson from 'material-ui/svg-icons/social/person-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
@@ -25,7 +26,10 @@ import t from '../../../helpers/translate'
 import * as ROUTES from '../../../constants/routes'
 import formValidate from '../../../helpers/formValidate'
 import normalizeNumber from '../../ReduxForm/normalizers/normalizeNumber'
-import {BORDER_STYLE, COLOR_DEFAULT} from '../../../constants/styleConstants'
+import {
+    BORDER_STYLE,
+    COLOR_DEFAULT
+} from '../../../constants/styleConstants'
 import {connect} from 'react-redux'
 import {Link} from 'react-router'
 import Popover from 'material-ui/Popover/Popover'
@@ -258,6 +262,16 @@ const enhance = compose(
             '& > div': {
                 width: '32% !important'
             }
+        },
+        required: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        customCheckbox: {
+            margin: '0 10px 0 15px',
+            '& div': {
+                margin: '0 !important'
+            }
         }
     }),
     reduxForm({
@@ -299,13 +313,28 @@ const ApplicationCreateDialog = enhance((props) => {
     const chosenRecruiterName = _.get(recruiter, 'firstName') + ' ' + _.get(recruiter, 'secondName')
     const chosenRecruiterPhoto = _.get(recruiter, ['photo', 'file'])
 
+    const requiredCheckbox = (field, name) => {
+        return (
+            <div className={classes.required}>
+                {field}
+                <ToolTip position={'left'} text={t('Обязательное требование')}>
+                    <div className={classes.customCheckbox}>
+                        <Field
+                            name={'required[' + name + ']'}
+                            component={CheckBox}/>
+                    </div>
+                </ToolTip>
+            </div>
+        )
+    }
+
     return (
         <Dialog
             modal={true}
             open={open}
             onRequestClose={onClose}
             className={classes.dialog}
-            contentStyle={{width: '600px', maxWidth: 'none'}}
+            contentStyle={{width: '500px', maxWidth: 'none'}}
             bodyClassName={classes.popUp}>
 
             <div className={classes.titleContent}>
@@ -488,70 +517,71 @@ const ApplicationCreateDialog = enhance((props) => {
                             <Field
                                 name="businessTrip"
                                 component={CheckBox}
-                                className={classes.inputFieldCustom}
                                 label={t('Предусматриваются ли командировки')}/>
                         </div>
                     </div>
                     <div className={classes.inContent}>
-                        <div>
-                            <div className={classes.block}>
-                                <h4>3. {t('Требования к кандидату')}</h4>
-                                <div className={classes.flexBetween + ' ' + classes.halfChild}>
-                                    <div className={classes.flex + ' ' + classes.alignBaseline}>
-                                        <span>{t('Возраст')}:</span>
-                                        <div className={classes.salaryField}>
-                                            <Field
-                                                name="age[min]"
-                                                component={TextField}
-                                                className={classes.inputFieldCustom}
-                                                inputStyle={{textAlign: 'center'}}
-                                                normalize={normalizeNumber}/>
-                                            <span>-</span>
-                                            <Field
-                                                name="age[max]"
-                                                component={TextField}
-                                                className={classes.inputFieldCustom}
-                                                inputStyle={{textAlign: 'center'}}
-                                                normalize={normalizeNumber}/>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className={classes.flexBetween + ' ' + classes.halfChild}>
-                                    <Field
-                                        name="sex"
-                                        component={SexSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Пол')}
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="education"
-                                        component={EducationSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Образование')}
-                                        fullWidth={true}/>
-                                </div>
-                                <div className={classes.flexBetween + ' ' + classes.halfChild}>
-                                    <Field
-                                        name="levelPc"
-                                        component={ComputerLevelSearchField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Уровень владения ПК')}
-                                        fullWidth={true}/>
-                                    <Field
-                                        name="experience"
-                                        component={TextField}
-                                        className={classes.inputFieldCustom}
-                                        label={t('Минимальный опыт работы')}
-                                        normalize={normalizeNumber}
-                                        fullWidth={true}/>
-                                </div>
-                                <FieldArray name={'languages'} component={LanguageField}/>
-                                <Field
-                                    name="skills"
-                                    component={SkillsTagSearchField}
-                                    label={t('Необходимые профессиональные навыки')}
-                                    fullWidth={true}/>
+                        <div className={classes.block}>
+                            <h4>3. {t('Требования к кандидату')}</h4>
+                            <div className={classes.flex + ' ' + classes.alignBaseline}>
+                                <span>{t('Возраст')}:</span>
+                                {requiredCheckbox(
+                                    (<div className={classes.salaryField}>
+                                        <Field
+                                            name="age[min]"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            inputStyle={{textAlign: 'center'}}
+                                            normalize={normalizeNumber}/>
+                                        <span>-</span>
+                                        <Field
+                                            name="age[max]"
+                                            component={TextField}
+                                            className={classes.inputFieldCustom}
+                                            inputStyle={{textAlign: 'center'}}
+                                            normalize={normalizeNumber}/>
+                                    </div>), 'age')}
                             </div>
+                            {requiredCheckbox((
+                                <Field
+                                    name="sex"
+                                    component={SexSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Пол')}
+                                    fullWidth={true}/>
+                            ), 'sex')}
+                            {requiredCheckbox((
+                                <Field
+                                    name="education"
+                                    component={EducationSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Образование')}
+                                    fullWidth={true}/>
+                            ), 'education')}
+                            {requiredCheckbox((
+                                <Field
+                                    name="levelPc"
+                                    component={ComputerLevelSearchField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Уровень владения ПК')}
+                                    fullWidth={true}/>
+                            ), 'level_pc')}
+                            {requiredCheckbox((
+                                <Field
+                                    name="experience"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Минимальный опыт работы')}
+                                    normalize={normalizeNumber}
+                                    fullWidth={true}/>
+                            ), 'experience')}
+                            <FieldArray name={'languages'} component={LanguageField} required/>
+                            <Field
+                                name="skills"
+                                component={SkillsTagSearchField}
+                                label={t('Необходимые профессиональные навыки')}
+                                fullWidth={true}/>
+                            <FieldArray name={'requirements'} component={RequirementsField}/>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

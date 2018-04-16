@@ -69,9 +69,9 @@ const enhance = compose(
     withState('currentAnswer', 'updateAnswer', ''),
 
     withPropsOnChange((props, nextProps) => {
-        const list = _.get(props, ['questionsData', 'list'])
-        const nextList = _.get(nextProps, ['questionsData', 'list'])
-        return !_.isEqual(list, nextList)
+        const listLoading = _.get(props, ['questionsData', 'loading'])
+        const nextListLoading = _.get(nextProps, ['questionsData', 'loading'])
+        return listLoading !== nextListLoading && nextListLoading === false
     }, ({questionsData: {list}, updateQuestionList}) => {
         if (!_.isEmpty(list)) {
             updateQuestionList(list)
