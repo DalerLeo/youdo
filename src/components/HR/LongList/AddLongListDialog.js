@@ -21,7 +21,8 @@ const enhance = compose(
     injectSheet({
         dialog: {
             overflowY: 'auto',
-            paddingTop: '0 !important'
+            paddingTop: '0 !important',
+            zIndex: '1390 !important'
         },
         loader: {
             position: 'absolute',
@@ -163,14 +164,20 @@ const enhance = compose(
         resumeList: {
             '& .row': {
                 alignItems: 'center',
-                margin: '0',
-                padding: '0',
+                margin: '0 -30px',
+                padding: '0 30px',
                 minHeight: '45px',
-                '&:first-child': {fontWeight: '600'},
+                '&:after': {left: '30px', right: '30px'},
+                '&:first-child': {fontWeight: '600', color: 'inherit !important'},
                 '&:last-child:after': {display: 'none'},
 
                 '& > div:first-child': {paddingLeft: '0'},
-                '& > div:last-child': {paddingRight: '0', textAlign: 'right'}
+                '& > div:last-child': {paddingRight: '0', textAlign: 'right'},
+
+                '&:hover': {
+                    background: '#f2f5f8',
+                    cursor: 'pointer'
+                }
             }
         },
         title: {
@@ -202,7 +209,8 @@ const AddLongListDialog = enhance((props) => {
         filterDialog,
         handleSubmit,
         dispatch,
-        resumePreview
+        resumePreview,
+        resumeLink
     } = props
     const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
@@ -254,11 +262,12 @@ const AddLongListDialog = enhance((props) => {
                                 : !_.isEmpty(_.get(resumePreview, 'list'))
                                     ? _.map(_.get(resumePreview, 'list'), (item) => {
                                         const id = _.get(item, ['id'])
+                                        const relationId = _.get(item, 'relationId')
                                         const position = _.get(item, ['position', 'name'])
                                         const fullName = _.get(item, ['fullName'])
                                         const status = _.get(item, ['status'])
                                         return (
-                                            <Row key={id} className={'dottedList'}>
+                                            <Row key={id} className={'dottedList'} onClick={() => { resumeLink(id, null, relationId) }}>
                                                 <Col xs={1}>
                                                     <Field
                                                         name={'resumes[' + id + '][selected]'}

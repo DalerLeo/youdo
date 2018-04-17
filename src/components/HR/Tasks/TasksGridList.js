@@ -10,7 +10,6 @@ import FlatButton from 'material-ui/FlatButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import Calendar from 'material-ui/svg-icons/action/event'
-import CalendarDone from 'material-ui/svg-icons/notification/event-available'
 import {hashHistory, Link} from 'react-router'
 import dateFormat from '../../../helpers/dateFormat'
 import toBoolean from '../../../helpers/toBoolean'
@@ -285,7 +284,6 @@ const TasksGridList = enhance((props) => {
         const shortCount = _.get(item, ['stats', 'short'])
         const status = _.get(item, 'status')
         const isCompleted = status === APPLICATION_COMPLETED
-        const completedDate = isCompleted && moment(_.get(item, 'completedDate')).format('YYYY-MM-DD')
         const now = moment().format('YYYY-MM-DD')
         const deadlineDifference = moment(_.get(item, 'deadline')).diff(now, 'days', true)
         return (
@@ -298,8 +296,8 @@ const TasksGridList = enhance((props) => {
                         [classes.missedDeadline]: deadlineDifference < ZERO && !isCompleted,
                         [classes.completedDeadline]: isCompleted
                     })}>
-                        {completedDate ? <CalendarDone/> : <Calendar/>}
-                        {completedDate ? dateFormat(completedDate) : dateFormat(deadline)}
+                        {!isCompleted && <Calendar/>}
+                        {!isCompleted && dateFormat(deadline)}
                     </div>
                     {isNew && <div className={classes.status}>{t('новое')}</div>}
                     {isCompleted && <div className={classes.completed}>{t('завершено')}</div>}

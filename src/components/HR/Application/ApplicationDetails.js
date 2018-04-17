@@ -34,6 +34,7 @@ import {
     HR_GENDER,
     HR_LEVEL_PC
 } from '../../../constants/backendConstants'
+import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
     injectSheet({
@@ -348,7 +349,7 @@ const ApplicationDetails = enhance((props) => {
                         {openLogs ? t('Закрыть логи') : t('Посмотреть логи')}
                     </a>
                     {reportDownloadLink &&
-                    <a href={reportDownloadLink} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
+                    <a onClick={() => { getDocuments(reportDownloadLink) }} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
                 </div>
             </div>
             <div className={classes.container}>

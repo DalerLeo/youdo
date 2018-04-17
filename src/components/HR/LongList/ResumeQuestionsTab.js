@@ -69,12 +69,12 @@ const enhance = compose(
     withState('currentAnswer', 'updateAnswer', ''),
 
     withPropsOnChange((props, nextProps) => {
-        const list = _.get(props, ['questionsData', 'list'])
-        const nextList = _.get(nextProps, ['questionsData', 'list'])
-        return !_.isEqual(list, nextList)
-    }, ({questionsData: {list}, updateQuestionList}) => {
+        const listLoading = _.get(props, ['answersData', 'loading'])
+        const nextListLoading = _.get(nextProps, ['answersData', 'loading'])
+        return listLoading !== nextListLoading && nextListLoading === false
+    }, ({answersData: {list}, updateAnswerList}) => {
         if (!_.isEmpty(list)) {
-            updateQuestionList(list)
+            updateAnswerList(list)
         }
     }),
 
@@ -91,6 +91,14 @@ const enhance = compose(
                 }
             }))
         }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const questions = _.get(props, ['answerListClone'])
+        const nextQuestions = _.get(nextProps, ['answerListClone'])
+        return !_.isEqual(questions, nextQuestions)
+    }, ({answerListClone}) => {
+        return null
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -116,7 +124,7 @@ const ResumeQuestionsTab = enhance((props) => {
     const {
         classes,
         handleSubmitResumeAnswers,
-        questionsData: {loading},
+        answersData: {loading},
         questionListClone,
         updateQuestionList,
         currentAnswer,
@@ -141,7 +149,7 @@ const ResumeQuestionsTab = enhance((props) => {
                 ? <div className={classes.staticLoader}>
                     <Loader size={0.75}/>
                 </div>
-                : _.map(questionListClone, (item, index) => {
+                : _.map(answerListClone, (item, index) => {
                     const ONE = 1
                     const count = index + ONE
                     const id = _.get(item, 'id')

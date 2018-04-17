@@ -205,7 +205,6 @@ const enhance = compose(
          if (resume > ZERO) {
              dispatch(resumeItemFetchAction(resume))
              dispatch(getResumeComments(filter))
-             dispatch(getQuestionsList(application))
              dispatch(getResumeAnswersList(application, resume))
          }
      }),
@@ -725,6 +724,11 @@ const LongList = enhance((props) => {
         handleSubmit: props.handleSendConfirmDialog
     }
 
+    const questionsData = {
+        list: _.get(questionsList, 'results'),
+        loading: questionsListLoading
+    }
+
     const answersData = {
         list: _.get(answersList, 'results'),
         loading: answersListLoading
@@ -742,10 +746,10 @@ const LongList = enhance((props) => {
         initialValues: (() => {
             const answers = {}
             _.map(answersData.list, (item) => {
-                const question = _.get(item, 'question')
+                const id = _.get(item, 'id')
                 const answer = _.get(item, 'answer')
-                answers[question] = {answer}
-                return answers
+                const question = _.get(item, 'question')
+                answers[id] = {answer, question}
             })
             return {answers}
         })()
@@ -769,11 +773,6 @@ const LongList = enhance((props) => {
 
     const resumeNoteData = {
         handleEdit: props.handleSubmitEditNote
-    }
-
-    const questionsData = {
-        list: _.get(questionsList, 'results'),
-        loading: questionsListLoading
     }
 
     const questionsDialog = {
@@ -836,6 +835,7 @@ const LongList = enhance((props) => {
                 resumeNoteData={resumeNoteData}
                 questionsDialog={questionsDialog}
                 questionsData={questionsData}
+                answersData={answersData}
                 reportDialog={reportDialog}
                 editReportDialog={editReportDialog}
                 deleteReportDialog={deleteReportDialog}

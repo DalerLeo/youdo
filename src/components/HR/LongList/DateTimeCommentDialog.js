@@ -428,6 +428,7 @@ const DateTimeCommentDialog = enhance((props) => {
                             component={TextField}
                             normalize={normalizeTime}
                             label={t('Время собеседования')}
+                            hintText={moment().format('HH:mm')}
                             fullWidth={true}/>}
                         <Field
                             name="note"

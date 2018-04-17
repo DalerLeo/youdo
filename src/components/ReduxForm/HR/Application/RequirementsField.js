@@ -1,18 +1,17 @@
 import React from 'react'
-import {compose, lifecycle} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
-import t from '../../../helpers/translate'
-import LanguageLevelSearchField from './LanguageLevelSearchField'
-import LanguageSearchField from './LanguageSearchField'
+import t from '../../../../helpers/translate'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
-import CheckBox from '../Basic/CheckBox'
-import ToolTip from '../../ToolTip'
+import TextField from '../../Basic/TextField'
+import CheckBox from '../../Basic/CheckBox'
+import ToolTip from '../../../ToolTip'
 
 const enhance = compose(
     injectSheet({
-        salaryWrapper: {
+        wrapper: {
             position: 'relative',
             paddingBottom: '36px'
         },
@@ -37,29 +36,30 @@ const enhance = compose(
                 marginTop: '0 !important'
             }
         },
+        textFieldArea: {
+            lineHeight: '20px !important',
+            fontSize: '13px !important'
+        },
         subTitle: {
             padding: '10px 0 5px'
         },
         flex: {
             display: 'flex',
-            alignItems: 'center',
-            '& > div': {
-                marginRight: '10px'
-            }
-        },
-        detail: {
-            display: 'flex',
-            alignItems: 'center',
-            flexWrap: 'wrap',
-            justifyContent: 'space-between',
-            '& > div:first-child': {
-                width: 'calc(100% - 40px)'
-            }
+            alignItems: 'flex-start'
         },
         checkbox: {
             marginLeft: '10px',
             '& > div': {
                 width: 'auto !important'
+            }
+        },
+        detail: {
+            display: 'flex',
+            alignItems: 'flex-start',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            '& > div:first-child': {
+                width: 'calc(100% - 40px)'
             }
         },
         addAnother: {
@@ -70,14 +70,6 @@ const enhance = compose(
             zIndex: '5',
             '& a': {
                 fontWeight: '600'
-            }
-        }
-    }),
-    lifecycle({
-        componentWillReceiveProps (nextProps) {
-            const props = this.props
-            if ((props.invalid !== nextProps.invalid)) {
-                nextProps.updateSkillsError(nextProps.invalid && nextProps.skillsError)
             }
         }
     })
@@ -96,11 +88,10 @@ const iconStyle = {
     }
 }
 
-const LanguageField = enhance((props) => {
+const RequirementsField = enhance((props) => {
     const {
         fields,
-        classes,
-        required
+        classes
     } = props
 
     const handleTouchTap = (index, addAnother) => {
@@ -113,26 +104,20 @@ const LanguageField = enhance((props) => {
     const details = fields.map((detail, index) => {
         return (
             <div key={index} className={classes.detail}>
-                <div>
-                    <div className={classes.flex}>
-                        <Field
-                            label={t('Язык')}
-                            name={`${detail}.name`}
-                            component={LanguageSearchField}
-                            className={classes.inputFieldCustom}/>
-                        <Field
-                            label={t('Уровень')}
-                            name={`${detail}.level`}
-                            component={LanguageLevelSearchField}
-                            className={classes.inputFieldCustom}/>
-                        {required &&
-                        <div className={classes.checkbox}>
-                            <ToolTip position={'left'} text={t('Обязательный язык')}>
-                                <Field
-                                    name={`${detail}.required`}
-                                    component={CheckBox}/>
-                            </ToolTip>
-                        </div>}
+                <div className={classes.flex}>
+                    <Field
+                        name={`${detail}.text`}
+                        component={TextField}
+                        className={classes.textFieldArea}
+                        fullWidth
+                        multiLine
+                        rows={1}/>
+                    <div className={classes.checkbox}>
+                        <ToolTip position={'left'} text={t('Обязательное требование')}>
+                            <Field
+                                name={`${detail}.required`}
+                                component={CheckBox}/>
+                        </ToolTip>
                     </div>
                 </div>
                 <IconButton
@@ -147,14 +132,14 @@ const LanguageField = enhance((props) => {
     })
 
     return (
-        <div className={classes.salaryWrapper}>
-            <div className={classes.subTitle}>{t('Знание языков')}</div>
+        <div className={classes.wrapper}>
+            <div className={classes.subTitle}>{t('Дополнительные требования')}</div>
             {details}
             <div className={classes.addAnother}>
-                <a onClick={() => handleTouchTap(null, true)}>{t('Добавить язык')}</a>
+                <a onClick={() => handleTouchTap(null, true)}>{t('Добавить требование')}</a>
             </div>
         </div>
     )
 })
 
-export default LanguageField
+export default RequirementsField

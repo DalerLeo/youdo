@@ -33,6 +33,15 @@ export const createSerializer = (data) => {
         .filter((item) => _.get(item, 'selected'))
         .map((item) => _.get(item, 'id'))
     const skills = _.filter(_.get(data, 'skills'), (item) => item)
+    const requiredLangs = _.filter(_.map(_.get(data, 'languages'), (item) => {
+        const required = _.get(item, 'required')
+        const language = _.get(item, ['name', 'value'])
+        return (required && language) ? language : null
+    }), (item) => !_.isNull(item))
+    const filterRequired = _.filter(_.map(_.get(data, 'required'), (item, index) => {
+        return item ? index : null
+    }), (item) => !_.isNull(item))
+    const requirements = _.filter(_.get(data, 'requirements'), (item) => _.get(item, 'text'))
     return {
         age_min: ageMin,
         age_max: ageMax,
@@ -54,7 +63,9 @@ export const createSerializer = (data) => {
         mode,
         sex,
         recruiter,
-        skills
+        skills,
+        filter_required: _.concat(filterRequired, [{lang_level: requiredLangs}]),
+        requirements
     }
 }
 
