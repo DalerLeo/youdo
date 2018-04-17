@@ -5,6 +5,7 @@ const OPEN_MOVE_TO_DIALOG = 'openMoveToDialog'
 const OPEN_QUESTIONS_DIALOG = 'openQuestionsDialog'
 const OPEN_REPORT_DIALOG = 'openReportDialog'
 const EDIT_REPORT_DIALOG = 'editReportDialog'
+const EDIT_RESUME_DETAILS = 'editResumeDetails'
 
 export {
     LongListGridList,
@@ -12,5 +13,6 @@ export {
     OPEN_MOVE_TO_DIALOG,
     OPEN_QUESTIONS_DIALOG,
     OPEN_REPORT_DIALOG,
-    EDIT_REPORT_DIALOG
+    EDIT_REPORT_DIALOG,
+    EDIT_RESUME_DETAILS
 }

@@ -7,13 +7,15 @@ import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withHandlers, withState} from 'recompose'
 import filterHelper from '../../helpers/filter'
+import getDocument from '../../helpers/getDocument'
 import {
     LongListGridList,
     OPEN_ADD_LONG_LIST_DIALOG,
     OPEN_MOVE_TO_DIALOG,
     OPEN_QUESTIONS_DIALOG,
     OPEN_REPORT_DIALOG,
-    EDIT_REPORT_DIALOG
+    EDIT_REPORT_DIALOG,
+    EDIT_RESUME_DETAILS
 } from '../../components/HR/LongList'
 import {
     getApplicationDetails,
@@ -80,7 +82,8 @@ const except = {
     educations: null,
     langLevel: null,
     totalExp0: null,
-    totalExp1: null
+    totalExp1: null,
+    editResumeDetails: null
 }
 const enhance = compose(
     connect((state, props) => {
@@ -381,6 +384,7 @@ const enhance = compose(
             const levelPc = _.get(filterForm, ['values', 'levelPc', 'value']) || null
             const languages = _.get(filterForm, ['values', 'languages']) || null
             const experience = _.get(filterForm, ['values', 'experience']) || null
+            const search = _.get(filterForm, ['values', 'search']) || null
             const skills = _.get(filterForm, ['values', 'skills']) || null
             const langToUrl = langQueryFormat(languages)
 
@@ -396,6 +400,7 @@ const enhance = compose(
                 [RESUME_FILTER_KEY.LEVEL_PC]: levelPc,
                 [RESUME_FILTER_KEY.LANG_LEVEL]: _.join(langToUrl, '|'),
                 [RESUME_FILTER_KEY.TOTAL_EXP_0]: experience && numberWithoutSpaces(experience),
+                [RESUME_FILTER_KEY.SEARCH]: search,
                 [RESUME_FILTER_KEY.SKILLS]: joinArray(skills)
             })
         },
@@ -573,7 +578,22 @@ const enhance = compose(
                     dispatch(getReportList(filter, application, HR_RESUME_REPORT))
                     dispatch(getShortList(filter, application, HR_RESUME_SHORT))
                 })
+        },
+        handleGetPreviewReport: props => () => {
+            const {detail} = props
+            const url = _.get(detail, 'downloadReport')
+            getDocument(url, {})
+        },
+        handleOpenUpdateResumeDetails: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[EDIT_RESUME_DETAILS]: true})})
+        },
+
+        handleCloseUpdateResumeDetails: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[EDIT_RESUME_DETAILS]: false})})
         }
+
     })
 )
 
@@ -614,7 +634,7 @@ const LongList = enhance((props) => {
     const openResumeDialog = _.toInteger(_.get(location, ['query', 'resume'])) > ZERO && !_.isNull(_.get(location, ['query', 'status']))
     const openReportDialog = toBoolean(_.get(location, ['query', OPEN_REPORT_DIALOG]))
     const openEditReportDialog = toBoolean(_.get(location, ['query', EDIT_REPORT_DIALOG]))
-
+    const openEditResumeDetails = toBoolean(_.get(location, ['query', EDIT_RESUME_DETAILS]))
     const position = filter.getParam(RESUME_FILTER_KEY.POSITIONS)
     const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
     const ageMin = filter.getParam(RESUME_FILTER_KEY.AGE_0)
@@ -624,6 +644,7 @@ const LongList = enhance((props) => {
     const levelPc = filter.getParam(RESUME_FILTER_KEY.LEVEL_PC)
     const languages = filter.getParam(RESUME_FILTER_KEY.LANG_LEVEL)
     const experience = filter.getParam(RESUME_FILTER_KEY.TOTAL_EXP_0)
+    const search = filter.getParam(RESUME_FILTER_KEY.SEARCH)
     const skills = filter.getParam(RESUME_FILTER_KEY.SKILLS)
     const langToForm = langArrayFormat(languages)
 
@@ -713,6 +734,7 @@ const LongList = enhance((props) => {
             },
             languages: langToForm,
             experience: experience && numberFormat(experience),
+            search: search,
             skills: skills && splitToArray(skills)
         }
     }
@@ -817,6 +839,13 @@ const LongList = enhance((props) => {
         handleSubmit: props.handleSendConfirmDeleteReport
     }
 
+    const editResumeDetails = {
+        open: openEditResumeDetails,
+        handleOpen: props.handleOpenUpdateResumeDetails,
+        handleClose: props.handleCloseUpdateResumeDetails,
+        handleSubmit: props.handleSubmitReportDialog
+    }
+
     return (
         <Layout {...layout}>
             <LongListGridList
@@ -839,6 +868,8 @@ const LongList = enhance((props) => {
                 reportDialog={reportDialog}
                 editReportDialog={editReportDialog}
                 deleteReportDialog={deleteReportDialog}
+                handleGetPreviewReport={props.handleGetPreviewReport}
+                editResumeDetails={editResumeDetails}
             />
         </Layout>
     )

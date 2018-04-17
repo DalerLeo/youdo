@@ -19,6 +19,7 @@ import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddContent from 'material-ui/svg-icons/content/add'
 import Done from 'material-ui/svg-icons/av/playlist-add-check'
+import Report from 'material-ui/svg-icons/action/description'
 import Assignment from 'material-ui/svg-icons/action/assignment'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
@@ -609,7 +610,9 @@ const LongListGridList = enhance((props) => {
         reportDialog,
         editReportDialog,
         deleteReportDialog,
-        answersData
+        answersData,
+        handleGetPreviewReport,
+        editResumeDetails
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -631,7 +634,6 @@ const LongListGridList = enhance((props) => {
     const sex = _.get(data, ['sex'])
     const education = _.get(data, ['education'])
     const levelPc = _.get(data, ['levelPc'])
-
     const experience = _.get(data, ['experience'])
     const languages = _.map(_.get(data, ['languages']), (item) => {
         const id = _.get(item, 'id')
@@ -1001,6 +1003,11 @@ const LongListGridList = enhance((props) => {
                                         <header>
                                             <h4>{t('Отчет')} ({reportListData.count + ' ' + t('чел.')})</h4>
                                             <div>
+                                                <ToolTip text={t('Скачать отчет')} position={'bottom'}>
+                                                    <div className={classes.reportButton} onClick={() => handleGetPreviewReport()}>
+                                                        <Report/>
+                                                    </div>
+                                                </ToolTip>
                                                 <ToolTip text={t('Отправить')} position={'bottom'}>
                                                     <div className={classes.reportButton} onClick={confirmDialog.handleOpen}>
                                                         <Send/>
@@ -1117,6 +1124,7 @@ const LongListGridList = enhance((props) => {
                 data={resumeDetails.data || {}}
                 open={resumeDetails.open}
                 filter={filter}
+                editResumeDetails={editResumeDetails}
                 createCommentLoading={resumeDetails.createCommentLoading}
                 handleCreateComment={resumeDetails.handleCreateComment}
                 handleSubmitResumeAnswers={resumeDetails.handleSubmitResumeAnswers}

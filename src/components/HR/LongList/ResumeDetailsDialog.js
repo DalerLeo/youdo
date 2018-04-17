@@ -11,11 +11,14 @@ import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
 import ResumeDetails from '../Resume/ResumeDetails'
+import ResumeDetailsEditForm from './ResumeDetailsEditForm'
 import ResumeQuestionsTab from './ResumeQuestionsTab'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddNote from 'material-ui/svg-icons/communication/chat'
 import Delete from 'material-ui/svg-icons/action/delete'
+import Edit from 'material-ui/svg-icons/editor/mode-edit'
+import Undo from 'material-ui/svg-icons/content/undo'
 import EventDone from 'material-ui/svg-icons/notification/event-available'
 import {
     BORDER_STYLE,
@@ -274,7 +277,8 @@ const ResumeDetailsDialog = enhance((props) => {
         handleClickButton,
         answersData,
         currentTab,
-        setCurrentTab
+        setCurrentTab,
+        editResumeDetails
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -324,9 +328,9 @@ const ResumeDetailsDialog = enhance((props) => {
                         </div>
                         : <div className={classes.wrapper}>
                             <div className={classes.details}>
-                                <ResumeDetails
+                                {!editResumeDetails.open ? <ResumeDetails
                                     data={data}
-                                    loading={loading}/>
+                                    loading={loading}/> : <ResumeDetailsEditForm/>}
                             </div>
                         </div>}
                 </div>
@@ -476,6 +480,17 @@ const ResumeDetailsDialog = enhance((props) => {
                                     <AddNote color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>
+                            {!editResumeDetails.open
+                            ? <ToolTip position={'bottom'} text={t('Изменить данные')}>
+                                <IconButton onTouchTap={() => { editResumeDetails.handleOpen() }}>
+                                    <Edit color={COLOR_GREY}/>
+                                </IconButton>
+                            </ToolTip>
+                            : <ToolTip position={'bottom'} text={t('Отменить')}>
+                                    <IconButton onTouchTap={() => { editResumeDetails.handleClose() }}>
+                                        <Undo color={COLOR_GREY}/>
+                                    </IconButton>
+                            </ToolTip>}
                             <ToolTip position={'bottom'} text={t('Удалить со списка')}>
                                 <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
                                     <Delete color={COLOR_GREY}/>
