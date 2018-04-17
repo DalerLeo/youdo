@@ -140,9 +140,6 @@ export const questionsListSerializer = (application) => {
 export const sendAnswersSerializer = (application, resume, data) => {
     const answers = _.map(_.get(data, 'answers'), (item, index) => {
         const answer = _.get(item, 'answer')
-        if (_.isEmpty(answer)) {
-            return null
-        }
         return {
             application,
             resume,
@@ -160,10 +157,9 @@ export const sendAnswersSerializer = (application, resume, data) => {
             answer
         }
     })
-    const filteredAnswers = _.filter(answers, (item) => !_.isNull(item))
     const filteredNewAnswers = _.filter(newAnswers, (item) => _.get(item, 'answer') && _.get(item, 'question'))
 
-    return _.concat(filteredAnswers, filteredNewAnswers)
+    return _.concat(answers, filteredNewAnswers)
 }
 
 export const answersListSerializer = (application, resume) => {

@@ -602,14 +602,14 @@ const LongListGridList = enhance((props) => {
         updateCurrentNote,
         resumeNoteData,
         questionsDialog,
-        questionsData,
         openAddReport,
         setOpenAddReport,
         checkedList,
         updateCheckedList,
         reportDialog,
         editReportDialog,
-        deleteReportDialog
+        deleteReportDialog,
+        answersData
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -1087,7 +1087,8 @@ const LongListGridList = enhance((props) => {
                 filterDialog={filterDialog}
                 loading={false}
                 resumePreview={addDialog.resumePreview}
-                uri={uri}/>
+                uri={uri}
+                resumeLink={resumeLink}/>
 
             <DateTimeCommentDialog
                 initialValues={moveToDialog.initialValues}
@@ -1122,7 +1123,7 @@ const LongListGridList = enhance((props) => {
                 commentsList={resumeDetails.commentsList}
                 commentsLoading={resumeDetails.commentsLoading}
                 handleClickButton={handleClickMenuItem}
-                questionsData={questionsData}
+                answersData={answersData}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

@@ -291,19 +291,19 @@ const ResumeDetails = enhance((props) => {
                                 <li>{t('Дата рождения')}:</li>
                                 <li>{t('Пол')}:</li>
                                 <li>{t('Семейное положение')}:</li>
-                                <li>{t('Адрес')}:</li>
                                 <li>{t('Телефон')}:</li>
                                 <li>{t('Email')}:</li>
                                 <li>{t('Страна проживания')}:</li>
+                                <li>{t('Адрес')}:</li>
                             </ul>
                             <ul>
                                 <li>{dateOfBirth}</li>
                                 <li><span className={classes.lowercase}>{genderFormat[sex]}</span></li>
                                 <li><span className={classes.lowercase}>{familyStatusText(sex, familyStatus)}</span></li>
-                                <li>{address}</li>
                                 <li>{phone}</li>
                                 <li>{email}</li>
                                 <li>{(country && city) ? <span>{country}, {city}</span> : <span>{t('Не указана')}</span>}</li>
+                                <li>{address}</li>
                             </ul>
                         </div>
                     </div>

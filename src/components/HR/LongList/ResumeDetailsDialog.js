@@ -37,6 +37,10 @@ import {
     HR_RESUME_SHORT
 } from '../../../constants/backendConstants'
 
+const TAB_DETAILS = 'details'
+const TAB_COMMENTS = 'comments'
+const TAB_LOGS = 'logs'
+
 const enhance = compose(
     injectSheet({
         dialog: {
@@ -88,35 +92,20 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'flex-end',
             fontWeight: 'normal',
             textTransform: 'none',
+            padding: '0 10px',
             '& > div button': {
-                padding: '13px !important',
+                padding: '14px !important',
                 '& svg': {
                     width: '20px !important',
-                    height: '22px !important'
-                }
-            },
-            '& > button:last-child': {
-                marginLeft: '10px !important',
-                padding: '12px !important',
-                '& svg': {
-                    width: '24px !important',
-                    height: '24px !important'
-                },
-                '&:after': {
-                    position: 'absolute',
-                    content: '""',
-                    top: '0',
-                    bottom: '0',
-                    left: '-5px',
-                    width: '1px',
-                    background: '#efefef'
+                    height: '20px !important'
                 }
             }
         },
-        wrapper: {
-            display: 'flex'
+        inContent: {
+            minHeight: '600px'
         },
         details: {
             width: '100%',
@@ -140,12 +129,9 @@ const enhance = compose(
         },
         block: {
             padding: PADDING_STANDART,
-            paddingTop: '0',
-            position: 'absolute',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            overflowY: 'auto'
+            paddingTop: '10px',
+            overflowY: 'auto',
+            maxHeight: '600px'
         },
         innerTitle: {
             fontSize: '14px',
@@ -159,10 +145,6 @@ const enhance = compose(
         },
         addComment: {
             background: COLOR_WHITE,
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
             padding: '20px 30px'
         },
         commentsList: {
@@ -245,13 +227,32 @@ const enhance = compose(
             left: '0',
             right: '0',
             padding: '0 10px 10px 10px'
+        },
+        tabWrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '50px',
+            borderBottom: BORDER_STYLE
+        },
+        tabs: {
+            '& > span': {
+                cursor: 'pointer',
+                display: 'inline-block',
+                lineHeight: '50px',
+                padding: '0 30px'
+            }
+        },
+        activeTab: {
+            color: LINK_COLOR
         }
     }),
     reduxForm({
         form: 'ResumeDetailsForm',
         enableReinitialize: true
     }),
-    withState('openAddComment', 'setOpenAddComment', false)
+    withState('openAddComment', 'setOpenAddComment', false),
+    withState('currentTab', 'setCurrentTab', TAB_DETAILS),
 )
 
 const ResumeDetailsDialog = enhance((props) => {
@@ -271,7 +272,9 @@ const ResumeDetailsDialog = enhance((props) => {
         openAddComment,
         setOpenAddComment,
         handleClickButton,
-        questionsData
+        answersData,
+        currentTab,
+        setCurrentTab
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -311,56 +314,10 @@ const ResumeDetailsDialog = enhance((props) => {
         }
     }
 
-    return (
-        <Dialog
-            modal={true}
-            open={open}
-            className={classes.dialog}
-            contentStyle={{width: '800px', marginLeft: 'calc(50% - 558px)', maxWidth: 'none'}}
-            bodyClassName={classes.popUp}>
-
-            <div className={classes.titleContent}>
-                <span>{fullName}</span>
-                <div className={classes.buttons}>
-                    {currentStatus === HR_RESUME_MEETING &&
-                    <ToolTip position={'bottom'} text={t('Завершить собеседование')}>
-                        <IconButton onTouchTap={() => null}>
-                            <EventDone color={COLOR_GREY}/>
-                        </IconButton>
-                    </ToolTip>}
-                    {currentStatus === HR_RESUME_LONG &&
-                    <FlatButton
-                        label={'Назначить собеседование'}
-                        labelStyle={flatButtonStyle.label}
-                        backgroundColor={LINK_COLOR}
-                        hoverColor={LINK_COLOR}
-                        rippleColor={COLOR_WHITE}
-                        onTouchTap={() => { handleClickButton(HR_RESUME_MEETING) }}/>}
-                    {(currentStatus === HR_RESUME_LONG || currentStatus === HR_RESUME_MEETING) &&
-                    <ToolTip position={'bottom'} text={t('Добавить в шортлист')}>
-                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_SHORT) }}>
-                            <AddToList color={COLOR_GREY}/>
-                        </IconButton>
-                    </ToolTip>}
-                    <ToolTip position={'bottom'} text={t('Добавить заметку')}>
-                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_NOTE) }}>
-                            <AddNote color={COLOR_GREY}/>
-                        </IconButton>
-                    </ToolTip>
-                    <ToolTip position={'bottom'} text={t('Удалить со списка')}>
-                        <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
-                            <Delete color={COLOR_GREY}/>
-                        </IconButton>
-                    </ToolTip>
-
-                    <IconButton onTouchTap={() => hashHistory.push(filter.createURL({resume: null, status: null, relation: null}))}>
-                        <CloseIcon color={COLOR_GREY}/>
-                    </IconButton>
-                </div>
-            </div>
-
-            <div className={classes.bodyContent}>
-                <div className={classes.inContent}>
+    const getTabContent = () => {
+        switch (currentTab) {
+            case TAB_DETAILS: return (
+                <div>
                     {loading
                         ? <div className={classes.loader}>
                             <Loader size={0.75}/>
@@ -372,90 +329,181 @@ const ResumeDetailsDialog = enhance((props) => {
                                     loading={loading}/>
                             </div>
                         </div>}
+                </div>
+            )
+            case TAB_COMMENTS: return (
+                <div>
+                    {!openAddComment &&
+                    <div className={classes.addComment}>
+                        <FlatButton
+                            label={'Добавить'}
+                            labelStyle={flatButtonStyle.label}
+                            backgroundColor={'#607D8B'}
+                            fullWidth={true}
+                            hoverColor={'#607D8B'}
+                            rippleColor={COLOR_WHITE}
+                            onClick={() => {
+                                setOpenAddComment(true)
+                            }}/>
+                    </div>}
+                    <form className={classes.block} style={{top: openAddComment ? '20px' : '75px'}}>
+                        {openAddComment && !createCommentLoading &&
+                        <div>
+                            <Field
+                                name={'comment'}
+                                component={TextField}
+                                className={classes.textFieldArea}
+                                hintText={t('Комментарий') + '...'}
+                                hintStyle={{bottom: 'auto', top: '12px'}}
+                                fullWidth
+                                multiLine
+                                rows={2}/>
+                            <FlatButton
+                                label={'Сохранить'}
+                                labelStyle={flatButtonStyle.label}
+                                backgroundColor={'#607D8B'}
+                                fullWidth={true}
+                                hoverColor={'#607D8B'}
+                                rippleColor={COLOR_WHITE}
+                                onClick={submitComment}/>
+                        </div>}
+                        {createCommentLoading &&
+                        <div className={classes.staticLoader}>
+                            <Loader size={0.75}/>
+                        </div>}
+                        <div className={classes.commentsList}
+                             style={{marginTop: openAddComment ? '20px' : '0'}}>
+                            {commentsLoading
+                                ? <div className={classes.staticLoader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : _.map(commentsList, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const comment = _.get(item, 'comment')
+                                    const createdDate = dateFormat(_.get(item, 'createdDate'))
+                                    const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
+                                    return (
+                                        <div key={id} className={classes.comment}>
+                                            <header>
+                                                <h2>{user}</h2>
+                                                <span>{createdDate}</span>
+                                            </header>
+                                            <div>{comment}</div>
+                                        </div>
+                                    )
+                                })}
+                        </div>
+                    </form>
+                </div>
+            )
+            case TAB_LOGS: return (
+                <div></div>
+            )
+            default: return null
+        }
+    }
+    const mainDialogWidth = currentTab === TAB_DETAILS ? Number('800') : Number('400')
+    const secondaryDialogWidth = 300
+    const offsetBetweenDialogs = 15
+    const half = 2
+    const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
+
+    return (
+        <Dialog
+            modal={true}
+            open={open}
+            className={classes.dialog}
+            contentStyle={{
+                width: mainDialogWidth,
+                marginLeft: currentStatus === HR_RESUME_MEETING ? 'calc(50% - ' + dialogMargin + 'px)' : 'auto',
+                maxWidth: 'none'}}
+            bodyClassName={classes.popUp}>
+
+            <div className={classes.titleContent}>
+                <span>{fullName}</span>
+                <IconButton onTouchTap={() => {
+                    hashHistory.push(filter.createURL({resume: null, status: null, relation: null}))
+                    return setCurrentTab(TAB_DETAILS)
+                }}>
+                    <CloseIcon color={COLOR_GREY}/>
+                </IconButton>
+            </div>
+
+            <div className={classes.bodyContent}>
+                <div className={classes.inContent}>
+                    <div className={classes.tabWrapper}>
+                        <div className={classes.tabs}>
+                            <span
+                                className={currentTab === TAB_DETAILS ? classes.activeTab : ''}
+                                onClick={() => { setCurrentTab(TAB_DETAILS) }}>
+                                {t('Детали')}
+                            </span>
+                            <span
+                                className={currentTab === TAB_COMMENTS ? classes.activeTab : ''}
+                                onClick={() => { setCurrentTab(TAB_COMMENTS) }}>
+                                {t('Комментарии')}
+                            </span>
+                            <span
+                                className={currentTab === TAB_LOGS ? classes.activeTab : ''}
+                                onClick={() => { setCurrentTab(TAB_LOGS) }}>
+                                {t('Логи')}
+                            </span>
+                        </div>
+                        {currentTab === TAB_DETAILS && !_.isNil(currentStatus) &&
+                        <div className={classes.buttons}>
+                            {currentStatus === HR_RESUME_MEETING &&
+                            <ToolTip position={'bottom'} text={t('Завершить собеседование')}>
+                                <IconButton onTouchTap={() => null}>
+                                    <EventDone color={COLOR_GREY}/>
+                                </IconButton>
+                            </ToolTip>}
+                            {currentStatus === HR_RESUME_LONG &&
+                            <FlatButton
+                                label={'Назначить собеседование'}
+                                labelStyle={flatButtonStyle.label}
+                                backgroundColor={LINK_COLOR}
+                                hoverColor={LINK_COLOR}
+                                rippleColor={COLOR_WHITE}
+                                onTouchTap={() => { handleClickButton(HR_RESUME_MEETING) }}/>}
+                            {(currentStatus === HR_RESUME_LONG || currentStatus === HR_RESUME_MEETING) &&
+                            <ToolTip position={'bottom'} text={t('Добавить в шортлист')}>
+                                <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_SHORT) }}>
+                                    <AddToList color={COLOR_GREY}/>
+                                </IconButton>
+                            </ToolTip>}
+                            <ToolTip position={'bottom'} text={t('Добавить заметку')}>
+                                <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_NOTE) }}>
+                                    <AddNote color={COLOR_GREY}/>
+                                </IconButton>
+                            </ToolTip>
+                            <ToolTip position={'bottom'} text={t('Удалить со списка')}>
+                                <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
+                                    <Delete color={COLOR_GREY}/>
+                                </IconButton>
+                            </ToolTip>
+                        </div>}
+                    </div>
+                    {getTabContent()}
+                    {currentStatus === HR_RESUME_MEETING &&
                     <Paper zDepth={4} className={classes.comments}>
                         <Tabs
                             inkBarStyle={tabStyle.ink}
                             tabItemContainerStyle={tabStyle.tabItem}
                             className={classes.tab}
                             contentContainerClassName={classes.tabContainer}>
-                            {currentStatus === HR_RESUME_MEETING &&
                             <Tab label={t('Вопросник')} buttonStyle={tabStyle.button} disableTouchRipple>
                                 <Field
                                     name="answers"
                                     component={ResumeQuestionsTab}
-                                    questionsData={questionsData}
+                                    answersData={answersData}
                                     handleSubmitResumeAnswers={handleSubmitResumeAnswers}
                                 />
-                            </Tab>}
-                            <Tab
-                                label={t('Комментарии')}
-                                buttonStyle={currentStatus === HR_RESUME_MEETING
-                                    ? tabStyle.button : tabStyle.customButton}
-                                disableTouchRipple>
-                                {!openAddComment &&
-                                <div className={classes.addComment}>
-                                    <FlatButton
-                                        label={'Добавить'}
-                                        labelStyle={flatButtonStyle.label}
-                                        backgroundColor={'#607D8B'}
-                                        fullWidth={true}
-                                        hoverColor={'#607D8B'}
-                                        rippleColor={COLOR_WHITE}
-                                        onClick={() => {
-                                            setOpenAddComment(true)
-                                        }}/>
-                                </div>}
-                                <form className={classes.block} style={{top: openAddComment ? '20px' : '75px'}}>
-                                    {openAddComment && !createCommentLoading &&
-                                    <div>
-                                        <Field
-                                            name={'comment'}
-                                            component={TextField}
-                                            className={classes.textFieldArea}
-                                            hintText={t('Комментарий') + '...'}
-                                            hintStyle={{bottom: 'auto', top: '12px'}}
-                                            fullWidth
-                                            multiLine
-                                            rows={2}/>
-                                        <FlatButton
-                                            label={'Сохранить'}
-                                            labelStyle={flatButtonStyle.label}
-                                            backgroundColor={'#607D8B'}
-                                            fullWidth={true}
-                                            hoverColor={'#607D8B'}
-                                            rippleColor={COLOR_WHITE}
-                                            onClick={submitComment}/>
-                                    </div>}
-                                    {createCommentLoading &&
-                                    <div className={classes.staticLoader}>
-                                        <Loader size={0.75}/>
-                                    </div>}
-                                    <div className={classes.commentsList}
-                                         style={{marginTop: openAddComment ? '20px' : '0'}}>
-                                        {commentsLoading
-                                            ? <div className={classes.staticLoader}>
-                                                <Loader size={0.75}/>
-                                            </div>
-                                            : _.map(commentsList, (item) => {
-                                                const id = _.get(item, 'id')
-                                                const comment = _.get(item, 'comment')
-                                                const createdDate = dateFormat(_.get(item, 'createdDate'))
-                                                const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName'])
-                                                return (
-                                                    <div key={id} className={classes.comment}>
-                                                        <header>
-                                                            <h2>{user}</h2>
-                                                            <span>{createdDate}</span>
-                                                        </header>
-                                                        <div>{comment}</div>
-                                                    </div>
-                                                )
-                                            })}
-                                    </div>
-                                </form>
+                            </Tab>
+                            <Tab label={t('Требования')} buttonStyle={tabStyle.button} disableTouchRipple>
+
                             </Tab>
                         </Tabs>
-                    </Paper>
+                    </Paper>}
                 </div>
             </div>
         </Dialog>
