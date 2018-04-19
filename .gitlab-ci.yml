@@ -1,7 +1,7 @@
 before_script:
 #  - "export PATH=$PATH:/usr/local/bin"
-  - "export PROJECT_DIR=/web/basic_ui"
-  - "export BUILD_DIR=~/basic_ui"
+  - "export PROJECT_DIR=/web/hrc_ui"
+  - "export BUILD_DIR=~/hrc_ui"
 
   # Information
   - "whoami"
@@ -22,7 +22,7 @@ build:
   stage: build
   script:
     - "export SOURCE_DIR=`pwd`"
-    - "export API_HOST=api.wienerdeming.com"
+    - "export API_HOST=apihrc.wienerdeming.com"
     - "export NODE_ENV=production"
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
@@ -47,7 +47,7 @@ deploy:
   script:
     - "/usr/bin/supervisorctl restart all"
     - "export SOURCE_DIR=`pwd`"
-    - "export API_HOST=api.wienerdeming.com"
+    - "export API_HOST=apihrc.wienerdeming.com"
     - "yarn install"
     - "export NODE_ENV=production"
     - "yarn build"
