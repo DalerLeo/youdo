@@ -105,6 +105,10 @@ import GenderSearchField from './HR/GenderSearchField'
 import LanguageField from './HR/LanguageField'
 import SkillsTagSearchField from './HR/SkillsTagSearchField'
 import MaritalStatusSearchField from './HR/Resume/MaritalStatusSearchField'
+import DriverLicenceCheck from './HR/Resume/DriverLicenceCheck'
+import ComputerLevelSearchField from './HR/ComputerLevelSearchField'
+import ExperiencesField from './HR/Resume/ExperiencesField'
+import EducationsField from './HR/Resume/EducationsField'
 
 export {
     PendingExpensesTypeSearchField,
@@ -213,5 +217,9 @@ export {
     SkillsTagSearchField,
     LanguageField,
     GenderSearchField,
-    MaritalStatusSearchField
+    MaritalStatusSearchField,
+    DriverLicenceCheck,
+    ComputerLevelSearchField,
+    ExperiencesField,
+    EducationsField
 }

@@ -328,9 +328,15 @@ const ResumeDetailsDialog = enhance((props) => {
                         </div>
                         : <div className={classes.wrapper}>
                             <div className={classes.details}>
-                                {!editResumeDetails.open ? <ResumeDetails
+                                {!editResumeDetails.open
+                                ? <ResumeDetails
                                     data={data}
-                                    loading={loading}/> : <ResumeDetailsEditForm/>}
+                                    loading={loading}/>
+                                : <ResumeDetailsEditForm initialValues={{
+                                    languagesLevel: [{}],
+                                    experiences: [{}],
+                                    educations: [{}]
+                                }}/>}
                             </div>
                         </div>}
                 </div>
@@ -406,7 +412,7 @@ const ResumeDetailsDialog = enhance((props) => {
             default: return null
         }
     }
-    const mainDialogWidth = currentTab === TAB_DETAILS ? Number('800') : Number('400')
+    const mainDialogWidth = currentTab === TAB_DETAILS ? Number('910') : Number('400')
     const secondaryDialogWidth = 300
     const offsetBetweenDialogs = 15
     const half = 2

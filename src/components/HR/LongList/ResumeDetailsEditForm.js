@@ -4,12 +4,24 @@ import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import LinearProgress from '../../LinearProgress'
-import {Field, reduxForm} from 'redux-form'
+import {Field, reduxForm, FieldArray} from 'redux-form'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
-import {TextField, DateField, GenderSearchField, LanguageField, CountrySearchField, MaritalStatusSearchField} from '../../ReduxForm'
+import {
+    TextField,
+    DateField,
+    GenderSearchField,
+    LanguageField,
+    ComputerLevelSearchField,
+    DriverLicenceCheck,
+    CountrySearchField,
+    MaritalStatusSearchField,
+    SkillsTagSearchField,
+    ExperiencesField,
+    EducationsField
+} from '../../ReduxForm'
 import dateFormat from '../../../helpers/dateFormat'
 import {genderFormat} from '../../../constants/gender'
 import t from '../../../helpers/translate'
@@ -93,7 +105,7 @@ const enhance = compose(
         info: {
             display: 'flex',
             '& > ul': {
-                marginRight: '40px',
+                marginRight: '18px',
                 lineHeight: '22px',
                 minWidth: '160px',
                 '&:last-child': {
@@ -196,7 +208,11 @@ const enhance = compose(
             height: '45px !important',
             marginTop: '7px',
             '& > div:first-child': {
-                fontSize: '13px !important'
+                fontSize: '13px !important',
+                '& > div:first-child': {
+                    height: '30px!important',
+                    bottom: '0!important'
+                }
             },
             '& label': {
                 top: '20px !important',
@@ -227,13 +243,68 @@ const enhance = compose(
                  //   marginTop: '0!important'
                 }
             }
+        },
+        license: {
+            marginBottom: '10px',
+            '& > div': {
+                display: 'unset',
+                '& h4': {
+                    marginBottom: '10px'
+                },
+                '& > div': {
+                    width: '340px !important'
+                }
+            }
+        },
+        pcSkills: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            '& > div': {
+                width: '180px',
+                marginTop: '0!important'
+            }
+        },
+        expField: {
+            '& > div > div:first-child': {
+                padding: 0,
+                fontSize: '16px'
+            },
+            '& > div > div:nth-child(2)': {
+                '& > div > div > div': {
+                    '&:first-child': {
+                        width: '150px !important'
+                    },
+                    '&:nth-child(2)': {
+                        width: '200px !important'
+                    }
+                }
+            }
+        },
+        eduField: {
+            '& > div > div:first-child': {
+                padding: 0,
+                fontSize: '16px'
+            },
+            '& > div > div:nth-child(2)': {
+                '& > div > div > div': {
+                    '&:first-child': {
+                        width: '150px !important'
+                    },
+                    '&:nth-child(2)': {
+                        width: '200px !important'
+                    }
+                }
+            }
         }
     }),
     reduxForm({
         form: 'ResumeDetailsEditForm',
         enableReinitialize: true
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openDetails', 'setOpenDetails', false),
+    withState('experienceError', 'updateExperienceError', false),
+    withState('educationError', 'updateEducationError', false),
 )
 
 const iconStyle = {
@@ -248,7 +319,6 @@ const iconStyle = {
         padding: 0
     }
 }
-withState('openDetails', 'setOpenDetails', false)
 
 const familyStatusText = (gender, status) => {
     if (gender === 'male') {
@@ -274,7 +344,9 @@ const ResumeDetailsEditForm = enhance((props) => {
         data,
         confirmDialog,
         handleOpenUpdateDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        updateExperienceError,
+        updateEducationError
     } = props
 
     // PERSONAL INFO
@@ -361,7 +433,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="dateOfBirth"
-                                        label={t('Дата рождения')}
+                                        hintText={t('Дата рождения')}
                                         component={DateField}
                                         className={classes.inputDateCustom}
                                         errorStyle={{bottom: 2}}
@@ -370,7 +442,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="sex"
-                                        label={t('Пол')}
+                                        placeHolder={t('Пол')}
                                         component={GenderSearchField}
                                         className={classes.inputFieldCustom}
                                         removeNoMatter={true}
@@ -379,7 +451,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="familyStatus"
-                                        label={t('Семейное положение')}
+                                        placeHolder={t('Семейное положение')}
                                         component={MaritalStatusSearchField}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
@@ -387,7 +459,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="phone"
-                                        label={t('Телефонный номер')}
+                                        hintText={t('Телефонный номер')}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         style={{marginTop: '5px !important'}}
@@ -396,7 +468,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="email"
-                                        label={t('Email адрес')}
+                                        hintText={t('Email адрес')}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
@@ -404,7 +476,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="country"
-                                        label={t('Страна проживания')}
+                                        placeHolder={t('Страна проживания')}
                                         component={CountrySearchField}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
@@ -412,7 +484,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 <li>
                                     <Field
                                         name="address"
-                                        label={t('Адрес проживания')}
+                                        hintText={t('Адрес проживания')}
                                         component={TextField}
                                         className={classes.inputFieldCustom}
                                         fullWidth={true}/>
@@ -422,72 +494,70 @@ const ResumeDetailsEditForm = enhance((props) => {
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.bodyTitle}>{t('Навыки и умения')}</div>
-                        <div className={classes.skills}>{skills}</div>
+                        <div className={classes.skills}>
+                            <Field
+                                name="skills"
+                                component={SkillsTagSearchField}
+                                className={classes.inputFieldCustom}
+                                label={t('Профессиональные навыки')}
+                                fullWidth={true}/>
+                        </div>
                     </div>
                     <div className={classes.innerBlock}>
-                        <div className={classes.bodyTitle}>{t('Знание языков')}</div>
-                        <ul>
-                            {_.map(languagesLevel, (item) => {
-                                const id = _.get(item, ['id'])
-                                const name = _.get(item, ['language', 'name'])
-                                const level = _.get(item, ['level', 'name'])
-                                return <li key={id} className={classes.lang}>{name} {level && <span className={classes.lowercase}>({level})</span>}</li>
-                            })}
-                        </ul>
+                        <FieldArray
+                            name="languagesLevel"
+                            component={LanguageField}
+//                            skillsError={skillsError}
+//                            updateSkillsError={updateSkillsError}
+                        />
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.bodyTitle}>{t('Дополнительная информация')}</div>
-                        <div className={classes.info}>
-                            <ul>
-                                <li>{t('Водительские права')}:</li>
-                                <li>{t('Уровень владения ПК')}:</li>
-                            </ul>
-                            <ul>
-                                <li>{driverLicense}</li>
-                                <li>{levelPc}</li>
-                            </ul>
+                        <div className={classes.info} style={{display: 'unset'}}>
+                            <div className={classes.license}>
+                                <Field
+                                name="driverLicense"
+                                component={DriverLicenceCheck}/>
+                            </div>
+                            <div className={classes.pcSkills}>
+                                <span>{t('Уровень владения ПК')}:</span>
+                                <Field
+                                    name="levelPc"
+                                    component={ComputerLevelSearchField}
+                                    className={classes.inputFieldCustom}
+                                    placeHolder={t('Уровень владения ПК')}
+                                    fullWidth={true}/>
+                            </div>
                         </div>
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.bodyTitle}>{t('Интересы и хобби')}</div>
-                        <div>{hobby}</div>
+                        <Field
+                            name="hobby"
+                            hintText={t('...')}
+                            component={TextField}
+                            className={classes.inputFieldCustom}
+                            fullWidth={true}/>
                     </div>
                 </div>
                 <div className={classes.block}>
                     <div className={classes.innerBlock}>
-                        <div className={classes.bodyTitle}>{t('Опыт работы')}</div>
-                        {_.isEmpty(experiences)
-                            ? t('Нет опыта работы')
-                            : _.map(experiences, (item, index) => {
-                                const workStart = dateFormat(_.get(item, 'workStart'))
-                                const workTillNow = _.get(item, 'workTillNow')
-                                const workEnd = workTillNow
-                                    ? t('По сегодняшний день')
-                                    : dateFormat(_.get(item, 'workEnd'))
-                                const organization = _.get(item, 'organization')
-                                const expPosition = _.get(item, ['position', 'name'])
-                                const responsibility = _.get(item, 'responsibility')
-                                return (
-                                    <div key={index} className={classes.experience}>
-                                        <div className={classes.condition}>
-                                            <h3>{expPosition}</h3>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <h4>{organization}</h4>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <div>{t('Период')}: {workStart} - {workEnd}</div>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <h4>{t('Должностные обязанности')}</h4>
-                                            <div className={classes.overflowText}>{responsibility}</div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                        <div className={classes.expField}>
+                            <FieldArray
+                                name="experiences"
+                                component={ExperiencesField}
+                                updateExperienceError={updateExperienceError}
+                                />
+                        </div>
                     </div>
                     <div className={classes.innerBlock}>
-                        <div className={classes.bodyTitle}>{t('Образование')}</div>
+                        <div className={classes.eduField}>
+                            <FieldArray
+                                name="educations"
+                                component={EducationsField}
+                                updateEducationError={updateEducationError}
+                            />
+                        </div>
                         {_.isEmpty(educations)
                             ? t('Нет образования')
                             : _.map(educations, (item, index) => {

@@ -183,7 +183,8 @@ const SearchField = enhance((props) => {
         disabled,
         clearValue,
         meta,
-        withoutErrorText
+        withoutErrorText,
+        placeHolder
     } = props
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
 
@@ -201,7 +202,7 @@ const SearchField = enhance((props) => {
                 onChange={value => input.onChange(value)}
                 onBlur={() => input.onBlur()}
                 onFocus={input.onFocus}
-                placeholder={''}
+                placeholder={placeHolder || ''}
                 noResultsText={hintText}
                 isLoading={state.loading}
                 valueRenderer={valueRenderer}

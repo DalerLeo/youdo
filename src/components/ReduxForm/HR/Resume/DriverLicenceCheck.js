@@ -34,6 +34,11 @@ const enhance = compose(
             background: LINK_COLOR,
             color: COLOR_WHITE,
             fontWeight: '600'
+        },
+        items: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '360px'
         }
     }),
     withState('activeLicense', 'updateLicense', HR_DRIVER_LICENSE),
@@ -74,7 +79,7 @@ const DriverLicenceCheck = enhance((props) => {
     return (
         <div className={classes.licenses}>
             <h4>{t('Водительские права')}</h4>
-            {_.map(activeLicense, (w) => {
+            <div className={classes.items}>{_.map(activeLicense, (w) => {
                 const id = _.get(w, 'id')
                 const name = _.get(w, 'name')
                 const active = _.get(w, 'active')
@@ -87,6 +92,7 @@ const DriverLicenceCheck = enhance((props) => {
                     </div>
                 )
             })}
+            </div>
         </div>
     )
 })
