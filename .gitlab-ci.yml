@@ -27,7 +27,7 @@ build:
     - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
     - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
   tags:
-    - staging
+    - hrc
 
 test:
   stage: test
@@ -40,7 +40,7 @@ test:
 #    - "yarn test:server"
 #    - "kill %1"
   tags:
-    - staging
+    - hrc
 
 deploy:
   stage: deploy
@@ -59,4 +59,4 @@ deploy:
   only:
     - master
   tags:
-    - staging
+    - hrc
