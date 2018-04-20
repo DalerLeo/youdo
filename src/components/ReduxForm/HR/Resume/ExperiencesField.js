@@ -173,7 +173,7 @@ const ExperiencesField = enhance((props) => {
         const hideWorkEnd = _.includes(indexesOfCheckedTillNow, index)
         return (
             <div key={index} className={classes.detail}>
-                <div>
+                <div className="exp-wrapper">
                     <div className={classes.flexHalf + ' ' + classes.alignCenter}>
                         <Field
                             label={t('Начало работы')}

@@ -840,6 +840,92 @@ const LongList = enhance((props) => {
     }
 
     const editResumeDetails = {
+        initialValues: (() => {
+            return {
+                address: _.get(resumeDetail, 'address'),
+                businessTrip: _.get(resumeDetail, 'businessTrip'),
+                city: {
+                    value: _.get(resumeDetail, ['city', 'id']),
+                    text: _.get(resumeDetail, ['city', 'name'])
+                },
+                country: {
+                    value: _.get(resumeDetail, ['country', 'id'])
+                },
+                dateOfBirth: moment(_.get(resumeDetail, 'dateOfBirth')).toDate(),
+                driverLicense: _.map(_.get(resumeDetail, 'driverLicense'), (item) => {
+                    return {
+                        id: _.get(item, 'name'),
+                        name: _.get(item, 'name'),
+                        active: true
+                    }
+                }),
+                educations: _.map(_.get(resumeDetail, 'educations'), (item) => {
+                    return {
+                        city: {
+                            value: _.get(item, ['city', 'id']),
+                            text: _.get(resumeDetail, ['city', 'name'])
+                        },
+                        country: {
+                            value: _.get(item, ['country', 'id'])
+                        },
+                        education: {
+                            value: _.get(item, 'education')
+                        },
+                        institution: _.get(item, 'institution'),
+                        speciality: _.get(item, 'speciality'),
+                        studyTillNow: _.get(item, 'studyTillNow'),
+                        studyStart: moment(_.get(item, 'studyStart')).toDate(),
+                        studyEnd: moment(_.get(item, 'studyEnd')).toDate()
+                    }
+                }),
+                email: _.get(resumeDetail, 'email'),
+                experiences: _.map(_.get(resumeDetail, 'experiences'), (item) => {
+                    return {
+                        position: {
+                            value: _.get(item, ['position', 'id'])
+                        },
+                        organization: _.get(item, 'organization'),
+                        responsibility: _.get(item, 'responsibility'),
+                        workTillNow: _.get(item, 'workTillNow'),
+                        workStart: moment(_.get(item, 'workStart')).toDate(),
+                        workEnd: moment(_.get(item, 'workEnd')).toDate()
+                    }
+                }),
+                familyStatus: {
+                    value: _.get(resumeDetail, 'familyStatus')
+                },
+                fullName: _.get(resumeDetail, 'fullName'),
+                hobby: _.get(resumeDetail, 'hobby'),
+                languagesLevel: _.map(_.get(resumeDetail, 'languages'), (item) => {
+                    return {
+                        name: {
+                            value: _.get(item, ['language', 'id'])
+                        },
+                        level: {
+                            value: _.get(item, ['level'])
+                        }
+                    }
+                }),
+                levelPc: {
+                    value: _.get(resumeDetail, 'levelPc')
+                },
+//                modes: isSelectedModes,
+                phone: _.get(resumeDetail, 'phone'),
+                position: {
+                    value: _.get(resumeDetail, ['position', 'id'])
+                },
+                relocation: _.get(resumeDetail, 'relocation'),
+                salary: {
+                    min: numberFormat(_.get(resumeDetail, 'salaryMin')),
+                    max: numberFormat(_.get(resumeDetail, 'salaryMax'))
+                },
+                sex: {
+                    value: _.get(resumeDetail, 'sex')
+                },
+                skills: _.map(_.get(resumeDetail, 'skills'), (item) => _.get(item, 'name'))
+
+            }
+        })(),
         open: openEditResumeDetails,
         handleOpen: props.handleOpenUpdateResumeDetails,
         handleClose: props.handleCloseUpdateResumeDetails,

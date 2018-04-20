@@ -332,11 +332,8 @@ const ResumeDetailsDialog = enhance((props) => {
                                 ? <ResumeDetails
                                     data={data}
                                     loading={loading}/>
-                                : <ResumeDetailsEditForm initialValues={{
-                                    languagesLevel: [{}],
-                                    experiences: [{}],
-                                    educations: [{}]
-                                }}/>}
+                                : <ResumeDetailsEditForm
+                                        initialValues={editResumeDetails.initialValues}/>}
                             </div>
                         </div>}
                 </div>

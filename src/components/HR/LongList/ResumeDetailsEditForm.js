@@ -267,11 +267,14 @@ const enhance = compose(
         },
         expField: {
             '& > div > div:first-child': {
-                padding: 0,
+                padding: '0 0 10px 0',
                 fontSize: '16px'
             },
-            '& > div > div:nth-child(2)': {
-                '& > div > div > div': {
+            '& .exp-wrapper': {
+                '& > div': {
+                    alignItems: 'baseline'
+                },
+                '& > div:first-child > div': {
                     '&:first-child': {
                         width: '150px !important'
                     },
@@ -286,8 +289,11 @@ const enhance = compose(
                 padding: 0,
                 fontSize: '16px'
             },
-            '& > div > div:nth-child(2)': {
-                '& > div > div > div': {
+            '& .edu-wrapper': {
+                '& > div': {
+                    alignItems: 'baseline'
+                },
+                '& > div:nth-child(2) > div': {
                     '&:first-child': {
                         width: '150px !important'
                     },
@@ -352,25 +358,6 @@ const ResumeDetailsEditForm = enhance((props) => {
     // PERSONAL INFO
     const resumeId = _.get(data, ['id'])
     const fullName = _.get(data, ['fullName'])
-    const address = _.get(data, ['address'])
-    const sex = _.get(data, ['sex'])
-    const dateOfBirth = dateFormat(_.get(data, ['dateOfBirth']))
-    const phone = _.get(data, ['phone'])
-    const email = _.get(data, ['email'])
-    const familyStatus = _.get(data, ['familyStatus'])
-    const country = _.get(data, ['country', 'name'])
-    const city = _.get(data, ['city', 'name'])
-
-    const experiences = _.get(data, 'experiences')
-    const educations = _.get(data, 'educations')
-
-    const languagesLevel = _.get(data, 'languages')
-    const levelPc = _.get(data, 'levelPc')
-    const hobby = _.get(data, 'hobby') || t('Не указано')
-    const driverLicense = _.join(_.map(_.get(data, 'driverLicense'), item => {
-        return _.get(item, 'name')
-    }), ', ') || t('нет водительских прав')
-
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -378,16 +365,6 @@ const ResumeDetailsEditForm = enhance((props) => {
             </div>
         )
     }
-
-    const skills = _.isEmpty(_.get(data, 'skills'))
-        ? <span> {t('Не указаны')}</span>
-        : _.map(_.get(data, 'skills'), (item) => {
-            const id = _.get(item, 'id')
-            const name = _.get(item, 'name')
-            return (
-                <span key={id} className={classes.skill}>{name}</span>
-            )
-        })
 
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
@@ -558,38 +535,6 @@ const ResumeDetailsEditForm = enhance((props) => {
                                 updateEducationError={updateEducationError}
                             />
                         </div>
-                        {_.isEmpty(educations)
-                            ? t('Нет образования')
-                            : _.map(educations, (item, index) => {
-                                const studyStart = dateFormat(_.get(item, 'studyStart'))
-                                const studyTillNow = _.get(item, 'studyTillNow')
-                                const studyEnd = studyTillNow
-                                    ? t('По сегодняшний день')
-                                    : dateFormat(_.get(item, 'studyEnd'))
-                                const institution = _.get(item, 'institution')
-                                const speciality = _.get(item, 'speciality')
-                                const eduCountry = _.get(item, ['country', 'name'])
-                                const eduCity = _.get(item, ['city', 'name'])
-                                return (
-                                    <div key={index} className={classes.experience}>
-                                        <div className={classes.condition}>
-                                            <h4>{t('Учебное заведение')}</h4>
-                                            <div>{institution}</div>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <h4>{t('Специальность')}</h4>
-                                            <div>{speciality}</div>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <div>{t('Период')}: {studyStart} - {studyEnd}</div>
-                                        </div>
-                                        <div className={classes.condition}>
-                                            <h4>{t('Страна обучения')}</h4>
-                                            <div>{eduCountry}, {eduCity}</div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
                     </div>
                 </div>
             </div>
