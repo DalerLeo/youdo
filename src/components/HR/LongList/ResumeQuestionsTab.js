@@ -1,12 +1,11 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, withState, withPropsOnChange} from 'recompose'
+import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import Loader from '../../Loader'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm'
 import {COLOR_GREY, COLOR_WHITE} from '../../../constants/styleConstants'
-import RemoveIcon from 'material-ui/svg-icons/navigation/close'
 
 const enhance = compose(
     injectSheet({
@@ -64,101 +63,31 @@ const enhance = compose(
         form: 'ResumeDetailsForm',
         enableReinitialize: true
     }),
-    withState('questionListClone', 'updateQuestionList', []),
-    withState('answerListClone', 'updateAnswerList', []),
-    withState('currentAnswer', 'updateAnswer', ''),
-
-    withPropsOnChange((props, nextProps) => {
-        const listLoading = _.get(props, ['answersData', 'loading'])
-        const nextListLoading = _.get(nextProps, ['answersData', 'loading'])
-        return listLoading !== nextListLoading && nextListLoading === false
-    }, ({answersData: {list}, updateAnswerList}) => {
-        if (!_.isEmpty(list)) {
-            updateAnswerList(list)
-        }
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const list = _.get(props, ['input', 'value'])
-        const nextList = _.get(nextProps, ['input', 'value'])
-        return !_.isEqual(list, nextList) && !_.isEmpty(nextList)
-    }, ({input: {value}, updateAnswerList}) => {
-        if (!_.isEmpty(value)) {
-            updateAnswerList(_.map(value, (item, index) => {
-                return {
-                    question: index,
-                    answer: _.get(item, 'answer')
-                }
-            }))
-        }
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const questions = _.get(props, ['answerListClone'])
-        const nextQuestions = _.get(nextProps, ['answerListClone'])
-        return !_.isEqual(questions, nextQuestions)
-    }, ({answerListClone}) => {
-        return null
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const list = _.get(props, ['answerListClone'])
-        const nextList = _.get(nextProps, ['answerListClone'])
-        return !_.isEqual(list, nextList)
-    }, ({input, answerListClone}) => {
-        if (!_.isEmpty(answerListClone)) {
-            const getAnswers = () => {
-                const answers = {}
-                _.map(answerListClone, (item) => {
-                    const answer = _.get(item, 'answer')
-                    answers[_.get(item, 'question')] = {answer}
-                })
-                return answers
-            }
-            input.onChange(getAnswers())
-        }
-    })
+    withState('currentAnswer', 'updateAnswer', '')
 )
 
 const ResumeQuestionsTab = enhance((props) => {
     const {
         classes,
         handleSubmitResumeAnswers,
-        answersData: {loading},
-        questionListClone,
-        updateQuestionList,
         currentAnswer,
         updateAnswer,
-        answerListClone,
-        updateAnswerList
+        questionsData
     } = props
-    const removeQuestion = (id) => {
-        const removedArray = _.remove(questionListClone, (item) => {
-            return _.get(item, 'id') === id
-        })
-        const clearedAnswers = _.filter(answerListClone, (item) => {
-            return String(_.get(item, 'question')) !== String(id)
-        })
-        updateAnswerList(clearedAnswers)
-        return _.differenceBy(questionListClone, removedArray)
-    }
 
     return (
         <div className={classes.questions}>
-            {loading
+            {questionsData.loading
                 ? <div className={classes.staticLoader}>
                     <Loader size={0.75}/>
                 </div>
-                : _.map(answerListClone, (item, index) => {
+                : _.map(questionsData.list, (item, index) => {
                     const ONE = 1
                     const count = index + ONE
                     const id = _.get(item, 'id')
                     const question = _.get(item, 'question')
                     return (
                         <li key={id} className={classes.question}>
-                            <div onClick={() => { updateQuestionList(removeQuestion(id)) }} className={classes.remove}>
-                                <RemoveIcon/>
-                            </div>
                             <span>{count}. {question}</span>
                             <Field
                                 name={'answers[' + id + '][answer]'}
