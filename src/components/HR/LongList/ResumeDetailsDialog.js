@@ -276,6 +276,7 @@ const ResumeDetailsDialog = enhance((props) => {
         setOpenAddComment,
         handleClickButton,
         answersData,
+        questionsData,
         currentTab,
         setCurrentTab,
         editResumeDetails
@@ -514,6 +515,7 @@ const ResumeDetailsDialog = enhance((props) => {
                                     name="answers"
                                     component={ResumeQuestionsTab}
                                     answersData={answersData}
+                                    questionsData={questionsData}
                                     handleSubmitResumeAnswers={handleSubmitResumeAnswers}
                                 />
                             </Tab>

@@ -611,6 +611,7 @@ const LongListGridList = enhance((props) => {
         editReportDialog,
         deleteReportDialog,
         answersData,
+        questionsData,
         handleGetPreviewReport,
         editResumeDetails
     } = props
@@ -1132,6 +1133,7 @@ const LongListGridList = enhance((props) => {
                 commentsLoading={resumeDetails.commentsLoading}
                 handleClickButton={handleClickMenuItem}
                 answersData={answersData}
+                questionsData={questionsData}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

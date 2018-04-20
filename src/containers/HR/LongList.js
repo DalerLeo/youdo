@@ -209,6 +209,7 @@ const enhance = compose(
              dispatch(resumeItemFetchAction(resume))
              dispatch(getResumeComments(filter))
              dispatch(getResumeAnswersList(application, resume))
+             dispatch(getQuestionsList(application))
          }
      }),
 
@@ -768,10 +769,9 @@ const LongList = enhance((props) => {
         initialValues: (() => {
             const answers = {}
             _.map(answersData.list, (item) => {
-                const id = _.get(item, 'id')
                 const answer = _.get(item, 'answer')
                 const question = _.get(item, 'question')
-                answers[id] = {answer, question}
+                answers[question] = {answer}
             })
             return {answers}
         })()
