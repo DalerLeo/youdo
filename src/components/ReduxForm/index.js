@@ -100,6 +100,15 @@ import normalizeMaxNumber from './normalizers/normalizeMaxNumber'
 import normalizePhone from './normalizers/normalizePhone'
 import CashBoxSimpleSearch from './Cashbox/CashBoxSimpleSearch'
 import ManufactureLogTypeSearchField from './Manufacture/ManufactureLogTypeSearchField'
+import CountrySearchField from './HR/CountrySearchField'
+import GenderSearchField from './HR/GenderSearchField'
+import LanguageField from './HR/LanguageField'
+import SkillsTagSearchField from './HR/SkillsTagSearchField'
+import MaritalStatusSearchField from './HR/Resume/MaritalStatusSearchField'
+import DriverLicenceCheck from './HR/Resume/DriverLicenceCheck'
+import ComputerLevelSearchField from './HR/ComputerLevelSearchField'
+import ExperiencesField from './HR/Resume/ExperiencesField'
+import EducationsField from './HR/Resume/EducationsField'
 
 export {
     PendingExpensesTypeSearchField,
@@ -203,5 +212,14 @@ export {
     normalizePhone,
     CashBoxSimpleSearch,
     ClientBalanceReturnProductList,
-    ManufactureLogTypeSearchField
+    ManufactureLogTypeSearchField,
+    CountrySearchField,
+    SkillsTagSearchField,
+    LanguageField,
+    GenderSearchField,
+    MaritalStatusSearchField,
+    DriverLicenceCheck,
+    ComputerLevelSearchField,
+    ExperiencesField,
+    EducationsField
 }

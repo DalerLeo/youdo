@@ -7,9 +7,7 @@ import injectSheet from 'react-jss'
 import {signInAction, authConfirmAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
-import axios from '../../helpers/axios'
 import {setApi} from '../../helpers/storage'
-import * as API from '../../constants/api'
 
 const enhance = compose(
     injectSheet({
@@ -41,18 +39,6 @@ const enhance = compose(
     }),
 )
 
-const getStorage = (local) => {
-    return local ? localStorage : sessionStorage
-}
-
-const setConfigs = (configs) => {
-    const storage = getStorage(false)
-
-    _.forIn(configs, (value, key) => {
-        storage.setItem(key, value)
-    })
-}
-
 const SignIn = enhance((props) => {
     const {classes, dispatch, location, loading, formValues, updateSignInLoading} = props
     const onSubmit = () => {
@@ -61,15 +47,9 @@ const SignIn = enhance((props) => {
                 const rememberUser = _.get(formValues, 'rememberMe') || false
                 return dispatch(authConfirmAction(rememberUser))
                     .then(() => {
-                        updateSignInLoading(true)
-                        axios()
-                            .get(API.CONFIG)
-                            .then((response) => {
-                                updateSignInLoading(false)
-                                setConfigs(_.get(response, 'data'))
-                                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
-                                hashHistory.push(redirectUrl)
-                            })
+                        updateSignInLoading(false)
+                        const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                        hashHistory.push(redirectUrl)
                     })
             })
     }
