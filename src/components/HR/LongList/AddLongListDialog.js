@@ -167,6 +167,7 @@ const enhance = compose(
                 margin: '0 -30px',
                 padding: '0 30px',
                 minHeight: '45px',
+                position: 'relative',
                 '&:after': {left: '30px', right: '30px'},
                 '&:first-child': {fontWeight: '600', color: 'inherit !important'},
                 '&:last-child:after': {display: 'none'},
@@ -179,6 +180,17 @@ const enhance = compose(
                     cursor: 'pointer'
                 }
             }
+        },
+        checkbox: {
+            zIndex: '2'
+        },
+        openDetails: {
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '1'
         },
         title: {
             fontWeight: '600',
@@ -267,12 +279,15 @@ const AddLongListDialog = enhance((props) => {
                                         const fullName = _.get(item, ['fullName'])
                                         const status = _.get(item, ['status'])
                                         return (
-                                            <Row key={id} className={'dottedList'} onClick={() => { resumeLink(id, null, relationId) }}>
-                                                <Col xs={1}>
+                                            <Row key={id} className={'dottedList'}>
+                                                <Col xs={1} className={classes.checkbox}>
                                                     <Field
                                                         name={'resumes[' + id + '][selected]'}
                                                         component={CheckBox}/>
                                                 </Col>
+                                                <div
+                                                    className={classes.openDetails}
+                                                    onClick={() => { resumeLink(id, null, relationId) }}/>
                                                 <Col xs={5}>{fullName}</Col>
                                                 <Col xs={4}>{position}</Col>
                                                 <Col xs={2}>{status}</Col>

@@ -149,25 +149,27 @@ export const sendAnswersSerializer = (application, resume, data) => {
     const answers = _.map(_.get(data, 'answers'), (item, index) => {
         const answer = _.get(item, 'answer')
         return {
-            application,
-            resume,
             question: _.toNumber(index),
             answer
         }
     })
-    const newAnswers = _.map(_.get(data, 'newQuestions'), (item) => {
-        const question = _.get(item, 'question')
-        const answer = _.get(item, 'answer')
-        return {
-            application,
-            resume,
-            question,
-            answer
-        }
-    })
-    const filteredNewAnswers = _.filter(newAnswers, (item) => _.get(item, 'answer') && _.get(item, 'question'))
+    // .. const newAnswers = _.map(_.get(data, 'newQuestions'), (item) => {
+    // ..     const question = _.get(item, 'question')
+    // ..     const answer = _.get(item, 'answer')
+    // ..     return {
+    // ..         application,
+    // ..         resume,
+    // ..         question,
+    // ..         answer
+    // ..     }
+    // .. })
+    // .. const filteredNewAnswers = _.filter(newAnswers, (item) => _.get(item, 'answer') && _.get(item, 'question'))
 
-    return _.concat(answers, filteredNewAnswers)
+    return {
+        application,
+        resume,
+        answers
+    }
 }
 
 export const answersListSerializer = (application, resume) => {
