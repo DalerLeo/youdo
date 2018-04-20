@@ -725,7 +725,9 @@ const LongListGridList = enhance((props) => {
                         {!openAddReport &&
                         <div
                             className={isInterview ? classes.openResumeInterview : classes.openResume}
-                            onClick={() => { resumeLink(id, status, relationId) }}/>}
+                            onClick={() => {
+                                resumeLink(id, status, relationId)
+                            }}/>}
                         <div className={classes.resumeFullName}>
                             <div>{fullName}</div>
                         </div>
@@ -1123,6 +1125,7 @@ const LongListGridList = enhance((props) => {
             <ResumeDetailsDialog
                 loading={resumeDetails.loading}
                 data={resumeDetails.data || {}}
+                application={data}
                 open={resumeDetails.open}
                 filter={filter}
                 editResumeDetails={editResumeDetails}

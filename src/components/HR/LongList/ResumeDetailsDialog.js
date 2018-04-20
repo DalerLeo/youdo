@@ -28,6 +28,7 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
+import {getBackendNames} from '../../../helpers/hrcHelpers'
 import {hashHistory} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
 import {TextField} from '../../ReduxForm'
@@ -36,12 +37,29 @@ import dateFormat from '../../../helpers/dateFormat'
 import {
     HR_RESUME_LONG,
     HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
-    HR_RESUME_SHORT
+    HR_RESUME_SHORT, HR_GENDER, HR_LEVEL_PC, HR_EDUCATION
 } from '../../../constants/backendConstants'
 
 const TAB_DETAILS = 'details'
 const TAB_COMMENTS = 'comments'
 const TAB_LOGS = 'logs'
+const AGE = 'age'
+const SEX = 'sex'
+const EDU = 'education'
+const LEVEL_PC = 'level_pc'
+const EXP = 'experience'
+const LANG_LEVEL = 'langLevel'
+const requiredFilter = (key, data) => {
+    switch (key) {
+        case AGE: return <div>{t('Возрасть')}: {_.get(data, 'ageMin') + ' - ' + _.get(data, 'ageMax')}</div>
+        case SEX: return <div>{t('Пол')}: {getBackendNames(HR_GENDER, _.get(data, key))}</div>
+        case EDU: return <div>{t('Образования')}: {getBackendNames(HR_EDUCATION, _.get(data, key))}</div>
+        case LEVEL_PC: return <div>{t('Уревень владения ПК')}: {getBackendNames(HR_LEVEL_PC, _.get(data, 'levelPc'))}</div>
+        case EXP: return <div>{t('Минимальный опыт работы')}: {_.get(data, key) + ' ' + t('года')} </div>
+        case LANG_LEVEL: return <div>{t('Уревень язика')}: {_.get(data, key)}</div>
+        default: return null
+    }
+}
 
 const enhance = compose(
     injectSheet({
@@ -278,7 +296,8 @@ const ResumeDetailsDialog = enhance((props) => {
         questionsData,
         currentTab,
         setCurrentTab,
-        editResumeDetails
+        editResumeDetails,
+        application
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -287,6 +306,7 @@ const ResumeDetailsDialog = enhance((props) => {
             formValidate(['comment'], dispatch, error)
         }))
 
+    const filterRequired = _.get(application, 'filterRequired')
     const fullName = _.get(data, 'fullName')
 
     const flatButtonStyle = {
@@ -431,7 +451,7 @@ const ResumeDetailsDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{fullName}</span>
                 <IconButton onTouchTap={() => {
-                    hashHistory.push(filter.createURL({resume: null, status: null, relation: null}))
+                    hashHistory.push(filter.createURL({resume: null, status: null, relation: null, editResumeDetails: null}))
                     return setCurrentTab(TAB_DETAILS)
                 }}>
                     <CloseIcon color={COLOR_GREY}/>
@@ -485,7 +505,7 @@ const ResumeDetailsDialog = enhance((props) => {
                                     <AddNote color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>
-                            {!editResumeDetails.open &&
+                            {currentStatus === HR_RESUME_MEETING && !editResumeDetails.open &&
                              <ToolTip position={'bottom'} text={t('Изменить данные')}>
                                 <IconButton onTouchTap={() => { editResumeDetails.handleOpen() }}>
                                     <Edit color={COLOR_GREY}/>
@@ -516,7 +536,9 @@ const ResumeDetailsDialog = enhance((props) => {
                                 />
                             </Tab>
                             <Tab label={t('Требования')} buttonStyle={tabStyle.button} disableTouchRipple>
-
+                                {_.map(filterRequired, (item, index) => {
+                                    return <div key={index}>{requiredFilter(item, application)}</div>
+                                })}
                             </Tab>
                         </Tabs>
                     </Paper>}
