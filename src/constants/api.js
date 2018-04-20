@@ -6,7 +6,7 @@ export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL 
 
 export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
 
-export const USER = 'main/user'
+export const USER = 'user'
 export const SIGN_IN = `/${USER}/auth/`
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
