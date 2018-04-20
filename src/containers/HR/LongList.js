@@ -37,7 +37,8 @@ import {
     getResumeAnswersList,
     addReportList,
     addToShortList,
-    updateReportList
+    updateReportList,
+    resumeUpdateAction
 } from '../../actions/HR/longList'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -118,7 +119,9 @@ const enhance = compose(
         const questionsListLoading = _.get(state, ['longList', 'questionsList', 'loading'])
         const answersList = _.get(state, ['longList', 'answersList', 'data'])
         const answersListLoading = _.get(state, ['longList', 'answersList', 'loading'])
-
+        const resumeEditDetailsForm = _.get(state, ['form', 'ResumeDetailsEditForm', 'values'])
+        const educationForm = _.get(state, ['form', 'ResumeEducationForm', 'values'])
+        const experienceForm = _.get(state, ['form', 'ResumeExperienceForm', 'values'])
         return {
             resumePreviewList,
             resumePreviewListLoading,
@@ -148,7 +151,10 @@ const enhance = compose(
             questionsList,
             questionsListLoading,
             answersList,
-            answersListLoading
+            answersListLoading,
+            resumeEditDetailsForm,
+            educationForm,
+            experienceForm
         }
     }),
 
@@ -592,6 +598,19 @@ const enhance = compose(
         handleCloseUpdateResumeDetails: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[EDIT_RESUME_DETAILS]: false})})
+        },
+        handleSubmitUpdateResumeDialog: props => () => {
+            const {dispatch, resumeEditDetailsForm, educationForm, experienceForm, filter, location: {query}} = props
+            const resumeId = _.toInteger(_.get(query, ['resume']))
+            const forms = {createForm: resumeEditDetailsForm, educationForm, experienceForm}
+            return dispatch(resumeUpdateAction(resumeId, forms))
+                .then(() => {
+                    return dispatch(resumeItemFetchAction(resumeId))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[EDIT_RESUME_DETAILS]: false}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
         }
 
     })
@@ -928,7 +947,7 @@ const LongList = enhance((props) => {
         open: openEditResumeDetails,
         handleOpen: props.handleOpenUpdateResumeDetails,
         handleClose: props.handleCloseUpdateResumeDetails,
-        handleSubmit: props.handleSubmitReportDialog
+        handleSubmit: props.handleSubmitUpdateResumeDialog
     }
 
     return (

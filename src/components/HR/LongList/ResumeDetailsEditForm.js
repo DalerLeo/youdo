@@ -7,6 +7,7 @@ import LinearProgress from '../../LinearProgress'
 import {Field, reduxForm, FieldArray} from 'redux-form'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import {
@@ -299,6 +300,19 @@ const enhance = compose(
                     }
                 }
             }
+        },
+        bottomButton: {
+            width: '100%',
+            padding: '10px',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
         }
     }),
     reduxForm({
@@ -331,7 +345,8 @@ const ResumeDetailsEditForm = enhance((props) => {
         handleOpenUpdateDialog,
         handleCloseDetail,
         updateExperienceError,
-        updateEducationError
+        updateEducationError,
+        editResumeDetails
     } = props
 
     // PERSONAL INFO
@@ -500,6 +515,7 @@ const ResumeDetailsEditForm = enhance((props) => {
                             <FieldArray
                                 name="experiences"
                                 component={ExperiencesField}
+                                initialValues={{organization: 'HELLO'}}
                                 updateExperienceError={updateExperienceError}
                                 />
                         </div>
@@ -514,6 +530,17 @@ const ResumeDetailsEditForm = enhance((props) => {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label={t('Отменить')}
+                    labelStyle={{fontSize: '13px', color: 'rgb(255, 64, 129)'}}
+                    onTouchTap={() => editResumeDetails.handleClose() }/>
+                <FlatButton
+                    label={t('Сохранить')}
+                    labelStyle={{fontSize: '13px'}}
+                    onTouchTap={() => editResumeDetails.handleSubmit() }
+                    primary={true}/>
             </div>
         </div>
     )

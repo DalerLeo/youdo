@@ -188,7 +188,7 @@ const EducationsField = enhance((props) => {
         const showCity = _.includes(indexesWhereExistCountry, index)
         return (
             <div key={index} className={classes.detail}>
-                <div className="eduWrapper">
+                <div className="edu-wrapper">
                     <Field
                         label={t('Уровень образования')}
                         name={`${detail}.education`}

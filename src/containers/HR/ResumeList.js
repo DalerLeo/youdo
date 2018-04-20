@@ -188,10 +188,10 @@ const enhance = compose(
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
+            const {dispatch, createForm, educationForm, experienceForm, personalForm, skillsForm, filter} = props
+            const forms = {createForm, educationForm, experienceForm, personalForm, skillsForm}
             const resumeId = _.toInteger(_.get(props, ['params', 'resumeId']))
-
-            return dispatch(resumeUpdateAction(resumeId, _.get(createForm, ['values'])))
+            return dispatch(resumeUpdateAction(resumeId, forms))
                 .then(() => {
                     return dispatch(resumeItemFetchAction(resumeId))
                 })

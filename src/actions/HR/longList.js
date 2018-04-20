@@ -348,3 +348,20 @@ export const updateReportList = (application, reportIds, shortIds) => {
         payload
     }
 }
+
+export const resumeUpdateAction = (id, formValues) => {
+    const requestData = serializers.updateResumeSerializer(formValues)
+    const payload = axios()
+        .put(sprintf(API.HR_RESUME_ITEM, id), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_UPDATE,
+        payload
+    }
+}

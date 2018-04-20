@@ -18,7 +18,6 @@ import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddNote from 'material-ui/svg-icons/communication/chat'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
-import Undo from 'material-ui/svg-icons/content/undo'
 import EventDone from 'material-ui/svg-icons/notification/event-available'
 import {
     BORDER_STYLE,
@@ -333,7 +332,9 @@ const ResumeDetailsDialog = enhance((props) => {
                                     data={data}
                                     loading={loading}/>
                                 : <ResumeDetailsEditForm
-                                        initialValues={editResumeDetails.initialValues}/>}
+                                        initialValues={editResumeDetails.initialValues}
+                                        editResumeDetails={editResumeDetails}
+                                    />}
                             </div>
                         </div>}
                 </div>
@@ -488,11 +489,6 @@ const ResumeDetailsDialog = enhance((props) => {
                                 <IconButton onTouchTap={() => { editResumeDetails.handleOpen() }}>
                                     <Edit color={COLOR_GREY}/>
                                 </IconButton>
-                            </ToolTip>}
-                            {editResumeDetails.open && <ToolTip position={'bottom'} text={t('Отменить')}>
-                                    <IconButton onTouchTap={() => { editResumeDetails.handleClose() }}>
-                                        <Undo color={COLOR_GREY}/>
-                                    </IconButton>
                             </ToolTip>}
                             <ToolTip position={'bottom'} text={t('Удалить со списка')}>
                                 <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
