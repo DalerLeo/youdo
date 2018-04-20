@@ -909,7 +909,6 @@ const LongList = enhance((props) => {
                 levelPc: {
                     value: _.get(resumeDetail, 'levelPc')
                 },
-//                modes: isSelectedModes,
                 phone: _.get(resumeDetail, 'phone'),
                 position: {
                     value: _.get(resumeDetail, ['position', 'id'])

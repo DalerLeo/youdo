@@ -22,8 +22,6 @@ import {
     ExperiencesField,
     EducationsField
 } from '../../ReduxForm'
-import dateFormat from '../../../helpers/dateFormat'
-import {genderFormat} from '../../../constants/gender'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
@@ -240,7 +238,6 @@ const enhance = compose(
         fields: {
             '& li': {
                 '& > div': {
-                 //   marginTop: '0!important'
                 }
             }
         },
@@ -324,24 +321,6 @@ const iconStyle = {
         height: 48,
         padding: 0
     }
-}
-
-const familyStatusText = (gender, status) => {
-    if (gender === 'male') {
-        switch (status) {
-            case 'single': return t('Не женат')
-            case 'married': return t('Женат')
-            default: return t('Не указано')
-        }
-    }
-    if (gender === 'female') {
-        switch (status) {
-            case 'single': return t('Не замужем')
-            case 'married': return t('Замужем')
-            default: return t('Не указано')
-        }
-    }
-    return t('Не указано')
 }
 
 const ResumeDetailsEditForm = enhance((props) => {
@@ -484,8 +463,6 @@ const ResumeDetailsEditForm = enhance((props) => {
                         <FieldArray
                             name="languagesLevel"
                             component={LanguageField}
-//                            skillsError={skillsError}
-//                            updateSkillsError={updateSkillsError}
                         />
                     </div>
                     <div className={classes.innerBlock}>

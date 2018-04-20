@@ -483,13 +483,13 @@ const ResumeDetailsDialog = enhance((props) => {
                                     <AddNote color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>
-                            {!editResumeDetails.open
-                            ? <ToolTip position={'bottom'} text={t('Изменить данные')}>
+                            {!editResumeDetails.open &&
+                             <ToolTip position={'bottom'} text={t('Изменить данные')}>
                                 <IconButton onTouchTap={() => { editResumeDetails.handleOpen() }}>
                                     <Edit color={COLOR_GREY}/>
                                 </IconButton>
-                            </ToolTip>
-                            : <ToolTip position={'bottom'} text={t('Отменить')}>
+                            </ToolTip>}
+                            {editResumeDetails.open && <ToolTip position={'bottom'} text={t('Отменить')}>
                                     <IconButton onTouchTap={() => { editResumeDetails.handleClose() }}>
                                         <Undo color={COLOR_GREY}/>
                                     </IconButton>
