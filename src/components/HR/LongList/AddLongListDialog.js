@@ -251,8 +251,8 @@ const AddLongListDialog = enhance((props) => {
                         <form className={classes.resumeList}>
                             <Row className={'dottedList'}>
                                 <Col xs={1}/>
-                                <Col xs={4}>{t('Должность')}</Col>
                                 <Col xs={5}>{t('Ф.И.О.')}</Col>
+                                <Col xs={4}>{t('Специальность')}</Col>
                                 <Col xs={2}>{t('Статус')}</Col>
                             </Row>
                             {resumeLoading
@@ -273,8 +273,8 @@ const AddLongListDialog = enhance((props) => {
                                                         name={'resumes[' + id + '][selected]'}
                                                         component={CheckBox}/>
                                                 </Col>
-                                                <Col xs={4}>{position}</Col>
                                                 <Col xs={5}>{fullName}</Col>
+                                                <Col xs={4}>{position}</Col>
                                                 <Col xs={2}>{status}</Col>
                                             </Row>
                                         )

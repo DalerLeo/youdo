@@ -6,7 +6,7 @@ export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL 
 
 export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
 
-export const USER = 'main/user'
+export const USER = 'user'
 export const SIGN_IN = `/${USER}/auth/`
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
@@ -69,7 +69,7 @@ export const PROVIDER_DELETE = `/${PROVIDER}/%d/`
 export const PROVIDER_LIST = `/${PROVIDER}/`
 export const PROVIDER_ITEM = `/${PROVIDER}/%d/`
 
-export const CLIENT = 'sales/client'
+export const CLIENT = 'client/client'
 export const CLIENT_CREATE = `/${CLIENT}/`
 export const CLIENT_DELETE = `/${CLIENT}/%d/`
 export const CLIENT_LIST = `/${CLIENT}/`
@@ -99,12 +99,12 @@ export const SHOP_ITEM_DELETE_IMAGE = `/${SHOP}/%d/images/%d/`
 export const SHOP_DELETE = `/${SHOP}/%d/`
 export const SHOP_MULTI_UPDATE = `/${SHOP}/bulk_update/`
 
-export const USERS = 'main/crud'
+export const USERS = 'user/crud'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
 export const USERS_DELETE = `/${USERS}/%d/`
-export const USERS_GROUP = 'main/group/gcrud/'
+export const USERS_GROUP = 'user/group/gcrud/'
 export const USERS_GROUP_ITEM = `/${USERS_GROUP}/%d/`
 
 export const CASHBOX = 'finance/cashbox'

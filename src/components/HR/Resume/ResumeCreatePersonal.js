@@ -128,7 +128,7 @@ const ResumeCreatePersonal = enhance((props) => {
                 fullWidth={true}/>}
             <Field
                 name="position"
-                label={t('Желаемая должность')}
+                label={t('Желаемая специальность')}
                 component={PositionSearchField}
                 className={classes.inputFieldCustom}
                 fullWidth={true}/>

@@ -37,6 +37,7 @@ export const RESUME_FILTER_KEY = {
     LANGUAGES: 'languages',
     EXPERIENCE: 'experience',
     SKILLS: 'skills',
+    SEARCH: 'search',
 
     // FOR LONG LIST
     AGE_0: 'age0',
@@ -208,10 +209,16 @@ const ResumeFilterForm = enhance((props) => {
             </div>
             <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
                 <Field
+                    name="search"
+                    className={classes.inputFieldCustom}
+                    component={TextField}
+                    label={t('Поиск')}
+                    fullWidth={true}/>
+                <Field
                     name="position"
                     className={classes.inputFieldCustom}
                     component={PositionMultiSearchField}
-                    label={t('Должность')}
+                    label={t('Специальность')}
                     fullWidth={true}/>
                 <Field
                     name="mode"
