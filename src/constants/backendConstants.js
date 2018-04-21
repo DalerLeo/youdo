@@ -79,6 +79,13 @@ export const HR_EDUCATION = [
     {id: 'doctoral', name: t('Докторантура')}
 ]
 
+export const HR_LANG_LEVELS = [
+    {id: 'beginner', name: t('Начальный')},
+    {id: 'intermediate', name: t('Средний')},
+    {id: 'advanced', name: t('Продвинутый')},
+    {id: 'fluent', name: t('Свободное владение')}
+]
+
 export const HR_RESUME_SHORT = 'short'
 export const HR_RESUME_REPORT = 'report'
 export const HR_RESUME_REMOVED = 'removed'
