@@ -2,39 +2,37 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import LinearProgress from '../../LinearProgress'
-import t from '../../../helpers/translate'
+import LinearProgress from '../../../LinearProgress'
+import t from '../../../../helpers/translate'
 import {reduxForm} from 'redux-form'
 import {
     PADDING_STANDART,
     BORDER_STYLE
-} from '../../../constants/styleConstants'
+} from '../../../../constants/styleConstants'
 
 const validate = values => {
     const formNames = [
-        'education',
-        'studyStart',
-        'institution',
-        'speciality',
-        'country',
-        'city'
+        'workStart',
+        'organization',
+        'position',
+        'responsibility'
     ]
     const errors = {}
-    const educationArrayErrors = []
-    const initialValues = _.isEmpty(values) ? {educations: [{}]} : values
-    const getError = (field, education, index, educationErrors) => {
-        if (!_.get(education, field)) {
-            educationErrors[field] = t('Обязательное поле')
-            educationArrayErrors[index] = educationErrors
+    const experienceArrayErrors = []
+    const initialValues = _.isEmpty(values) ? {experiences: [{}]} : values
+    const getError = (field, experience, index, experienceErrors) => {
+        if (!_.get(experience, field)) {
+            experienceErrors[field] = t('Обязательное поле')
+            experienceArrayErrors[index] = experienceErrors
         }
     }
-    _.forEach(_.get(initialValues, 'educations'), (education, index) => {
-        const educationErrors = {}
+    _.forEach(_.get(initialValues, 'experiences'), (exp, index) => {
+        const experienceErrors = {}
         _.map(formNames, (item) => {
-            getError(item, education, index, educationErrors)
+            getError(item, exp, index, experienceErrors)
         })
     })
-    errors.educations = educationArrayErrors
+    errors.experiences = experienceArrayErrors
     return errors
 }
 const colorBlue = '#12aaeb !important'
@@ -324,7 +322,7 @@ const enhance = compose(
         }
     }),
     reduxForm({
-        form: 'ResumeEducationForm',
+        form: 'ResumeExperienceForm',
         enableReinitialize: true,
         destroyOnUnmount: false,
         validate

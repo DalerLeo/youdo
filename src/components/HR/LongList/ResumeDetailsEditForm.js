@@ -8,7 +8,8 @@ import {Field, reduxForm, FieldArray} from 'redux-form'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
-import ResumeDetailsEditFo from './ResumeEducationFor'
+import EducationForm from '../../ReduxForm/HR/Resume/EducationForm'
+import ExperienceForm from '../../ReduxForm/HR/Resume/ExperienceForm'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import {
@@ -347,7 +348,9 @@ const ResumeDetailsEditForm = enhance((props) => {
         handleCloseDetail,
         updateExperienceError,
         updateEducationError,
-        editResumeDetails
+        editResumeDetails,
+        educations,
+        experiences
     } = props
 
     // PERSONAL INFO
@@ -360,7 +363,6 @@ const ResumeDetailsEditForm = enhance((props) => {
             </div>
         )
     }
-
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
@@ -513,23 +515,26 @@ const ResumeDetailsEditForm = enhance((props) => {
                 <div className={classes.block}>
                     <div className={classes.innerBlock}>
                         <div className={classes.expField}>
+                            <ExperienceForm
+                            initialValues={{experiences}}>
                             <FieldArray
                                 name="experiences"
                                 component={ExperiencesField}
-                                initialValues={{organization: 'HELLO'}}
                                 updateExperienceError={updateExperienceError}
                                 />
+                            </ExperienceForm>
                         </div>
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.eduField}>
-                            <ResumeDetailsEditFo>
+                            <EducationForm
+                                initialValues={{educations}}>
                                 <FieldArray
                                     name="educations"
                                     component={EducationsField}
                                     updateEducationError={updateEducationError}
                                 />
-                            </ResumeDetailsEditFo>
+                            </EducationForm>
                         </div>
                     </div>
                 </div>

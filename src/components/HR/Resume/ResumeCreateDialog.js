@@ -22,6 +22,8 @@ import {
 import {ZERO} from '../../../constants/backendConstants'
 import ToolTip from '../../ToolTip'
 import ExperiencesField from '../../ReduxForm/HR/Resume/ExperiencesField'
+import ExperienceForm from '../../ReduxForm/HR/Resume/ExperienceForm'
+import EducationForm from '../../ReduxForm/HR/Resume/EducationForm'
 import EducationsField from '../../ReduxForm/HR/Resume/EducationsField'
 import {
     Step,
@@ -346,20 +348,22 @@ const ResumeCreateDialog = enhance((props) => {
             )
             case EXPERIENCE: return (
                 <div className={classes.container}>
+                    <ExperienceForm initialValues={{experiences: _.get(initialValues, ['experiences'])}}>
                     <FieldArray
                         name="experiences"
                         component={ExperiencesField}
                         updateExperienceError={updateExperienceError}
                         nextButton={nextButton(experienceError)}/>
+                    </ExperienceForm>
                 </div>
             )
             case EDUCATION: return (
                 <div className={classes.container}>
-                    <FieldArray
-                        name="educations"
-                        component={EducationsField}
-                        updateEducationError={updateEducationError}
-                        nextButton={nextButton(educationError)}/>
+                        <FieldArray
+                            name="educations"
+                            component={EducationsField}
+                            updateEducationError={updateEducationError}
+                            nextButton={nextButton(educationError)}/>
                 </div>
             )
             case SKILLS: return (

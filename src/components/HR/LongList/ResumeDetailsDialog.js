@@ -409,6 +409,8 @@ const ResumeDetailsDialog = enhance((props) => {
                                     loading={loading}/>
                                 : <ResumeDetailsEditForm
                                         initialValues={editResumeDetails.initialValues}
+                                        educations={_.get(editResumeDetails, ['initialValues', 'educations'])}
+                                        experiences={_.get(editResumeDetails, ['initialValues', 'experiences'])}
                                         editResumeDetails={editResumeDetails}
                                     />}
                             </div>
