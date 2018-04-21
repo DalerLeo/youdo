@@ -557,7 +557,9 @@ const rootReducer = combineReducers({
         createComment: createThunkReducer(actionTypes.HR_RESUME_COMMENT_CREATE),
         resumeComments: createThunkReducer(actionTypes.HR_RESUME_COMMENT_LIST),
         questionsList: createThunkReducer(actionTypes.HR_APPLICATION_QUESTIONS_LIST),
-        answersList: createThunkReducer(actionTypes.HR_RESUME_ANSWERS_LIST)
+        answersList: createThunkReducer(actionTypes.HR_RESUME_ANSWERS_LIST),
+        resumeLogs: createThunkReducer(actionTypes.HR_RESUME_ITEM_LOGS),
+        appCount: createThunkReducer(actionTypes.HR_APPLICATION_ITEM_STAT)
     }),
     // HR!
 

@@ -61,9 +61,10 @@ export const createMoveToSerializer = (application, resume, datetime, statusToCh
 export const resumeListFilterSerializer = (data, application, appStatus) => {
     const {...defaultData} = data
     const applicationStatus = application + '-' + appStatus
-
+    const completed = appStatus === 'meeting' ? _.get(data, 'completed') : null
     return {
         'application': applicationStatus,
+        completed,
         'page_size': _.get(defaultData, 'pageSize')
     }
 }

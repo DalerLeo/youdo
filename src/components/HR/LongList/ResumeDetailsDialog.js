@@ -29,6 +29,7 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import {hashHistory} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
@@ -374,23 +375,13 @@ const ResumeDetailsDialog = enhance((props) => {
         setCurrentTab,
         editResumeDetails,
         application,
+        appLogs,
         requiredFields,
         optionalFields,
         setFinishConfirmDialog
+
     } = props
 
-    const appLogs = [
-        {
-            date: '12.12.2018',
-            position: 'Manager',
-            who: 'Jasur COE'
-        },
-        {
-            date: '10.09.2018',
-            position: 'Manager',
-            who: 'Kiril EXE'
-        }
-    ]
     const currentStatus = filter.getParam('status')
     const submitComment = handleSubmit(() => handleCreateComment()
         .catch((error) => {
@@ -459,6 +450,8 @@ const ResumeDetailsDialog = enhance((props) => {
                                     loading={loading}/>
                                 : <ResumeDetailsEditForm
                                         initialValues={editResumeDetails.initialValues}
+                                        educations={_.get(editResumeDetails, ['initialValues', 'educations'])}
+                                        experiences={_.get(editResumeDetails, ['initialValues', 'experiences'])}
                                         editResumeDetails={editResumeDetails}
                                     />}
                             </div>
@@ -540,9 +533,9 @@ const ResumeDetailsDialog = enhance((props) => {
                     {_.map(appLogs, (item, index) => {
                         return (
                             <Row className="dottedList" key={index}>
-                                <Col xs={4}>{item.date}</Col>
+                                <Col xs={4}>{dateTimeFormat(item.createdDate)}</Col>
                                 <Col xs={3}>{item.position}</Col>
-                                <Col xs={5} style={{textAlign: 'right'}}>{item.who}</Col>
+                                <Col xs={5} style={{textAlign: 'right'}}>{item.user}</Col>
                             </Row>
                         )
                     })}
@@ -557,11 +550,11 @@ const ResumeDetailsDialog = enhance((props) => {
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
 
-    const getRequirements = (key, required, selected) => {
+    const getRequirements = (key, required, selected, index) => {
         const formName = required ? 'requirements' : 'optional'
         const getField = (name, value) => {
             return (
-                <div key={key} className={classes.requiredItems}>
+                <div key={key + '_' + index} className={classes.requiredItems}>
                     <span>{name}: {value}</span>
                     <Field
                         name={formName + '[' + key + '][checked]'}
@@ -608,7 +601,7 @@ const ResumeDetailsDialog = enhance((props) => {
         if (_.isObject(key)) {
             return !_.isEmpty(_.get(key, 'langLevel'))
                 ? (
-                    <div className={classes.requiredLanguages}>
+                    <div key={index} className={classes.requiredLanguages}>
                         <h3>{t('Языки')}</h3>
                         {_.map(_.get(key, 'langLevel'), (langId) => {
                             const getLanguage = () => {
@@ -740,16 +733,16 @@ const ResumeDetailsDialog = enhance((props) => {
                             <Tab label={t('Требования')} buttonStyle={tabStyle.button} disableTouchRipple>
                                 <div className={classes.requirements}>
                                     <h2>{t('Обязательные требования')}</h2>
-                                    {_.map(filterRequired, (item) => {
+                                    {_.map(filterRequired, (item, index) => {
                                         const checked = _.get(requiredFields, [item, 'checked'])
-                                        return getRequirements(item, true, checked)
+                                        return getRequirements(item, true, checked, index)
                                     })}
                                 </div>
                                 <div className={classes.requirements}>
                                     <h2>{t('Необязательные требования')}</h2>
-                                    {_.map(optionalRequired, (item) => {
+                                    {_.map(optionalRequired, (item, index) => {
                                         const checked = _.get(optionalFields, [item, 'checked'])
-                                        return getRequirements(item, false, checked)
+                                        return getRequirements(item, false, checked, index)
                                     })}
                                 </div>
                             </Tab>

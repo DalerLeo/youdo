@@ -48,7 +48,7 @@ const SignIn = enhance((props) => {
                 return dispatch(authConfirmAction(rememberUser))
                     .then(() => {
                         updateSignInLoading(false)
-                        const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                        const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.HR_RESUME_LIST_URL
                         hashHistory.push(redirectUrl)
                     })
             })

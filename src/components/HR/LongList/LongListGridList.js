@@ -19,6 +19,7 @@ import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddContent from 'material-ui/svg-icons/content/add'
 import Done from 'material-ui/svg-icons/av/playlist-add-check'
+import Clear from 'material-ui/svg-icons/content/clear'
 import Report from 'material-ui/svg-icons/action/description'
 import Assignment from 'material-ui/svg-icons/action/assignment'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
@@ -62,6 +63,7 @@ import {
 import dateFormat from '../../../helpers/dateFormat'
 import {reduxForm, Field} from 'redux-form'
 import * as ROUTES from '../../../constants/routes'
+import classNames from 'classnames'
 
 export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
@@ -306,14 +308,14 @@ const enhance = compose(
             zIndex: '20'
         },
         countWrapper: {
-            display: 'flex'
+            display: 'flex',
+            height: '18px'
         },
         count: {
             display: 'block',
             fontWeight: 'normal',
             marginRight: '5px',
             '&:after': {
-                content: '"|"',
                 margin: '0 3px'
             },
             '&:last-child:after': {
@@ -326,6 +328,10 @@ const enhance = compose(
             '&:hover': {
                 textDecoration: 'underline'
             }
+        },
+        countClickabled: {
+            extend: 'countClickable',
+            textDecoration: 'underline'
         },
         add: {
             cursor: 'pointer',
@@ -573,7 +579,7 @@ const enhance = compose(
 
     withState('openAddReport', 'setOpenAddReport', false),
     withState('checkedList', 'updateCheckedList', []),
-    withState('finishConfirmDialog', 'setFinishConfirmDialog', null)
+    withState('finishConfirmDialog', 'setFinishConfirmDialog', false)
 )
 
 const LongListGridList = enhance((props) => {
@@ -616,11 +622,13 @@ const LongListGridList = enhance((props) => {
         handleGetPreviewReport,
         editResumeDetails,
         setFinishConfirmDialog,
-        finishConfirmDialog
+        finishConfirmDialog,
+        appCount,
+        pathname
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
-
+    const complete = (filter.getParam('completed'))
     const data = _.get(detailData, 'data')
     const loading = _.get(detailData, 'loading')
     const position = _.get(data, ['position', 'name'])
@@ -696,6 +704,9 @@ const LongListGridList = enhance((props) => {
 
     const resumeLink = (id, status, relation) => {
         return hashHistory.push(filter.createURL({resume: id, status: status, relation: relation}))
+    }
+    const meetingFilter = (completed) => {
+        return hashHistory.push({pathname, query: filter.getParams({completed})})
     }
     const getResume = (list, status) => {
         return _.map(list, (item) => {
@@ -960,8 +971,9 @@ const LongListGridList = enhance((props) => {
                                 <div>
                                     <h3>{t('Собеседования')}</h3>
                                     <div className={classes.countWrapper}>
-                                        <span className={classes.countClickable}>2 заверш.</span>
-                                        <span className={classes.countClickable}>5 незаверш.</span>
+                                        <span onClick={() => meetingFilter(true)} className={classNames({[classes.countClickable]: true, [classes.countClickabled]: complete === 'true'})}>{_.get(appCount, 'completed')} {t('заверш.')}</span> | &nbsp;
+                                        <span onClick={() => meetingFilter(false)} className={classNames({[classes.countClickable]: true, [classes.countClickabled]: complete === 'false'})}> {_.get(appCount, 'notCompleted')} {t('незаверш.')}</span>
+                                        {(complete === 'false' || complete === 'true') && <span style={{cursor: 'pointer'}} onClick={() => meetingFilter(null)}><Clear style={{color: '#fff', height: '18px', width: '18px'}}/></span>}
                                     </div>
                                 </div>
                                 <ToolTip text={t('Вопросник')} position={'left'}>
@@ -1120,7 +1132,10 @@ const LongListGridList = enhance((props) => {
             <ConfirmDialog
                 open={finishConfirmDialog}
                 onClose={() => setFinishConfirmDialog(false)}
-                onSubmit={resumeDetails.handleSubmitCompleteMeetingDialog}
+                onSubmit={() => {
+                    resumeDetails.handleSubmitCompleteMeetingDialog()
+                    setFinishConfirmDialog(false)
+                }}
                 message={t('Завершить собеседование с ') + _.get(resumeDetails, ['data', 'fullName'])}
                 type={'submit'}
                 loading={false}/>

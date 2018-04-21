@@ -29,6 +29,7 @@ const enhance = compose(
     reduxForm({
         form: 'ResumeSkillsForm',
         destroyOnUnmount: false,
+        enableReinitialize: true,
         validate
     }),
     lifecycle({

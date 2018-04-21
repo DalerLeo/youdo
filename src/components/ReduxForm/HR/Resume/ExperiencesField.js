@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
 import PositionSearchField from '../Position/PositionSearchField'
@@ -10,31 +10,6 @@ import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
 const ONE = 1
-const validate = values => {
-    const formNames = [
-        'workStart',
-        'organization',
-        'position',
-        'responsibility'
-    ]
-    const errors = {}
-    const experienceArrayErrors = []
-    const initialValues = _.isEmpty(values) ? {experiences: [{}]} : values
-    const getError = (field, experience, index, experienceErrors) => {
-        if (!_.get(experience, field)) {
-            experienceErrors[field] = t('Обязательное поле')
-            experienceArrayErrors[index] = experienceErrors
-        }
-    }
-    _.forEach(_.get(initialValues, 'experiences'), (exp, index) => {
-        const experienceErrors = {}
-        _.map(formNames, (item) => {
-            getError(item, exp, index, experienceErrors)
-        })
-    })
-    errors.experiences = experienceArrayErrors
-    return errors
-}
 
 const enhance = compose(
     injectSheet({
@@ -133,11 +108,6 @@ const enhance = compose(
         return {
             allFields
         }
-    }),
-    reduxForm({
-        form: 'ResumeExperienceForm',
-        destroyOnUnmount: false,
-        validate
     }),
     lifecycle({
         componentWillReceiveProps (nextProps) {

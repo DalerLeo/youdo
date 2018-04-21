@@ -2,16 +2,16 @@ import _ from 'lodash'
 import React from 'react'
 import * as ROUTES from '../../constants/routes'
 import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
-import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
-import Map from 'material-ui/svg-icons/maps/map'
+// . import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
+// .import Map from 'material-ui/svg-icons/maps/map'
 import Settings from 'material-ui/svg-icons/action/settings'
-import Statistics from 'material-ui/svg-icons/action/timeline'
-import Store from 'material-ui/svg-icons/device/storage'
-import Markets from 'material-ui/svg-icons/action/store'
-import Clients from 'material-ui/svg-icons/social/group'
-import Supply from 'material-ui/svg-icons/action/swap-horiz'
-import Products from 'material-ui/svg-icons/device/widgets'
-import Telegram from '../CustomIcons/Telegram'
+// . import Statistics from 'material-ui/svg-icons/action/timeline'
+// . import Store from 'material-ui/svg-icons/device/storage'
+// . import Markets from 'material-ui/svg-icons/action/store'
+// . import Clients from 'material-ui/svg-icons/social/group'
+// . import Supply from 'material-ui/svg-icons/action/swap-horiz'
+// . import Products from 'material-ui/svg-icons/device/widgets'
+// . import Telegram from '../CustomIcons/Telegram'
 import Resume from '../CustomIcons/ResumeIcon'
 import Tasks from 'material-ui/svg-icons/action/assignment'
 import {getPageSize} from '../../helpers/storage'
@@ -25,12 +25,12 @@ const SETTINGS_PRODUCTS = t('Продукты')
 const SETTINGS_MISC = t('Разное')
 const SETTINGS_STOCK = t('Склад')
 
-const STATS_SALES = t('Продажи')
-const STATS_FINANCE = t('Финансы')
-const STATS_CLIENTS = t('Клиенты')
-const STATS_PROVIDERS = t('Поставщики')
-const STATS_STOCK = t('Склад')
-const STATS_OVERALL = t('Общее')
+// . const STATS_SALES = t('Продажи')
+// . const STATS_FINANCE = t('Финансы')
+// . const STATS_CLIENTS = t('Клиенты')
+// . const STATS_PROVIDERS = t('Поставщики')
+// . const STATS_STOCK = t('Склад')
+// . const STATS_OVERALL = t('Общее')
 
 const DEFAULT_PAGE_SIZE = getPageSize()
 const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
@@ -51,7 +51,8 @@ export const MenuItems = [
             {name: t('Зоны'), url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'}
         ]
     },
-    {
+
+/*    {
         name: t('Магазины'),
         icon: (<Markets/>),
         url: ROUTES.SHOP_LIST_URL,
@@ -184,7 +185,8 @@ export const MenuItems = [
             {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'},
             {name: t('Системные страницы'), url: ROUTES.SYSTEM_PAGES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_system_pages'}
         ]
-    },
+    }, */
+
     // ************************** HRC **************************
     {
         name: t('Анкеты'),

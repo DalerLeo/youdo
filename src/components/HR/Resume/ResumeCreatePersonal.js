@@ -46,6 +46,7 @@ const enhance = compose(
     reduxForm({
         form: 'ResumePersonalForm',
         destroyOnUnmount: false,
+        enableReinitialize: true,
         validate
     }),
     lifecycle({

@@ -22,6 +22,8 @@ import {
 import {ZERO} from '../../../constants/backendConstants'
 import ToolTip from '../../ToolTip'
 import ExperiencesField from '../../ReduxForm/HR/Resume/ExperiencesField'
+import ExperienceForm from '../../ReduxForm/HR/Resume/ExperienceForm'
+import EducationForm from '../../ReduxForm/HR/Resume/EducationForm'
 import EducationsField from '../../ReduxForm/HR/Resume/EducationsField'
 import {
     Step,
@@ -333,7 +335,7 @@ const ResumeCreateDialog = enhance((props) => {
         )
     }
 
-    const getStepperContent = () => {
+/* ..    const getStepperContent = () => {
         switch (stepIndex) {
             case ZERO: return (
                 <div className={classes.container}>
@@ -346,20 +348,24 @@ const ResumeCreateDialog = enhance((props) => {
             )
             case EXPERIENCE: return (
                 <div className={classes.container}>
+                    <ExperienceForm initialValues={{experiences: _.get(initialValues, ['experiences'])}}>
                     <FieldArray
                         name="experiences"
                         component={ExperiencesField}
                         updateExperienceError={updateExperienceError}
                         nextButton={nextButton(experienceError)}/>
+                    </ExperienceForm>
                 </div>
             )
             case EDUCATION: return (
                 <div className={classes.container}>
-                    <FieldArray
-                        name="educations"
-                        component={EducationsField}
-                        updateEducationError={updateEducationError}
-                        nextButton={nextButton(educationError)}/>
+                    <EducationForm initialValues={{educations: _.get(initialValues, 'educations')}}>
+                        <FieldArray
+                            name="educations"
+                            component={EducationsField}
+                            updateEducationError={updateEducationError}
+                            nextButton={nextButton(educationError)}/>
+                    </EducationForm>
                 </div>
             )
             case SKILLS: return (
@@ -382,7 +388,7 @@ const ResumeCreateDialog = enhance((props) => {
             )
             default: return null
         }
-    }
+    } */
 
     const stepLabelStyle = {
         fontSize: '13px',
@@ -428,7 +434,45 @@ const ResumeCreateDialog = enhance((props) => {
                     </Stepper>
                 </div>
                 <form onSubmit={onSubmit} className={classes.form}>
-                    {getStepperContent()}
+                    <div style={{display: stepIndex === ZERO ? 'block' : 'none'}} className={classes.container}>
+                        <ResumeCreatePersonal
+                            classes={classes}
+                            initialValues={initialValues}
+                            updatePersonalError={updatePersonalError}
+                            nextButton={nextButton(personalError)}/>
+                    </div>
+                    <div style={{display: stepIndex === EXPERIENCE ? 'block' : 'none'}} className={classes.container}>
+                        <ExperienceForm initialValues={{experiences: _.get(initialValues, ['experiences'])}}>
+                            <FieldArray
+                                name="experiences"
+                                component={ExperiencesField}
+                                updateExperienceError={updateExperienceError}
+                                nextButton={nextButton(experienceError)}/>
+                        </ExperienceForm>
+                    </div>
+                    <div style={{display: stepIndex === EDUCATION ? 'block' : 'none'}} className={classes.container}>
+                        <EducationForm initialValues={{educations: _.get(initialValues, 'educations')}}>
+                            <FieldArray
+                                name="educations"
+                                component={EducationsField}
+                                updateEducationError={updateEducationError}
+                                nextButton={nextButton(educationError)}/>
+                        </EducationForm>
+                    </div>
+                    <div style={{display: stepIndex === SKILLS ? 'block' : 'none'}} className={classes.container}>
+                        <ResumeCreateSkills
+                            classes={classes}
+                            initialValues={initialValues}
+                            skillsError={skillsError}
+                            updateSkillsError={updateSkillsError}
+                            nextButton={nextButton(skillsError)}/>
+                    </div>
+                    <div style={{display: stepIndex === EXPECTATIONS ? 'block' : 'none'}} className={classes.container}>
+                        <ResumeCreateExpectations
+                            classes={classes}
+                            initialValues={initialValues}
+                            nextButton={nextButton(invalidForm, true)}/>
+                    </div>
                 </form>
             </div>
         </Dialog>
