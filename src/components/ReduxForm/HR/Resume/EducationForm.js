@@ -325,8 +325,8 @@ const enhance = compose(
     }),
     reduxForm({
         form: 'ResumeEducationForm',
-        enableReinitialize: true,
         destroyOnUnmount: false,
+        enableReinitialize: true,
         validate
     }),
 )

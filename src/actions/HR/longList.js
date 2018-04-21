@@ -332,9 +332,9 @@ export const getResumeAnswersList = (application, resume) => {
     }
 }
 
-export const getAppLogsList = (application) => {
+export const getResumeLogsList = (resume) => {
     const payload = axios()
-        .get(API.HR_APP_LOGS_LIST, {params: {application}})
+        .get(sprintf(API.HR_RESUME_ITEM_LOGS, resume))
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -343,7 +343,7 @@ export const getAppLogsList = (application) => {
         })
 
     return {
-        type: actionTypes.HR_APP_LOGS_LIST,
+        type: actionTypes.HR_RESUME_ITEM_LOGS,
         payload
     }
 }
@@ -384,7 +384,7 @@ export const resumeUpdateAction = (id, formValues) => {
 
 export const finishMeetingAction = (request) => {
     const payload = axios()
-        .post(API.HR_RESUME_MOVE, ...request)
+        .post(API.HR_RESUME_MOVE, request)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -394,6 +394,21 @@ export const finishMeetingAction = (request) => {
 
     return {
         type: actionTypes.HR_RESUME_MOVE,
+        payload
+    }
+}
+export const getAppStatAction = (application) => {
+    const payload = axios()
+        .get(sprintf(API.HR_APPLICATION_ITEM_STAT, application))
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APPLICATION_ITEM_STAT,
         payload
     }
 }

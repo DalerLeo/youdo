@@ -324,7 +324,6 @@ const enhance = compose(
     reduxForm({
         form: 'ResumeExperienceForm',
         enableReinitialize: true,
-        destroyOnUnmount: false,
         validate
     }),
 )

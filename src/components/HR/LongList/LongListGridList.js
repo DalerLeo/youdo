@@ -1120,7 +1120,10 @@ const LongListGridList = enhance((props) => {
             <ConfirmDialog
                 open={finishConfirmDialog}
                 onClose={() => setFinishConfirmDialog(false)}
-                onSubmit={resumeDetails.handleSubmitCompleteMeetingDialog}
+                onSubmit={() => {
+                    resumeDetails.handleSubmitCompleteMeetingDialog()
+                    setFinishConfirmDialog(false)
+                }}
                 message={t('Завершить собеседование с ') + _.get(resumeDetails, ['data', 'fullName'])}
                 type={'submit'}
                 loading={false}/>

@@ -145,16 +145,16 @@ export const PRICES_LIST = `/${PRICES}/`
 export const PRICES_ITEM = `/${PRICES}/%d/`
 export const PRICES_DELETE = `/${PRICES}/%d/`
 
-export const ORDER = 'sales/order'
+export const ORDER = 'order'
 export const ORDER_CREATE = `/${ORDER}/`
-export const ORDER_RETURN = '/sales/order_return/'
-export const ORDER_RETURN_LIST = '/sales/order_return/%d/'
+export const ORDER_RETURN = '/order_return/'
+export const ORDER_RETURN_LIST = '/order_return/%d/'
 export const ORDER_SET_DISCOUNT = `/${ORDER}/%d/add_discount/`
-export const ORDER_TRANSACTION = '/sales/client_transaction/'
-export const ORDER_PAYMENTS = '/sales/debt_transactions/'
+export const ORDER_TRANSACTION = '/client_transaction/'
+export const ORDER_PAYMENTS = '/debt_transactions/'
 export const ORDER_RETURN_CANCEL = '/sales/order_return/%d/cancel/'
-export const ORDER_COUNTS = '/sales/order/stats/'
-export const ORDER_MULTI_UPDATE = '/sales/order/bulk_update/'
+export const ORDER_COUNTS = '/order/stats/'
+export const ORDER_MULTI_UPDATE = '/order/bulk_update/'
 
 export const ACCEPT_CLIENT_TRANSACTION = 'finance/accept_client_transaction'
 
@@ -597,6 +597,7 @@ export const HR_APPLICATION_CREATE = `/${HR_APPLICATION}/`
 export const HR_APPLICATION_DELETE = `/${HR_APPLICATION}/%d/`
 export const HR_APPLICATION_LIST = `/${HR_APPLICATION}/`
 export const HR_APPLICATION_ITEM = `/${HR_APPLICATION}/%d/`
+export const HR_APPLICATION_ITEM_STAT = `/${HR_APPLICATION}/%d/statistics/`
 
 export const HR_POSITION = 'hr/position'
 export const HR_POSITION_LIST = `/${HR_POSITION}/`
@@ -617,6 +618,7 @@ export const HR_RESUME_CREATE = `/${HR_RESUME}/`
 export const HR_RESUME_DELETE = `/${HR_RESUME}/%d/`
 export const HR_RESUME_LIST = `/${HR_RESUME}/`
 export const HR_RESUME_ITEM = `/${HR_RESUME}/%d/`
+export const HR_RESUME_ITEM_LOGS = `/${HR_RESUME}/%d/logs/`
 
 export const HR_COUNTRY = 'hr/country'
 export const HR_COUNTRY_LIST = `/${HR_COUNTRY}/`

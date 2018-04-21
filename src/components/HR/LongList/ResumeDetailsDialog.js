@@ -29,6 +29,7 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
+import dateTimeFormat from '../../../helpers/dateTimeFormat'
 import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import {hashHistory} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
@@ -340,21 +341,10 @@ const ResumeDetailsDialog = enhance((props) => {
         editResumeDetails,
         application,
         resumeDetailsForm,
-        setFinishConfirmDialog
+        setFinishConfirmDialog,
+        appLogs
     } = props
 
-    const appLogs = [
-        {
-            date: '12.12.2018',
-            position: 'Manager',
-            who: 'Jasur COE'
-        },
-        {
-            date: '10.09.2018',
-            position: 'Manager',
-            who: 'Kiril EXE'
-        }
-    ]
     const currentStatus = filter.getParam('status')
     const submitComment = handleSubmit(() => handleCreateComment()
         .catch((error) => {
@@ -492,9 +482,9 @@ const ResumeDetailsDialog = enhance((props) => {
                     {_.map(appLogs, (item, index) => {
                         return (
                             <Row className="dottedList" key={index}>
-                                <Col xs={4}>{item.date}</Col>
+                                <Col xs={4}>{dateTimeFormat(item.createdDate)}</Col>
                                 <Col xs={3}>{item.position}</Col>
-                                <Col xs={5} style={{textAlign: 'right'}}>{item.who}</Col>
+                                <Col xs={5} style={{textAlign: 'right'}}>{item.user}</Col>
                             </Row>
                         )
                     })}
