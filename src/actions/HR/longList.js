@@ -332,6 +332,22 @@ export const getResumeAnswersList = (application, resume) => {
     }
 }
 
+export const getAppLogsList = (application) => {
+    const payload = axios()
+        .get(API.HR_APP_LOGS_LIST, {params: {application}})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_LOGS_LIST,
+        payload
+    }
+}
+
 export const updateReportList = (application, reportIds, shortIds) => {
     const requestData = serializers.updateReportSerializer(application, reportIds, shortIds)
     const payload = axios()
@@ -362,6 +378,22 @@ export const resumeUpdateAction = (id, formValues) => {
 
     return {
         type: actionTypes.HR_RESUME_UPDATE,
+        payload
+    }
+}
+
+export const finishMeetingAction = (request) => {
+    const payload = axios()
+        .post(API.HR_RESUME_MOVE, ...request)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_MOVE,
         payload
     }
 }

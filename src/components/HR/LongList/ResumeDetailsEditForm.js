@@ -8,6 +8,7 @@ import {Field, reduxForm, FieldArray} from 'redux-form'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
+import ResumeDetailsEditFo from './ResumeEducationFor'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import {
@@ -522,11 +523,13 @@ const ResumeDetailsEditForm = enhance((props) => {
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.eduField}>
-                            <FieldArray
-                                name="educations"
-                                component={EducationsField}
-                                updateEducationError={updateEducationError}
-                            />
+                            <ResumeDetailsEditFo>
+                                <FieldArray
+                                    name="educations"
+                                    component={EducationsField}
+                                    updateEducationError={updateEducationError}
+                                />
+                            </ResumeDetailsEditFo>
                         </div>
                     </div>
                 </div>
@@ -547,14 +550,7 @@ const ResumeDetailsEditForm = enhance((props) => {
 })
 
 ResumeDetailsEditForm.propTypes = {
-    data: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    })
+    editResumeDetails: PropTypes.object.isRequired
 }
 
 export default ResumeDetailsEditForm
