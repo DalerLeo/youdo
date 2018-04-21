@@ -40,7 +40,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import {
     HR_RESUME_LONG,
     HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
-    HR_RESUME_SHORT, HR_GENDER, HR_LEVEL_PC, HR_EDUCATION
+    HR_RESUME_SHORT, HR_GENDER, HR_LEVEL_PC, HR_EDUCATION, HR_LANG_LEVELS
 } from '../../../constants/backendConstants'
 
 const TAB_DETAILS = 'details'
@@ -273,19 +273,52 @@ const enhance = compose(
             color: LINK_COLOR
         },
         requirements: {
-            padding: '20px 30px'
+            padding: PADDING_STANDART,
+            borderBottom: BORDER_STYLE,
+            '& h2': {
+                fontSize: '14px',
+                fontWeight: '600',
+                marginBottom: '15px'
+            },
+            '&:last-child': {
+                borderBottom: 'none'
+            }
+        },
+        requiredLanguages: {
+            marginTop: '20px',
+            '& h3': {
+                fontWeight: '600',
+                fontSize: '13px',
+                marginBottom: '15px'
+            }
         },
         requiredItems: {
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'space-between',
-            '& > div': {
-                width: 'auto !important',
-                marginLeft: '10px',
-                '& > div': {
-                    margin: '0'
-                }
+            flexWrap: 'wrap',
+            marginBottom: '15px',
+            '& > span': {
+                width: 'calc(100% - 50px)'
+            },
+            '& > div div': {
+                margin: '0 !important'
+            },
+            '&:last-child': {
+                marginBottom: '0'
             }
+        },
+        requiredLangs: {
+            extend: 'requiredItems',
+            '& > div': {
+                width: 'auto'
+            }
+        },
+        checkedComment: {
+            width: '100% !important',
+            margin: '5px 0 0 0 !important'
+        },
+        langComment: {
+            extend: 'checkedComment'
         },
         logs: {
             display: 'flex',
@@ -310,9 +343,11 @@ const enhance = compose(
     withState('openAddComment', 'setOpenAddComment', false),
     withState('currentTab', 'setCurrentTab', TAB_DETAILS),
     connect((state) => {
-        const resumeDetailsForm = _.get(state, ['form', 'ResumeDetailsForm', 'values'])
+        const requiredFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'requirements'])
+        const optionalFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'optional'])
         return {
-            resumeDetailsForm
+            requiredFields,
+            optionalFields
         }
     })
 )
@@ -340,9 +375,11 @@ const ResumeDetailsDialog = enhance((props) => {
         setCurrentTab,
         editResumeDetails,
         application,
-        resumeDetailsForm,
-        setFinishConfirmDialog,
-        appLogs
+        appLogs,
+        requiredFields,
+        optionalFields,
+        setFinishConfirmDialog
+
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -351,8 +388,22 @@ const ResumeDetailsDialog = enhance((props) => {
             formValidate(['comment'], dispatch, error)
         }))
 
-    const filterRequired = _.get(application, 'filterRequired')
     const fullName = _.get(data, 'fullName')
+    const languages = _.get(application, 'languages')
+    const filterRequired = _.get(application, 'filterRequired')
+
+    const allLanguagesIds = _.map(languages, (item) => _.get(item, ['language', 'id']))
+    const requiredLanguagesIds = _.get(_.find(filterRequired, _.isObject), ['langLevel'])
+    const optionalLanguagesIds = _.difference(allLanguagesIds, requiredLanguagesIds)
+    const allRequirments = [
+        'age',
+        'education',
+        'experience',
+        'level_pc',
+        'sex',
+        {langLevel: optionalLanguagesIds}
+    ]
+    const optionalRequired = _.difference(allRequirments, filterRequired)
 
     const flatButtonStyle = {
         label: {
@@ -499,48 +550,84 @@ const ResumeDetailsDialog = enhance((props) => {
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
 
-    const requiredFilter = (key) => {
+    const getRequirements = (key, required, selected, index) => {
+        const formName = required ? 'requirements' : 'optional'
+        const getField = (name, value) => {
+            return (
+                <div key={key + '_' + index} className={classes.requiredItems}>
+                    <span>{name}: {value}</span>
+                    <Field
+                        name={formName + '[' + key + '][checked]'}
+                        component={CheckBox}
+                        style={{width: 'auto', margin: '0 0 0 10px'}}/>
+                    {selected &&
+                    <div className={classes.checkedComment}>
+                        <Field
+                            name={formName + '[' + key + '][comment]'}
+                            component={TextField}
+                            hintText={t('Комментарий')}
+                            hintStyle={{bottom: 16}}
+                            className={classes.textFieldArea}
+                            fullWidth
+                            multiLine
+                            rows={1}/>
+                    </div>}
+                </div>
+            )
+        }
+        const getLanguageField = (value, id, checked) => {
+            return (
+                <div key={id} className={classes.requiredLangs}>
+                    {value}
+                    <Field
+                        name={formName + '[langs][' + id + '][checked]'}
+                        component={CheckBox}
+                        style={{width: 'auto', margin: '0 0 0 10px'}}/>
+                    {checked &&
+                    <div className={classes.langComment}>
+                        <Field
+                            name={formName + '[langs][' + id + '][comment]'}
+                            component={TextField}
+                            hintText={t('Комментарий')}
+                            hintStyle={{bottom: 16}}
+                            className={classes.textFieldArea}
+                            fullWidth
+                            multiLine
+                            rows={1}/>
+                    </div>}
+                </div>
+            )
+        }
+        if (_.isObject(key)) {
+            return !_.isEmpty(_.get(key, 'langLevel'))
+                ? (
+                    <div key={index} className={classes.requiredLanguages}>
+                        <h3>{t('Языки')}</h3>
+                        {_.map(_.get(key, 'langLevel'), (langId) => {
+                            const getLanguage = () => {
+                                return _.find(languages, (item) => {
+                                    return _.get(item, ['language', 'id']) === langId
+                                })
+                            }
+                            const language = getLanguage(langId)
+                            const languageId = _.get(language, ['language', 'id'])
+                            const langName = _.get(language, ['language', 'name'])
+                            const langLevel = getBackendNames(HR_LANG_LEVELS, _.get(language, ['level']))
+                            const output = langName + ' (' + langLevel + ')'
+                            const checked = required
+                                ? _.get(requiredFields, ['langs', languageId, 'checked'])
+                                : _.get(optionalFields, ['langs', languageId, 'checked'])
+                            return getLanguageField(output, languageId, checked)
+                        })}
+                    </div>
+                ) : null
+        }
         switch (key) {
-            case AGE: return (
-                <div className={classes.requiredItems}>
-                    {t('Возрасть')}: {getYearText(_.get(application, 'ageMin')) + ' - ' + getYearText(_.get(application, 'ageMax'))}
-                    <Field
-                        name={key}
-                        component={CheckBox}
-                    />
-                </div>)
-            case SEX: return (
-                <div className={classes.requiredItems}>
-                    {t('Пол')}: {getBackendNames(HR_GENDER, _.get(application, key))}
-                    <Field
-                        name={key}
-                        component={CheckBox}
-                    />
-                </div>)
-            case EDU: return (
-                <div className={classes.requiredItems}>
-                    {t('Образования')}: {getBackendNames(HR_EDUCATION, _.get(application, key))}
-                    <Field
-                        name={key}
-                        component={CheckBox}
-                    />
-                </div>)
-            case LEVEL_PC: return (
-                <div className={classes.requiredItems}>
-                    {t('Уревень владения ПК')}: {getBackendNames(HR_LEVEL_PC, _.get(application, 'levelPc'))}
-                    <Field
-                        name={key}
-                        component={CheckBox}
-                    />
-                </div>)
-            case EXP: return (
-                <div className={classes.requiredItems}>
-                    {t('Минимальный опыт работы')}: {_.get(application, key) + ' ' + t('года')}
-                    <Field
-                        name={key}
-                        component={CheckBox}
-                    />
-                </div>)
+            case AGE: return getField(t('Возраст'), getYearText(_.get(application, 'ageMin')) + ' - ' + getYearText(_.get(application, 'ageMax')))
+            case SEX: return getField(t('Пол'), getBackendNames(HR_GENDER, _.get(application, key)))
+            case EDU: return getField(t('Образование'), getBackendNames(HR_EDUCATION, _.get(application, key)))
+            case LEVEL_PC: return getField(t('Уревень владения ПК'), getBackendNames(HR_LEVEL_PC, _.get(application, 'levelPc')))
+            case EXP: return getField(t('Минимальный опыт работы'), getYearText(_.get(application, key)))
             default: return null
         }
     }
@@ -645,19 +732,18 @@ const ResumeDetailsDialog = enhance((props) => {
                             </Tab>
                             <Tab label={t('Требования')} buttonStyle={tabStyle.button} disableTouchRipple>
                                 <div className={classes.requirements}>
-                                {_.map(filterRequired, (item, index) => {
-                                    return (
-                                        <div key={index}>
-                                            {requiredFilter(item)}
-                                            {resumeDetailsForm && resumeDetailsForm[item] &&
-                                            <Field
-                                                name={item + 'Comment'}
-                                                component={TextField}
-                                                label={t('Оставить комментарий')}
-                                                className={classes.inputFieldCustom}
-                                                fullWidth={true}/>}
-                                        </div>)
-                                })}
+                                    <h2>{t('Обязательные требования')}</h2>
+                                    {_.map(filterRequired, (item, index) => {
+                                        const checked = _.get(requiredFields, [item, 'checked'])
+                                        return getRequirements(item, true, checked, index)
+                                    })}
+                                </div>
+                                <div className={classes.requirements}>
+                                    <h2>{t('Необязательные требования')}</h2>
+                                    {_.map(optionalRequired, (item, index) => {
+                                        const checked = _.get(optionalFields, [item, 'checked'])
+                                        return getRequirements(item, false, checked, index)
+                                    })}
                                 </div>
                             </Tab>
                         </Tabs>

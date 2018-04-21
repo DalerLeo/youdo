@@ -87,7 +87,8 @@ const except = {
     langLevel: null,
     totalExp0: null,
     totalExp1: null,
-    editResumeDetails: null
+    editResumeDetails: null,
+    completed: null
 }
 const enhance = compose(
     connect((state, props) => {
@@ -174,9 +175,12 @@ const enhance = compose(
         dispatch(getAppStatAction(application))
     }),
 
-    // INTERVIEW LIST
+    // INTERVIEW LIST // MEETING LIST
     withPropsOnChange((props, nextProps) => {
-        return props.meetingList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+        const completed = (_.get(props, ['location', 'query', 'completed']))
+        const nextCompleted = (_.get(nextProps, ['location', 'query', 'completed']))
+        return (props.meetingList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)) ||
+                completed !== nextCompleted
     }, ({dispatch, filter, location: {query}}) => {
         const application = _.toInteger(_.get(query, 'application'))
         dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
@@ -676,7 +680,8 @@ const LongList = enhance((props) => {
         filter,
         layout,
         params,
-        appLogs
+        appLogs,
+        appCount
     } = props
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
@@ -1008,6 +1013,8 @@ const LongList = enhance((props) => {
                 deleteReportDialog={deleteReportDialog}
                 handleGetPreviewReport={props.handleGetPreviewReport}
                 editResumeDetails={editResumeDetails}
+                appCount={appCount}
+                pathname={location.pathname}
             />
         </Layout>
     )
