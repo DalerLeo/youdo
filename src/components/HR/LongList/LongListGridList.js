@@ -572,7 +572,8 @@ const enhance = compose(
     withState('currentNote', 'updateCurrentNote', ''),
 
     withState('openAddReport', 'setOpenAddReport', false),
-    withState('checkedList', 'updateCheckedList', [])
+    withState('checkedList', 'updateCheckedList', []),
+    withState('finishConfirmDialog', 'setFinishConfirmDialog', null)
 )
 
 const LongListGridList = enhance((props) => {
@@ -613,7 +614,9 @@ const LongListGridList = enhance((props) => {
         answersData,
         questionsData,
         handleGetPreviewReport,
-        editResumeDetails
+        editResumeDetails,
+        setFinishConfirmDialog,
+        finishConfirmDialog
     } = props
 
     const moveToStatus = filter.getParam('moveTo')
@@ -623,7 +626,6 @@ const LongListGridList = enhance((props) => {
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
     const applicationStatus = _.get(data, 'status')
-
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])
     const contact = _.get(data, ['contact', 'name'])
@@ -725,7 +727,9 @@ const LongListGridList = enhance((props) => {
                         {!openAddReport &&
                         <div
                             className={isInterview ? classes.openResumeInterview : classes.openResume}
-                            onClick={() => { resumeLink(id, status, relationId) }}/>}
+                            onClick={() => {
+                                resumeLink(id, status, relationId)
+                            }}/>}
                         <div className={classes.resumeFullName}>
                             <div>{fullName}</div>
                         </div>
@@ -1114,6 +1118,14 @@ const LongListGridList = enhance((props) => {
                 loading={false}/>
 
             <ConfirmDialog
+                open={finishConfirmDialog}
+                onClose={() => setFinishConfirmDialog(false)}
+                onSubmit={resumeDetails.handleSubmitCompleteMeetingDialog}
+                message={t('Завершить собеседование с ') + _.get(resumeDetails, ['data', 'fullName'])}
+                type={'submit'}
+                loading={false}/>
+
+            <ConfirmDialog
                 open={deleteReportDialog.open}
                 onClose={deleteReportDialog.handleClose}
                 onSubmit={() => { deleteReportDialog.handleSubmit(reportListIds) }}
@@ -1123,6 +1135,7 @@ const LongListGridList = enhance((props) => {
             <ResumeDetailsDialog
                 loading={resumeDetails.loading}
                 data={resumeDetails.data || {}}
+                application={data}
                 open={resumeDetails.open}
                 filter={filter}
                 editResumeDetails={editResumeDetails}
@@ -1130,10 +1143,12 @@ const LongListGridList = enhance((props) => {
                 handleCreateComment={resumeDetails.handleCreateComment}
                 handleSubmitResumeAnswers={resumeDetails.handleSubmitResumeAnswers}
                 commentsList={resumeDetails.commentsList}
+                appLogs={resumeDetails.appLogs}
                 commentsLoading={resumeDetails.commentsLoading}
                 handleClickButton={handleClickMenuItem}
                 answersData={answersData}
                 questionsData={questionsData}
+                setFinishConfirmDialog={setFinishConfirmDialog}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

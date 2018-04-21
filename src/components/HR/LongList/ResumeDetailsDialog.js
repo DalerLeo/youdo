@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import ToolTip from '../../ToolTip'
+import {Row, Col} from 'react-flexbox-grid'
 import ResumeDetails from '../Resume/ResumeDetails'
 import ResumeDetailsEditForm from './ResumeDetailsEditForm'
 import ResumeQuestionsTab from './ResumeQuestionsTab'
@@ -18,7 +19,6 @@ import AddToList from 'material-ui/svg-icons/av/playlist-add'
 import AddNote from 'material-ui/svg-icons/communication/chat'
 import Delete from 'material-ui/svg-icons/action/delete'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
-import Undo from 'material-ui/svg-icons/content/undo'
 import EventDone from 'material-ui/svg-icons/notification/event-available'
 import {
     BORDER_STYLE,
@@ -29,20 +29,27 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import t from '../../../helpers/translate'
+import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import {hashHistory} from 'react-router'
 import {reduxForm, Field} from 'redux-form'
-import {TextField} from '../../ReduxForm'
+import {connect} from 'react-redux'
+import {TextField, CheckBox} from '../../ReduxForm'
 import formValidate from '../../../helpers/formValidate'
 import dateFormat from '../../../helpers/dateFormat'
 import {
     HR_RESUME_LONG,
     HR_RESUME_MEETING, HR_RESUME_NOTE, HR_RESUME_REMOVED,
-    HR_RESUME_SHORT
+    HR_RESUME_SHORT, HR_GENDER, HR_LEVEL_PC, HR_EDUCATION
 } from '../../../constants/backendConstants'
 
 const TAB_DETAILS = 'details'
 const TAB_COMMENTS = 'comments'
 const TAB_LOGS = 'logs'
+const AGE = 'age'
+const SEX = 'sex'
+const EDU = 'education'
+const LEVEL_PC = 'level_pc'
+const EXP = 'experience'
 
 const enhance = compose(
     injectSheet({
@@ -140,6 +147,21 @@ const enhance = compose(
             fontSize: '14px',
             fontWeight: '600',
             marginBottom: '10px'
+        },
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& > div:first-child': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
         textFieldArea: {
             top: '-5px !important',
@@ -248,6 +270,36 @@ const enhance = compose(
         },
         activeTab: {
             color: LINK_COLOR
+        },
+        requirements: {
+            padding: '20px 30px'
+        },
+        requiredItems: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            '& > div': {
+                width: 'auto !important',
+                marginLeft: '10px',
+                '& > div': {
+                    margin: '0'
+                }
+            }
+        },
+        logs: {
+            display: 'flex',
+            '& > div:first-child': {
+                flexBasis: '35%',
+                maxWidth: '35%'
+            },
+            '& > div:nth-child(2)': {
+                flexBasis: '30%',
+                maxWidth: '30%'
+            },
+            '& > div:nt-child(3)': {
+                flexBasis: '35%',
+                maxWidth: '35%'
+            }
         }
     }),
     reduxForm({
@@ -256,6 +308,12 @@ const enhance = compose(
     }),
     withState('openAddComment', 'setOpenAddComment', false),
     withState('currentTab', 'setCurrentTab', TAB_DETAILS),
+    connect((state) => {
+        const resumeDetailsForm = _.get(state, ['form', 'ResumeDetailsForm', 'values'])
+        return {
+            resumeDetailsForm
+        }
+    })
 )
 
 const ResumeDetailsDialog = enhance((props) => {
@@ -279,15 +337,31 @@ const ResumeDetailsDialog = enhance((props) => {
         questionsData,
         currentTab,
         setCurrentTab,
-        editResumeDetails
+        editResumeDetails,
+        application,
+        resumeDetailsForm,
+        setFinishConfirmDialog
     } = props
 
+    const appLogs = [
+        {
+            date: '12.12.2018',
+            position: 'Manager',
+            who: 'Jasur COE'
+        },
+        {
+            date: '10.09.2018',
+            position: 'Manager',
+            who: 'Kiril EXE'
+        }
+    ]
     const currentStatus = filter.getParam('status')
     const submitComment = handleSubmit(() => handleCreateComment()
         .catch((error) => {
             formValidate(['comment'], dispatch, error)
         }))
 
+    const filterRequired = _.get(application, 'filterRequired')
     const fullName = _.get(data, 'fullName')
 
     const flatButtonStyle = {
@@ -334,7 +408,9 @@ const ResumeDetailsDialog = enhance((props) => {
                                     data={data}
                                     loading={loading}/>
                                 : <ResumeDetailsEditForm
-                                        initialValues={editResumeDetails.initialValues}/>}
+                                        initialValues={editResumeDetails.initialValues}
+                                        editResumeDetails={editResumeDetails}
+                                    />}
                             </div>
                         </div>}
                 </div>
@@ -405,7 +481,22 @@ const ResumeDetailsDialog = enhance((props) => {
                 </div>
             )
             case TAB_LOGS: return (
-                <div></div>
+                <div style={{padding: '0 30px'}}>
+                    <Row className="dottedList">
+                        <Col xs={4}>{t('Дата')}</Col>
+                        <Col xs={3}>{t('Позиция')}</Col>
+                        <Col xs={5} style={{textAlign: 'right'}} >{t('Кем')}</Col>
+                    </Row>
+                    {_.map(appLogs, (item, index) => {
+                        return (
+                            <Row className="dottedList" key={index}>
+                                <Col xs={4}>{item.date}</Col>
+                                <Col xs={3}>{item.position}</Col>
+                                <Col xs={5} style={{textAlign: 'right'}}>{item.who}</Col>
+                            </Row>
+                        )
+                    })}
+                </div>
             )
             default: return null
         }
@@ -415,6 +506,52 @@ const ResumeDetailsDialog = enhance((props) => {
     const offsetBetweenDialogs = 15
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
+
+    const requiredFilter = (key) => {
+        switch (key) {
+            case AGE: return (
+                <div className={classes.requiredItems}>
+                    {t('Возрасть')}: {getYearText(_.get(application, 'ageMin')) + ' - ' + getYearText(_.get(application, 'ageMax'))}
+                    <Field
+                        name={key}
+                        component={CheckBox}
+                    />
+                </div>)
+            case SEX: return (
+                <div className={classes.requiredItems}>
+                    {t('Пол')}: {getBackendNames(HR_GENDER, _.get(application, key))}
+                    <Field
+                        name={key}
+                        component={CheckBox}
+                    />
+                </div>)
+            case EDU: return (
+                <div className={classes.requiredItems}>
+                    {t('Образования')}: {getBackendNames(HR_EDUCATION, _.get(application, key))}
+                    <Field
+                        name={key}
+                        component={CheckBox}
+                    />
+                </div>)
+            case LEVEL_PC: return (
+                <div className={classes.requiredItems}>
+                    {t('Уревень владения ПК')}: {getBackendNames(HR_LEVEL_PC, _.get(application, 'levelPc'))}
+                    <Field
+                        name={key}
+                        component={CheckBox}
+                    />
+                </div>)
+            case EXP: return (
+                <div className={classes.requiredItems}>
+                    {t('Минимальный опыт работы')}: {_.get(application, key) + ' ' + t('года')}
+                    <Field
+                        name={key}
+                        component={CheckBox}
+                    />
+                </div>)
+            default: return null
+        }
+    }
 
     return (
         <Dialog
@@ -430,7 +567,7 @@ const ResumeDetailsDialog = enhance((props) => {
             <div className={classes.titleContent}>
                 <span>{fullName}</span>
                 <IconButton onTouchTap={() => {
-                    hashHistory.push(filter.createURL({resume: null, status: null, relation: null}))
+                    hashHistory.push(filter.createURL({resume: null, status: null, relation: null, editResumeDetails: null}))
                     return setCurrentTab(TAB_DETAILS)
                 }}>
                     <CloseIcon color={COLOR_GREY}/>
@@ -461,7 +598,7 @@ const ResumeDetailsDialog = enhance((props) => {
                         <div className={classes.buttons}>
                             {currentStatus === HR_RESUME_MEETING &&
                             <ToolTip position={'bottom'} text={t('Завершить собеседование')}>
-                                <IconButton onTouchTap={() => null}>
+                                <IconButton onTouchTap={() => setFinishConfirmDialog(true)}>
                                     <EventDone color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>}
@@ -484,16 +621,11 @@ const ResumeDetailsDialog = enhance((props) => {
                                     <AddNote color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>
-                            {!editResumeDetails.open &&
+                            {currentStatus === HR_RESUME_MEETING && !editResumeDetails.open &&
                              <ToolTip position={'bottom'} text={t('Изменить данные')}>
                                 <IconButton onTouchTap={() => { editResumeDetails.handleOpen() }}>
                                     <Edit color={COLOR_GREY}/>
                                 </IconButton>
-                            </ToolTip>}
-                            {editResumeDetails.open && <ToolTip position={'bottom'} text={t('Отменить')}>
-                                    <IconButton onTouchTap={() => { editResumeDetails.handleClose() }}>
-                                        <Undo color={COLOR_GREY}/>
-                                    </IconButton>
                             </ToolTip>}
                             <ToolTip position={'bottom'} text={t('Удалить со списка')}>
                                 <IconButton onTouchTap={() => { handleClickButton(HR_RESUME_REMOVED) }}>
@@ -520,7 +652,21 @@ const ResumeDetailsDialog = enhance((props) => {
                                 />
                             </Tab>
                             <Tab label={t('Требования')} buttonStyle={tabStyle.button} disableTouchRipple>
-
+                                <div className={classes.requirements}>
+                                {_.map(filterRequired, (item, index) => {
+                                    return (
+                                        <div key={index}>
+                                            {requiredFilter(item)}
+                                            {resumeDetailsForm && resumeDetailsForm[item] &&
+                                            <Field
+                                                name={item + 'Comment'}
+                                                component={TextField}
+                                                label={t('Оставить комментарий')}
+                                                className={classes.inputFieldCustom}
+                                                fullWidth={true}/>}
+                                        </div>)
+                                })}
+                                </div>
                             </Tab>
                         </Tabs>
                     </Paper>}

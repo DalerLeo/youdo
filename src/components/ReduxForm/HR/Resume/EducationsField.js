@@ -2,7 +2,7 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
-import {reduxForm, Field} from 'redux-form'
+import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
 import EducationSearchField from '../EducationSearchField'
@@ -12,33 +12,6 @@ import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
 const ONE = 1
-const validate = values => {
-    const formNames = [
-        'education',
-        'studyStart',
-        'institution',
-        'speciality',
-        'country',
-        'city'
-    ]
-    const errors = {}
-    const educationArrayErrors = []
-    const initialValues = _.isEmpty(values) ? {educations: [{}]} : values
-    const getError = (field, education, index, educationErrors) => {
-        if (!_.get(education, field)) {
-            educationErrors[field] = t('Обязательное поле')
-            educationArrayErrors[index] = educationErrors
-        }
-    }
-    _.forEach(_.get(initialValues, 'educations'), (education, index) => {
-        const educationErrors = {}
-        _.map(formNames, (item) => {
-            getError(item, education, index, educationErrors)
-        })
-    })
-    errors.educations = educationArrayErrors
-    return errors
-}
 
 const enhance = compose(
     injectSheet({
@@ -144,11 +117,6 @@ const enhance = compose(
             allFields
         }
     }),
-    reduxForm({
-        form: 'ResumeEducationForm',
-        destroyOnUnmount: false,
-        validate
-    }),
     lifecycle({
         componentWillReceiveProps (nextProps) {
             const props = this.props
@@ -188,7 +156,7 @@ const EducationsField = enhance((props) => {
         const showCity = _.includes(indexesWhereExistCountry, index)
         return (
             <div key={index} className={classes.detail}>
-                <div className="eduWrapper">
+                <div className="edu-wrapper">
                     <Field
                         label={t('Уровень образования')}
                         name={`${detail}.education`}

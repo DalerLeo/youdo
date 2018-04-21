@@ -37,7 +37,10 @@ import {
     getResumeAnswersList,
     addReportList,
     addToShortList,
-    updateReportList
+    updateReportList,
+    resumeUpdateAction,
+    finishMeetingAction,
+    getAppLogsList
 } from '../../actions/HR/longList'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -100,6 +103,7 @@ const enhance = compose(
         const reportList = _.get(state, ['longList', 'reportList', 'data'])
         const reportListLoading = _.get(state, ['longList', 'reportList', 'loading'])
         const detail = _.get(state, ['application', 'item', 'data'])
+        const appLogs = _.get(state, ['application', 'logs', 'data'])
         const detailLoading = _.get(state, ['application', 'item', 'loading'])
         const createForm = _.get(state, ['form', 'AddLongListForm'])
         const moveToForm = _.get(state, ['form', 'ResumeMoveForm'])
@@ -118,7 +122,9 @@ const enhance = compose(
         const questionsListLoading = _.get(state, ['longList', 'questionsList', 'loading'])
         const answersList = _.get(state, ['longList', 'answersList', 'data'])
         const answersListLoading = _.get(state, ['longList', 'answersList', 'loading'])
-
+        const resumeEditDetailsForm = _.get(state, ['form', 'ResumeDetailsEditForm', 'values'])
+        const educationForm = _.get(state, ['form', 'ResumeEducationForm', 'values'])
+        const experienceForm = _.get(state, ['form', 'ResumeExperienceForm', 'values'])
         return {
             resumePreviewList,
             resumePreviewListLoading,
@@ -148,7 +154,11 @@ const enhance = compose(
             questionsList,
             questionsListLoading,
             answersList,
-            answersListLoading
+            answersListLoading,
+            resumeEditDetailsForm,
+            educationForm,
+            experienceForm,
+            appLogs
         }
     }),
 
@@ -210,6 +220,7 @@ const enhance = compose(
              dispatch(getResumeComments(filter))
              dispatch(getResumeAnswersList(application, resume))
              dispatch(getQuestionsList(application))
+             dispatch(getAppLogsList(application))
          }
      }),
 
@@ -593,6 +604,41 @@ const enhance = compose(
         handleCloseUpdateResumeDetails: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[EDIT_RESUME_DETAILS]: false})})
+        },
+        handleSubmitUpdateResumeDialog: props => () => {
+            const {dispatch, resumeEditDetailsForm, educationForm, experienceForm, filter, location: {query}} = props
+            const resumeId = _.toInteger(_.get(query, ['resume']))
+            const forms = {createForm: resumeEditDetailsForm, educationForm, experienceForm}
+            return dispatch(resumeUpdateAction(resumeId, forms))
+                .then(() => {
+                    return dispatch(resumeItemFetchAction(resumeId))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[EDIT_RESUME_DETAILS]: false}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+        },
+        handleSubmitCompleteMeetingDialog: props => () => {
+            const {dispatch, filter, location: {query}, meetingList} = props
+            const resume = _.toInteger(_.get(query, ['resume']))
+            const application = _.toInteger(_.get(query, 'application'))
+            const app = _.find(_.get(meetingList, 'results'), {id: resume})
+            const note = _.get(app, 'note')
+            const meetingDate = _.get(app, 'dateMeeting')
+            const data = {
+                application,
+                resume,
+                date_time: meetingDate,
+                status: 'Meeting',
+                note,
+                is_completed: true
+            }
+            return dispatch(finishMeetingAction(data))
+                .then(() => {
+                    dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
+                    hashHistory.push(filter.createURL({resume: null}))
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
         }
 
     })
@@ -625,7 +671,8 @@ const LongList = enhance((props) => {
         answersListLoading,
         filter,
         layout,
-        params
+        params,
+        appLogs
     } = props
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
@@ -764,7 +811,9 @@ const LongList = enhance((props) => {
         createCommentLoading,
         handleCreateComment: props.handleSubmitResumeComment,
         handleSubmitResumeAnswers: props.handleSubmitResumeAnswers,
+        handleSubmitCompleteMeetingDialog: props.handleSubmitCompleteMeetingDialog,
         commentsList: _.get(resumeCommentsList, 'results'),
+        appLogs: _.get(appLogs, 'results'),
         commentsLoading: resumeCommentsLoading,
         initialValues: (() => {
             const answers = {}
@@ -928,7 +977,7 @@ const LongList = enhance((props) => {
         open: openEditResumeDetails,
         handleOpen: props.handleOpenUpdateResumeDetails,
         handleClose: props.handleCloseUpdateResumeDetails,
-        handleSubmit: props.handleSubmitReportDialog
+        handleSubmit: props.handleSubmitUpdateResumeDialog
     }
 
     return (

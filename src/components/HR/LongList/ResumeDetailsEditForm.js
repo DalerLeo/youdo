@@ -7,6 +7,8 @@ import LinearProgress from '../../LinearProgress'
 import {Field, reduxForm, FieldArray} from 'redux-form'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
+import FlatButton from 'material-ui/FlatButton'
+import ResumeDetailsEditFo from './ResumeEducationFor'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import {
@@ -299,6 +301,19 @@ const enhance = compose(
                     }
                 }
             }
+        },
+        bottomButton: {
+            width: '100%',
+            padding: '10px',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
         }
     }),
     reduxForm({
@@ -331,7 +346,8 @@ const ResumeDetailsEditForm = enhance((props) => {
         handleOpenUpdateDialog,
         handleCloseDetail,
         updateExperienceError,
-        updateEducationError
+        updateEducationError,
+        editResumeDetails
     } = props
 
     // PERSONAL INFO
@@ -500,34 +516,41 @@ const ResumeDetailsEditForm = enhance((props) => {
                             <FieldArray
                                 name="experiences"
                                 component={ExperiencesField}
+                                initialValues={{organization: 'HELLO'}}
                                 updateExperienceError={updateExperienceError}
                                 />
                         </div>
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.eduField}>
-                            <FieldArray
-                                name="educations"
-                                component={EducationsField}
-                                updateEducationError={updateEducationError}
-                            />
+                            <ResumeDetailsEditFo>
+                                <FieldArray
+                                    name="educations"
+                                    component={EducationsField}
+                                    updateEducationError={updateEducationError}
+                                />
+                            </ResumeDetailsEditFo>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className={classes.bottomButton}>
+                <FlatButton
+                    label={t('Отменить')}
+                    labelStyle={{fontSize: '13px', color: 'rgb(255, 64, 129)'}}
+                    onTouchTap={() => editResumeDetails.handleClose() }/>
+                <FlatButton
+                    label={t('Сохранить')}
+                    labelStyle={{fontSize: '13px'}}
+                    onTouchTap={() => editResumeDetails.handleSubmit() }
+                    primary={true}/>
             </div>
         </div>
     )
 })
 
 ResumeDetailsEditForm.propTypes = {
-    data: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    })
+    editResumeDetails: PropTypes.object.isRequired
 }
 
 export default ResumeDetailsEditForm
