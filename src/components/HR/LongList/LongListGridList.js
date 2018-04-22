@@ -627,6 +627,7 @@ const LongListGridList = enhance((props) => {
         pathname
     } = props
 
+    const resumeMeetingDetail = _.find(_.get(meetingListData, 'list'), {id: _.get(resumeDetails, ['data', 'id'])})
     const moveToStatus = filter.getParam('moveTo')
     const complete = (filter.getParam('completed'))
     const data = _.get(detailData, 'data')
@@ -1164,6 +1165,7 @@ const LongListGridList = enhance((props) => {
                 answersData={answersData}
                 questionsData={questionsData}
                 setFinishConfirmDialog={setFinishConfirmDialog}
+                isMeetingCompleted={_.get(resumeMeetingDetail, 'isCompleted')}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

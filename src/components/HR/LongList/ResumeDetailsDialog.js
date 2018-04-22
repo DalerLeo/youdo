@@ -378,8 +378,8 @@ const ResumeDetailsDialog = enhance((props) => {
         appLogs,
         requiredFields,
         optionalFields,
-        setFinishConfirmDialog
-
+        setFinishConfirmDialog,
+        isMeetingCompleted
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -675,9 +675,10 @@ const ResumeDetailsDialog = enhance((props) => {
                         </div>
                         {currentTab === TAB_DETAILS && !_.isNil(currentStatus) &&
                         <div className={classes.buttons}>
-                            {currentStatus === HR_RESUME_MEETING &&
+                            {currentStatus === HR_RESUME_MEETING && !isMeetingCompleted &&
                             <ToolTip position={'bottom'} text={t('Завершить собеседование')}>
-                                <IconButton onTouchTap={() => setFinishConfirmDialog(true)}>
+                                <IconButton
+                                    onTouchTap={() => setFinishConfirmDialog(true)}>
                                     <EventDone color={COLOR_GREY}/>
                                 </IconButton>
                             </ToolTip>}
