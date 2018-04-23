@@ -4,8 +4,8 @@ import {hashHistory} from 'react-router'
 import {compose, withHandlers} from 'recompose'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
-import SelectField from 'material-ui/SelectField'
-import MenuItem from 'material-ui/MenuItem'
+// . import SelectField from 'material-ui/SelectField'
+// . import MenuItem from 'material-ui/MenuItem'
 import ArrowLeftIcon from './ArrowLeftIcon'
 import ArrowRightIcon from './ArrowRightIcon'
 import * as storageHelper from '../../../helpers/storage'
@@ -61,6 +61,21 @@ const enhance = compose(
         }
     })
 )
+
+/* PAGINATION COUNT FIRST ELEMENT IN WRAPPER
+ <div className={classes.count}>
+ <SelectField
+ value={filter.getPageRange()}
+ style={{width: '52px', marginTop: '10px'}}
+ underlineStyle={{border: '0px solid'}}
+ onChange={onChange}>
+ <MenuItem value={10} primaryText="10" innerDivStyle={{fontSize: 13}}/>
+ <MenuItem value={25} primaryText="25" innerDivStyle={{fontSize: 13}}/>
+ <MenuItem value={50} primaryText="50" innerDivStyle={{fontSize: 13}}/>
+ <MenuItem value={100} primaryText="100" innerDivStyle={{fontSize: 13}}/>
+ </SelectField>
+ </div>
+*/
 const GridListNavPagination = enhance(({classes, onChange, filter, customPagination}) => {
     const prev = filter.prevPage()
     const next = filter.nextPage()
@@ -69,18 +84,6 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
     const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
     return (
         <div className={customPagination ? classes.customWrapper : classes.wrapper}>
-            <div className={classes.count}>
-                <SelectField
-                    value={filter.getPageRange()}
-                    style={{width: '52px', marginTop: '10px'}}
-                    underlineStyle={{border: '0px solid'}}
-                    onChange={onChange}>
-                    <MenuItem value={10} primaryText="10" innerDivStyle={{fontSize: 13}}/>
-                    <MenuItem value={25} primaryText="25" innerDivStyle={{fontSize: 13}}/>
-                    <MenuItem value={50} primaryText="50" innerDivStyle={{fontSize: 13}}/>
-                    <MenuItem value={100} primaryText="100" innerDivStyle={{fontSize: 13}}/>
-                </SelectField>
-            </div>
             <div className={classes.nav}>
                 <div>{startPage} - {startEnd} из {filter.getCounts()}</div>
                 <div className={classes.gridPagination}>

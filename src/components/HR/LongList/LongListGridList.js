@@ -1158,6 +1158,7 @@ const LongListGridList = enhance((props) => {
                 createCommentLoading={resumeDetails.createCommentLoading}
                 handleCreateComment={resumeDetails.handleCreateComment}
                 handleSubmitResumeAnswers={resumeDetails.handleSubmitResumeAnswers}
+                handleSubmitRequiredFeedback={resumeDetails.handleSubmitRequiredFeedback}
                 commentsList={resumeDetails.commentsList}
                 appLogs={resumeDetails.appLogs}
                 commentsLoading={resumeDetails.commentsLoading}
@@ -1166,6 +1167,7 @@ const LongListGridList = enhance((props) => {
                 questionsData={questionsData}
                 setFinishConfirmDialog={setFinishConfirmDialog}
                 isMeetingCompleted={_.get(resumeMeetingDetail, 'isCompleted')}
+                relationId={_.get(resumeMeetingDetail, 'relationId')}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

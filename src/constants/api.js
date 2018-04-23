@@ -652,3 +652,6 @@ export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`
 
 export const HR_APP_LOGS = 'hr/application_status_log'
 export const HR_APP_LOGS_LIST = `/${HR_APP_LOGS}`
+
+export const HR_FEEDBACK = 'hr/feedback'
+export const HR_FEEDBACK_CREATE = `/${HR_FEEDBACK}/`

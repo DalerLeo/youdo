@@ -379,7 +379,9 @@ const ResumeDetailsDialog = enhance((props) => {
         requiredFields,
         optionalFields,
         setFinishConfirmDialog,
-        isMeetingCompleted
+        isMeetingCompleted,
+        handleSubmitRequiredFeedback,
+        relationId
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -549,7 +551,6 @@ const ResumeDetailsDialog = enhance((props) => {
     const offsetBetweenDialogs = 15
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
-
     const getRequirements = (key, required, selected, index) => {
         const formName = required ? 'requirements' : 'optional'
         const getField = (name, value) => {
@@ -568,6 +569,9 @@ const ResumeDetailsDialog = enhance((props) => {
                             hintText={t('Комментарий')}
                             hintStyle={{bottom: 16}}
                             className={classes.textFieldArea}
+                            onBlur={(event, comment) => {
+                                handleSubmitRequiredFeedback(relationId, comment, key, value)
+                            }}
                             fullWidth
                             multiLine
                             rows={1}/>
@@ -591,6 +595,9 @@ const ResumeDetailsDialog = enhance((props) => {
                             hintText={t('Комментарий')}
                             hintStyle={{bottom: 16}}
                             className={classes.textFieldArea}
+                            onBlur={(event, comment) => {
+                                handleSubmitRequiredFeedback(relationId, comment, key, value)
+                            }}
                             fullWidth
                             multiLine
                             rows={1}/>
@@ -745,6 +752,7 @@ const ResumeDetailsDialog = enhance((props) => {
                                         const checked = _.get(optionalFields, [item, 'checked'])
                                         return getRequirements(item, false, checked, index)
                                     })}
+
                                 </div>
                             </Tab>
                         </Tabs>

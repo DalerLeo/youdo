@@ -41,7 +41,8 @@ import {
     resumeUpdateAction,
     finishMeetingAction,
     getResumeLogsList,
-    getAppStatAction
+    getAppStatAction,
+    sendRequiredCommentsAction
 } from '../../actions/HR/longList'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -647,6 +648,20 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({resume: null}))
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
+        },
+        handleSubmitRequiredFeedback: props => (id, comment, key, value) => {
+            const {dispatch} = props
+            const data = {
+                'application_resume': id,
+                value,
+                comment,
+                key,
+                'do': true
+            }
+            return comment && dispatch(sendRequiredCommentsAction(data))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
         }
 
     })
@@ -819,6 +834,7 @@ const LongList = enhance((props) => {
         loading: resumeDetailLoading,
         createCommentLoading,
         handleCreateComment: props.handleSubmitResumeComment,
+        handleSubmitRequiredFeedback: props.handleSubmitRequiredFeedback,
         handleSubmitResumeAnswers: props.handleSubmitResumeAnswers,
         handleSubmitCompleteMeetingDialog: props.handleSubmitCompleteMeetingDialog,
         commentsList: _.get(resumeCommentsList, 'results'),
