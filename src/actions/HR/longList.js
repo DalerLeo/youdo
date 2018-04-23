@@ -412,3 +412,19 @@ export const getAppStatAction = (application) => {
         payload
     }
 }
+
+export const sendRequiredCommentsAction = (data) => {
+    const payload = axios()
+        .post(API.HR_FEEDBACK_CREATE, data)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_RESUME_ANSWERS_CREATE,
+        payload
+    }
+}

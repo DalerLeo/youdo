@@ -395,9 +395,8 @@ const Layout = enhance((props) => {
     }
     return (
         <div className={classes.wrapper}>
+            {openNotifications && <div className={classes.overlay}/>}
             <Drawer
-                overlay={<div className={classes.overlay}/>}
-                overlayClassName={classes.overlay}
                 open={openNotifications}
                 docked={true}
                 onRequestChange={() => {

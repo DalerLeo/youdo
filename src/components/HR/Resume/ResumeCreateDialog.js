@@ -292,7 +292,7 @@ const ResumeCreateDialog = enhance((props) => {
         return index === stepIndex
             ? LINK_COLOR
             : error
-                ? '#EF5350'
+                ? COLOR_GREY
                 : COLOR_GREY
     }
     const getIcon = (index, icon) => {
