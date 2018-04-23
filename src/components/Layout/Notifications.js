@@ -16,6 +16,7 @@ import ConfirmDialog from '../ConfirmDialog'
 import IconButton from 'material-ui/IconButton'
 import Drawer from 'material-ui/Drawer'
 import Clear from 'material-ui/svg-icons/action/delete'
+import Close from 'material-ui/svg-icons/content/clear'
 import SupplyAccept from 'material-ui/svg-icons/content/archive'
 import OrderReady from 'material-ui/svg-icons/social/whatshot'
 import OrderRequest from 'material-ui/svg-icons/device/access-time'
@@ -43,6 +44,12 @@ const iconStyle = {
     button: {
         width: 48,
         height: 48,
+        padding: 0,
+        zIndex: 2
+    },
+    buttonClose: {
+        width: 35,
+        height: 35,
         padding: 0,
         zIndex: 2
     }
@@ -122,7 +129,10 @@ const enhance = compose(
             borderBottom: '1px #efefef solid',
             fontSize: '14px',
             fontWeight: '600',
-            padding: '20px 30px'
+            padding: '10px 30px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
         },
         notifBody: {
             overflowY: 'auto',
@@ -268,6 +278,20 @@ const enhance = compose(
             textAlign: 'center',
             color: '#999',
             fontWeight: 'bold'
+        },
+        overlay: {
+            position: 'fixed',
+            height: '100%',
+            width: '100%',
+            top: '0',
+            left: '0',
+            opacity: '1',
+            backgroundColor: 'rgba(0, 0, 0, 0.54)',
+            willChange: 'opacity',
+            transform: 'translateZ(0px)',
+            transition: 'left 0ms cubic-bezier(0.23, 1, 0.32, 1) 0ms, opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+            zIndex: '1200',
+            pointerEvents: 'auto'
         }
     })
 )
@@ -372,8 +396,10 @@ const Layout = enhance((props) => {
     return (
         <div className={classes.wrapper}>
             <Drawer
+                overlay={<div className={classes.overlay}/>}
+                overlayClassName={classes.overlay}
                 open={openNotifications}
-                docked={false}
+                docked={true}
                 onRequestChange={() => {
                     notificationData.handleOpenNotificationBar(false)
                     props.setLoading(false)
@@ -384,6 +410,14 @@ const Layout = enhance((props) => {
                 </div>}
                 <div className={classes.header}>
                     <div>{t('Уведомления')}</div>
+                    <IconButton
+                        iconStyle={iconStyle.icon}
+                        style={iconStyle.buttonClose}
+                        onTouchTap={() => {
+                            notificationData.handleOpenNotificationBar(false)
+                        }}>
+                        <Close color="#968c8c"/>
+                    </IconButton>
                 </div>
                 <div className={classes.notifBody}>
                      <InfiniteScroll

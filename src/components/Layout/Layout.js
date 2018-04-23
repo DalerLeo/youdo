@@ -119,6 +119,7 @@ const Layout = enhance((props) => {
                 loading={loading}
                 setLoading={setLoading}
                 handleOpenNotificationBar={props.handleOpenNotificationBar}
+
             />
             <div className={classes.sidenav}>
                 <SideBarMenu

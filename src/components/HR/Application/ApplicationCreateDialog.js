@@ -369,9 +369,10 @@ const ApplicationCreateDialog = enhance((props) => {
                         : _.map(usersData.list, (item) => {
                             const firstName = _.get(item, 'firstName')
                             const secondName = _.get(item, 'secondName')
+                            const appCount = _.get(item, 'applicationCount')
+                            const appCountDoing = _.get(item, 'applicationDoingCount')
                             const name = firstName + ' ' + secondName
                             const file = _.get(item, ['photo', 'file'])
-                            const job = _.get(item, ['job', 'name'])
                             const photo = _.get(item, 'photo') ? <img src={file} alt=""/> : <PersonIcon/>
                             const id = _.get(item, 'id')
                             return (
@@ -382,7 +383,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                         chooseRecruiter(item)
                                         dispatch(change('ApplicationCreateForm', 'recruiter', item))
                                         setOpenRecruiterList(false)
-                                    }}><div className={classes.avatar}>{photo}</div>{name} ({job}) 3 / 2</div>
+                                    }}><div className={classes.avatar}>{photo}</div>{name} &nbsp;&nbsp; {appCountDoing + ' / ' + appCount}</div>
                             )
                         })}
                 </div>
