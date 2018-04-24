@@ -9,10 +9,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import * as actionTypes from '../../constants/actionTypes'
 import filterHelper from '../../helpers/filter'
-import numberFormat from '../../helpers/numberFormat'
-import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import toBoolean from '../../helpers/toBoolean'
-import checkPermission from '../../helpers/checkPermission'
 import getDocuments from '../../helpers/getDocument'
 import * as ORDER_TAB from '../../constants/orderTab'
 import * as serializers from '../../serializers/orderSerializer'
@@ -32,17 +29,15 @@ import {
     orderReturnCancelAction,
     orderProductMobileAction,
     orderSetDiscountAction,
-    orderGetCounts,
     orderMultiUpdateAction,
-    orderAddProductsListAction,
     orderChangePriceListAction,
     orderChangeCurrencyListAction,
     orderSalesPrintFetchAction,
-    orderCheckDeliveryAction
+    orderCheckDeliveryAction,
+    orderServiceListFetchAction
 } from '../../actions/order'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
-import {shopItemFetchAction} from '../../actions/shop'
 import {
     ORDER_CREATE_DIALOG_OPEN,
     ORDER_UPDATE_DIALOG_OPEN,
@@ -56,8 +51,7 @@ import {
     TAB,
     OrderGridList,
     OrderPrint,
-    OrderSalesPrint,
-    OrderContractPrint
+    OrderSalesPrint
 } from '../../components/Order'
 import t from '../../helpers/translate'
 import {
@@ -71,7 +65,6 @@ import {
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 const MINUS_ONE = -1
-const HUNDRED = 1000
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
@@ -90,6 +83,8 @@ const enhance = compose(
         const orderCountsLoading = _.get(state, ['order', 'counts', 'loading'])
         const list = _.get(state, ['order', 'list', 'data'])
         const listLoading = _.get(state, ['order', 'list', 'loading'])
+        const serviceList = _.get(state, ['order', 'service', 'data'])
+        const serviceListLoading = _.get(state, ['order', 'service', 'loading'])
         const listPrint = _.get(state, ['order', 'listPrint', 'data'])
         const listPrintLoading = _.get(state, ['order', 'listPrint', 'loading'])
         const filterForm = _.get(state, ['form', 'OrderFilterForm'])
@@ -157,8 +152,23 @@ const enhance = compose(
             salesPrintData,
             salesPrintDataLoading,
             marketDetails,
-            marketDetailsLoading
+            marketDetailsLoading,
+            serviceListLoading,
+            serviceList
         }
+    }),
+    withPropsOnChange((props, nextProps) => {
+        const except = {
+            pdPage: null,
+            pdPageSize: null,
+            pdSearch: null,
+            showCheckboxes: null,
+            openMultiEdit: null,
+            openReleaseDialog: null
+        }
+        return props.serviceList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
+    }, ({dispatch, filter}) => {
+        dispatch(orderServiceListFetchAction(filter))
     }),
     withPropsOnChange((props, nextProps) => {
         const except = {
@@ -172,7 +182,6 @@ const enhance = compose(
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
-        dispatch(orderGetCounts())
     }),
     withPropsOnChange((props, nextProps) => {
         return (_.get(props, ['selectedProduct', 'id']) !== _.get(nextProps, ['selectedProduct', 'id']) && _.get(nextProps, ['selectedProduct', 'id'])) ||
@@ -285,88 +294,10 @@ const enhance = compose(
         }
     }),
 
-    withState('openAddProductDialog', 'setOpenAddProductDialog', false),
-    withState('openAddProductConfirm', 'setOpenAddProductConfirm', false),
     withState('openCheckDeliveryConfirm', 'setOpenCheckDeliveryConfirm', false),
-    withPropsOnChange((props, nextProps) => {
-        const except = {
-            page: null,
-            pageSize: null,
-            client: null,
-            deadlineFromDate: null,
-            deadlineToDate: null,
-            deliveryFromDate: null,
-            deliveryToDate: null,
-            deliveryMan: null,
-            dept: null,
-            division: null,
-            exclude: null,
-            fromDate: null,
-            toDate: null,
-            initiator: null,
-            onlyBonus: null,
-            openCreateDialog: null,
-            openFilterDialog: null,
-            product: null,
-            shop: null,
-            zone: null
-        }
-        const productType = _.get(props, ['addProductsForm', 'values', 'type', 'value'])
-        const productTypeNext = _.get(nextProps, ['addProductsForm', 'values', 'type', 'value'])
-        return ((props.filterProducts.filterRequest(except) !== nextProps.filterProducts.filterRequest(except)) ||
-                (productType !== productTypeNext && nextProps.openAddProductDialog)) && !(props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog)
-    },
-        ({setOpenAddProductConfirm, addProductsForm, openAddProductDialog, dispatch, filterProducts, createForm}) => {
-            const products = _.filter(_.get(addProductsForm, ['values', 'product']), (item) => {
-                const amount = _.toNumber(numberWithoutSpaces(_.get(item, 'amount')))
-                return amount > ZERO
-            })
-            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-            const currency = _.get(createForm, ['values', 'currency', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-            const user = _.get(addProductsForm, ['values', 'user', 'value'])
-            if (!_.isEmpty(products)) {
-                setOpenAddProductConfirm(true)
-            } else if (priceList && openAddProductDialog && _.isEmpty(products)) {
-                setOpenAddProductConfirm(false)
-                dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
-            }
-        }),
-
-    withPropsOnChange((props, nextProps) => {
-        return props.openAddProductDialog !== nextProps.openAddProductDialog && nextProps.openAddProductDialog
-    }, ({dispatch, createForm, openAddProductDialog, filterProducts, setOpenAddProductConfirm}) => {
-        const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-        const currency = _.get(createForm, ['values', 'currency', 'value'])
-        const user = _.get(createForm, ['values', 'user', 'value'])
-        if (openAddProductDialog) {
-            setOpenAddProductConfirm(false)
-            dispatch(orderAddProductsListAction(priceList, filterProducts, null, currency, user))
-        }
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        return props.editProductsLoading !== nextProps.editProductsLoading && nextProps.editProductsLoading === false
-    }, ({dispatch, createForm, openAddProductDialog, editProducts}) => {
-        if (openAddProductDialog) {
-            const FLOOR = 2
-            const paymentType = _.get(createForm, ['values', 'paymentType'])
-            _.map(_.get(editProducts, 'results'), (item) => {
-                const id = _.get(item, 'id')
-                const price = paymentType === 'cash'
-                    ? numberFormat(_.floor(_.toNumber(_.get(item, 'cashPrice')), FLOOR))
-                    : paymentType === 'bank'
-                        ? numberFormat(_.floor(_.toNumber(_.get(item, 'transferPrice')), FLOOR))
-                        : ''
-                dispatch(change('OrderAddProductsForm', 'product[' + id + ']', {price: price}))
-            })
-        }
-    }),
-
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
     withState('openSalesPrint', 'setOpenSalesPrint', false),
-    withState('openContractPrint', 'setOpenContractPrint', false),
 
     withHandlers({
         handleOpenPrintDialog: props => () => {
@@ -649,64 +580,6 @@ const enhance = compose(
                     dispatch(openErrorAction({message: error}))
                 })
         },
-
-        handleCloseAddProductConfirm: props => () => {
-            const {dispatch, createForm, addProductsForm, filterProducts, setOpenAddProductConfirm} = props
-            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-            const currency = _.get(addProductsForm, ['values', 'currency', 'value'])
-            const user = _.get(addProductsForm, ['values', 'user', 'value'])
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
-            setOpenAddProductConfirm(false)
-        },
-
-        handleSubmitAddProductConfirm: props => () => {
-            const {addProductsForm, editProducts, dispatch, createForm, filterProducts, setOpenAddProductConfirm} = props
-            const priceList = _.get(createForm, ['values', 'priceList', 'value'])
-            const currency = _.get(createForm, ['values', 'currency', 'value'])
-            const user = _.get(createForm, ['values', 'user', 'value'])
-            const productType = _.get(addProductsForm, ['values', 'type', 'value'])
-            const existingProducts = _.get(createForm, ['values', 'products']) || []
-            const values = _.get(addProductsForm, ['values', 'product'])
-            const getProductData = (id) => {
-                return _.find(_.get(editProducts, 'results'), {'id': id})
-            }
-            const newProductsArray = []
-            _.map(values, (item, index) => {
-                const id = _.toInteger(index)
-                const product = getProductData(id)
-                const amount = _.get(item, 'amount')
-                const price = _.get(item, 'price')
-                if (amount) {
-                    newProductsArray.push({
-                        amount: numberWithoutSpaces(amount),
-                        cost: numberWithoutSpaces(price),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: _.get(item, 'price'),
-                        product: {
-                            id: id,
-                            value: {
-                                id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
-                                balance: _.get(product, 'balance'),
-                                measurement: {
-                                    id: _.get(product, ['measurement', 'id']),
-                                    name: _.get(product, ['measurement', 'name'])
-                                }
-                            },
-                            text: _.get(product, 'name')
-                        }
-                    })
-                }
-            })
-            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
-                return o.product.value.id
-            })
-            dispatch(change('OrderCreateForm', 'products', _.concat(newProductsArray, checkDifference)))
-            dispatch(orderAddProductsListAction(priceList, filterProducts, productType, currency, user))
-            setOpenAddProductConfirm(false)
-        },
-
         handleOpenCreateClientDialog: props => () => {
             const {filter} = props
             hashHistory.push({pathname: [ROUTER.SHOP_LIST_URL], query: filter.getParams({[CLIENT_CREATE_DIALOG_OPEN]: true})})
@@ -804,87 +677,12 @@ const enhance = compose(
                     }))
                 })
         },
-
-        handleOpenAddProduct: props => () => {
-            const {setOpenAddProductDialog, filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({'pdPageSize': 25})})
-            setOpenAddProductDialog(true)
-        },
-
-        handleCloseAddProduct: props => () => {
-            const {setOpenAddProductDialog, filter, location: {pathname}} = props
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
-            setOpenAddProductDialog(false)
-        },
-
-        handleSubmitAddProduct: props => () => {
-            const {setOpenAddProductDialog, addProductsForm, editProducts, dispatch, createForm, filter, location: {pathname}} = props
-            const existingProducts = _.get(createForm, ['values', 'products']) || []
-            const values = _.get(addProductsForm, ['values', 'product'])
-            const getProductData = (id) => {
-                return _.find(_.get(editProducts, 'results'), {'id': id})
-            }
-            const newProductsArray = []
-            _.map(values, (item, index) => {
-                const id = _.toInteger(index)
-                const product = getProductData(id)
-                const amount = _.get(item, 'amount')
-                const price = _.get(item, 'price')
-                if (amount) {
-                    newProductsArray.push({
-                        amount: numberWithoutSpaces(amount),
-                        cost: numberWithoutSpaces(price),
-                        customPrice: _.get(product, 'customPrice'),
-                        price: {
-                            cashPrice: _.get(product, 'cashPrice'),
-                            transferPrice: _.get(product, 'transferPrice')
-                        },
-                        product: {
-                            id: id,
-                            value: {
-                                id: _.get(product, 'id'),
-                                name: _.get(product, 'name'),
-                                balance: _.get(product, 'balance'),
-                                measurement: {
-                                    id: _.get(product, ['measurement', 'id']),
-                                    name: _.get(product, ['measurement', 'name'])
-                                }
-                            },
-                            text: _.get(product, 'name')
-                        }
-                    })
-                }
-            })
-            const checkDifference = _.differenceBy(existingProducts, newProductsArray, (o) => {
-                return o.product.value.id
-            })
-            dispatch(change('OrderCreateForm', 'products', _.concat(_.filter(newProductsArray, (item) => item.product.value.id), checkDifference)))
-            hashHistory.push({pathname, query: filter.getParams({'pdPage': null, 'pdPageSize': null, 'pdSearch': null})})
-            setOpenAddProductDialog(false)
-        },
-
         handleGetExcelDocument: props => () => {
             const {filter} = props
             const print = true
             const params = serializers.listFilterSerializer(filter.getParams(), null, null, print)
             getDocuments(API.ORDER_EXCEL, params)
         },
-        handleOpenContractPrint: props => () => {
-            const {setOpenContractPrint, dispatch, detail} = props
-            setOpenContractPrint(true)
-            const id = _.get(detail, ['market', 'id'])
-            return dispatch(shopItemFetchAction(id))
-                .then(() => {
-                    setTimeout(() => {
-                        window.print()
-                    }, HUNDRED)
-                })
-        },
-        handleCloseContractPrint: props => () => {
-            const {setOpenContractPrint} = props
-            setOpenContractPrint(false)
-        },
-
         handleOpenCheckDeliveryDialog: props => () => {
             const {setOpenCheckDeliveryConfirm} = props
             setOpenCheckDeliveryConfirm(true)
@@ -950,16 +748,12 @@ const OrderList = enhance((props) => {
         editProductsLoading,
         orderCounts,
         orderCountsLoading,
-        openAddProductDialog,
-        openAddProductConfirm,
-        filterProducts,
         openSalesPrint,
         salesPrintData,
         salesPrintDataLoading,
-        openContractPrint,
-        marketDetailsLoading,
-        marketDetails,
-        openCheckDeliveryConfirm
+        openCheckDeliveryConfirm,
+        serviceList,
+        serviceListLoading
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
@@ -977,9 +771,7 @@ const OrderList = enhance((props) => {
     const zone = filter.getParam(ORDER_FILTER_KEY.ZONE)
     const deliveryMan = filter.getParam(ORDER_FILTER_KEY.DELIVERY_MAN)
     const orderStatus = filter.getParam(ORDER_FILTER_KEY.STATUS)
-    const shop = filter.getParam(ORDER_FILTER_KEY.SHOP)
     const product = filter.getParam(ORDER_FILTER_KEY.PRODUCT)
-    const division = filter.getParam(ORDER_FILTER_KEY.DIVISION)
     const status = filter.getParam(ORDER_FILTER_KEY.STATUS)
     const toDate = filter.getParam(ORDER_FILTER_KEY.TO_DATE)
     const fromDate = filter.getParam(ORDER_FILTER_KEY.FROM_DATE)
@@ -1088,18 +880,10 @@ const OrderList = enhance((props) => {
                     }
                 }
             }
-            const ONE = 1
             const HUND = 100
             const discountPrice = _.toNumber(_.get(detail, 'discountPrice'))
             const totalPrice = _.toNumber(_.get(detail, 'totalPrice'))
             const discount = (discountPrice / (discountPrice + totalPrice)) * HUND
-            const deliveryType = _.get(detail, ['deliveryType'])
-            let deliveryTypeText = 'Доставка'
-            if (deliveryType === 'self') {
-                deliveryTypeText = 'Самовывоз'
-            }
-            const dealType = _.toInteger(_.get(detail, 'dealType')) === ONE ? 'consignment' : 'standart'
-            const paymentType = _.get(detail, 'paymentType')
             return {
                 client: {
                     value: _.toInteger(_.get(detail, ['client', 'id']))
@@ -1107,32 +891,8 @@ const OrderList = enhance((props) => {
                 contact: {
                     value: _.toInteger(_.get(detail, ['contact', 'id']))
                 },
-                contract: _.get(detail, 'contract'),
-                currency: {
-                    value: _.get(detail, ['currency', 'id']),
-                    text: _.get(detail, ['currency', 'name'])
-                },
-                market: {
-                    value: _.toInteger(_.get(detail, ['market', 'id']))
-                },
-                deliveryMan: {
-                    value: _.get(detail, ['deliveryMan', 'id'] || ZERO)
-                },
-                deliveryType: {
-                    value: deliveryType,
-                    text: deliveryTypeText
-                },
                 isConfirmed: _.toNumber(_.get(detail, 'status')) !== ORDER_NOT_CONFIRMED,
-                dealType: dealType || '',
-                paymentType: paymentType || '',
-                deliveryDate: _.get(detail, ['dateDelivery']) ? moment(_.get(detail, ['dateDelivery'])).toDate() : '',
-                requestDeadline: _.get(detail, ['requestDeadline']) && moment(_.get(detail, ['requestDeadline'])).toDate(),
-                deliveryPrice: numberFormat(_.get(detail, 'deliveryPrice')),
                 discountPrice: discount,
-                paymentDate: moment(_.get(detail, ['paymentDate'])).toDate(),
-                nextPaymentDate: _.get(detail, ['nextPaymentDate'])
-                    ? moment(_.get(detail, ['nextPaymentDate'])).toDate()
-                    : null,
                 products: groupedProducts,
                 priceList: {
                     value: _.get(detail, ['priceList', 'id']),
@@ -1185,13 +945,7 @@ const OrderList = enhance((props) => {
             orderStatus: orderStatus && _.map(_.split(orderStatus, '-'), (item) => {
                 return _.toNumber(item)
             }),
-            division: division && _.map(_.split(division, '-'), (item) => {
-                return _.toNumber(item)
-            }),
             status: status && _.map(_.split(status, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            shop: shop && _.map(_.split(shop, '-'), (item) => {
                 return _.toNumber(item)
             }),
             product: product && _.map(_.split(product, '-'), (item) => {
@@ -1273,24 +1027,6 @@ const OrderList = enhance((props) => {
         handleOpenSalesPrintDialog: props.handleOpenSalesPrintDialog,
         handleCloseSalesPrintDialog: props.handleCloseSalesPrintDialog
     }
-    const printContractDialog = {
-        openContractPrint,
-        handleOpenContractPrint: props.handleOpenContractPrint,
-        handleCloseContractPrint: props.handleCloseContractPrint
-    }
-
-    const addProductDialog = {
-        openAddProductDialog,
-        filter: filterProducts,
-        data: _.get(editProducts, 'results'),
-        loading: editProductsLoading,
-        handleOpenAddProduct: props.handleOpenAddProduct,
-        handleCloseAddProduct: props.handleCloseAddProduct,
-        handleSubmitAddProduct: props.handleSubmitAddProduct,
-        openAddProductConfirm,
-        handleCloseAddProductConfirm: props.handleCloseAddProductConfirm,
-        handleSubmitAddProductConfirm: props.handleSubmitAddProductConfirm
-    }
 
     if (openPrint) {
         document.getElementById('wrapper').style.height = 'auto'
@@ -1308,25 +1044,6 @@ const OrderList = enhance((props) => {
             loading={salesPrintDataLoading}
             data={salesPrintData}/>
     }
-    if (openContractPrint) {
-        document.getElementById('wrapper').style.height = 'auto'
-
-        return <OrderContractPrint
-            onClose={printContractDialog.handleCloseContractPrint}
-            loading={marketDetailsLoading}
-            marketData={marketDetails}
-            data={{
-                client: _.get(detail, 'client'),
-                currency: _.get(detail, 'currency'),
-                market: _.get(detail, 'market'),
-                products: _.get(detail, 'products'),
-                id: _.get(detail, 'id')
-            }}/>
-    }
-
-    const canChangeAnyPrice = checkPermission('can_set_any_price')
-    const canChangePrice = checkPermission('can_change_price')
-
     const releaseDialog = {
         openReleaseDialog,
         givenOrDelivery,
@@ -1344,6 +1061,11 @@ const OrderList = enhance((props) => {
 
     document.getElementById('wrapper').style.height = '100%'
     const order = true
+
+    const servicesData = {
+        list: _.get(serviceList, 'results') || {},
+        loading: serviceListLoading
+    }
     return (
         <Layout {...layout}>
             <OrderGridList
@@ -1370,17 +1092,14 @@ const OrderList = enhance((props) => {
                 type={order}
                 refreshAction={props.handleRefreshList}
                 cancelOrderReturnDialog={cancelOrderReturnDialog}
-                canChangeAnyPrice={canChangeAnyPrice}
-                canChangePrice={canChangePrice}
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
                 isSuperUser={isSuperUser}
                 releaseDialog={releaseDialog}
-                addProductDialog={addProductDialog}
                 printSalesDialog={printSalesDialog}
-                printContractDialog={printContractDialog}
                 scrollValue={_.get(layout, 'scrollValue')}
                 checkDeliveryDialog={checkDeliveryDialog}
+                servicesData={servicesData}
             />
         </Layout>
     )

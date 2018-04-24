@@ -655,3 +655,9 @@ export const HR_APP_LOGS_LIST = `/${HR_APP_LOGS}`
 
 export const HR_FEEDBACK = 'hr/feedback'
 export const HR_FEEDBACK_CREATE = `/${HR_FEEDBACK}/`
+
+export const HR_CALENDAR_LIST = `/${HR_APPLICATION}/calendar`
+
+export const HR_ORDER_SERVICE = `${ORDER}/service`
+export const HR_ORDER_SERVICE_LIST = `/${HR_ORDER_SERVICE}/`
+

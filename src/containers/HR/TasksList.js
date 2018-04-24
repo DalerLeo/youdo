@@ -12,7 +12,8 @@ import {
 } from '../../components/HR/Tasks'
 import {
     tasksListFetchAction,
-    tasksItemFetchAction
+    tasksItemFetchAction,
+    calendarListFetchAction
 } from '../../actions/HR/tasks'
 import * as TASK_TAB from '../../constants/hrTasksTab'
 import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
@@ -27,6 +28,8 @@ const enhance = compose(
         const detail = _.get(state, ['application', 'item', 'data'])
         const detailLoading = _.get(state, ['application', 'item', 'loading'])
         const list = _.get(state, ['application', 'list', 'data'])
+        const calendarList = _.get(state, ['application', 'calendar', 'data'])
+        const calendarListLoading = _.get(state, ['application', 'calendar', 'loading'])
         const listLoading = _.get(state, ['application', 'list', 'loading'])
         const createForm = _.get(state, ['form', 'TasksCreateForm'])
         const filter = filterHelper(list, pathname, query)
@@ -37,7 +40,9 @@ const enhance = compose(
             detail,
             detailLoading,
             filter,
-            createForm
+            createForm,
+            calendarList,
+            calendarListLoading
         }
     }),
 
@@ -45,6 +50,7 @@ const enhance = compose(
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
         dispatch(tasksListFetchAction(filter))
+        dispatch(calendarListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -100,6 +106,13 @@ const enhance = compose(
         handleClearFilterDialog: props => () => {
             return null
         },
+        handleOpenResumeMeetingDialog: props => (status, resume, application, relation) => {
+            const {filter} = props
+            hashHistory.push({
+                pathname: ROUTER.HR_LONG_LIST_URL,
+                query: filter.getParams({status, resume, application, relation})
+            })
+        },
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
@@ -141,7 +154,9 @@ const TasksList = enhance((props) => {
         detailLoading,
         filter,
         layout,
-        params
+        params,
+        calendarListLoading,
+        calendarList
     } = props
 
     const detailId = _.toInteger(_.get(params, 'tasksId'))
@@ -152,6 +167,11 @@ const TasksList = enhance((props) => {
         listLoading
     }
 
+    const calendarData = {
+        data: calendarList,
+        loading: calendarListLoading,
+        handleOpenResumeMeetingDialog: props.handleOpenResumeMeetingDialog
+    }
     const detailData = {
         id: detailId,
         data: detail,
@@ -177,6 +197,7 @@ const TasksList = enhance((props) => {
             <TasksGridList
                 filter={filter}
                 listData={listData}
+                calendarData={calendarData}
                 detailData={detailData}
                 tabData={tabData}
                 filterDialog={filterDialog}

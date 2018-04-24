@@ -38,3 +38,20 @@ export const tasksItemFetchAction = (id) => {
         payload
     }
 }
+
+export const calendarListFetchAction = (filter) => {
+    const params = serializers.listFilterSerializer(filter.getParams())
+    const payload = axios()
+        .get(API.HR_CALENDAR_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_CALENDAR_LIST,
+        payload
+    }
+}
