@@ -47,6 +47,7 @@ import {
     ZERO
 } from '../../constants/backendConstants'
 
+const SUM = 'SUM'
 const listHeader = [
     {
         sorting: true,
@@ -280,7 +281,7 @@ const OrderGridList = enhance((props) => {
                 </Link>
                 <div style={{width: '15%'}}>{id}</div>
                 <div style={{width: '30%'}}>{client}</div>
-                <div style={{width: '25%', textAlign: 'right'}}>{totalPrice}</div>
+                <div style={{width: '25%', textAlign: 'right'}}>{numberFormat(totalPrice, SUM)}</div>
                 <div style={{width: '25%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
                     <ToolTip position="left" text={paid ? 'Оплачено' : 'Не оплачено'}>
