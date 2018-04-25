@@ -16,7 +16,6 @@ import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchFiel
 import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import LanguageField from '../../ReduxForm/HR/LanguageField'
 import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
-import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
 import RequirementsField from '../../ReduxForm/HR/Application/RequirementsField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddPerson from 'material-ui/svg-icons/social/person-add'
@@ -414,13 +413,13 @@ const ApplicationCreateDialog = enhance((props) => {
                             <Loader size={0.75}/>
                         </div>
                         <div className={classes.block}>
-                            <h4>1. {t('Описание компании')}</h4>
+                            <h4>1. {t('Клиент')}</h4>
                             <div className={classes.flex + ' ' + classes.alignCenter}>
                                 <Field
                                     name="client"
                                     component={ClientSearchField}
                                     className={classes.inputFieldCustom}
-                                    label={t('Клиент')}
+                                    label={t('Наименование')}
                                     fullWidth={true}/>
                                 <Link style={{marginLeft: '5px', whiteSpace: 'nowrap'}} target={'_blank'} to={{
                                     pathname: ROUTES.CLIENT_LIST_URL,
@@ -429,18 +428,27 @@ const ApplicationCreateDialog = enhance((props) => {
                             </div>
                             <Field
                                 name="contact"
-                                extraText={t('Ответстенный за подобор персонала')}
+                                extraText={t('Контактное лицо')}
                                 component={ClientContactsField}/>
+                        </div>
+                        <div className={classes.block}>
+                            <h4>2. {t('Гарантия на сотрудника')}</h4>
+                            <Field
+                                name="guaranteedDate"
+                                component={DateField}
+                                className={classes.inputDateCustom}
+                                label={t('Укажите дату гарантии')}
+                                fullWidth={true}/>
                         </div>
                     </div>
                     <div className={classes.inContent}>
                         <div className={classes.block}>
-                            <h4>2. {t('Описание вакантной должности')}</h4>
+                            <h4>3. {t('Описание вакантной должности')}</h4>
                             <Field
                                 name="position"
-                                component={PositionSearchField}
+                                component={TextField}
                                 className={classes.inputFieldCustom}
-                                label={t('Наименование вакантной должности')}
+                                label={t('Должность')}
                                 fullWidth={true}/>
                             <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
                                 <span>{t('З/п на испытательный срок')}:</span>
@@ -523,7 +531,7 @@ const ApplicationCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.inContent}>
                         <div className={classes.block}>
-                            <h4>3. {t('Требования к кандидату')}</h4>
+                            <h4>4. {t('Требования к кандидату')}</h4>
                             <div className={classes.flex + ' ' + classes.alignBaseline}>
                                 <span>{t('Возраст')}:</span>
                                 {requiredCheckbox(

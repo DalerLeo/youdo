@@ -13,6 +13,7 @@ export const createSerializer = (data) => {
     const responsibility = _.get(data, ['responsibility'])
     const position = _.get(data, ['position', 'value'])
     const planningDate = moment(_.get(data, ['planningDate'])).format('YYYY-MM-DD')
+    const guaranteedDate = moment(_.get(data, ['guaranteedDate'])).format('YYYY-MM-DD')
     const deadlineDate = moment(_.get(data, ['deadline'])).format('YYYY-MM-DD HH:mm')
     const trialSalaryMin = _.toNumber(numberWithoutSpaces(_.get(data, ['trialSalary', 'min'])))
     const trialSalaryMax = _.toNumber(numberWithoutSpaces(_.get(data, ['trialSalary', 'max'])))
@@ -65,7 +66,8 @@ export const createSerializer = (data) => {
         recruiter,
         skills,
         filter_required: _.concat(filterRequired, [{lang_level: requiredLangs}]),
-        requirements
+        requirements,
+        'guaranteed_date': guaranteedDate
     }
 }
 

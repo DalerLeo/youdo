@@ -10,6 +10,7 @@ import ApplicationCreateDialog from './ApplicationCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconMenu from 'material-ui/IconMenu'
+import DropDownIcon from 'material-ui/svg-icons/av/play-circle-outline'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
@@ -31,13 +32,12 @@ import {
     COLOR_GREEN,
     COLOR_BLUE_GREY,
     COLOR_WHITE,
-    COLOR_YELLOW,
-    COLOR_GREY
+    COLOR_YELLOW
 } from '../../../constants/styleConstants'
 import List from 'material-ui/svg-icons/action/assignment'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
-import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+// . import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import InProcess from 'material-ui/svg-icons/av/loop'
 import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
 
@@ -116,6 +116,12 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'flex-end'
+        },
+        statusButton: {
+            position: 'absolute',
+            top: '116px',
+            right: '2px',
+            zIndex: '2'
         }
     })
 )
@@ -249,21 +255,23 @@ const ApplicationGridList = enhance((props) => {
         if (filter.getParam('status') === APPLICATION_COMPLETED) {
             return <Completed color={COLOR_GREEN} style={style}/>
         }
-        return <MenuItemIcon color={COLOR_GREY} style={style}/>
+        return <DropDownIcon color={COLOR_WHITE} style={{verticalAlign: 'unset', transform: 'rotate(90deg)'}}/>
     }
 
     const extraButtons = (
-        <div className={classes.buttons}>
+        <div className={classes.statusButton}>
             <IconMenu
                 className={classes.popover}
                 iconButtonElement={
                     <FlatButton
                         label={t('Статус')}
                         style={{display: 'flex', alignItems: 'center'}}
-                        backgroundColor={COLOR_WHITE}
-                        hoverColor={COLOR_WHITE}
+                        backgroundColor={'#5d6474'}
+                        hoverColor={'#5d6474'}
                         disableTouchRipple
+                        labelPosition="before"
                         labelStyle={{
+                            color: COLOR_WHITE,
                             textTransform: 'none',
                             verticalAlign: 'baseline',
                             fontWeight: '600'
@@ -308,6 +316,7 @@ const ApplicationGridList = enhance((props) => {
     return (
         <Container>
             <div className={classes.header}>
+                {extraButtons}
                 <h2>{t('Заявки')}</h2>
                 <ToolTip position="left" text={t('Добавить заявку')}>
                     <FloatingActionButton
@@ -319,13 +328,11 @@ const ApplicationGridList = enhance((props) => {
                     </FloatingActionButton>
                 </ToolTip>
             </div>
-
             <GridList
                 filter={filter}
                 list={list}
                 filterDialog={applicationfilterDialog}
                 detail={applicationDetail}
-                extraButtons={extraButtons}
             />
 
             <ApplicationCreateDialog

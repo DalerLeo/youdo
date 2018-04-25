@@ -62,7 +62,7 @@ export const getExperienceText = (totalExp) => {
 export const getAppStatusName = (status, colored, doing) => {
     switch (status) {
         case APPLICATION_NOT_ASSIGNED: return colored ? <span style={{color: COLOR_GREY}}>{t('Неприсвоен')}</span> : t('Неприсвоен')
-        case APPLICATION_COMPLETED: return colored ? <span style={{color: COLOR_GREEN}}>{t('Выполнен')}</span> : t('Выполнен')
+        case APPLICATION_COMPLETED: return colored ? <span style={{color: COLOR_GREEN}}>{t('Завершено')}</span> : t('Завершено')
         case APPLICATION_PENDING: return colored ? <span style={{color: COLOR_YELLOW}}>{t('Ожидает подтверждения')}</span> : t('Ожидает подтверждения')
         case APPLICATION_REWORK: return colored ? <span style={{color: COLOR_YELLOW}}>{t('Отправлен на доработку')}</span> : t('Отправлен на доработку')
         case APPLICATION_CANCELED: return colored ? <span style={{color: COLOR_RED}}>{t('Отменен')}</span> : t('Отменен')

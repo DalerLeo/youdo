@@ -11,6 +11,7 @@ import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
+import FlatButton from 'material-ui/FlatButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ReworkIcon from 'material-ui/svg-icons/content/reply'
@@ -34,7 +35,7 @@ import {
     HR_GENDER,
     HR_LEVEL_PC
 } from '../../../constants/backendConstants'
-import getDocuments from '../../../helpers/getDocument'
+// . import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
     injectSheet({
@@ -170,8 +171,10 @@ const enhance = compose(
         titleExtra: {
             fontSize: '13px',
             color: COLOR_GREY,
-            fontWeight: '600',
-            margin: '0 10px'
+            margin: '0 10px',
+            '& span': {
+                fontWeight: '550'
+            }
         },
         bodyTitle: {
             fontSize: '14px',
@@ -213,7 +216,8 @@ const enhance = compose(
             marginRight: '20px'
         }
     }),
-    withState('openLogs', 'setOpenLogs', false)
+    withState('openLogs', 'setOpenLogs', false),
+    withState('moreDetails', 'setMoreDetails', false)
 )
 
 const iconStyle = {
@@ -252,8 +256,10 @@ const ApplicationDetails = enhance((props) => {
         handleOpenUpdateDialog,
         handleCloseDetail,
         openLogs,
-        setOpenLogs,
-        logsData
+// .        setOpenLogs,
+        logsData,
+        moreDetails,
+        setMoreDetails
     } = props
 
     const applicationId = _.get(data, 'id')
@@ -286,8 +292,16 @@ const ApplicationDetails = enhance((props) => {
     const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
-    const reportDownloadLink = _.get(data, 'downloadReport')
-
+    // . const reportDownloadLink = _.get(data, 'downloadReport')
+    /*            <div className={classes.subTitle}>
+     <div className={classes.buttons}>
+     <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>
+     {openLogs ? t('Закрыть логи') : t('Посмотреть логи')}
+     </a>
+     {reportDownloadLink &&
+     <a onClick={() => { getDocuments(reportDownloadLink) }} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
+     </div>
+     </div> */
     if (loading) {
         return (
             <div className={classes.loader}>
@@ -304,9 +318,8 @@ const ApplicationDetails = enhance((props) => {
                      onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
-                    <div className={classNames(classes.status, classes.titleExtra)}>{t('Статус')}: {getAppStatusName(status, true)}</div>
-                    <div className={classes.titleExtra}>{t('Дэдлайн')}: {deadline}</div>
-                    <div className={classes.titleExtra}>{t('Рекрутер')}: {recruiter}</div>
+                    <div className={classes.titleExtra}>{t('Дэдлайн')}: <span>{deadline}</span></div>
+                    <div className={classes.titleExtra}>{t('Рекрутер')}: <span>{recruiter}</span></div>
 
                     <IconMenu
                         className={classes.popover}
@@ -343,15 +356,6 @@ const ApplicationDetails = enhance((props) => {
                     </IconMenu>
                 </div>
             </div>
-            <div className={classes.subTitle}>
-                <div className={classes.buttons}>
-                    <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>
-                        {openLogs ? t('Закрыть логи') : t('Посмотреть логи')}
-                    </a>
-                    {reportDownloadLink &&
-                    <a onClick={() => { getDocuments(reportDownloadLink) }} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
-                </div>
-            </div>
             <div className={classes.container}>
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
@@ -365,7 +369,7 @@ const ApplicationDetails = enhance((props) => {
                     <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
                     <div className={classes.info}>{sphere}</div>
                 </div>
-                <div className={classes.block}>
+                <div className={classes.block} style={{minHeight: moreDetails ? '500px' : '300px', maxHeight: moreDetails ? '700px' : '400px', transition: 'min-height 400ms, max-height 500ms'}}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
                     <div className={classes.info}>
                         <div>{t('Наименование должности')}: <strong>{position}</strong></div>
@@ -385,39 +389,45 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
                         <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
                     </div>
+                    {moreDetails && <div style={{marginTop: '15px'}}>
+                        <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
+                        <div className={classes.info}>
+                            <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
+                            <div>{t('Пол')}: <strong>{sex}</strong></div>
+                            <div>{t('Образование')}: <strong>{education}</strong></div>
+                            <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
+                            <div>{t('Знание языков')}:
+                                {_.isEmpty(languages)
+                                    ? <strong> {t('Не указано')}</strong>
+                                    : _.map(languages, (item) => {
+                                        const id = _.get(item, 'id')
+                                        const name = _.get(item, ['language', 'name'])
+                                        const level = _.get(item, ['level', 'name'])
+                                        return (
+                                            <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                        )
+                                    })}
+                            </div>
+                            <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
+                            <div>{t('Профессиональные навыки')}:
+                                {_.isEmpty(skills)
+                                    ? <strong> {t('Не указаны')}</strong>
+                                    : _.map(skills, (item) => {
+                                        const id = _.get(item, 'id')
+                                        const name = _.get(item, 'name')
+                                        return (
+                                            <span key={id} className={classes.skill}>{name}</span>
+                                        )
+                                    })}
+                            </div>
+                        </div>
+                    </div>}
+                    <div style={{textAlign: 'right'}}>
+                        <FlatButton label={moreDetails ? 'Cкрыть' : 'Далее'} primary={true} onTouchTap={() => setMoreDetails(!moreDetails)}/>
+                    </div>
                 </div>
                 <div className={classes.block}>
-                    <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
-                    <div className={classes.info}>
-                        <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
-                        <div>{t('Пол')}: <strong>{sex}</strong></div>
-                        <div>{t('Образование')}: <strong>{education}</strong></div>
-                        <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
-                        <div>{t('Знание языков')}:
-                            {_.isEmpty(languages)
-                                ? <strong> {t('Не указано')}</strong>
-                                : _.map(languages, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, ['language', 'name'])
-                                    const level = _.get(item, ['level', 'name'])
-                                    return (
-                                        <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
-                                    )
-                                })}
-                        </div>
-                        <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
-                        <div>{t('Профессиональные навыки')}:
-                            {_.isEmpty(skills)
-                                ? <strong> {t('Не указаны')}</strong>
-                                : _.map(skills, (item) => {
-                                    const id = _.get(item, 'id')
-                                    const name = _.get(item, 'name')
-                                    return (
-                                        <span key={id} className={classes.skill}>{name}</span>
-                                    )
-                                })}
-                        </div>
-                    </div>
+                    <div className={classNames(classes.status, classes.titleExtra)}>{t('Стадия')}: <span>{getAppStatusName(status, true)}</span></div>
                 </div>
 
                 <div className={classNames(classes.logs, {

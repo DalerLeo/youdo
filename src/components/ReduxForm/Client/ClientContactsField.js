@@ -9,17 +9,13 @@ import t from '../../../helpers/translate'
 const enhance = compose(
     injectSheet({
         wrapper: {
-            marginTop: '10px'
+            marginTop: '5px'
         },
         title: {
             fontWeight: '600',
             paddingBottom: '10px'
         },
         radioButton: {
-            marginTop: '10px',
-            '& > div': {
-                marginBottom: '10px'
-            },
             '& svg': {
                 width: '20px !important',
                 height: '20px !important'
