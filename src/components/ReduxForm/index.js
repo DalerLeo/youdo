@@ -109,6 +109,7 @@ import DriverLicenceCheck from './HR/Resume/DriverLicenceCheck'
 import ComputerLevelSearchField from './HR/ComputerLevelSearchField'
 import ExperiencesField from './HR/Resume/ExperiencesField'
 import EducationsField from './HR/Resume/EducationsField'
+import CheckBoxCustom from './Basic/CheckBoxCustom'
 
 export {
     PendingExpensesTypeSearchField,
@@ -221,5 +222,6 @@ export {
     DriverLicenceCheck,
     ComputerLevelSearchField,
     ExperiencesField,
-    EducationsField
+    EducationsField,
+    CheckBoxCustom
 }

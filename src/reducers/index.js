@@ -97,12 +97,13 @@ const rootReducer = combineReducers({
         payment: createThunkReducer(actionTypes.ORDER_PAYMENTS),
         item: createThunkReducer(actionTypes.ORDER_ITEM),
         document: createThunkReducer(actionTypes.GET_DOCUMENT),
-        return: createThunkReducer(actionTypes.ORDER_RETURN),
+        'return': createThunkReducer(actionTypes.ORDER_RETURN),
         returnList: createThunkReducer(actionTypes.ORDER_RETURN_LIST),
         update: createThunkReducer(actionTypes.ORDER_UPDATE),
         updateProducts: createThunkReducer(actionTypes.PRODUCT_MOBILE),
         changePrice: createThunkReducer(actionTypes.ORDER_CHANGE_PRICE),
-        counts: createThunkReducer(actionTypes.ORDER_COUNTS)
+        counts: createThunkReducer(actionTypes.ORDER_COUNTS),
+        service: createThunkReducer(actionTypes.HR_ORDER_SERVICE_LIST)
     }),
     product: combineReducers({
         create: createThunkReducer(actionTypes.PRODUCT_CREATE),
@@ -540,7 +541,8 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.HR_APPLICATION_UPDATE),
         item: createThunkReducer(actionTypes.HR_APPLICATION_ITEM),
         privilege: createThunkReducer(actionTypes.HR_PRIVILEGE_LIST),
-        logs: createThunkReducer(actionTypes.HR_APP_LOGS_LIST)
+        logs: createThunkReducer(actionTypes.HR_APP_LOGS_LIST),
+        calendar: createThunkReducer(actionTypes.HR_CALENDAR_LIST)
     }),
     resume: combineReducers({
         create: createThunkReducer(actionTypes.HR_RESUME_CREATE),

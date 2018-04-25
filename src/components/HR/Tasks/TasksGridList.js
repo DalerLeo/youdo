@@ -227,6 +227,7 @@ const enhance = compose(
             padding: '15px 15px',
             background: COLOR_WHITE,
             position: 'relative',
+            cursor: 'pointer',
             boxShadow: CUSTOM_BOX_SHADOW,
             '&:last-child': {
                 marginBottom: '0'
@@ -269,8 +270,20 @@ const TasksGridList = enhance((props) => {
     const {
         filter,
         listData,
-        classes
+        classes,
+        calendarData
     } = props
+
+    let resumes = []
+    _.map(_.get(calendarData, 'data'), item => {
+        _.map(_.get(item, 'resume'), resume => {
+            resumes.push({...resume, application: item.id})
+        })
+    })
+
+    const groupByDate = _.groupBy(resumes, (item) => {
+        return dateFormat(item.dateTime)
+    })
 
     const loading = _.get(listData, 'listLoading')
     const tasksList = _.map(_.get(listData, 'data'), (item) => {
@@ -350,27 +363,6 @@ const TasksGridList = enhance((props) => {
         }
     }
 
-    const calendarData = [
-        {
-            date: '2018-04-25 20:15',
-            fullName: 'Akhunbabaev Khamidulla',
-            position: 'Программист',
-            deadline: '2018-05-01'
-        }, {
-            date: '2018-04-25 22:00',
-            fullName: 'Jasur Juraev',
-            position: 'Программист',
-            deadline: '2018-05-05'
-        }, {
-            date: '2018-04-27 15:00',
-            fullName: 'Omonov Kaxramon',
-            position: 'Менеджер',
-            deadline: '2018-04-15'
-        }]
-    const groupByDate = _.groupBy(calendarData, (item) => {
-        return dateFormat(item.date)
-    })
-
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -431,16 +423,22 @@ const TasksGridList = enhance((props) => {
                         </div>}
                 </div>
                 <div className={classes.rightSide}>
-                    {_.map(groupByDate, (item, date) => {
-                        return (
+                    {calendarData.loading
+                        ? <div className={classes.loader}><Loader size={0.75}/></div>
+                        : _.map(groupByDate, (item, date) => {
+                            return (
                             <div key={date} className={classes.calendarDay}>
                                 <div className={classes.calendarDate}>{date}</div>
                                 {_.map(item, (obj, index) => {
-                                    const time = moment(_.get(obj, 'date')).format('HH:mm')
+                                    const time = moment(_.get(obj, 'dateTime')).format('HH:mm')
                                     const fullName = _.get(obj, 'fullName')
                                     const position = _.get(obj, 'position')
+                                    const status = _.get(obj, 'status')
+                                    const relation = _.get(obj, 'relation_id')
+                                    const application = _.get(obj, 'application')
+                                    const id = _.get(obj, 'id')
                                     return (
-                                        <div key={index} className={classes.calendarResume}>
+                                        <div onClick={() => calendarData.handleOpenResumeMeetingDialog(status, id, application, relation)} key={index} className={classes.calendarResume}>
                                             <div className={classes.calendarTime}>
                                                 <div>{time}</div>
                                             </div>
@@ -452,8 +450,8 @@ const TasksGridList = enhance((props) => {
                                     )
                                 })}
                             </div>
-                        )
-                    })}
+                            )
+                        })}
                 </div>
             </div>
         </Container>

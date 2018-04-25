@@ -1,10 +1,9 @@
 import _ from 'lodash'
-import moment from 'moment'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, Fields, reduxForm} from 'redux-form'
+import {Field, reduxForm} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -15,20 +14,12 @@ import {Link} from 'react-router'
 import {connect} from 'react-redux'
 import {
     TextField,
-    ClientSearchField,
-    OrderListProductField,
-    DateField,
-    UsersSearchField,
-    PriceListSearchField,
-    UserCurrenciesSearchField,
-    DeliveryTypeSearchField
+    ClientContactsField,
+    CheckBox,
+    CheckBoxCustom
 } from '../ReduxForm'
+import ClientSearchField from '../ReduxForm/HR/Application/ClientSearchField'
 import numberFormat from '../../helpers/numberFormat'
-import checkPermission from '../../helpers/checkPermission'
-import OrderDealTypeRadio from '../ReduxForm/Order/OrderDealTypeRadio'
-import OrderPaymentTypeRadio from '../ReduxForm/Order/OrderPaymentTypeRadio'
-import MarketSearchField from '../ReduxForm/ClientBalance/MarketSearchField'
-import CheckBox from '../ReduxForm/Basic/CheckBox'
 import t from '../../helpers/translate'
 import {
     ORDER_GIVEN,
@@ -36,9 +27,9 @@ import {
     ORDER_CANCELED
 } from '../../constants/backendConstants'
 import formValidate from '../../helpers/formValidate'
+import {Row, Col} from 'react-flexbox-grid'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const SHOP_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const enhance = compose(
@@ -155,7 +146,16 @@ const enhance = compose(
             width: 'calc(100% - 280px)',
             padding: '20px 30px',
             overflowY: 'auto',
-            maxHeight: '800px'
+            maxHeight: '800px',
+            '& .row': {
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                padding: '0',
+                position: 'relative',
+                minHeight: '45px',
+                alignItems: 'center'
+            }
         },
         inputFieldCustom: {
             height: '45px !important',
@@ -199,6 +199,10 @@ const enhance = compose(
             color: '#ff2626',
             margin: '10px -30px -15px',
             background: '#ffecec'
+        },
+        serviceTitle: {
+            fontWeight: '600',
+            marginBotton: '10px'
         }
     }),
     reduxForm({
@@ -234,22 +238,16 @@ const OrderCreateDialog = enhance((props) => {
         isUpdate,
         products,
         status,
-        canChangeAnyPrice,
-        canChangePrice,
         clientId,
         loading,
         orderProducts,
         currencyItem,
         editProductsLoading,
-        handleOpenAddProduct,
-        deliveryType,
-        hasMarket,
         isConfirmed,
-        dealType,
-        paymentDate,
         closed,
         setClosed,
-        dispatch
+        dispatch,
+        servicesData
     } = props
 
     const formNames = [
@@ -272,14 +270,10 @@ const OrderCreateDialog = enhance((props) => {
         }))
 
     const customContentStyle = {
-        width: loading ? '800px' : '1000px',
+        width: loading ? '500px' : '750px',
         maxWidth: 'none',
         height: '100%'
     }
-    // PERMISSIONS
-    const canSetDeliveryMan = checkPermission('can_set_delivery_man')
-    const canSetAgent = checkPermission('can_set_agent')
-
     const totalCost = _.sumBy(orderProducts, (item) => {
         const amount = _.toNumber(_.get(item, 'amount'))
         const cost = _.toNumber(_.get(item, 'cost'))
@@ -290,13 +284,6 @@ const OrderCreateDialog = enhance((props) => {
         const balance = _.toNumber(_.get(item, ['product', 'value', 'balance']))
         return (!editProductsLoading && amount > balance)
     }), true)
-
-    const selectFieldScroll = {
-        scrollable: true,
-        maxHeight: '150px'
-    }
-    const maxDate = moment(paymentDate).toDate()
-
     return (
         <Dialog
             modal={true}
@@ -321,18 +308,7 @@ const OrderCreateDialog = enhance((props) => {
                             <div style={{minHeight: '470px'}} className={classes.inContent}>
                                 <div className={classes.leftOrderPart}>
                                     <div className={classes.subTitleOrder}>
-                                        {hasMarket && <span>{t('Выбор магазина')}</span>}
-                                        {!hasMarket && <span>{t('Выбор клиента')}</span>}
-                                        {hasMarket &&
-                                        <Link style={{color: '#12aaeb'}}
-                                              target="_blank"
-                                              to={{
-                                                  pathname: [ROUTES.SHOP_LIST_URL],
-                                                  query: {[SHOP_CREATE_DIALOG_OPEN]: true}
-                                              }}>
-                                            + {t('добавить')}
-                                        </Link>}
-                                        {!hasMarket &&
+                                        <span>{t('Выбор клиента')}</span>
                                         <Link style={{color: '#12aaeb'}}
                                               target="_blank"
                                               to={{
@@ -340,7 +316,7 @@ const OrderCreateDialog = enhance((props) => {
                                                   query: {[CLIENT_CREATE_DIALOG_OPEN]: true}
                                               }}>
                                             + {t('добавить')}
-                                        </Link>}
+                                        </Link>
                                     </div>
                                     <div>
                                         <Field
@@ -350,117 +326,45 @@ const OrderCreateDialog = enhance((props) => {
                                             label={t('Клиент')}
                                             closed={closed}
                                             fullWidth={true}/>
-                                        {hasMarket && <Field
-                                            name="market"
-                                            component={MarketSearchField}
+                                        <Field
+                                            name="clientContact"
+                                            component={ClientContactsField}
                                             params={{client: clientId}}
-                                            className={classes.inputFieldCustom}
-                                            label={t('Название магазина')}
-                                            fullWidth={true}/>}
-                                    </div>
-
-                                    {notEnough && <div className={classes.notEnough}>{t('Недостаточно товаров на складе')}</div>}
-                                    <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>{t('Оплата')}</div>
-                                        <Field
-                                            name="paymentType"
-                                            component={OrderPaymentTypeRadio}
-                                            isUpdate={isUpdate}
-                                        />
-                                        <Field
-                                            name="currency"
-                                            component={UserCurrenciesSearchField}
-                                            className={classes.inputFieldCustom}
-                                            label={t('Валюта')}
                                             fullWidth={true}/>
                                         <Field
-                                            name="priceList"
-                                            component={PriceListSearchField}
-                                            className={classes.inputFieldCustom}
-                                            label={t('Прайс лист')}
-                                            fullWidth={true}/>
-                                        {canSetAgent && <Field
-                                            name="user"
-                                            component={UsersSearchField}
-                                            className={classes.inputFieldCustom}
-                                            closed={closed}
-                                            label={t('Агент')}
-                                            selectFieldScroll={selectFieldScroll}
-                                            fullWidth={true}/>}
-                                        <Field
-                                            name="paymentDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText={t('Дата окончательной оплаты')}
-                                            errorStyle={{bottom: 2}}
-                                            container="inline"
-                                            fullWidth={true}/>
-                                    </div>
-                                    <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>{t('Условия договора')}</div>
-                                        <Field
-                                            name="dealType"
-                                            isUpdate={isUpdate}
-                                            component={OrderDealTypeRadio}/>
-                                        {dealType === 'consignment' &&
-                                        <Field
-                                            name="nextPaymentDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText={t('Дата следующей оплаты')}
-                                            maxDate={maxDate}
-                                            container="inline"
-                                            fullWidth={true}/>}
-                                        <Field
-                                            name="contract"
+                                            name="discount"
                                             component={TextField}
                                             className={classes.inputFieldCustom}
-                                            label={t('Номер договора')}
+                                            label={t('Скидка')}
                                             fullWidth={true}/>
-                                    </div>
-                                    {status !== ORDER_GIVEN &&
-                                    <div className={classes.condition}>
-                                        <div className={classes.subTitleOrderNoPad}>{t('Условия доставки')}</div>
                                         <Field
-                                            name="deliveryType"
-                                            component={DeliveryTypeSearchField}
-                                            className={classes.inputDateCustom}
-                                            label={t('Тип доставки')}
-                                            fullWidth={true}/>
-                                        {deliveryType === 'delivery' && canSetDeliveryMan &&
-                                        <Field
-                                            name="deliveryMan"
-                                            component={UsersSearchField}
-                                            params={{group: 'delivery'}}
-                                            className={classes.inputDateCustom}
-                                            label={t('Доставщик')}
-                                            fullWidth={true}/>}
-                                        {deliveryType === 'delivery' &&
-                                        <Field
-                                            name="deliveryDate"
-                                            component={DateField}
-                                            className={classes.inputDateCustom}
-                                            floatingLabelText={t('Дата доставки')}
-                                            container="inline"
-                                            fullWidth={true}/>}
-                                        <Field
-                                            name="isConfirmed"
+                                            name="isPaid"
                                             component={CheckBox}
-                                            disabled={status === ORDER_DELIVERED || status === ORDER_GIVEN}
-                                            label={t('Подтвержденный')}/>
-                                    </div>}
+                                            label={t('Оплачено')}/>
+                                    </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
-                                    <Fields
-                                        names={['products', 'product', 'amount', 'cost', 'type', 'editAmount', 'editCost']}
-                                        editOnlyCost={status === ORDER_DELIVERED || status === ORDER_GIVEN}
-                                        canChangeAnyPrice={canChangeAnyPrice}
-                                        canChangePrice={canChangePrice}
-                                        component={OrderListProductField}
-                                        editProductsLoading={editProductsLoading}
-                                        isUpdate={isUpdate}
-                                        handleOpenAddProduct={handleOpenAddProduct}
-                                    />
+                                    <div className={classes.serviceTitle}>{t('Услуги')}</div>
+                                    <Row className='dottedList'>
+                                        <Col xs={7}>{t('Наименование')}</Col>
+                                        <Col xs={5} style={{textAlign: 'right'}}>{t('Цена')}</Col>
+                                    </Row>
+                                    {_.map(_.get(servicesData, 'list'), (item, index) => {
+                                        const id = _.get(item, 'id')
+                                        const name = _.get(item, 'name')
+                                        const price = _.get(item, 'price')
+                                        return (
+                                            <Row key={id} className="dottedList">
+                                                <Col xs={7}>
+                                                    <Field
+                                                        name={'service[' + index + ']'}
+                                                        component={CheckBoxCustom}
+                                                        data={id}
+                                                        label={name}/>
+                                                </Col>
+                                                <Col xs={5} style={{textAlign: 'right'}}>{price}</Col>
+                                            </Row>)
+                                    })}
                                 </div>
                             </div>
                         </div>

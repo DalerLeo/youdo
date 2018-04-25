@@ -1,11 +1,8 @@
 import _ from 'lodash'
 import moment from 'moment'
 import {orderingSnakeCase} from '../helpers/serializer'
-import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
+// . import numberWithoutSpaces from '../helpers/numberWithoutSpaces'
 
-const STANDART = 0
-const CONSIGNMENT = 1
-const INDIVIDUAL_DEAL_TYPE = 2
 const ONE = 1
 const TWO = 2
 const MINUS_ONE = -1
@@ -13,75 +10,17 @@ const THOU = 1000
 
 export const createSerializer = (data) => {
     const client = _.get(data, ['client', 'value'])
-    const paymentType = _.get(data, ['paymentType'])
-    const deliveryType = _.get(data, ['deliveryType', 'value'])
-    const deliveryMan = deliveryType === 'self' ? null : _.get(data, ['deliveryMan', 'value'])
-    const paymentTerm = 1
-    const paymentDate = _.get(data, ['paymentDate']) ? moment(_.get(data, ['paymentDate'])).format('YYYY-MM-DD') : null
-    const deliveryDate = _.get(data, ['deliveryDate']) ? moment(_.get(data, ['deliveryDate'])).format('YYYY-MM-DD') : null
-    const requestDeadline = _.get(data, ['requestDeadline']) ? moment(_.get(data, ['requestDeadline'])).format('YYYY-MM-DD') : null
-    const dealType = _.get(data, ['dealType']) === 'standart' ? STANDART : (_.get(data, ['dealType']) === 'consignment' ? CONSIGNMENT : INDIVIDUAL_DEAL_TYPE)
-    const market = _.get(data, ['market', 'value'])
-    const contract = _.get(data, ['contract'])
-    const deliveryPrice = _.get(data, ['deliveryPrice'])
-    const priceList = _.get(data, ['priceList', 'value'])
-    const user = _.get(data, ['user', 'value'])
-    const currency = _.get(data, ['currency', 'value'])
-    const isConfirmed = _.get(data, ['isConfirmed'])
-    const products = _.map(_.get(data, ['products']), (item) => {
-        return {
-            id: _.get(item, ['product', 'id']),
-            amount: numberWithoutSpaces(_.get(item, 'amount')),
-            custom_price: numberWithoutSpaces(_.get(item, 'cost')),
-            product: _.get(item, ['product', 'value', 'id'])
-        }
-    })
-    const nextPaymentDate = _.get(data, ['dealType']) === 'consignment'
-        ? moment(_.get(data, ['nextPaymentDate'])).format('YYYY-MM-DD')
-        : null
-    const request = deliveryType === 'self'
-        ? {
-            client,
-            currency,
-            contract,
-            'payment_date': paymentDate,
-            'payment_type': paymentType,
-            'payment_term': paymentTerm,
-            'deal_type': dealType,
-            'delivery_type': deliveryType,
-            'next_payment_date': nextPaymentDate,
-            market,
-            user,
-            products,
-            'delivery_price': deliveryPrice,
-            'is_confirmed': isConfirmed,
-            'price_list': priceList === MINUS_ONE ? null : priceList,
-            'with_net_cost': priceList === MINUS_ONE ? ONE : false
-        }
-        : {
-            client,
-            currency,
-            contract,
-            'date_delivery': deliveryDate,
-            'payment_date': paymentDate,
-            'payment_type': paymentType,
-            'payment_term': paymentTerm,
-            'deal_type': dealType,
-            'next_payment_date': nextPaymentDate,
-            'delivery_type': deliveryType,
-            'delivery_man': deliveryMan,
-            'is_confirmed': isConfirmed,
-            market,
-            user,
-            products,
-            'delivery_price': deliveryPrice,
-            'price_list': priceList === MINUS_ONE ? null : priceList,
-            'with_net_cost': priceList === MINUS_ONE ? ONE : false
-        }
-    if (requestDeadline) {
-        return _.merge(request, {'request_deadline': requestDeadline})
+    const discount = _.get(data, ['discount'])
+    const clientContact = _.get(data, ['clientContact'])
+    const isPaid = _.get(data, ['isPaid'])
+    const filterServices = _.filter(_.get(data, ['service']), {state: true})
+    return {
+        service: _.map(filterServices, item => item.value),
+        client,
+        discount,
+        paid: isPaid,
+        'client_contact': clientContact
     }
-    return request
 }
 
 export const multiUpdateSerializer = (data, orders, release) => {

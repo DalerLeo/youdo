@@ -124,6 +124,21 @@ export const orderListFetchAction = (filter, withOrderReturn) => {
         payload
     }
 }
+export const orderServiceListFetchAction = () => {
+    const payload = axios()
+        .get(API.HR_ORDER_SERVICE_LIST)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_ORDER_SERVICE_LIST,
+        payload
+    }
+}
 
 export const orderListPintFetchAction = (filter, id) => {
     const print = true

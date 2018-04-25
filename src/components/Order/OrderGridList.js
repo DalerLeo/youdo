@@ -10,8 +10,6 @@ import Container from '../Container'
 import OrderCreateDialog from './OrderCreateDialog'
 import OrderMultiUpdateDialog from './OrderMultiUpdateDialog'
 import OrderReleaseDialog from './OrderReleaseDialog'
-import OrderAddProductsDialog from './OrderAddProductsDialog'
-import OrderStatusIcons from './OrderStatusIcons'
 import OrderFilterForm from './OrderFilterForm'
 import OrderDetails from './OrderDetails'
 import OrderShortageDialog from './OrderShortage'
@@ -34,7 +32,6 @@ import GetRelease from 'material-ui/svg-icons/action/description'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import Done from 'material-ui/svg-icons/action/check-circle'
 import RefreshIcon from 'material-ui/svg-icons/action/cached'
-import dateFormat from '../../helpers/dateFormat'
 import dateTimeFormat from '../../helpers/dateTimeFormat'
 import toBoolean from '../../helpers/toBoolean'
 import MenuItem from 'material-ui/MenuItem'
@@ -42,6 +39,7 @@ import IconMenu from 'material-ui/IconMenu'
 import getConfig from '../../helpers/getConfig'
 import checkPermission from '../../helpers/checkPermission'
 import t from '../../helpers/translate'
+import Payment from 'material-ui/svg-icons/action/credit-card'
 import {
     ORDER_REQUESTED,
     ORDER_NOT_CONFIRMED,
@@ -49,102 +47,39 @@ import {
     ZERO
 } from '../../constants/backendConstants'
 
+const SUM = 'SUM'
 const listHeader = [
     {
         sorting: true,
         name: 'id',
         title: t('Заказ') + ' №',
-        width: '10%'
+        width: '15%'
     },
     {
         sorting: false,
         name: 'client',
         title: t('Клиент'),
-        width: '17.5%'
-    },
-    {
-        sorting: false,
-        name: 'market',
-        title: t('Магазин'),
-        width: '17.5%'
-    },
-    {
-        sorting: false,
-        name: 'user',
-        title: t('Инициатор'),
-        width: '10%'
+        width: '30%'
     },
     {
         sorting: true,
         name: 'totalPrice',
         alignRight: true,
         title: t('Сумма заказа'),
-        width: '15%'
-    },
-    {
-        sorting: true,
-        name: 'dateDelivery',
-        title: t('Дата доставки'),
-        width: '15%'
+        width: '25%'
     },
     {
         sorting: true,
         name: 'createdDate',
         title: t('Дата создания'),
-        width: '15%'
-    },
-    {
-        sorting: false,
-        title: t('Статус'),
-        width: '5%'
-    }
-]
-
-const listHeaderHasMarket = [
-    {
-        sorting: true,
-        name: 'id',
-        title: t('Заказ') + ' №',
-        width: '10%'
-    },
-    {
-        sorting: false,
-        name: 'client',
-        title: t('Клиент'),
         width: '25%'
     },
     {
         sorting: false,
-        name: 'user',
-        title: t('Инициатор'),
-        width: '15%'
-    },
-    {
-        sorting: true,
-        name: 'totalPrice',
-        alignRight: true,
-        title: t('Сумма заказа'),
-        width: '15%'
-    },
-    {
-        sorting: true,
-        name: 'dateDelivery',
-        title: t('Дата доставки'),
-        width: '15%'
-    },
-    {
-        sorting: true,
-        name: 'createdDate',
-        title: t('Дата создания'),
-        width: '15%'
-    },
-    {
-        sorting: false,
         title: t('Статус'),
         width: '5%'
     }
 ]
-
 const enhance = compose(
     injectSheet({
         addButtonWrapper: {
@@ -221,6 +156,19 @@ const enhance = compose(
     }),
 )
 
+const iconStyle = {
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 30,
+        height: 30,
+        padding: 5
+    }
+}
+
 const OrderGridList = enhance((props) => {
     const {
         filter,
@@ -246,18 +194,16 @@ const OrderGridList = enhance((props) => {
         cancelOrderReturnDialog,
         refreshAction,
         canChangeAnyPrice,
-        canChangePrice,
         handleSubmitDiscountDialog,
         handleSubmitSetZeroDiscountDialog,
         clientId,
         isSuperUser,
         getExcelDocument,
         releaseDialog,
-        addProductDialog,
         printSalesDialog,
-        printContractDialog,
         scrollValue,
-        checkDeliveryDialog
+        checkDeliveryDialog,
+        servicesData
     } = props
 
     // CHECKING PERMISSIONS
@@ -306,7 +252,6 @@ const OrderGridList = enhance((props) => {
             handleSubmitSetZeroDiscountDialog={handleSubmitSetZeroDiscountDialog}
             clientId={clientId}
             isSuperUser={isSuperUser}
-            handleOpenPrintContract={printContractDialog.handleOpenContractPrint}
             hasMarket={hasMarket}
             checkDeliveryDialog={checkDeliveryDialog}
         />
@@ -320,15 +265,10 @@ const OrderGridList = enhance((props) => {
     const orderList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const client = _.get(item, ['client', 'name'])
-        const market = _.get(item, ['market', 'name'])
         const currentCurrency = _.get(item, ['currency', 'name'])
-        const user = _.get(item, ['user', 'firstName']) + ' ' + _.get(item, ['user', 'secondName']) || 'N/A'
-        const dateDelivery = dateFormat(_.get(item, 'dateDelivery'), '', 'Самовывоз')
         const createdDate = dateTimeFormat(_.get(item, 'createdDate'), true)
-        const totalBalance = _.toNumber(_.get(item, 'totalBalance'))
-        const balanceToolTip = numberFormat(totalBalance, currentCurrency)
         const totalPrice = numberFormat(_.get(item, 'totalPrice'), currentCurrency)
-        const status = _.toInteger(_.get(item, 'status'))
+        const paid = _.toInteger(_.get(item, 'paid'))
         const isNew = _.get(item, 'isNew')
 
         return (
@@ -339,19 +279,20 @@ const OrderGridList = enhance((props) => {
                     query: filter.getParams()
                 }}>
                 </Link>
-                <div style={{width: '10%'}}>{id}</div>
-                <div style={hasMarket ? {width: '17.5%'} : {width: '25%'}}>{client}</div>
-                {hasMarket && <div style={{width: '17.5%'}}>{market}</div>}
-                <div style={hasMarket ? {width: '10%'} : {width: '15%'}}>{user}</div>
-                <div style={{width: '15%', textAlign: 'right'}}>{totalPrice}</div>
-                <div style={{width: '15%'}}>{dateDelivery}</div>
-                <div style={{width: '15%'}}>{createdDate}</div>
+                <div style={{width: '15%'}}>{id}</div>
+                <div style={{width: '30%'}}>{client}</div>
+                <div style={{width: '25%', textAlign: 'right'}}>{numberFormat(totalPrice, SUM)}</div>
+                <div style={{width: '25%'}}>{createdDate}</div>
                 <div style={{width: '5%'}} className={classes.buttons}>
-                    <OrderStatusIcons
-                        status={status}
-                        balanceToolTip={balanceToolTip}
-                        paymentDate={_.get(item, 'paymentDate')}
-                        totalBalance={totalBalance}/>
+                    <ToolTip position="left" text={paid ? 'Оплачено' : 'Не оплачено'}>
+                        <IconButton
+                            disableTouchRipple={true}
+                            iconStyle={iconStyle.icon}
+                            style={iconStyle.button}
+                            touch={true}>
+                            <Payment color={paid ? '#81c784' : '#666'}/>
+                        </IconButton>
+                    </ToolTip>
                 </div>
             </div>
         )
@@ -409,7 +350,7 @@ const OrderGridList = enhance((props) => {
     }
 
     const list = {
-        header: hasMarket ? listHeader : listHeaderHasMarket,
+        header: listHeader,
         list: orderList,
         loading: _.get(listData, 'listLoading') || orderCountsLoading
     }
@@ -553,7 +494,6 @@ const OrderGridList = enhance((props) => {
 
             {createDialog.openCreateDialog &&
             <OrderCreateDialog
-                hasMarket={hasMarket}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 createClientDialog={createClientDialog}
@@ -564,18 +504,13 @@ const OrderGridList = enhance((props) => {
                 filter={filter}
                 clientId={clientId}
                 isSuperUser={isSuperUser}
-                handleOpenAddProduct={addProductDialog.handleOpenAddProduct}
-                canChangeAnyPrice={canChangeAnyPrice}
-                canChangePrice={canChangePrice}
+                servicesData={servicesData}
             />}
 
             {updateDialog.openUpdateDialog &&
             <OrderCreateDialog
-                hasMarket={hasMarket}
                 isUpdate={true}
                 status={_.toInteger(_.get(detailData, ['data', 'status'])) || {}}
-                canChangeAnyPrice={canChangeAnyPrice}
-                canChangePrice={canChangePrice}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
                 loading={updateDialog.updateLoading}
@@ -587,6 +522,7 @@ const OrderGridList = enhance((props) => {
                 filter={filter}
                 clientId={clientId}
                 isSuperUser={isSuperUser}
+                servicesData={servicesData}
             />}
 
             <OrderShortageDialog
@@ -610,23 +546,6 @@ const OrderGridList = enhance((props) => {
                 onClose={releaseDialog.handleCloseReleaseDialog}
                 onSubmit={releaseDialog.handleSubmitReleaseDialog}
             />
-            {addProductDialog.openAddProductDialog &&
-            <OrderAddProductsDialog
-                open={addProductDialog.openAddProductDialog}
-                loading={addProductDialog.loading}
-                filter={addProductDialog.filter}
-                data={addProductDialog.data}
-                onClose={addProductDialog.handleCloseAddProduct}
-                onSubmit={addProductDialog.handleSubmitAddProduct}
-                initialValues={addProductDialog.initialValues}
-                openAddProductConfirm={addProductDialog.openAddProductConfirm}
-                handleCloseAddProductConfirm={addProductDialog.handleCloseAddProductConfirm}
-                handleSubmitAddProductConfirm={addProductDialog.handleSubmitAddProductConfirm}
-                isSuperUser={isSuperUser}
-                canChangeAnyPrice={canChangeAnyPrice}
-                canChangePrice={canChangePrice}
-            />
-            }
 
             {detailData.data && <ConfirmDialog
                 type="cancel"
@@ -714,11 +633,6 @@ OrderGridList.propTypes = {
         openPrint: PropTypes.bool.isRequired,
         handleOpenPrintDialog: PropTypes.func.isRequired,
         handleClosePrintDialog: PropTypes.func.isRequired
-    }).isRequired,
-    printContractDialog: PropTypes.shape({
-        openContractPrint: PropTypes.bool.isRequired,
-        handleOpenContractPrint: PropTypes.func.isRequired,
-        handleCloseContractPrint: PropTypes.func.isRequired
     }).isRequired,
     cancelOrderReturnDialog: PropTypes.shape({
         handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
