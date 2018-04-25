@@ -126,6 +126,7 @@ const enhance = compose(
         titleButtons: {
             display: 'flex',
             justifyContent: 'flex-end',
+            alignItems: 'center',
             zIndex: '2'
         },
         lowercase: {
@@ -225,6 +226,7 @@ const ResumeDetails = enhance((props) => {
     const phone = _.get(data, ['phone'])
     const email = _.get(data, ['email'])
     const familyStatus = _.get(data, ['familyStatus'])
+    const status = _.get(data, ['status'])
     const country = _.get(data, ['country', 'name'])
     const city = _.get(data, ['city', 'name'])
 
@@ -262,6 +264,7 @@ const ResumeDetails = enhance((props) => {
                 <div className={classes.titleLabel}>{fullName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
+                    <span style={{textAlign: 'center'}}>Статус <br/><strong>{status}</strong></span>
                     <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}
