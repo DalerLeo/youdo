@@ -15,7 +15,8 @@ import {connect} from 'react-redux'
 import {
     TextField,
     ClientContactsField,
-    CheckBox
+    CheckBox,
+    CheckBoxCustom
 } from '../ReduxForm'
 import ClientSearchField from '../ReduxForm/HR/Application/ClientSearchField'
 import numberFormat from '../../helpers/numberFormat'
@@ -145,7 +146,16 @@ const enhance = compose(
             width: 'calc(100% - 280px)',
             padding: '20px 30px',
             overflowY: 'auto',
-            maxHeight: '800px'
+            maxHeight: '800px',
+            '& .row': {
+                '&:first-child': {
+                    fontWeight: '600'
+                },
+                padding: '0',
+                position: 'relative',
+                minHeight: '45px',
+                alignItems: 'center'
+            }
         },
         inputFieldCustom: {
             height: '45px !important',
@@ -189,6 +199,10 @@ const enhance = compose(
             color: '#ff2626',
             margin: '10px -30px -15px',
             background: '#ffecec'
+        },
+        serviceTitle: {
+            fontWeight: '600',
+            marginBotton: '10px'
         }
     }),
     reduxForm({
@@ -256,7 +270,7 @@ const OrderCreateDialog = enhance((props) => {
         }))
 
     const customContentStyle = {
-        width: loading ? '600px' : '800px',
+        width: loading ? '500px' : '750px',
         maxWidth: 'none',
         height: '100%'
     }
@@ -318,24 +332,24 @@ const OrderCreateDialog = enhance((props) => {
                                             params={{client: clientId}}
                                             fullWidth={true}/>
                                         <Field
-                                            name="contract"
+                                            name="discount"
                                             component={TextField}
                                             className={classes.inputFieldCustom}
                                             label={t('Скидка')}
                                             fullWidth={true}/>
                                         <Field
-                                            name="isConfirmed"
+                                            name="isPaid"
                                             component={CheckBox}
-                                            disabled={status === ORDER_DELIVERED || status === ORDER_GIVEN}
                                             label={t('Оплачено')}/>
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
+                                    <div className={classes.serviceTitle}>{t('Услуги')}</div>
                                     <Row className='dottedList'>
                                         <Col xs={7}>{t('Наименование')}</Col>
-                                        <Col xs={5}>{t('Цена')}</Col>
+                                        <Col xs={5} style={{textAlign: 'right'}}>{t('Цена')}</Col>
                                     </Row>
-                                    {_.map(_.get(servicesData, 'list'), (item) => {
+                                    {_.map(_.get(servicesData, 'list'), (item, index) => {
                                         const id = _.get(item, 'id')
                                         const name = _.get(item, 'name')
                                         const price = _.get(item, 'price')
@@ -343,11 +357,12 @@ const OrderCreateDialog = enhance((props) => {
                                             <Row key={id} className="dottedList">
                                                 <Col xs={7}>
                                                     <Field
-                                                        name={id}
-                                                        component={CheckBox}
+                                                        name={'service[' + index + ']'}
+                                                        component={CheckBoxCustom}
+                                                        data={id}
                                                         label={name}/>
                                                 </Col>
-                                                <Col xs={5}>{price}</Col>
+                                                <Col xs={5} style={{textAlign: 'right'}}>{price}</Col>
                                             </Row>)
                                     })}
                                 </div>
