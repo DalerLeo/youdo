@@ -9,12 +9,15 @@ import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
+import {getResumeStatus} from '../../../helpers/hrcHelpers'
 import {genderFormat} from '../../../constants/gender'
+import {HardwareKeyboardArrowDown} from 'material-ui/svg-icons'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
     BORDER_STYLE
 } from '../../../constants/styleConstants'
+import {FlatButton, IconMenu, MenuItem} from 'material-ui'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -171,9 +174,15 @@ const enhance = compose(
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
             textOverflow: 'ellipsis'
+        },
+        statusButton: {
+            position: 'absolute',
+            top: '0',
+            right: '135px'
         }
     }),
-    withState('openDetails', 'setOpenDetails', false)
+    withState('openDetails', 'setOpenDetails', false),
+    withState('detailStatus', 'setDetailStatus', false)
 )
 
 const iconStyle = {
@@ -188,7 +197,23 @@ const iconStyle = {
         padding: 0
     }
 }
-withState('openDetails', 'setOpenDetails', false)
+
+const popoverStyle = {
+    menuItem: {
+        fontSize: '13px',
+        minHeight: '36px',
+        lineHeight: '36px'
+    },
+    innerDiv: {
+        padding: '10px',
+        'text-align': 'center'
+    },
+    icon: {
+        margin: '7px',
+        width: '22px',
+        height: '22px'
+    }
+}
 
 const familyStatusText = (gender, status) => {
     if (gender === 'male') {
@@ -214,7 +239,9 @@ const ResumeDetails = enhance((props) => {
         data,
         confirmDialog,
         handleOpenUpdateDialog,
-        handleCloseDetail
+        handleCloseDetail,
+        setDetailStatus,
+        detailStatus
     } = props
 
     // PERSONAL INFO
@@ -226,7 +253,7 @@ const ResumeDetails = enhance((props) => {
     const phone = _.get(data, ['phone'])
     const email = _.get(data, ['email'])
     const familyStatus = _.get(data, ['familyStatus'])
-    const status = _.get(data, ['status'])
+// .    const status = _.get(data, ['status'])
     const country = _.get(data, ['country', 'name'])
     const city = _.get(data, ['city', 'name'])
 
@@ -257,14 +284,54 @@ const ResumeDetails = enhance((props) => {
                 <span key={id} className={classes.skill}>{name}</span>
             )
         })
+    const statusButton = (
+        <div className={classes.statusButton}>
+            <IconMenu
+                className={classes.popover}
+                iconButtonElement={
+                    <FlatButton
+                        label={<span>{t('Статус:')} <br/><span style={{color: '#11aaeb'}}>{detailStatus}</span></span>}
+                        style={{display: 'flex', alignItems: 'center', height: '50px'}}
+                        backgroundColor={'#efefef'}
+                        hoverColor={'#efefef'}
+                        disableTouchRipple
+                        labelPosition="before"
+                        labelStyle={{
+                            color: '#777',
+                            lineHeight: '18px',
+                            textTransform: 'none',
+                            verticalAlign: 'baseline',
+                            fontWeight: '600'
+                        }}
+                        icon={<HardwareKeyboardArrowDown/>}
+                    />
+                }
+                anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                {_.map(getResumeStatus(), item => {
+                    return <MenuItem
+                        key={item.id}
+                        style={popoverStyle.menuItem}
+                        onTouchTap={() => { setDetailStatus(item.id) }}
+                        primaryText={item.name}/>
+                })}
+            </IconMenu>
 
+            {false &&
+            <ToolTip position="left" text={t('Отфильтровать по отмененным заявкам')}>
+                <IconButton>
+                    <Canceled/>
+                </IconButton>
+            </ToolTip>}
+        </div>
+    )
     return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{fullName}</div>
                 <div className={classes.closeDetail} onClick={handleCloseDetail}/>
                 <div className={classes.titleButtons}>
-                    <span style={{textAlign: 'center'}}>Статус <br/><strong>{status}</strong></span>
+                    {statusButton}
                     <ToolTip position="bottom" text={t('Изменить')}>
                         <IconButton
                             iconStyle={iconStyle.icon}

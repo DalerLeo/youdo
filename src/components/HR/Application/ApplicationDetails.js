@@ -9,6 +9,7 @@ import Loader from '../../Loader'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
+import ApplicationDetailProgress from './ApplicationDetailProgress'
 import MenuItem from 'material-ui/MenuItem'
 import Divider from 'material-ui/Divider'
 import FlatButton from 'material-ui/FlatButton'
@@ -214,6 +215,13 @@ const enhance = compose(
             fontWeight: '600',
             fontSize: '14px',
             marginRight: '20px'
+        },
+        moreDetails: {
+            textAlign: 'right',
+            marginTop: '10px'
+        },
+        progress: {
+            backgroundColor: '#efefef'
         }
     }),
     withState('openLogs', 'setOpenLogs', false),
@@ -422,12 +430,16 @@ const ApplicationDetails = enhance((props) => {
                             </div>
                         </div>
                     </div>}
-                    <div style={{textAlign: 'right'}}>
-                        <FlatButton label={moreDetails ? 'Cкрыть' : 'Далее'} primary={true} onTouchTap={() => setMoreDetails(!moreDetails)}/>
+                    <div className={classes.moreDetails}>
+                        <FlatButton
+                            label={moreDetails ? 'Cкрыть' : 'Далее'}
+                            primary={true}
+                            backgroundColor="#efefef"
+                            onTouchTap={() => setMoreDetails(!moreDetails)}/>
                     </div>
                 </div>
-                <div className={classes.block}>
-                    <div className={classNames(classes.status, classes.titleExtra)}>{t('Стадия')}: <span>{getAppStatusName(status, true)}</span></div>
+                <div className={classNames(classes.block, classes.progress)}>
+                    <ApplicationDetailProgress status={status}/>
                 </div>
 
                 <div className={classNames(classes.logs, {

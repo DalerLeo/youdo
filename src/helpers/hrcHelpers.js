@@ -84,3 +84,14 @@ export const getAppStatusIcon = (status, doing) => {
 export const getBackendNames = (iteratingArray, key) => {
     return _.get(_.find(iteratingArray, {id: key}), 'name')
 }
+
+export const getResumeStatus = () => {
+    return [
+        {id: 'not_assigned', name: 'not_assigned'},
+        {id: 'doing', name: 'doing'},
+        {id: 'canceled', name: 'canceled'},
+        {id: 'waiting_response', name: 'waiting_response'},
+        {id: 'job_interview_client', name: 'job_interview_client'},
+        {id: 'completed', name: 'completed'}
+    ]
+}
