@@ -87,11 +87,10 @@ export const getBackendNames = (iteratingArray, key) => {
 
 export const getResumeStatus = () => {
     return [
-        {id: 'not_assigned', name: 'not_assigned'},
-        {id: 'doing', name: 'doing'},
-        {id: 'canceled', name: 'canceled'},
-        {id: 'waiting_response', name: 'waiting_response'},
-        {id: 'job_interview_client', name: 'job_interview_client'},
-        {id: 'completed', name: 'completed'}
+        {id: 'top', name: t('Топ')},
+        {id: 'onEdge', name: t('На грании')},
+        {id: 'blackList', name: t('В черном списке')},
+        {id: 'waiting_response', name: t('Топ')},
+        {id: 'notAssigned', name: 'Не указань'}
     ]
 }

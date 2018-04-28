@@ -290,8 +290,8 @@ const ResumeDetails = enhance((props) => {
                 className={classes.popover}
                 iconButtonElement={
                     <FlatButton
-                        label={<span>{t('Статус:')} <br/><span style={{color: '#11aaeb'}}>{detailStatus}</span></span>}
-                        style={{display: 'flex', alignItems: 'center', height: '50px'}}
+                        label={<span>{t('Статус:')} <br/><span style={{color: '#11aaeb'}}>{detailStatus.name}</span></span>}
+                        style={{display: 'flex', alignItems: 'center', height: '50px', textAlign: 'left'}}
                         backgroundColor={'#efefef'}
                         hoverColor={'#efefef'}
                         disableTouchRipple
@@ -312,7 +312,7 @@ const ResumeDetails = enhance((props) => {
                     return <MenuItem
                         key={item.id}
                         style={popoverStyle.menuItem}
-                        onTouchTap={() => { setDetailStatus(item.id) }}
+                        onTouchTap={() => { setDetailStatus({id: item.id, name: item.name}) }}
                         primaryText={item.name}/>
                 })}
             </IconMenu>
