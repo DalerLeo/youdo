@@ -39,6 +39,7 @@ import {
 // . import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
+    withState('moreDetails', 'setMoreDetails', false),
     injectSheet({
         loader: {
             width: '100%',
@@ -132,6 +133,8 @@ const enhance = compose(
         block: {
             borderLeft: BORDER_STYLE,
             padding: PADDING_STANDART,
+            transition: 'all 200ms ease',
+            maxHeight: '0',
             '&:first-child': {
                 borderLeft: 'none'
             }
@@ -224,18 +227,20 @@ const enhance = compose(
             fontSize: '14px',
             marginRight: '20px'
         },
-        moreDetails: {
+        moreDetailsBtn: {
             textAlign: 'right',
             marginTop: '10px'
         },
+        moreDetails: {
+            maxHeight: '400px'
+        },
         progress: {
             backgroundColor: '#efefef',
-            maxHeight: '360px',
+            'max-height': ({moreDetails}) => moreDetails ? '560px' : '360px',
             overflowY: 'auto'
         }
     }),
     withState('openLogs', 'setOpenLogs', false),
-    withState('moreDetails', 'setMoreDetails', false)
 )
 
 const iconStyle = {
@@ -388,7 +393,8 @@ const ApplicationDetails = enhance((props) => {
                     <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
                     <div className={classes.info}>{sphere}</div>
                 </div>
-                <div className={classes.block} style={{minHeight: moreDetails ? '500px' : '300px', maxHeight: moreDetails ? '700px' : '400px', transition: 'min-height 400ms, max-height 500ms'}}>
+                <div
+                    className={classNames(classes.block, {[classes.moreDetails]: moreDetails})}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
                     <div className={classes.info}>
                         <div>{t('Наименование должности')}: <strong>{position}</strong></div>
@@ -408,7 +414,7 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
                         <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
                     </div>
-                    {moreDetails && <div style={{marginTop: '15px'}}>
+                    {<div style={{marginTop: '15px', display: moreDetails ? 'block' : 'none'}}>
                         <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
                         <div className={classes.info}>
                             <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
@@ -441,7 +447,7 @@ const ApplicationDetails = enhance((props) => {
                             </div>
                         </div>
                     </div>}
-                    <div className={classes.moreDetails}>
+                    <div className={classes.moreDetailsBtn}>
                         <FlatButton
                             label={moreDetails ? 'Cкрыть' : 'Далее'}
                             primary={true}

@@ -106,7 +106,8 @@ const ResumeGridList = enhance((props) => {
         openRecruiterList,
         setOpenRecruiterList,
         usersData,
-        privilegeData
+        privilegeData,
+        appCreateDialog
     } = props
 
     const resumefilterDialog = (
@@ -204,7 +205,6 @@ const ResumeGridList = enhance((props) => {
                 usersData={usersData}
                 privilegeData={privilegeData}
             />
-
             {detailData.data &&
             <ConfirmDialog
                 type="delete"

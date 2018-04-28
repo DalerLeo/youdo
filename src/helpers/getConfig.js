@@ -1,22 +1,25 @@
-import _ from 'lodash'
+/*
+Import _ from 'lodash'
 import axios from '../helpers/axios'
 import * as API from '../constants/api'
-
+*/
 const getStorage = (local) => {
     return local ? localStorage : sessionStorage
 }
 
-const setConfigs = (configs) => {
+/*
+Const setConfigs = (configs) => {
     const storage = getStorage(false)
 
     _.forIn(configs, (value, key) => {
         storage.setItem(key, value)
     })
 }
-
+*/
 const getConfig = (text) => {
     const value = getStorage(false).getItem(text)
-    if (_.isEmpty(value) && !sessionStorage.length) {
+
+/*    If (_.isEmpty(value) && !sessionStorage.length) {
         axios()
             .get(API.CONFIG)
             .then((response) => {
@@ -25,7 +28,7 @@ const getConfig = (text) => {
             .catch((error) => {
                 return Promise.reject(_.get(error, ['response', 'data']))
             })
-    }
+    } */
     return value
 }
 

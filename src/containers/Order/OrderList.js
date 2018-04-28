@@ -2,7 +2,7 @@ import React from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import {connect} from 'react-redux'
-import {reset, change} from 'redux-form'
+import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout'
 import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
@@ -21,12 +21,7 @@ import {
     orderListFetchAction,
     orderDeleteAction,
     orderItemFetchAction,
-    orderReturnAction,
-    orderReturnListAction,
-    orderTransactionFetchAction,
-    orderItemReturnFetchAction,
     orderListPintFetchAction,
-    orderReturnCancelAction,
     orderProductMobileAction,
     orderSetDiscountAction,
     orderMultiUpdateAction,
@@ -36,6 +31,11 @@ import {
     orderCheckDeliveryAction,
     orderServiceListFetchAction
 } from '../../actions/order'
+import {
+    applicationCreateAction,
+    privilegeListFetchAction,
+    usersListFetchAction
+} from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import updateStore from '../../helpers/updateStore'
 import {
@@ -43,15 +43,14 @@ import {
     ORDER_UPDATE_DIALOG_OPEN,
     ORDER_FILTER_KEY,
     ORDER_FILTER_OPEN,
-    ORDER_TRANSACTIONS_DIALOG_OPEN,
-    ORDER_RETURN_DIALOG_OPEN,
     ORDER_SHORTAGE_DIALOG_OPEN,
     ORDER_MULTI_EDIT_OPEN,
     ORDER_RELEASE_DIALOG_OPEN,
     TAB,
     OrderGridList,
     OrderPrint,
-    OrderSalesPrint
+    OrderSalesPrint,
+    ORDER_APPLICATION_DIALOG_OPEN
 } from '../../components/Order'
 import t from '../../helpers/translate'
 import {
@@ -63,15 +62,12 @@ import {
 } from '../../constants/backendConstants'
 
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
-const CANCEL_ORDER_RETURN_DIALOG_OPEN = 'openCancelConfirmDialog'
 const MINUS_ONE = -1
 const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
         const detail = _.get(state, ['order', 'item', 'data'])
-        const payment = _.get(state, ['order', 'payment', 'data'])
-        const paymentLoading = _.get(state, ['order', 'payment', 'loading'])
         const orderReturnList = _.get(state, ['order', 'returnList', 'data'])
         const detailLoading = _.get(state, ['order', 'item', 'loading'])
         const createLoading = _.get(state, ['order', 'create', 'loading'])
@@ -94,15 +90,11 @@ const enhance = compose(
         const clientCreateForm = _.get(state, ['form', 'ClientCreateForm'])
         const discountCreateForm = _.get(state, ['form', 'OrderSetDiscountForm'])
         const returnForm = _.get(state, ['form', 'OrderReturnForm'])
-        const returnData = _.get(state, ['order', 'return', 'data', 'results'])
         const returnLoading = _.get(state, ['order', 'return', 'loading'])
-        const returnDataLoading = _.get(state, ['order', 'return', 'loading'])
         const products = _.get(state, ['form', 'OrderCreateForm', 'values', 'products'])
         const editProducts = _.get(state, ['order', 'updateProducts', 'data'])
         const editProductsLoading = _.get(state, ['order', 'updateProducts', 'loading'])
         const salesPrintData = _.get(state, ['order', 'salesPrint', 'data'])
-        const marketDetails = _.get(state, ['shop', 'item', 'data'])
-        const marketDetailsLoading = _.get(state, ['shop', 'item', 'loading'])
         const salesPrintDataLoading = _.get(state, ['order', 'salesPrint', 'loading'])
         const filter = filterHelper(list, pathname, query)
         const filterProducts = filterHelper(editProducts, pathname, query, {'page': 'pdPage', 'pageSize': 'pdPageSize'})
@@ -111,12 +103,16 @@ const enhance = compose(
         const paymentType = _.get(state, ['form', 'OrderCreateForm', 'values', 'paymentType'])
         const isSuperUser = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
         const addProductsForm = _.get(state, ['form', 'OrderAddProductsForm'])
+        const usersList = _.get(state, ['users', 'list', 'data'])
+        const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+        const privilegeList = _.get(state, ['application', 'privilege', 'data'])
+        const privilegeListLoading = _.get(state, ['application', 'privilege', 'loading'])
+        const AppCreateForm = _.get(state, ['form', 'ApplicationCreateForm'])
 
         return {
             list,
             listLoading,
             detail,
-            payment,
             listPrintLoading,
             listPrint,
             detailLoading,
@@ -126,15 +122,12 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            paymentLoading,
             createForm,
             multiUpdateForm,
             clientCreateForm,
             returnForm,
-            returnData,
             orderReturnList,
             returnLoading,
-            returnDataLoading,
             returnDialogLoading,
             products,
             editProducts,
@@ -151,10 +144,13 @@ const enhance = compose(
             addProductsForm,
             salesPrintData,
             salesPrintDataLoading,
-            marketDetails,
-            marketDetailsLoading,
             serviceListLoading,
-            serviceList
+            serviceList,
+            usersListLoading,
+            usersList,
+            privilegeList,
+            privilegeListLoading,
+            AppCreateForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -164,7 +160,8 @@ const enhance = compose(
             pdSearch: null,
             showCheckboxes: null,
             openMultiEdit: null,
-            openReleaseDialog: null
+            openReleaseDialog: null,
+            openAppDialog: null
         }
         return props.serviceList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -177,45 +174,12 @@ const enhance = compose(
             pdSearch: null,
             showCheckboxes: null,
             openMultiEdit: null,
-            openReleaseDialog: null
+            openReleaseDialog: null,
+            openAppDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(orderListFetchAction(filter))
-    }),
-    withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['selectedProduct', 'id']) !== _.get(nextProps, ['selectedProduct', 'id']) && _.get(nextProps, ['selectedProduct', 'id'])) ||
-            (_.get(props, 'paymentType') !== _.get(nextProps, 'paymentType'))
-    }, ({dispatch, selectedProduct, paymentType}) => {
-        const customPrice = _.get(selectedProduct, 'customPrice')
-        if (selectedProduct && !customPrice && paymentType) {
-            const price = paymentType === 'cash' ? _.toNumber(_.get(selectedProduct, 'cashPrice')) : _.toNumber(_.get(selectedProduct, 'transferPrice'))
-            dispatch(change('OrderCreateForm', 'cost', price))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevTransaction = toBoolean(_.get(props, ['location', 'query', 'openTransactionsDialog']))
-        const nextTransaction = toBoolean(_.get(nextProps, ['location', 'query', 'openTransactionsDialog']))
-        return prevTransaction !== nextTransaction && nextTransaction === true
-    }, ({dispatch, params, location}) => {
-        const openTransaction = toBoolean(_.get(location, ['query', 'openTransactionsDialog']))
-        const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO && openTransaction) {
-            dispatch(orderTransactionFetchAction(orderId))
-        }
-    }),
-    withPropsOnChange((props, nextProps) => {
-        const prevOrderId = _.get(props, ['params', 'orderId'])
-        const nextOrderId = _.get(nextProps, ['params', 'orderId'])
-        const prevTab = _.get(props, ['location', 'query', 'tab'])
-        const nextTab = _.get(nextProps, ['location', 'query', 'tab'])
-        return (prevOrderId !== nextOrderId || prevTab !== nextTab) && nextTab === 'return'
-    }, ({dispatch, params, location}) => {
-        const returnTab = _.get(location, ['query', TAB])
-        const orderId = _.toInteger(_.get(params, 'orderId'))
-        if (orderId > ZERO && returnTab === ORDER_TAB.ORDER_TAB_RETURN) {
-            dispatch(orderItemReturnFetchAction(orderId))
-        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -225,17 +189,6 @@ const enhance = compose(
     }, ({dispatch, params}) => {
         const orderId = _.toInteger(_.get(params, 'orderId'))
         orderId && dispatch(orderItemFetchAction(orderId))
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        const prevReturn = _.toInteger(_.get(props, ['location', 'query', 'openOrderItemReturnDialog']))
-        const nextReturn = _.toInteger(_.get(nextProps, ['location', 'query', 'openOrderItemReturnDialog']))
-        return prevReturn !== nextReturn && nextReturn > ZERO
-    }, ({dispatch, location}) => {
-        const returnItemId = _.toInteger(_.get(location, ['query', 'openOrderItemReturnDialog']))
-        if (returnItemId > ZERO) {
-            dispatch(orderReturnListAction(returnItemId))
-        }
     }),
 
     withPropsOnChange((props, nextProps) => {
@@ -294,6 +247,32 @@ const enhance = compose(
         }
     }),
 
+    withState('openRecruiterList', 'setOpenRecruiterList', false),
+    withPropsOnChange((props, nextProps) => {
+        const prevOpen = _.get(props, ['openRecruiterList'])
+        const nextOpen = _.get(nextProps, ['openRecruiterList'])
+        const usersList = _.get(nextProps, ['usersList'])
+        return nextOpen !== prevOpen && nextOpen === true && !usersList
+    }, ({dispatch, openRecruiterList}) => {
+        if (openRecruiterList) {
+            dispatch(usersListFetchAction())
+        }
+    }),
+
+    withPropsOnChange((props, nextProps) => {
+        const prevCreate = toBoolean(_.get(props, ['location', 'query', ORDER_APPLICATION_DIALOG_OPEN]))
+        const nextCreate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_APPLICATION_DIALOG_OPEN]))
+        const prevUpdate = toBoolean(_.get(props, ['location', 'query', ORDER_APPLICATION_DIALOG_OPEN]))
+        const nextUpdate = toBoolean(_.get(nextProps, ['location', 'query', ORDER_APPLICATION_DIALOG_OPEN]))
+        const privilegeList = _.get(nextProps, ['privilegeList'])
+        return ((prevCreate !== nextCreate && nextCreate === true) || (prevUpdate !== nextUpdate && nextUpdate === true)) && !privilegeList
+    }, ({dispatch, location: {query}}) => {
+        const openCreate = toBoolean(_.get(query, ORDER_APPLICATION_DIALOG_OPEN))
+        const openUpdate = toBoolean(_.get(query, ORDER_APPLICATION_DIALOG_OPEN))
+        if (openCreate || openUpdate) {
+            dispatch(privilegeListFetchAction())
+        }
+    }),
     withState('openCheckDeliveryConfirm', 'setOpenCheckDeliveryConfirm', false),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openPrint', 'setOpenPrint', false),
@@ -446,63 +425,6 @@ const enhance = compose(
                     dispatch(orderListFetchAction(filter))
                 })
         },
-
-        handleOpenTransactionsDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseTransactionsDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_TRANSACTIONS_DIALOG_OPEN]: false})})
-        },
-
-        handleOpenReturnDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: true})})
-        },
-
-        handleCloseReturnDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
-        },
-        handleSubmitReturnDialog: props => () => {
-            const {dispatch, returnForm, detail, filter, location: {pathname}, params} = props
-            const orderId = _.toInteger(_.get(params, 'orderId'))
-            return dispatch(orderReturnAction(_.get(returnForm, ['values']), detail))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[ORDER_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(orderItemReturnFetchAction(orderId))
-                    dispatch(orderItemFetchAction(orderId))
-                })
-        },
-        handleOpenCancelOrderReturnDialog: props => (id) => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: id})})
-        },
-
-        handleCloseCancelOrderReturnDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: false})})
-        },
-        handleSubmitCancelOrderReturnDialog: props => () => {
-            const {dispatch, filter, params, location: {pathname, query}} = props
-            const orderReturnId = _.toInteger(_.get(query, CANCEL_ORDER_RETURN_DIALOG_OPEN))
-            const orderId = _.toInteger(_.get(params, 'orderId'))
-            return dispatch(orderReturnCancelAction(orderReturnId))
-                .then(() => {
-                    return dispatch(openSnackbarAction({message: t('Успешно отменена')}))
-                })
-                .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[CANCEL_ORDER_RETURN_DIALOG_OPEN]: false})})
-                    dispatch(orderItemReturnFetchAction(orderId))
-                    dispatch(orderItemFetchAction(orderId))
-                })
-        },
-
         handleOpenShortageDialog: props => () => {
             const {location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[ORDER_SHORTAGE_DIALOG_OPEN]: true})})
@@ -715,7 +637,30 @@ const enhance = compose(
                         message: error
                     }))
                 })
+        },
+        handleOpenAppCreateDialog: props => () => {
+            const {dispatch, location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_APPLICATION_DIALOG_OPEN]: true})})
+            dispatch(reset('ApplicationCreateForm'))
+        },
+
+        handleCloseAppCreateDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({[ORDER_APPLICATION_DIALOG_OPEN]: false})})
+        },
+
+        handleSubmitAppCreateDialog: props => () => {
+            const {dispatch, AppCreateForm, filter, location: {pathname}} = props
+
+            return dispatch(applicationCreateAction(_.get(AppCreateForm, ['values'])))
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .then(() => {
+                    hashHistory.push({pathname, query: filter.getParams({[ORDER_APPLICATION_DIALOG_OPEN]: false})})
+                })
         }
+
     }),
 )
 
@@ -725,20 +670,14 @@ const OrderList = enhance((props) => {
         list,
         listLoading,
         detail,
-        returnData,
-        orderReturnList,
-        payment,
         detailLoading,
         createLoading,
-        returnLoading,
         shortageLoading,
         updateLoading,
-        returnDataLoading,
         filter,
         layout,
         products,
         openPrint,
-        paymentLoading,
         params,
         listPrint,
         listPrintLoading,
@@ -753,16 +692,19 @@ const OrderList = enhance((props) => {
         salesPrintDataLoading,
         openCheckDeliveryConfirm,
         serviceList,
-        serviceListLoading
+        serviceListLoading,
+        openRecruiterList,
+        setOpenRecruiterList,
+        usersList,
+        usersListLoading,
+        privilegeList,
+        privilegeListLoading
     } = props
     const openFilterDialog = toBoolean(_.get(location, ['query', ORDER_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', ORDER_CREATE_DIALOG_OPEN]))
-    const openTransactionsDialog = toBoolean(_.get(location, ['query', ORDER_TRANSACTIONS_DIALOG_OPEN]))
-    const openReturnDialog = toBoolean(_.get(location, ['query', ORDER_RETURN_DIALOG_OPEN]))
     const openShortageDialog = toBoolean(_.get(location, ['query', ORDER_SHORTAGE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', ORDER_UPDATE_DIALOG_OPEN]))
     const openMultiUpdateDialog = toBoolean(_.get(location, ['query', ORDER_MULTI_EDIT_OPEN]))
-    const openCancelOrderReturnDialog = _.toInteger(_.get(location, ['query', CANCEL_ORDER_RETURN_DIALOG_OPEN]))
     const openReleaseDialog = toBoolean(_.get(location, ['query', ORDER_RELEASE_DIALOG_OPEN]))
 
     const client = filter.getParam(ORDER_FILTER_KEY.CLIENT)
@@ -783,6 +725,8 @@ const OrderList = enhance((props) => {
     const exclude = filter.getParam(ORDER_FILTER_KEY.EXCLUDE)
     const isNew = filter.getParam(ORDER_FILTER_KEY.IS_NEW)
 
+    const openAppCreateDialog = toBoolean(_.get(location, ['query', ORDER_APPLICATION_DIALOG_OPEN]))
+
     const detailId = _.toInteger(_.get(params, 'orderId'))
     const tab = _.get(location, ['query', TAB]) || ORDER_TAB.ORDER_DEFAULT_TAB
     const orders = _.get(location, ['query', 'select'])
@@ -793,27 +737,6 @@ const OrderList = enhance((props) => {
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
-    }
-
-    const transactionsDialog = {
-        openTransactionsDialog,
-        handleOpenTransactionsDialog: props.handleOpenTransactionsDialog,
-        handleCloseTransactionsDialog: props.handleCloseTransactionsDialog
-    }
-
-    const cancelOrderReturnDialog = {
-        openCancelOrderReturnDialog,
-        handleOpenCancelOrderReturnDialog: props.handleOpenCancelOrderReturnDialog,
-        handleCloseCancelOrderReturnDialog: props.handleCloseCancelOrderReturnDialog,
-        handleSubmitCancelOrderReturnDialog: props.handleSubmitCancelOrderReturnDialog
-    }
-
-    const returnDialog = {
-        returnLoading,
-        openReturnDialog,
-        handleOpenReturnDialog: props.handleOpenReturnDialog,
-        handleCloseReturnDialog: props.handleCloseReturnDialog,
-        handleSubmitReturnDialog: props.handleSubmitReturnDialog
     }
     const shortageDialog = {
         shortageLoading,
@@ -1005,18 +928,9 @@ const OrderList = enhance((props) => {
     const detailData = {
         id: detailId,
         data: detail || {},
-        return: returnData || [],
-        returnLoading: returnDataLoading,
         detailLoading,
         handleCloseDetail: props.handleCloseDetail
     }
-
-    const paymentData = {
-        id: detailId,
-        data: payment || {},
-        paymentLoading
-    }
-
     const printDialog = {
         openPrint,
         handleOpenPrintDialog: props.handleOpenPrintDialog,
@@ -1062,6 +976,28 @@ const OrderList = enhance((props) => {
     document.getElementById('wrapper').style.height = '100%'
     const order = true
 
+    const appCreateDialog = {
+        openAppCreateDialog,
+        handleOpenDialog: props.handleOpenAppCreateDialog,
+        handleCloseDialog: props.handleCloseAppCreateDialog,
+        handleSubmitDialog: props.handleSubmitAppCreateDialog,
+        openRecruiterList: openRecruiterList,
+        setOpenRecruiterList: setOpenRecruiterList
+    }
+
+    const usersData = {
+        list: _.get(usersList, 'results'),
+        loading: usersListLoading
+    }
+
+    const privilegeData = {
+        list: _.get(privilegeList, 'results'),
+        loading: privilegeListLoading,
+        initial: {
+            languages: [{}],
+            privileges: []
+        }
+    }
     const servicesData = {
         list: _.get(serviceList, 'results') || {},
         loading: serviceListLoading
@@ -1073,17 +1009,12 @@ const OrderList = enhance((props) => {
                 listData={listData}
                 tabData={tabData}
                 detailData={detailData}
-                returnListData={orderReturnList || {}}
-                paymentData={paymentData}
                 createDialog={createDialog}
                 getDocument={getDocument}
                 getExcelDocument={props.handleGetExcelDocument}
                 createClientDialog={createClientDialog}
-                transactionsDialog={transactionsDialog}
-                returnDialog={returnDialog}
                 shortageDialog={shortageDialog}
                 confirmDialog={confirmDialog}
-                returnDataLoading={returnDataLoading}
                 updateDialog={updateDialog}
                 multiUpdateDialog={multiUpdateDialog}
                 filterDialog={filterDialog}
@@ -1091,7 +1022,6 @@ const OrderList = enhance((props) => {
                 printDialog={printDialog}
                 type={order}
                 refreshAction={props.handleRefreshList}
-                cancelOrderReturnDialog={cancelOrderReturnDialog}
                 handleSubmitDiscountDialog={props.handleSubmitDiscountDialog}
                 handleSubmitSetZeroDiscountDialog={props.handleSubmitSetZeroDiscountDialog}
                 isSuperUser={isSuperUser}
@@ -1100,6 +1030,9 @@ const OrderList = enhance((props) => {
                 scrollValue={_.get(layout, 'scrollValue')}
                 checkDeliveryDialog={checkDeliveryDialog}
                 servicesData={servicesData}
+                appCreateDialog={appCreateDialog}
+                usersData={usersData}
+                privilegeData={privilegeData}
             />
         </Layout>
     )

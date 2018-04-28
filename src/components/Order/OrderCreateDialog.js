@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {Field, reduxForm} from 'redux-form'
+import {Field, reduxForm, Fields} from 'redux-form'
 import Dialog from 'material-ui/Dialog'
 import Loader from '../Loader'
 import IconButton from 'material-ui/IconButton'
@@ -19,6 +19,7 @@ import {
     CheckBoxCustom
 } from '../ReduxForm'
 import ClientSearchField from '../ReduxForm/HR/Application/ClientSearchField'
+import ApplicationListField from '../ReduxForm/HR/Application/ApplicationListField'
 import numberFormat from '../../helpers/numberFormat'
 import t from '../../helpers/translate'
 import {
@@ -190,6 +191,7 @@ const enhance = compose(
         },
         podlojkaScroll: {
             overflowY: 'auto !important',
+            display: ({openAppCreate}) => openAppCreate ? 'none' : 'block',
             '& > div:first-child > div:first-child': {
                 transform: 'translate(0px, 0px) !important'
             }
@@ -247,7 +249,8 @@ const OrderCreateDialog = enhance((props) => {
         closed,
         setClosed,
         dispatch,
-        servicesData
+        handleOpenAppCreateDialog,
+        openAppCreate
     } = props
 
     const formNames = [
@@ -344,27 +347,11 @@ const OrderCreateDialog = enhance((props) => {
                                     </div>
                                 </div>
                                 <div className={classes.rightOrderPart}>
-                                    <div className={classes.serviceTitle}>{t('Услуги')}</div>
-                                    <Row className='dottedList'>
-                                        <Col xs={7}>{t('Наименование')}</Col>
-                                        <Col xs={5} style={{textAlign: 'right'}}>{t('Цена')}</Col>
-                                    </Row>
-                                    {_.map(_.get(servicesData, 'list'), (item, index) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, 'name')
-                                        const price = _.get(item, 'price')
-                                        return (
-                                            <Row key={id} className="dottedList">
-                                                <Col xs={7}>
-                                                    <Field
-                                                        name={'service[' + index + ']'}
-                                                        component={CheckBoxCustom}
-                                                        data={id}
-                                                        label={name}/>
-                                                </Col>
-                                                <Col xs={5} style={{textAlign: 'right'}}>{price}</Col>
-                                            </Row>)
-                                    })}
+                                    <Fields
+                                        names={['products', 'product', 'defect', 'amount', 'editDefect', 'editAmount']}
+                                        component={ApplicationListField}
+                                        handleOpenAppCreateDialog={handleOpenAppCreateDialog}
+                                    />
                                 </div>
                             </div>
                         </div>
