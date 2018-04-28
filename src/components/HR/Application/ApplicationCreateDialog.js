@@ -431,6 +431,8 @@ const ApplicationCreateDialog = enhance((props) => {
                                 extraText={t('Контактное лицо')}
                                 component={ClientContactsField}/>
                         </div>
+                    </div>
+                    <div className={classes.inContent}>
                         <div className={classes.block}>
                             <h4>2. {t('Гарантия на сотрудника')}</h4>
                             <Field
