@@ -31,6 +31,7 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ChatBubble from 'material-ui/svg-icons/communication/chat-bubble'
 import AddLongListDialog from './AddLongListDialog'
+import ApplicationDetailProgress from '../Application/ApplicationDetailProgress'
 import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
 import QuestionnaireDialog from './QuestionnaireDialog'
@@ -64,11 +65,14 @@ import dateFormat from '../../../helpers/dateFormat'
 import {reduxForm, Field} from 'redux-form'
 import * as ROUTES from '../../../constants/routes'
 import classNames from 'classnames'
+import Notifications from 'material-ui/svg-icons/social/notifications'
+import Badge from 'material-ui/Badge'
 
 export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
 
 const enhance = compose(
+    withState('showProgress', 'setShowProgress', false),
     injectSheet({
         loader: {
             display: 'flex',
@@ -147,9 +151,6 @@ const enhance = compose(
             left: '0',
             right: '0',
             bottom: '0'
-        },
-        appStatus: {
-
         },
         toggle: {
             height: '100%',
@@ -564,6 +565,37 @@ const enhance = compose(
                 width: '20px !important',
                 height: '20px !important'
             }
+        },
+        badge: {
+            padding: '7px 5px 4px 0 !important',
+            '& span': {
+                backgroundColor: '#ef5350 !important',
+                width: '20px !important',
+                height: '20px !important'
+            }
+        },
+        appStatus: {
+            position: 'relative'
+        },
+        appStatusHeader: {
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            '& > div:first-child': {
+                display: 'flex',
+                alignItems: 'center'
+            }
+        },
+        appStatusBody: {
+            position: 'absolute',
+            left: '0',
+            top: '49px',
+            maxHeight: '550px',
+            overflowY: 'auto',
+            zIndex: '4',
+            padding: '20px 30px',
+            backgroundColor: '#efefef'
         }
     }),
     reduxForm({
@@ -579,7 +611,7 @@ const enhance = compose(
 
     withState('openAddReport', 'setOpenAddReport', false),
     withState('checkedList', 'updateCheckedList', []),
-    withState('finishConfirmDialog', 'setFinishConfirmDialog', false)
+    withState('finishConfirmDialog', 'setFinishConfirmDialog', false),
 )
 
 const LongListGridList = enhance((props) => {
@@ -624,7 +656,9 @@ const LongListGridList = enhance((props) => {
         setFinishConfirmDialog,
         finishConfirmDialog,
         appCount,
-        pathname
+        pathname,
+        setShowProgress,
+        showProgress
     } = props
 
     const resumeMeetingDetail = _.find(_.get(meetingListData, 'list'), {id: _.get(resumeDetails, ['data', 'id'])})
@@ -888,13 +922,31 @@ const LongListGridList = enhance((props) => {
                                 <h1>{t('Задания')} <span style={{margin: '0 5px'}}>|</span> {position}</h1>
                                 <Link to={{pathname: ROUTES.HR_TASKS_LIST_URL}} className={classes.backToTasks}/>
                             </div>
-                            <div className={classes.appStatus}>{t('Статус')}: {getAppStatusName(applicationStatus, true)}</div>
+                            <div className={classes.appStatus}>
+                                <div className={classes.appStatusClick}/>
+                                <div className={classes.appStatusHeader} onClick={() => setShowProgress(!showProgress)}>
+                                    <div>
+                                        {t('Стадиа')}: &nbsp; {getAppStatusName(applicationStatus, true)}
+                                        {showProgress ? <ArrowUp/> : <ArrowDown/>}
+                                        </div>
+                                    <Badge
+                                        className={classes.badge}
+                                        badgeContent={4}
+                                        primary={true}>
+                                        <Notifications color="#bec6c9"/>
+                                    </Badge>
+                                </div>
+                                {showProgress && <div className={classes.appStatusBody}>
+                                    <ApplicationDetailProgress id={application} />
+                                </div>}
+                            </div>
+
                             <div className={classes.toggle}>
                                 <div className={classes.toggleButton} onClick={() => { setShowDetails(!showDetails) }}>
                                     <span>{t('Детали')}</span>
                                     {showDetails ? <ArrowUp/> : <ArrowDown/>}
                                 </div>
-                                {showDetails && <div className={classes.detailOverlay}/>}
+                                {(showDetails || showProgress) && <div className={classes.detailOverlay}/>}
                                 {showDetails &&
                                 <div className={classes.demands}>
                                     <h2>{t('Описание компании')}</h2>

@@ -158,6 +158,7 @@ const ApplicationGridList = enhance((props) => {
         <ApplicationDetail
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
+            filter={filter}
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             confirmDialog={confirmDialog}

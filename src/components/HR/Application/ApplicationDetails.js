@@ -82,7 +82,15 @@ const enhance = compose(
             overflow: 'hidden',
             width: '100%',
             '& > div': {
-                width: '50%'
+                '&:first-child': {
+                    width: '25%'
+                },
+                '&:nt-child(2)': {
+                    width: '35%'
+                },
+                '&:nt-child(3)': {
+                    width: '40%'
+                }
             }
         },
         logs: {
@@ -221,7 +229,9 @@ const enhance = compose(
             marginTop: '10px'
         },
         progress: {
-            backgroundColor: '#efefef'
+            backgroundColor: '#efefef',
+            maxHeight: '360px',
+            overflowY: 'auto'
         }
     }),
     withState('openLogs', 'setOpenLogs', false),
@@ -267,7 +277,8 @@ const ApplicationDetails = enhance((props) => {
 // .        setOpenLogs,
         logsData,
         moreDetails,
-        setMoreDetails
+        setMoreDetails,
+        filter
     } = props
 
     const applicationId = _.get(data, 'id')
@@ -439,7 +450,12 @@ const ApplicationDetails = enhance((props) => {
                     </div>
                 </div>
                 <div className={classNames(classes.block, classes.progress)}>
-                    <ApplicationDetailProgress status={status}/>
+                    <ApplicationDetailProgress
+                        status={status}
+                        filter={filter}
+                        showNotify={true}
+                        id={applicationId}
+                    />
                 </div>
 
                 <div className={classNames(classes.logs, {
