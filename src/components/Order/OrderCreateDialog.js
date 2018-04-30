@@ -15,8 +15,7 @@ import {connect} from 'react-redux'
 import {
     TextField,
     ClientContactsField,
-    CheckBox,
-    CheckBoxCustom
+    CheckBox
 } from '../ReduxForm'
 import ClientSearchField from '../ReduxForm/HR/Application/ClientSearchField'
 import ApplicationListField from '../ReduxForm/HR/Application/ApplicationListField'
@@ -28,7 +27,6 @@ import {
     ORDER_CANCELED
 } from '../../constants/backendConstants'
 import formValidate from '../../helpers/formValidate'
-import {Row, Col} from 'react-flexbox-grid'
 
 export const ORDER_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const CLIENT_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -249,8 +247,7 @@ const OrderCreateDialog = enhance((props) => {
         closed,
         setClosed,
         dispatch,
-        handleOpenAppCreateDialog,
-        openAppCreate
+        handleOpenAppCreateDialog
     } = props
 
     const formNames = [

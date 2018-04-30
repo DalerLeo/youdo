@@ -106,8 +106,7 @@ const ResumeGridList = enhance((props) => {
         openRecruiterList,
         setOpenRecruiterList,
         usersData,
-        privilegeData,
-        appCreateDialog
+        privilegeData
     } = props
 
     const resumefilterDialog = (
