@@ -38,6 +38,7 @@ import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
 import getConfig from '../../helpers/getConfig'
 import checkPermission from '../../helpers/checkPermission'
+import ApplicationCreateDialog from '../HR/Application/ApplicationCreateDialog'
 import t from '../../helpers/translate'
 import Payment from 'material-ui/svg-icons/action/credit-card'
 import {
@@ -177,21 +178,16 @@ const OrderGridList = enhance((props) => {
         multiUpdateDialog,
         filterDialog,
         getDocument,
-        transactionsDialog,
-        returnDialog,
         shortageDialog,
         products,
         confirmDialog,
         listData,
         detailData,
-        returnListData,
-        paymentData,
         tabData,
         classes,
         createClientDialog,
         printDialog,
         type,
-        cancelOrderReturnDialog,
         refreshAction,
         canChangeAnyPrice,
         handleSubmitDiscountDialog,
@@ -203,7 +199,10 @@ const OrderGridList = enhance((props) => {
         printSalesDialog,
         scrollValue,
         checkDeliveryDialog,
-        servicesData
+        servicesData,
+        appCreateDialog,
+        usersData,
+        privilegeData
     } = props
 
     // CHECKING PERMISSIONS
@@ -232,20 +231,13 @@ const OrderGridList = enhance((props) => {
         <OrderDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
-            returnData={_.get(detailData, 'return')}
             filter={filter}
-            returnDataLoading={_.get(detailData, 'returnLoading')}
-            transactionsDialog={transactionsDialog}
             tabData={tabData}
             getDocument={getDocument}
-            paymentData={paymentData}
-            returnListData={returnListData}
-            returnDialog={returnDialog}
             confirmDialog={confirmDialog}
             loading={_.get(detailData, 'detailLoading')}
             updateDialog={updateDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
-            cancelOrderReturnDialog={cancelOrderReturnDialog}
             type={type}
             canChangeAnyPrice={canChangeAnyPrice}
             handleSubmitDiscountDialog={handleSubmitDiscountDialog}
@@ -505,6 +497,8 @@ const OrderGridList = enhance((props) => {
                 clientId={clientId}
                 isSuperUser={isSuperUser}
                 servicesData={servicesData}
+                openAppCreate={appCreateDialog.openAppCreateDialog}
+                handleOpenAppCreateDialog={appCreateDialog.handleOpenDialog}
             />}
 
             {updateDialog.openUpdateDialog &&
@@ -523,6 +517,8 @@ const OrderGridList = enhance((props) => {
                 clientId={clientId}
                 isSuperUser={isSuperUser}
                 servicesData={servicesData}
+                openAppCreate={appCreateDialog.openAppCreateDialog}
+                handleOpenAppCreateDialog={appCreateDialog.handleOpenDialog}
             />}
 
             <OrderShortageDialog
@@ -562,6 +558,18 @@ const OrderGridList = enhance((props) => {
                 onSubmit={checkDeliveryDialog.handleSubmit}
                 open={checkDeliveryDialog.open}
             />}
+            <ApplicationCreateDialog
+                open={appCreateDialog.openAppCreateDialog}
+                loading={appCreateDialog.createLoading}
+                onClose={appCreateDialog.handleCloseDialog}
+                onSubmit={appCreateDialog.handleSubmitDialog}
+                openRecruiterList={appCreateDialog.openRecruiterList}
+                setOpenRecruiterList={appCreateDialog.setOpenRecruiterList}
+                usersData={usersData}
+                privilegeData={privilegeData}
+                initialValues={privilegeData.initial}
+            />
+
         </Container>
     )
 })
@@ -570,7 +578,6 @@ OrderGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     paymentData: PropTypes.object,
-    returnListData: PropTypes.object,
     products: PropTypes.array,
     tabData: PropTypes.shape({
         tab: PropTypes.string.isRequired,
@@ -597,17 +604,6 @@ OrderGridList.propTypes = {
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
     }).isRequired,
-    transactionsDialog: PropTypes.shape({
-        openTransactionsDialog: PropTypes.bool.isRequired,
-        handleOpenTransactionsDialog: PropTypes.func.isRequired,
-        handleCloseTransactionsDialog: PropTypes.func.isRequired
-    }).isRequired,
-    returnDialog: PropTypes.shape({
-        returnLoading: PropTypes.bool.isRequired,
-        openReturnDialog: PropTypes.bool.isRequired,
-        handleOpenReturnDialog: PropTypes.func.isRequired,
-        handleCloseReturnDialog: PropTypes.func.isRequired
-    }).isRequired,
     shortageDialog: PropTypes.shape({
         shortageLoading: PropTypes.bool.isRequired,
         openShortageDialog: PropTypes.bool.isRequired,
@@ -628,18 +624,6 @@ OrderGridList.propTypes = {
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
     }),
-    returnDataLoading: PropTypes.bool,
-    printDialog: PropTypes.shape({
-        openPrint: PropTypes.bool.isRequired,
-        handleOpenPrintDialog: PropTypes.func.isRequired,
-        handleClosePrintDialog: PropTypes.func.isRequired
-    }).isRequired,
-    cancelOrderReturnDialog: PropTypes.shape({
-        handleOpenCancelOrderReturnDialog: PropTypes.func.isRequired,
-        handleCloseCancelOrderReturnDialog: PropTypes.func.isRequired,
-        handleSubmitCancelOrderReturnDialog: PropTypes.func.isRequired,
-        openCancelOrderReturnDialog: PropTypes.number.isRequired
-    }).isRequired,
     multiUpdateDialog: PropTypes.shape({
         openMultiUpdateDialog: PropTypes.bool.isRequired,
         handleOpenMultiUpdate: PropTypes.func.isRequired,

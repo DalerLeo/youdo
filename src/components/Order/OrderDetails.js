@@ -7,7 +7,6 @@ import {Link} from 'react-router'
 import injectSheet from 'react-jss'
 import Edit from 'material-ui/svg-icons/image/edit'
 import Delete from 'material-ui/svg-icons/action/delete'
-import Return from 'material-ui/svg-icons/content/reply'
 import MenuItem from 'material-ui/MenuItem'
 import IconMenu from 'material-ui/IconMenu'
 import {connect} from 'react-redux'
@@ -15,17 +14,13 @@ import PrintIcon from 'material-ui/svg-icons/action/print'
 import MoneyOffIcon from 'material-ui/svg-icons/editor/money-off'
 import CheckDelivery from 'material-ui/svg-icons/action/assignment-turned-in'
 import IconButton from 'material-ui/IconButton'
-import OrderTransactionsDialog from './OrderTransactionsDialog'
-import OrderReturnDialog from './OrderReturnDialog'
 import OrderSetDiscountDialog from './OrderSetDiscountDialog'
 import RightSide from './OrderDetailsRightSideTabs'
-import ConfirmDialog from '../ConfirmDialog'
 import ToolTip from '../ToolTip'
 import * as ROUTES from '../../constants/routes'
 import LinearProgress from '../LinearProgress'
 import numberFormat from '../../helpers/numberFormat'
 import dateFormat from '../../helpers/dateFormat'
-import toBoolean from '../../helpers/toBoolean'
 import {
     ORDER_DELIVERED,
     ORDER_GIVEN,
@@ -220,17 +215,11 @@ const OrderDetails = enhance((props) => {
     const {classes,
         loading,
         data,
-        transactionsDialog,
-        returnDialog,
-        returnDataLoading,
-        cancelOrderReturnDialog,
         confirmDialog,
         updateDialog,
         type,
         tabData,
-        paymentData,
         getDocument,
-        returnData,
         handleCloseDetail,
         openDiscountDialog,
         setOpenDiscountDialog,
@@ -246,9 +235,7 @@ const OrderDetails = enhance((props) => {
     const canEditOrderWhenGivenOrDelivered = checkPermission('can_update_order_after_stock')
     const canSetDiscount = checkPermission('can_set_discount')
     const canCancelOrder = checkPermission('delete_order')
-    const canAddOrderReturn = checkPermission('add_orderreturn')
     const canMarkDelivery = checkPermission('can_mark_delivery')
-    const canReturnFromOrderConfig = toBoolean(getConfig('CAN_RETURN_FROM_ORDER'))
 
     const discounted = _.toNumber(_.get(data, 'discountPrice')) > ZERO
     const id = _.get(data, 'id')
@@ -318,17 +305,6 @@ const OrderDetails = enhance((props) => {
                             touch={true}
                             onTouchTap={checkDeliveryDialog.handleOpen}>
                             <CheckDelivery />
-                        </IconButton>
-                    </ToolTip>}
-                    {canAddOrderReturn && canReturnFromOrderConfig &&
-                    <ToolTip position="bottom" text={t('Добавить возврат')}>
-                        <IconButton
-                            disabled={!(status === ORDER_DELIVERED || status === ORDER_GIVEN)}
-                            iconStyle={iconStyle.icon}
-                            style={iconStyle.button}
-                            touch={true}
-                            onTouchTap={returnDialog.handleOpenReturnDialog}>
-                            <Return />
                         </IconButton>
                     </ToolTip>}
                     <ToolTip position="left" text={t('Распечатать')}>
@@ -463,9 +439,7 @@ const OrderDetails = enhance((props) => {
                                     <span>{t('Оплачено')}:</span>
                                     {(totalPaid !== ZERO && type)
                                         ? <span>
-                                            <a onClick={transactionsDialog.handleOpenTransactionsDialog} className={classes.link}>
-                                                {numberFormat(totalPaid)} {currency}
-                                            </a>
+                                            Hey
                                         </span>
                                         : <span>{numberFormat(totalPaid)} {currency}</span>}
                                 </li>
@@ -518,63 +492,23 @@ const OrderDetails = enhance((props) => {
                 <RightSide
                     data={data}
                     tabData={tabData}
-                    returnData={returnData}
-                    returnDataLoading={returnDataLoading}
-                    cancelOrderReturnOpen={type ? cancelOrderReturnDialog.handleOpenCancelOrderReturnDialog : null}
                 />
             </div>
-            {type && <OrderTransactionsDialog
-                open={transactionsDialog.openTransactionsDialog}
-                loading={paymentData.paymentLoading}
-                onClose={transactionsDialog.handleCloseTransactionsDialog}
-                paymentData={paymentData}
-            />}
-            {type && <OrderReturnDialog
-                open={returnDialog.openReturnDialog}
-                loading={returnDialog.returnLoading}
-                onClose={returnDialog.handleCloseReturnDialog}
-                onSubmit={returnDialog.handleSubmitReturnDialog}
-                orderData={data}
-            />}
-            {type && <ConfirmDialog
-                type="cancel"
-                message={t('Возврат') + ' № ' + cancelOrderReturnDialog.openCancelOrderReturnDialog}
-                onClose={cancelOrderReturnDialog.handleCloseCancelOrderReturnDialog}
-                onSubmit={cancelOrderReturnDialog.handleSubmitCancelOrderReturnDialog}
-                open={cancelOrderReturnDialog.openCancelOrderReturnDialog > ZERO}/>
-            }
-
         </div>
     )
 })
 
 OrderDetails.propTypes = {
-    paymentData: PropTypes.object,
-    returnListData: PropTypes.object,
     tabData: PropTypes.shape({
         tab: PropTypes.string,
         handleTabChange: PropTypes.func
     }),
     data: PropTypes.any.isRequired,
-    returnData: PropTypes.array,
     loading: PropTypes.bool,
-    returnDialog: PropTypes.shape({
-        returnLoading: PropTypes.bool,
-        openReturnDialog: PropTypes.bool,
-        handleOpenReturnDialog: PropTypes.func,
-        handleCloseReturnDialog: PropTypes.func
-    }),
     handleOpenUpdateDialog: PropTypes.func,
     orderListData: PropTypes.object,
     getDocument: PropTypes.shape({
         handleGetDocument: PropTypes.func.isRequired
-    }),
-    returnDataLoading: PropTypes.bool,
-    cancelOrderReturnDialog: PropTypes.shape({
-        handleOpenCancelOrderReturnDialog: PropTypes.func,
-        handleCloseCancelOrderReturnDialog: PropTypes.func,
-        handleSubmitCancelOrderReturnDialog: PropTypes.func,
-        openCancelOrderReturnDialog: PropTypes.number
     }),
     updateDialog: PropTypes.shape({
         updateLoading: PropTypes.bool.isRequired,

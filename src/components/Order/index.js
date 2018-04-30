@@ -12,6 +12,7 @@ const ORDER_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const ORDER_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 const ORDER_MULTI_EDIT_OPEN = 'openMultiEdit'
 const ORDER_RELEASE_DIALOG_OPEN = 'openReleaseDialog'
+const ORDER_APPLICATION_DIALOG_OPEN = 'openAppDialog'
 const TAB = 'tab'
 
 export {
@@ -29,6 +30,7 @@ export {
     OrderPrint,
     OrderSalesPrint,
     OrderContractPrint,
-    TAB
+    TAB,
+    ORDER_APPLICATION_DIALOG_OPEN
 
 }

@@ -86,7 +86,7 @@ const enhance = compose(
             paddingTop: '15px',
             '& > span': {
                 borderRadius: '50%',
-                width: '17px',
+                width: '16px',
                 height: '16px',
                 backgroundColor: '#7abd7d',
                 marginTop: '10px'
@@ -111,7 +111,14 @@ const enhance = compose(
         actionBtn: {
             backgroundColor: '#fff',
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
-            padding: '15px 20px'
+            padding: '15px 20px',
+            '& > button': {
+                width: '50%',
+                lineHeight: 'unset',
+                height: 'unset',
+                minHeight: '36px',
+                paddingBottom: '5px'
+            }
         },
         buttons: {
             display: 'flex',
@@ -137,6 +144,7 @@ const enhance = compose(
             opacity: '1',
             maxHeight: '40px'
         }
+
     }),
     withState('openLogs', 'setOpenLogs', false),
     withState('currentItem', 'setCurrentItem', null)
@@ -150,7 +158,7 @@ const downIcon = {
 }
 const doneIcon = {
     width: '16px',
-    height: '15px'
+    height: '16px'
 }
 
 const actButton = {
@@ -191,7 +199,6 @@ const ApplicationDetailProgress = enhance((props) => {
         {text: 'Отмеченны кондидаты для собеседования с клиентом', type: '4'},
         {text: 'Время собеседований согласованно', type: '5'},
         {text: 'Заявка закрыта. Клиент принял на работу', type: '5'}
-
     ]
     return (
         <div className={classes.wrapper}>
@@ -247,13 +254,13 @@ const ApplicationDetailProgress = enhance((props) => {
                         label={t('Отчет одобрен')}
                         backgroundColor="#81c784"
                         hoverColor="#81c784"
-                        style={{marginRight: '5px', width: '50%', lineHeight: 'unset', height: 'unset', minHeight: '36px', paddingBottom: '5px'}}
+                        style={{marginRight: '5px'}}
                         labelStyle={actButton.label}/>
                     <FlatButton
                         backgroundColor="#13aaeb"
                         hoverColor="#13aaeb"
                         label={t('Отчет отклонен')}
-                        style={{marginLeft: '5px', width: '50%', lineHeight: 'unset', height: 'unset', minHeight: '36px', paddingBottom: '5px'}}
+                        style={{marginLeft: '5px'} + actButton.button}
                         labelStyle={actButton.label}/>
                 </div>
             </div>
