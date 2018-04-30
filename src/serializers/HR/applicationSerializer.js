@@ -55,7 +55,7 @@ export const createSerializer = (data) => {
         level_pc: compLevel,
         responsibility,
         order: 1,
-        position: 1,
+        position: position,
         planning_date: planningDate,
         privileges,
         trial_salary_min: trialSalaryMin,

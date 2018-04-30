@@ -18,7 +18,6 @@ import classNames from 'classnames'
 import Done from 'material-ui/svg-icons/action/done'
 import FlatButton from 'material-ui/FlatButton'
 import DownLoadIcon from 'material-ui/svg-icons/file/file-download'
-import {hashHistory} from 'react-router'
 import Notifications from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
 import {compose, withState} from 'recompose'
@@ -212,25 +211,6 @@ const ApplicationDetailProgress = enhance((props) => {
             </div>
             <div className={classes.cardWrapper}>
                 {_.map(cards, (item, index) => {
-                    // if (item.date) {
-                    //     return (
-                    //         <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
-                    //             <span>
-                    //                 <Done color={COLOR_WHITE} style={doneIcon}/>
-                    //             </span>
-                    //             <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
-                    //                 <div>Отчет отправлен клиенту <br/>
-                    //                     <i>22 Апр. 2018 | 15:25</i>
-                    //                     <div className={classNames(classes.downLoad, {
-                    //                         [classes.open]: currentItem === index
-                    //                     })}>
-                    //                         <a><DownLoadIcon style={downIcon} /> Скачать отчет</a>
-                    //                     </div>
-                    //                 </div>
-                    //             </div>
-                    //         </div>
-                    //     )
-                    // }
                     return (
                         <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
                             <span><Done color="#fff" style={doneIcon}/></span>

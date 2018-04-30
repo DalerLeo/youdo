@@ -198,8 +198,7 @@ const enhance = compose(
             }
 
             if (status !== nextStatus && !_.isNull(status)) {
-                const dispatch = _.get(nextProps, 'dispatch')
-                console.warn(dispatch)
+                // . const dispatch = _.get(nextProps, 'dispatch')
                 // PUT REQUEST TO CHANGE STATUS OF RESUME
             }
         }
