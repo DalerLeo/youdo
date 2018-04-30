@@ -14,12 +14,10 @@ import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers' */
 import React from 'react'
-import LinearProgress from '../../LinearProgress'
 import classNames from 'classnames'
 import Done from 'material-ui/svg-icons/action/done'
 import FlatButton from 'material-ui/FlatButton'
 import DownLoadIcon from 'material-ui/svg-icons/file/file-download'
-import {hashHistory} from 'react-router'
 import Notifications from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
 import {compose, withState} from 'recompose'
@@ -27,9 +25,11 @@ import injectSheet from 'react-jss'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
-    BORDER_STYLE
+    BORDER_STYLE, LINK_COLOR, COLOR_WHITE
 } from '../../../constants/styleConstants'
 import _ from 'lodash'
+import * as ROUTE from '../../../constants/routes'
+import {Link} from 'react-router'
 // . import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
@@ -70,8 +70,9 @@ const enhance = compose(
             padding: '7px 5px 4px 0 !important',
             '& span': {
                 backgroundColor: '#ef5350 !important',
-                width: '20px !important',
-                height: '20px !important'
+                fontSize: '11px !important',
+                width: '18px !important',
+                height: '18px !important'
             }
         },
         cardWrapper: {
@@ -108,6 +109,13 @@ const enhance = compose(
                 color: '#999'
             }
         },
+        cardContent: {
+            transition: 'all 200ms ease-out !important',
+            minWidth: '100px'
+        },
+        cardOpen: {
+            minWidth: 'calc(100% - 36px)'
+        },
         actionBtn: {
             backgroundColor: '#fff',
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
@@ -125,10 +133,10 @@ const enhance = compose(
             paddingTop: '10px'
         },
         downLoad: {
-            transition: 'all 500ms ease',
+            transition: 'all 200ms ease-out',
             maxHeight: '0',
             opacity: '0',
-            borderTop: '1px solid #efefef',
+            borderTop: BORDER_STYLE,
             '& a': {
                 paddingTop: '5px',
                 fontSize: '12px',
@@ -153,7 +161,7 @@ const enhance = compose(
 const downIcon = {
     height: '15px',
     width: '15px',
-    color: '#12aaeb',
+    color: LINK_COLOR,
     fill: 'currentColor'
 }
 const doneIcon = {
@@ -162,30 +170,26 @@ const doneIcon = {
 }
 
 const actButton = {
-    label: {fontSize: '13px', color: '#fff', textTransform: 'none', padding: '5px'}
+    label: {
+        fontSize: '13px',
+        color: COLOR_WHITE,
+        textTransform: 'none',
+        padding: '5px'
+    }
 }
 
 const ApplicationDetailProgress = enhance((props) => {
     const {classes,
-        loading,
         currentItem,
         setCurrentItem,
         id,
         showNotify
     } = props
 
-    if (loading) {
-        return (
-            <div className={classes.loader}>
-                <LinearProgress/>
-            </div>
-        )
-    }
-
     const cards = [
         {text: 'Ожидание отчета', type: '1'},
         {text: 'Отчет отправлен клиенту', type: '2'},
-        {text: 'Отчет откланен', type: '6', date: '22 Апр. 2018 | 15:25'},
+        {text: 'Отчет отклонен', type: '6', date: '22 Апр. 2018 | 15:25'},
         {text: 'Отчет одобрен клиентом', type: '3'},
         {text: 'В заявку внесены изменения', type: '3'},
         {text: 'Формиравание отчета', type: '3'},
@@ -214,35 +218,29 @@ const ApplicationDetailProgress = enhance((props) => {
             </div>
             <div className={classes.cardWrapper}>
                 {_.map(cards, (item, index) => {
-                    if (item.date) {
-                        return (
-                            <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
-                                <span><Done color="#fff" style={doneIcon}/></span>
-                                <div>
-                                    <div>Отчет отправлен клиенту <br/>
-                                        <i>22 Апр. 2018 | 15:25</i>
-                                        <div className={classNames(classes.downLoad, {
-                                            [classes.open]: currentItem === index
-                                        })}>
-                                            <a><DownLoadIcon style={downIcon} /> Скачат отчет</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )
-                    }
                     return (
                         <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
                             <span><Done color="#fff" style={doneIcon}/></span>
-                            <div>{item.text}
-                                <div className={classNames(classes.downLoad, {
-                                    [classes.open]: currentItem === index
-                                })}>
-                                    {currentItem === index &&
-                                    <a onClick={() => hashHistory.push({pathname: 'hr/long-list', query: {application: id}})}>Проверить
-                                    </a>}
+                            {item.date
+                                ? <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
+                                    <div>Отчет отправлен клиенту <br/>
+                                        <div className={classNames(classes.downLoad, {
+                                            [classes.open]: currentItem === index
+                                        })}>
+                                            <div><i>22 Апр. 2018 | 15:25</i></div>
+                                            <div><a><DownLoadIcon style={downIcon} /> Скачать отчет</a></div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                : <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
+                                    {item.text}
+                                    <div className={classNames(classes.downLoad, {
+                                        [classes.open]: currentItem === index
+                                    })}>
+                                        {currentItem === index &&
+                                        <Link to={{pathname: ROUTE.HR_LONG_LIST_URL, query: {application: id}}}>Проверить</Link>}
+                                    </div>
+                                </div>}
                         </div>
                     )
                 })}

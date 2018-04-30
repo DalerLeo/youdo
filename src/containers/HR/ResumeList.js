@@ -221,7 +221,8 @@ const ResumeList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params
+        params,
+        dispatch
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', RESUME_FILTER_OPEN]))
@@ -415,6 +416,7 @@ const ResumeList = enhance((props) => {
                 createDialog={createDialog}
                 confirmDialog={confirmDialog}
                 updateDialog={updateDialog}
+                dispatch={dispatch}
             />
         </Layout>
     )
