@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import {compose, withState} from 'recompose'
+import {compose, withState, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
 import LinearProgress from '../../LinearProgress'
 import Edit from 'material-ui/svg-icons/image/edit'
@@ -9,13 +9,13 @@ import IconButton from 'material-ui/IconButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
-import {getResumeStatus} from '../../../helpers/hrcHelpers'
+import {getBackendNames, getResumeStatus} from '../../../helpers/hrcHelpers'
 import {genderFormat} from '../../../constants/gender'
 import {HardwareKeyboardArrowDown} from 'material-ui/svg-icons'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
-    BORDER_STYLE
+    BORDER_STYLE, LINK_COLOR
 } from '../../../constants/styleConstants'
 import {FlatButton, IconMenu, MenuItem} from 'material-ui'
 
@@ -182,7 +182,28 @@ const enhance = compose(
         }
     }),
     withState('openDetails', 'setOpenDetails', false),
-    withState('detailStatus', 'setDetailStatus', false)
+    withState('detailStatus', 'setDetailStatus', null),
+
+    lifecycle({
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            const loading = _.get(props, ['loading'])
+            const nextLoading = _.get(nextProps, ['loading'])
+            const status = _.get(props, ['detailStatus'])
+            const nextStatus = _.get(nextProps, ['detailStatus'])
+            if (loading !== nextLoading && nextLoading === false) {
+                const setDetailStatus = _.get(nextProps, 'setDetailStatus')
+                const detailStatus = _.get(nextProps, ['data', 'status'])
+                setDetailStatus(getBackendNames(getResumeStatus(), detailStatus))
+            }
+
+            if (status !== nextStatus && !_.isNull(status)) {
+                const dispatch = _.get(nextProps, 'dispatch')
+                console.warn(dispatch)
+                // PUT REQUEST TO CHANGE STATUS OF RESUME
+            }
+        }
+    })
 )
 
 const iconStyle = {
@@ -290,7 +311,7 @@ const ResumeDetails = enhance((props) => {
                 className={classes.popover}
                 iconButtonElement={
                     <FlatButton
-                        label={<span>{t('Статус:')} <br/><span style={{color: '#11aaeb'}}>{detailStatus.name}</span></span>}
+                        label={<span>{t('Статус:')} <br/><span style={{color: LINK_COLOR}}>{detailStatus}</span></span>}
                         style={{display: 'flex', alignItems: 'center', height: '50px', textAlign: 'left'}}
                         backgroundColor={'#efefef'}
                         hoverColor={'#efefef'}
@@ -309,11 +330,13 @@ const ResumeDetails = enhance((props) => {
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}>
                 {_.map(getResumeStatus(), item => {
-                    return <MenuItem
-                        key={item.id}
-                        style={popoverStyle.menuItem}
-                        onTouchTap={() => { setDetailStatus({id: item.id, name: item.name}) }}
-                        primaryText={item.name}/>
+                    return (
+                        <MenuItem
+                            key={item.id}
+                            style={popoverStyle.menuItem}
+                            onTouchTap={() => { setDetailStatus(item.name) }}
+                            primaryText={item.name}/>
+                    )
                 })}
             </IconMenu>
 

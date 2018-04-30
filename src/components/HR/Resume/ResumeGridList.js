@@ -18,7 +18,7 @@ import ResumeDetail from './ResumeDetails'
 import ResumeFilterForm from './ResumeFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
-import {getExperienceText} from '../../../helpers/hrcHelpers'
+import {getBackendNames, getExperienceText, getResumeStatus} from '../../../helpers/hrcHelpers'
 
 const listHeader = [
     {
@@ -145,7 +145,7 @@ const ResumeGridList = enhance((props) => {
                     <Col xs={2}>{experience}</Col>
                     <Col xs={2}>{createdDate}</Col>
                     <Col xs={1} className={classes.buttons}>
-                        {status}
+                        {getBackendNames(getResumeStatus(), status)}
                     </Col>
                 </Link>
             </Row>

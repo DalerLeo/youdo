@@ -88,9 +88,8 @@ export const getBackendNames = (iteratingArray, key) => {
 export const getResumeStatus = () => {
     return [
         {id: 'top', name: t('Топ')},
-        {id: 'onEdge', name: t('На грании')},
-        {id: 'blackList', name: t('В черном списке')},
-        {id: 'waiting_response', name: t('Топ')},
-        {id: 'notAssigned', name: 'Не указань'}
+        {id: 'on_guarantee', name: t('На гарантии')},
+        {id: 'normal', name: t('Обычный')},
+        {id: 'black_list', name: 'В черном списке'}
     ]
 }
