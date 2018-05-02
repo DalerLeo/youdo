@@ -25,11 +25,18 @@ import injectSheet from 'react-jss'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
-    BORDER_STYLE, LINK_COLOR, COLOR_WHITE
+    BORDER_STYLE, LINK_COLOR, COLOR_WHITE, COLOR_GREEN
 } from '../../../constants/styleConstants'
 import _ from 'lodash'
+import moment from 'moment'
 import * as ROUTE from '../../../constants/routes'
 import {Link} from 'react-router'
+import dateFormat from '../../../helpers/dateFormat'
+import {genderFormat} from '../../../constants/gender'
+import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
+import {HR_EDUCATION, HR_LEVEL_PC, HR_WORK_SCHEDULE} from '../../../constants/backendConstants'
+import numberFormat from '../../../helpers/numberFormat'
+import getDocument from '../../../helpers/getDocument'
 // . import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
@@ -77,7 +84,7 @@ const enhance = compose(
         },
         cardWrapper: {
             borderLeft: 'solid 2px #bec6c9',
-            marginLeft: '15px',
+            marginLeft: '20px',
             marginTop: '-4px'
         },
         cardItem: {
@@ -95,14 +102,12 @@ const enhance = compose(
             '& > div': {
                 backgroundColor: '#fff',
                 boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
+                borderRadius: '2px',
                 marginLeft: '20px',
                 minHeight: '35px',
                 maxHeight: '100px',
                 transition: 'max-height 1s, min-height 1s',
                 padding: '10px'
-            },
-            '&:last-child': {
-                paddingBottom: '15px'
             },
             '& i': {
                 fontSize: '11px',
@@ -110,40 +115,35 @@ const enhance = compose(
             }
         },
         cardContent: {
-            transition: 'all 200ms ease-out !important',
-            minWidth: '100px'
-        },
-        cardOpen: {
-            minWidth: 'calc(100% - 36px)'
+
         },
         actionBtn: {
             backgroundColor: '#fff',
             boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
-            padding: '15px 20px'
+            padding: '15px 20px',
+            marginTop: '15px',
+            marginLeft: '-22px'
         },
         buttons: {
             display: 'flex',
-            paddingTop: '10px'
-        },
-        downLoad: {
-            transition: 'all 200ms ease-out',
-            maxHeight: '0',
-            opacity: '0',
-            borderTop: BORDER_STYLE,
-            '& a': {
-                paddingTop: '5px',
-                fontSize: '12px',
-                display: 'flex',
-                alignItems: 'center'
+            paddingTop: '10px',
+            '& > button': {
+                marginLeft: '5px !important',
+                '&:first-child': {
+                    marginLeft: '0 !important'
+                }
             }
         },
-        notClickable: {
-            cursor: 'unset'
-        },
-        open: {
-            marginTop: '10px',
-            opacity: '1',
-            maxHeight: '40px'
+        download: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > a': {
+                fontSize: '12px',
+                display: 'flex',
+                fontWeight: '600',
+                alignItems: 'center',
+                marginLeft: '5px'
+            }
         }
     }),
     withState('openLogs', 'setOpenLogs', false),
@@ -170,13 +170,153 @@ const actButton = {
     }
 }
 
+const flatButtonStyle = {
+    width: '50%',
+    lineHeight: 'unset',
+    height: 'unset',
+    minHeight: '30px'
+}
+
 const ApplicationDetailProgress = enhance((props) => {
-    const {classes,
+    const {
+        id,
+        classes,
         currentItem,
         setCurrentItem,
-        id,
-        showNotify
+        showNotify,
+        logsData,
+        reportUri,
+        handleChangeApplicationAction
     } = props
+
+    const logsList = logsData.list
+    const lastLogId = _.get(_.last(logsList), 'id')
+
+    const getCardContainer = (content) => {
+        return (
+            <div className={classes.cardItem}>
+                <span><Done color={COLOR_WHITE} style={doneIcon}/></span>
+                <div className={classNames(classes.cardContent)}>
+                    {content}
+                </div>
+            </div>
+        )
+    }
+    const getActionContainer = (content, buttons) => {
+        const isSingle = _.get(buttons, 'single')
+        return (
+            <div className={classes.actionBtn}>
+                <div>{content}</div>
+                {isSingle
+                    ? <div className={classes.buttons}>
+                        <FlatButton
+                            label={buttons.single.text}
+                            backgroundColor={COLOR_GREEN}
+                            hoverColor={COLOR_GREEN}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.single.action}
+                            fullWidth
+                        />
+                    </div>
+                    : <div className={classes.buttons}>
+                        <FlatButton
+                            label={buttons.left.text}
+                            backgroundColor={COLOR_GREEN}
+                            hoverColor={COLOR_GREEN}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.left.action}
+                        />
+                        <FlatButton
+                            label={buttons.right.text}
+                            backgroundColor={LINK_COLOR}
+                            hoverColor={LINK_COLOR}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.right.action}
+                        />
+                    </div>}
+            </div>
+        )
+    }
+
+    const getActionContent = (action, logId) => {
+        switch (action) {
+            case 'update': return (
+                <div>
+                    {getCardContainer('В заявку внесены изменения')}
+                    {getCardContainer('Ожидание отчета')}
+                </div>
+            )
+            case 'report_sent_to_manager': return lastLogId === logId
+                ? getActionContainer(
+                    <div className={classes.download}>
+                        <span>Отчет сформирован</span>
+                        <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
+                    </div>,
+                    {
+                        left: {
+                            text: 'Отправить клиенту',
+                            action: () => handleChangeApplicationAction('sent_to_client')
+                        },
+                        right: {
+                            text: 'Отклонить',
+                            action: () => handleChangeApplicationAction('rejected_by_manager')
+                        }
+                    })
+                : getCardContainer((
+                    <div className={classes.download}>
+                        <span>Отчет сформирован</span>
+                        <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
+                    </div>
+                ))
+            case 'sent_to_client': return (
+                <div>
+                    {getCardContainer('Отчет отправлен клиенту')}
+                    {lastLogId === logId
+                        ? getActionContainer('Ожидание ответа от клиента по отчету', {
+                            left: {
+                                text: 'Отчет одобрен',
+                                action: () => handleChangeApplicationAction('approval')
+                            },
+                            right: {
+                                text: 'Отчет отклонен',
+                                action: () => handleChangeApplicationAction('rejected_by_client')
+                            }
+                        })
+                        : null}
+                </div>
+            )
+            case 'rejected_by_manager': return (
+                <div>
+                    {getCardContainer('Отчет отклонен менеджером')}
+                    {getCardContainer('Ожидание отчета')}
+                </div>
+            )
+            case 'rejected_by_client': return (
+                <div>
+                    {getCardContainer('Отчет отклонен клиентом')}
+                    {getCardContainer('Ожидание отчета')}
+                </div>
+            )
+            case 'approval': return (
+                <div>
+                    {getCardContainer('Отчет одобрен клиентом')}
+                    {getActionContainer('Собеседование с клиентом', {
+                        single: {
+                            text: 'Указать кандидатов для собеседования',
+                            action: () => console.warn('open dialog')
+                        }
+                    })}
+                </div>
+            )
+            default: return getCardContainer(action)
+        }
+    }
 
     const cards = [
         {text: 'Ожидание отчета', type: '1'},
@@ -197,6 +337,7 @@ const ApplicationDetailProgress = enhance((props) => {
         {text: 'Заявка закрыта. Клиент принял на работу', type: '5'}
 
     ]
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}><span>{t('Прогресс')}</span>
@@ -210,50 +351,16 @@ const ApplicationDetailProgress = enhance((props) => {
 
             </div>
             <div className={classes.cardWrapper}>
-                {_.map(cards, (item, index) => {
-                    return (
-                        <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
-                            <span><Done color="#fff" style={doneIcon}/></span>
-                            {item.date
-                                ? <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
-                                    <div>Отчет отправлен клиенту <br/>
-                                        <div className={classNames(classes.downLoad, {
-                                            [classes.open]: currentItem === index
-                                        })}>
-                                            <div><i>22 Апр. 2018 | 15:25</i></div>
-                                            <div><a><DownLoadIcon style={downIcon} /> Скачать отчет</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                : <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
-                                    {item.text}
-                                    <div className={classNames(classes.downLoad, {
-                                        [classes.open]: currentItem === index
-                                    })}>
-                                        {currentItem === index &&
-                                        <Link to={{pathname: ROUTE.HR_LONG_LIST_URL, query: {application: id}}}>Проверить</Link>}
-                                    </div>
-                                </div>}
-                        </div>
-                    )
+                {getCardContainer('Ожидание отчета')}
+                {_.map(logsList, (item) => {
+                    const action = _.get(item, 'action')
+                    const comment = _.get(item, 'comment')
+                    const log = _.get(item, 'log')
+                    const logId = _.get(item, 'id')
+                    const createdDate = dateFormat(_.get(item, 'createdDate'))
+                    const status = _.get(item, 'status')
+                    return getActionContent(action, logId)
                 })}
-            </div>
-            <div className={classes.actionBtn}>
-                <div>Lorem ipsum haeds lolermsds sdasd asd asd asd asd asd asd as das dasdasdasdas dasdasdas das</div>
-                <div className={classes.buttons}>
-                    <FlatButton
-                        label={t('Отчет одобрен')}
-                        backgroundColor="#81c784"
-                        hoverColor="#81c784"
-                        style={{marginRight: '5px', width: '50%', lineHeight: 'unset', height: 'unset', minHeight: '36px', paddingBottom: '5px'}}
-                        labelStyle={actButton.label}/>
-                    <FlatButton
-                        backgroundColor="#13aaeb"
-                        hoverColor="#13aaeb"
-                        label={t('Отчет отклонен')}
-                        style={{marginLeft: '5px', width: '50%', lineHeight: 'unset', height: 'unset', minHeight: '36px', paddingBottom: '5px'}}
-                        labelStyle={actButton.label}/>
-                </div>
             </div>
         </div>
     )

@@ -163,6 +163,7 @@ const ApplicationGridList = enhance((props) => {
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             confirmDialog={confirmDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            handleChangeApplicationAction={_.get(detailData, 'handleChangeApplicationAction')}
             logsData={logsData}/>
     )
 

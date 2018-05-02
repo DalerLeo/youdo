@@ -68,7 +68,7 @@ export const createSerializer = (data) => {
         skills,
         filter_required: _.concat(filterRequired, [{lang_level: requiredLangs}]),
         requirements,
-        'guaranteed_date': guaranteedDate
+        date_guarantee: guaranteedDate
     }
 }
 

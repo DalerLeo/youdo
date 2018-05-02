@@ -22,7 +22,8 @@ import {
     applicationItemFetchAction,
     usersListFetchAction,
     privilegeListFetchAction,
-    getApplicationLogs
+    getApplicationLogs,
+    changeApplicationAction
 } from '../../actions/HR/application'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
@@ -212,6 +213,7 @@ const enhance = compose(
 
             return dispatch(applicationUpdateAction(applicationId, _.get(createForm, ['values'])))
                 .then(() => {
+                    dispatch(getApplicationLogs(applicationId))
                     return dispatch(applicationItemFetchAction(applicationId))
                 })
                 .then(() => {
@@ -226,6 +228,15 @@ const enhance = compose(
         handleCloseDetail: props => () => {
             const {filter} = props
             hashHistory.push({pathname: ROUTER.HR_APPLICATION_LIST_URL, query: filter.getParams()})
+        },
+
+        handleChangeApplicationAction: props => (action) => {
+            const {params, dispatch} = props
+            const application = _.toInteger(_.get(params, 'applicationId'))
+            return dispatch(changeApplicationAction(action, application))
+                .then(() => {
+                    return dispatch(getApplicationLogs(application))
+                })
         }
     })
 )
@@ -388,11 +399,12 @@ const ApplicationList = enhance((props) => {
         id: detailId,
         data: detail,
         detailLoading,
-        handleCloseDetail: props.handleCloseDetail
+        handleCloseDetail: props.handleCloseDetail,
+        handleChangeApplicationAction: props.handleChangeApplicationAction
     }
 
     const logsData = {
-        list: _.get(logsList, 'results'),
+        list: _.orderBy(logsList, ['id'], ['asc']),
         loading: logsListLoading
     }
 
