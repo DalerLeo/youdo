@@ -68,7 +68,7 @@ export const createSerializer = (data) => {
         skills,
         filter_required: _.concat(filterRequired, [{lang_level: requiredLangs}]),
         requirements,
-        'guaranteed_date': guaranteedDate
+        date_guarantee: guaranteedDate
     }
 }
 
@@ -96,6 +96,33 @@ export const usersListSerializer = () => {
     return {
         'user_group': '',
         'page_size': 100
+    }
+}
+
+export const applicationMeetingSerializer = (application, data) => {
+    const resume = _.filter(_.map(_.get(data, 'resumes'), (item, index) => {
+        const dateTime = _.get(item, 'datetime')
+        const formattedDatetime = _.split(_.get(item, 'datetime'), '/')
+        const day = _.get(formattedDatetime, '0')
+        const month = _.get(formattedDatetime, '1')
+        const selected = _.get(item, 'selected')
+        return selected
+            ? {
+                id: _.toInteger(index),
+                meeting_time: moment(dateTime).format('YYYY-' + month + '-' + day + ' HH:mm'),
+                is_approve: false
+            }
+            : null
+    }), (item) => !_.isNull(item))
+    return {
+        application,
+        resume
+    }
+}
+
+export const applicationMeetingListSerializer = (application) => {
+    return {
+        application
     }
 }
 

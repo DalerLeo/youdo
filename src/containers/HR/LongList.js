@@ -44,6 +44,10 @@ import {
     getAppStatAction,
     sendRequiredCommentsAction
 } from '../../actions/HR/longList'
+import {
+    getApplicationLogs,
+    getMeetingListAction
+} from '../../actions/HR/application'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
 import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
@@ -129,6 +133,10 @@ const enhance = compose(
         const educationForm = _.get(state, ['form', 'ResumeEducationForm', 'values'])
         const experienceForm = _.get(state, ['form', 'ResumeExperienceForm', 'values'])
         const appCount = _.get(state, ['longList', 'appCount', 'data'])
+        const logsList = _.get(state, ['application', 'logs', 'data'])
+        const logsListLoading = _.get(state, ['application', 'logs', 'loading'])
+        const logMeetingList = _.get(state, ['application', 'meetingList', 'data'])
+        const logMeetingListLoading = _.get(state, ['application', 'meetingList', 'loading'])
         return {
             resumePreviewList,
             resumePreviewListLoading,
@@ -163,7 +171,11 @@ const enhance = compose(
             educationForm,
             experienceForm,
             appLogs,
-            appCount
+            appCount,
+            logsList,
+            logsListLoading,
+            logMeetingList,
+            logMeetingListLoading
         }
     }),
 
@@ -212,6 +224,8 @@ const enhance = compose(
          const app = _.toInteger(_.get(query, ['application']))
          if (app > ZERO) {
              dispatch(getApplicationDetails(app))
+             dispatch(getApplicationLogs(app))
+             dispatch(getMeetingListAction(app))
          }
      }),
 
@@ -696,7 +710,11 @@ const LongList = enhance((props) => {
         layout,
         params,
         appLogs,
-        appCount
+        appCount,
+        logsList,
+        logsListLoading,
+        logMeetingList,
+        logMeetingListLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
@@ -1005,6 +1023,16 @@ const LongList = enhance((props) => {
         handleSubmit: props.handleSubmitUpdateResumeDialog
     }
 
+    const logsData = {
+        list: _.orderBy(logsList, ['id'], ['asc']),
+        loading: logsListLoading
+    }
+
+    const logMeetingData = {
+        list: logMeetingList,
+        loading: logMeetingListLoading
+    }
+
     return (
         <Layout {...layout}>
             <LongListGridList
@@ -1031,6 +1059,8 @@ const LongList = enhance((props) => {
                 editResumeDetails={editResumeDetails}
                 appCount={appCount}
                 pathname={location.pathname}
+                logsData={logsData}
+                logMeetingData={logMeetingData}
             />
         </Layout>
     )

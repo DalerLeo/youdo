@@ -5,7 +5,6 @@ import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import classNames from 'classnames'
 import LinearProgress from '../../LinearProgress'
-import Loader from '../../Loader'
 import Edit from 'material-ui/svg-icons/image/edit'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -17,29 +16,28 @@ import Delete from 'material-ui/svg-icons/action/delete'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import ReworkIcon from 'material-ui/svg-icons/content/reply'
 import AcceptIcon from 'material-ui/svg-icons/action/done-all'
+import Info from 'material-ui/svg-icons/action/info-outline'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
-import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
+import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
     BORDER_STYLE,
     COLOR_GREY_LIGHTEN,
     COLOR_GREY,
-    COLOR_WHITE,
-    LINK_COLOR
+    LINK_COLOR, COLOR_WHITE, BORDER_COLOR
 } from '../../../constants/styleConstants'
 import {
     SUM_CURRENCY,
     HR_WORK_SCHEDULE,
     HR_EDUCATION,
     HR_GENDER,
-    HR_LEVEL_PC
+    HR_LEVEL_PC, HR_LANG_LEVELS
 } from '../../../constants/backendConstants'
-// . import getDocuments from '../../../helpers/getDocument'
+import {genderFormat} from '../../../constants/gender'
 
 const enhance = compose(
-    withState('moreDetails', 'setMoreDetails', false),
     injectSheet({
         loader: {
             width: '100%',
@@ -78,83 +76,45 @@ const enhance = compose(
         },
         container: {
             display: 'flex',
-            justifyContent: 'space-between',
             position: 'relative',
-            overflow: 'hidden',
-            width: '100%',
-            '& > div': {
-                '&:first-child': {
-                    width: '25%'
-                },
-                '&:nt-child(2)': {
-                    width: '35%'
-                },
-                '&:nt-child(3)': {
-                    width: '40%'
-                }
-            }
-        },
-        logs: {
-            background: COLOR_WHITE,
-            opacity: '0',
-            position: 'absolute',
-            padding: PADDING_STANDART,
-            boxShadow: '3px 0px 5px rgba(0, 0, 0, 0.22)',
-            top: '-100%',
-            left: '0',
-            right: '0',
-            zIndex: '2',
-            height: '100%',
-            width: '500px !important',
-            transition: 'all 300ms ease'
-        },
-        logsOpen: {
-            top: '0 !important',
-            opacity: '1 !important'
-        },
-        log: {
-            display: 'flex',
-            alignItems: 'center',
-            marginBottom: '15px',
-            '&:last-child': {
-                marginBottom: '0'
-            }
-        },
-        logDate: {
-            marginRight: '15px'
-        },
-        logStatus: {
-            fontWeight: '600'
-        },
-        companyInfo: {
-            borderBottom: BORDER_STYLE,
             width: '100%'
         },
         block: {
             borderLeft: BORDER_STYLE,
             padding: PADDING_STANDART,
-            transition: 'all 200ms ease',
-            maxHeight: '0',
             '&:first-child': {
-                borderLeft: 'none'
+                borderLeft: 'none',
+                width: '25%'
+            },
+            '&:nth-child(2)': {
+                width: '35%'
+            },
+            '&:nth-child(3)': {
+                width: '40%'
             }
         },
         info: {
+            lineHeight: '20px',
             '& > div': {
-                marginBottom: '10px',
+                marginBottom: '5px',
+                position: 'relative',
+                paddingRight: '25px',
                 '&:last-child': {
                     margin: '0'
                 }
             }
         },
-        flexBetween: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap'
+        moreInfo: {
+            marginTop: '25px'
+        },
+        skillsWrapper: {
+            display: 'inline',
+            marginLeft: '5px'
         },
         skill: {
+            display: 'inline-block',
             fontWeight: '600',
-            marginLeft: '5px',
+            marginRight: '5px',
             '&:after': {
                 content: '","'
             },
@@ -227,22 +187,75 @@ const enhance = compose(
             fontSize: '14px',
             marginRight: '20px'
         },
-        moreDetailsBtn: {
+        moreDetails: {
             textAlign: 'right',
             marginTop: '10px'
         },
-        moreDetails: {
-            maxHeight: '400px'
+        description: {
+            minHeight: '300px'
         },
         progress: {
             backgroundColor: '#efefef',
-            'max-height': ({moreDetails}) => moreDetails ? '560px' : '360px',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            position: 'absolute',
+            right: '0',
+            top: '0',
+            bottom: '0'
+        },
+
+        logsWrapper: {
+            position: 'absolute',
+            right: '0',
+            top: '0',
+            height: '22px',
+            width: '22px',
+            '&:hover > div:last-child': {
+                opacity: '1',
+                zIndex: '2 !important'
+            },
+            '& > svg': {
+                width: '22px !important',
+                height: '22px !important',
+                color: COLOR_GREY_LIGHTEN + '!important'
+            }
+        },
+        changelog: {
+            background: COLOR_WHITE,
+            boxShadow: '1px 1px 3px rgba(0, 0, 0, 0.2)',
+            position: 'absolute',
+            padding: '10px 15px',
+            left: 'calc(100% + 10px)',
+            right: '-240px',
+            top: '-11px',
+            opacity: '0',
+            zIndex: '-999',
+            transition: 'opacity 200ms ease'
+        },
+        log: {
+            marginBottom: '15px',
+            '&:last-child': {
+                marginBottom: '0'
+            }
+        },
+        logDate: {
+            fontSize: '12px',
+            fontWeight: '600',
+            color: COLOR_GREY_LIGHTEN
+        },
+        logLang: {
+            fontWeight: 'normal'
         }
     }),
-    withState('openLogs', 'setOpenLogs', false),
+    withState('moreDetails', 'setMoreDetails', false)
 )
 
+const flatButtonStyle = {
+    label: {
+        textTransform: 'none',
+        verticalAlign: 'middle',
+        fontWeight: '600'
+    }
+}
 const iconStyle = {
     icon: {
         color: COLOR_GREY,
@@ -278,13 +291,65 @@ const ApplicationDetails = enhance((props) => {
         confirmDialog,
         handleOpenUpdateDialog,
         handleCloseDetail,
-        openLogs,
-// .        setOpenLogs,
         logsData,
         moreDetails,
         setMoreDetails,
+        handleChangeApplicationAction,
+        meetingDialog,
+        meetingData,
         filter
     } = props
+    const getChangesLog = (key) => {
+        const changelog = []
+        _.map(logsData.list, (item) => {
+            const createdDate = _.get(item, 'createdDate')
+            _.map(_.get(item, 'log'), (value, keyname) => {
+                if (key === keyname) {
+                    changelog.push({keyname, value, createdDate})
+                }
+            })
+        })
+        if (_.isEmpty(changelog)) {
+            return null
+        }
+        return (
+            <div className={classes.logsWrapper}>
+                <Info/>
+                <div className={classes.changelog}>
+                    {_.map(changelog, (item, index) => {
+                        const value = _.get(item, 'value')
+                        const getChangedValue = () => {
+                            const languages = _.map(value, (obj) => {
+                                const language = _.get(obj, 'language')
+                                const level = getBackendNames(HR_LANG_LEVELS, _.get(obj, 'level'))
+                                return (
+                                    <div className={classes.logLang}>{language} ({level})</div>
+                                )
+                            })
+                            switch (key) {
+                                case 'education': return getBackendNames(HR_EDUCATION, value)
+                                case 'languagesLevel': return languages
+                                case 'levelPc': return getBackendNames(HR_LEVEL_PC, value)
+                                case 'mode': return getBackendNames(HR_WORK_SCHEDULE, value)
+                                case 'sex': return genderFormat[value]
+                                case 'skills': return _.join(value, ', ')
+                                default: return value
+                            }
+                        }
+                        const date = dateFormat(_.get(item, 'createdDate'))
+                        const valueIsDate = _.includes(['deadline', 'planningDate'], key)
+                        const output = valueIsDate ? dateFormat(value) : getChangedValue()
+                        return (
+                            <div key={index} className={classes.log}>
+                                <div className={classes.logDate}>изменено: {date}</div>
+                                <div>{output}</div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        )
+    }
 
     const applicationId = _.get(data, 'id')
     const ageMin = _.toNumber(_.get(data, 'ageMin'))
@@ -316,17 +381,10 @@ const ApplicationDetails = enhance((props) => {
     const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
-    // . const reportDownloadLink = _.get(data, 'downloadReport')
-    /*            <div className={classes.subTitle}>
-     <div className={classes.buttons}>
-     <a className={classNames(classes.button)} onClick={() => { setOpenLogs(!openLogs) }}>
-     {openLogs ? t('Закрыть логи') : t('Посмотреть логи')}
-     </a>
-     {reportDownloadLink &&
-     <a onClick={() => { getDocuments(reportDownloadLink) }} className={classNames(classes.button)}>{t('Скачать отчет')}</a>}
-     </div>
-     </div> */
-    if (loading) {
+
+    const reportUri = _.get(data, 'downloadReport')
+
+    if (loading || logsData.loading) {
         return (
             <div className={classes.loader}>
                 <LinearProgress/>
@@ -365,12 +423,13 @@ const ApplicationDetails = enhance((props) => {
                             leftIcon={<AcceptIcon style={popoverStyle.icon}/>}
                             primaryText={t('Принять заявку')}/>
                         <Divider/>
+                        {status !== 'frozen' &&
                         <MenuItem
                             style={popoverStyle.menuItem}
                             innerDivStyle={popoverStyle.innerDiv}
                             leftIcon={<Edit style={popoverStyle.icon}/>}
                             onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}
-                            primaryText={t('Изменить')}/>
+                            primaryText={t('Изменить')}/>}
                         <MenuItem
                             style={popoverStyle.menuItem}
                             innerDivStyle={popoverStyle.innerDiv}
@@ -384,8 +443,8 @@ const ApplicationDetails = enhance((props) => {
                 <div className={classes.block}>
                     <div className={classes.bodyTitle}>{t('Описание компании')}</div>
                     <div className={classes.info}>
-                        <div>{t('Клиент')}: <strong>{client}</strong></div>
-                        <div>{t('Контактное лицо')}: <strong>{contact}</strong></div>
+                        <div>{t('Клиент')}: <strong>{client}</strong>{getChangesLog('client')}</div>
+                        <div>{t('Контактное лицо')}: <strong>{contact}</strong>{getChangesLog('contact')}</div>
                         <div>{t('Телефон')}: <strong>{phone}</strong></div>
                         <div>{t('Адрес')}: <strong>{address}</strong></div>
                         <div>{t('Email')}: <strong>{email}</strong></div>
@@ -393,97 +452,94 @@ const ApplicationDetails = enhance((props) => {
                     <div className={classes.bodyTitle}>{t('Деятельность компании')}</div>
                     <div className={classes.info}>{sphere}</div>
                 </div>
-                <div
-                    className={classNames(classes.block, {[classes.moreDetails]: moreDetails})}>
+                <div className={classNames(classes.block, classes.description)}>
                     <div className={classes.bodyTitle}>{t('Описание вакантной должности')}</div>
                     <div className={classes.info}>
-                        <div>{t('Наименование должности')}: <strong>{position}</strong></div>
+                        <div>{t('Наименование должности')}: <strong>{position}</strong>{getChangesLog('position')}</div>
                         <div>{t('З/п на испытательный срок')}: <strong>{trialSalaryMin} - {trialSalaryMax} {SUM_CURRENCY}</strong></div>
                         <div>{t('З/п после испытательного срока')}: <strong>{realSalaryMin} - {realSalaryMax} {SUM_CURRENCY}</strong></div>
                         <div>{t('Предоставляемые льготы')}:
-                            {_.map(privileges, (item) => {
-                                const id = _.get(item, 'id')
-                                const name = _.get(item, 'name')
-                                return (
-                                    <span key={id} className={classes.skill}>{name}</span>
-                                )
-                            })}
+                            <div className={classes.skillsWrapper}>
+                                {_.map(privileges, (item) => {
+                                    const id = _.get(item, 'id')
+                                    const name = _.get(item, 'name')
+                                    return (
+                                        <span key={id} className={classes.skill}>{name}</span>
+                                    )
+                                })}
+                            </div>
+                            {getChangesLog('privileges')}
                         </div>
-                        <div>{t('Режим работы')}: <strong>{workSchedule}</strong></div>
-                        <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong></div>
-                        <div>{t('Функциональные обязанности')}: <strong>{responsibility}</strong></div>
-                        <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong></div>
+                        <div>{t('Режим работы')}: <strong>{workSchedule}</strong>{getChangesLog('mode')}</div>
+                        <div>{t('Наличие командировок')}: <strong>{businessTrip}</strong>{getChangesLog('businessTrip')}</div>
+                        <div>{t('Дата планируемого приема на работу')}: <strong>{planningDate}</strong>{getChangesLog('planningDate')}</div>
                     </div>
-                    {<div style={{marginTop: '15px', display: moreDetails ? 'block' : 'none'}}>
+                    {moreDetails &&
+                    <div className={classNames(classes.moreInfo)}>
                         <div className={classes.bodyTitle}>{t('Требования к кандидату')}</div>
                         <div className={classes.info}>
                             <div>{t('Возраст')}: <strong>{ageMin} - {getYearText(ageMax)}</strong></div>
-                            <div>{t('Пол')}: <strong>{sex}</strong></div>
-                            <div>{t('Образование')}: <strong>{education}</strong></div>
-                            <div>{t('Знание ПК')}: <strong>{levelPc}</strong></div>
+                            <div>{t('Пол')}: <strong>{sex}</strong>{getChangesLog('sex')}</div>
+                            <div>{t('Образование')}: <strong>{education}</strong>{getChangesLog('education')}</div>
+                            <div>{t('Знание ПК')}: <strong>{levelPc}</strong>{getChangesLog('levelPc')}</div>
                             <div>{t('Знание языков')}:
-                                {_.isEmpty(languages)
-                                    ? <strong> {t('Не указано')}</strong>
-                                    : _.map(languages, (item) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, ['language', 'name'])
-                                        const level = _.get(item, ['level', 'name'])
-                                        return (
-                                            <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
-                                        )
-                                    })}
+                                <div className={classes.skillsWrapper}>
+                                    {_.isEmpty(languages)
+                                        ? <strong> {t('Не указано')}</strong>
+                                        : _.map(languages, (item) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, ['language', 'name'])
+                                            const level = getBackendNames(HR_LANG_LEVELS, _.get(item, ['level']))
+                                            return (
+                                                <span key={id} className={classes.skill}>{name} <strong className={classes.lowercase}>({level})</strong></span>
+                                            )
+                                        })}
+                                </div>
+                                {getChangesLog('languagesLevel')}
                             </div>
                             <div>{t('Минимальный опыт работы по специальности')}: <strong>{getYearText(experience)}</strong></div>
                             <div>{t('Профессиональные навыки')}:
-                                {_.isEmpty(skills)
-                                    ? <strong> {t('Не указаны')}</strong>
-                                    : _.map(skills, (item) => {
-                                        const id = _.get(item, 'id')
-                                        const name = _.get(item, 'name')
-                                        return (
-                                            <span key={id} className={classes.skill}>{name}</span>
-                                        )
-                                    })}
+                                <div className={classes.skillsWrapper}>
+                                    {_.isEmpty(skills)
+                                        ? <strong> {t('Не указаны')}</strong>
+                                        : _.map(skills, (item) => {
+                                            const id = _.get(item, 'id')
+                                            const name = _.get(item, 'name')
+                                            return (
+                                                <span key={id} className={classes.skill}>{name}</span>
+                                            )
+                                        })}
+                                </div>
+                                {getChangesLog('skills')}
                             </div>
+                            <div className={classes.bodyTitle}>{t('Функциональные обязанности')}</div>
+                            <div>{responsibility}{getChangesLog('responsibility')}</div>
                         </div>
                     </div>}
-                    <div className={classes.moreDetailsBtn}>
+                    <div className={classes.moreDetails}>
                         <FlatButton
-                            label={moreDetails ? 'Cкрыть' : 'Далее'}
+                            label={moreDetails ? 'Cкрыть' : 'Больше'}
+                            labelStyle={flatButtonStyle.label}
                             primary={true}
-                            backgroundColor="#efefef"
-                            onTouchTap={() => setMoreDetails(!moreDetails)}/>
+                            backgroundColor={COLOR_WHITE}
+                            hoverColor={BORDER_COLOR}
+                            rippleColor={COLOR_WHITE}
+                            onTouchTap={() => setMoreDetails(!moreDetails)}
+                            fullWidth/>
                     </div>
                 </div>
-                <div className={classNames(classes.block, classes.progress)}>
+                <div className={classNames(classes.block, classes.progress, 'asdasd')}>
                     <ApplicationDetailProgress
+                        id={applicationId}
                         status={status}
                         filter={filter}
                         showNotify={true}
-                        id={applicationId}
+                        logsData={logsData}
+                        reportUri={reportUri}
+                        handleChangeApplicationAction={handleChangeApplicationAction}
+                        meetingDialog={meetingDialog}
+                        meetingData={meetingData}
                     />
-                </div>
-
-                <div className={classNames(classes.logs, {
-                    [classes.logsOpen]: openLogs
-                })}>
-                    {logsData.loading
-                        ? <div className={classes.loader}>
-                            <Loader size={0.75}/>
-                        </div>
-                        : !_.isEmpty(logsData.list)
-                            ? _.map(logsData.list, (item) => {
-                                const createdDate = dateFormat(_.get(item, 'createdDate'), true)
-                                const logStatus = _.get(item, 'status')
-                                const id = _.get(item, 'id')
-                                return (
-                                    <div key={id} className={classes.log}>
-                                        <div className={classes.logDate}>{createdDate}</div>
-                                        <div className={classes.logStatus}>{getAppStatusName(logStatus)}</div>
-                                    </div>
-                                )
-                            })
-                            : <div>{t('Нет активности по этой заявке')}</div>}
                 </div>
             </div>
         </div>

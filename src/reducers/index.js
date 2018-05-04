@@ -542,7 +542,8 @@ const rootReducer = combineReducers({
         item: createThunkReducer(actionTypes.HR_APPLICATION_ITEM),
         privilege: createThunkReducer(actionTypes.HR_PRIVILEGE_LIST),
         logs: createThunkReducer(actionTypes.HR_APP_LOGS_LIST),
-        calendar: createThunkReducer(actionTypes.HR_CALENDAR_LIST)
+        calendar: createThunkReducer(actionTypes.HR_CALENDAR_LIST),
+        meetingList: createThunkReducer(actionTypes.HR_APP_GET_MEETING_LIST)
     }),
     resume: combineReducers({
         create: createThunkReducer(actionTypes.HR_RESUME_CREATE),

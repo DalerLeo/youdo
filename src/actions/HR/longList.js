@@ -199,7 +199,7 @@ export const getReportList = (filter, appId, appStatus) => {
 
 export const formShortList = (application) => {
     const payload = axios()
-        .post(sprintf(API.HR_FORM_SHORT_LIST, application))
+        .post(API.HR_FORM_REPORT_LIST, {application, action: 'report_sent_to_manager'})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -208,7 +208,7 @@ export const formShortList = (application) => {
         })
 
     return {
-        type: actionTypes.HR_FORM_SHORT_LIST,
+        type: actionTypes.HR_FORM_REPORT_LIST,
         payload
     }
 }

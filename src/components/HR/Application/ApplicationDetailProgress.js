@@ -1,19 +1,8 @@
-// . import _ from 'lodash'
-// . import PropTypes from 'prop-types'
-
-/* Import Loader from '../../Loader'
-import Edit from 'material-ui/svg-icons/image/edit'
-import IconButton from 'material-ui/IconButton'
-import Divider from 'material-ui/Divider'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
-import ReworkIcon from 'material-ui/svg-icons/content/reply'
-import AcceptIcon from 'material-ui/svg-icons/action/done-all'
-import dateFormat from '../../../helpers/dateFormat'
-import numberFormat from '../../../helpers/numberFormat'
-import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers' */
+import _ from 'lodash'
 import React from 'react'
+import moment from 'moment'
+import PropTypes from 'prop-types'
+import {Row, Col} from 'react-flexbox-grid'
 import classNames from 'classnames'
 import Done from 'material-ui/svg-icons/action/done'
 import FlatButton from 'material-ui/FlatButton'
@@ -25,12 +14,22 @@ import injectSheet from 'react-jss'
 import t from '../../../helpers/translate'
 import {
     PADDING_STANDART,
-    BORDER_STYLE, LINK_COLOR, COLOR_WHITE
+    BORDER_STYLE,
+    LINK_COLOR,
+    COLOR_WHITE,
+    COLOR_GREEN,
+    COLOR_YELLOW,
+    COLOR_GREY
 } from '../../../constants/styleConstants'
-import _ from 'lodash'
-import * as ROUTE from '../../../constants/routes'
-import {Link} from 'react-router'
-// . import getDocuments from '../../../helpers/getDocument'
+import getDocument from '../../../helpers/getDocument'
+import ToolTip from '../../ToolTip'
+import DoneIcon from 'material-ui/svg-icons/action/done-all'
+import InProgressIcon from 'material-ui/svg-icons/action/cached'
+import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import ApprovedIcon from 'material-ui/svg-icons/action/check-circle'
+import NotApprovedIcon from 'material-ui/svg-icons/alert/error-outline'
+
+const boxShadow = 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px'
 
 const enhance = compose(
     injectSheet({
@@ -77,7 +76,7 @@ const enhance = compose(
         },
         cardWrapper: {
             borderLeft: 'solid 2px #bec6c9',
-            marginLeft: '15px',
+            marginLeft: '20px',
             marginTop: '-4px'
         },
         cardItem: {
@@ -87,22 +86,20 @@ const enhance = compose(
             paddingTop: '15px',
             '& > span': {
                 borderRadius: '50%',
-                width: '16px',
+                width: '17px',
                 height: '16px',
                 backgroundColor: '#7abd7d',
                 marginTop: '10px'
             },
             '& > div': {
                 backgroundColor: '#fff',
-                boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
+                boxShadow,
+                borderRadius: '2px',
                 marginLeft: '20px',
                 minHeight: '35px',
                 maxHeight: '100px',
                 transition: 'max-height 1s, min-height 1s',
                 padding: '10px'
-            },
-            '&:last-child': {
-                paddingBottom: '15px'
             },
             '& i': {
                 fontSize: '11px',
@@ -110,52 +107,73 @@ const enhance = compose(
             }
         },
         cardContent: {
-            transition: 'all 200ms ease-out !important',
-            minWidth: '100px'
-        },
-        cardOpen: {
-            minWidth: 'calc(100% - 36px)'
+
         },
         actionBtn: {
             backgroundColor: '#fff',
-            boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px',
+            boxShadow,
             padding: '15px 20px',
-            '& > button': {
-                width: '50%',
-                lineHeight: 'unset',
-                height: 'unset',
-                minHeight: '36px',
-                paddingBottom: '5px'
-            }
+            marginTop: '15px',
+            marginLeft: '-22px'
         },
         buttons: {
             display: 'flex',
-            paddingTop: '10px'
-        },
-        downLoad: {
-            transition: 'all 200ms ease-out',
-            maxHeight: '0',
-            opacity: '0',
-            borderTop: BORDER_STYLE,
-            '& a': {
-                paddingTop: '5px',
-                fontSize: '12px',
-                display: 'flex',
-                alignItems: 'center'
+            paddingTop: '10px',
+            '& > button': {
+                marginLeft: '5px !important',
+                '&:first-child': {
+                    marginLeft: '0 !important'
+                }
             }
         },
-        notClickable: {
-            cursor: 'unset'
+        download: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > a': {
+                fontSize: '12px',
+                display: 'flex',
+                fontWeight: '600',
+                alignItems: 'center',
+                marginLeft: '5px'
+            }
         },
-        open: {
-            marginTop: '10px',
-            opacity: '1',
-            maxHeight: '40px'
+        meetingWrapper: {
+            extend: 'actionBtn',
+            padding: '0',
+            '& header': {
+                borderBottom: BORDER_STYLE,
+                display: 'flex',
+                alignItems: 'center',
+                position: 'relative',
+                padding: '15px',
+                '& svg': {
+                    height: '20px !important',
+                    width: '20px !important'
+                }
+            }
+        },
+        meetings: {
+            padding: '5px 0'
+        },
+        meeting: {
+            alignItems: 'center',
+            padding: '10px 15px',
+            '& svg': {
+                marginLeft: '10px',
+                height: '16px !important',
+                width: '16px !important'
+            }
+        },
+        status: {
+            marginLeft: '10px'
+        },
+        action: {
+            cursor: 'pointer',
+            position: 'absolute',
+            right: '20px'
         }
-
     }),
-    withState('openLogs', 'setOpenLogs', false),
-    withState('currentItem', 'setCurrentItem', null)
+    withState('openLogs', 'setOpenLogs', false)
 )
 
 const downIcon = {
@@ -166,7 +184,7 @@ const downIcon = {
 }
 const doneIcon = {
     width: '16px',
-    height: '16px'
+    height: '15px'
 }
 
 const actButton = {
@@ -178,32 +196,198 @@ const actButton = {
     }
 }
 
+const flatButtonStyle = {
+    width: '50%',
+    lineHeight: 'unset',
+    height: 'unset',
+    minHeight: '30px'
+}
+
 const ApplicationDetailProgress = enhance((props) => {
-    const {classes,
-        currentItem,
-        setCurrentItem,
-        id,
-        showNotify
+    const {
+        isRecruiter,
+        classes,
+        showNotify,
+        logsData,
+        reportUri,
+        handleChangeApplicationAction,
+        meetingDialog,
+        meetingData
     } = props
 
-    const cards = [
-        {text: 'Ожидание отчета', type: '1'},
-        {text: 'Отчет отправлен клиенту', type: '2'},
-        {text: 'Отчет отклонен', type: '6', date: '22 Апр. 2018 | 15:25'},
-        {text: 'Отчет одобрен клиентом', type: '3'},
-        {text: 'В заявку внесены изменения', type: '3'},
-        {text: 'Формиравание отчета', type: '3'},
-        {text: 'Отчет отправлен начальнику', type: '3'},
-        {text: 'Отчет отправлен клиенту', type: '6', date: '22 Апр. 2018 | 15:25'},
-        {text: 'Клиент отклонил отчет', type: '6', date: '22 Апр. 2018 | 15:25'},
-        {text: 'В заявку внесены изменения', type: '3'},
-        {text: 'Формиравание отчета', type: '3'},
-        {text: 'Отчет отправлен начальнику', type: '3'},
-        {text: 'Отчет отправлен клиенту', type: '6', date: '22 Апр. 2018 | 15:25'},
-        {text: 'Отмеченны кондидаты для собеседования с клиентом', type: '4'},
-        {text: 'Время собеседований согласованно', type: '5'},
-        {text: 'Заявка закрыта. Клиент принял на работу', type: '5'}
-    ]
+    const logsList = _.get(logsData, 'list')
+    const lastLogId = _.get(_.last(logsList), 'id')
+    const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
+    const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false)
+
+    const getCardContainer = (content, key) => {
+        return (
+            <div key={key} className={classes.cardItem}>
+                <span><Done color={COLOR_WHITE} style={doneIcon}/></span>
+                <div className={classNames(classes.cardContent)}>
+                    {content}
+                </div>
+            </div>
+        )
+    }
+    const getActionContainer = (content, buttons, key) => {
+        const isSingle = _.get(buttons, 'single')
+        return (
+            <div key={key} className={classes.actionBtn}>
+                <div>{content}</div>
+                {isSingle
+                    ? <div className={classes.buttons}>
+                        <FlatButton
+                            label={buttons.single.text}
+                            backgroundColor={COLOR_GREEN}
+                            hoverColor={COLOR_GREEN}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.single.action}
+                            fullWidth
+                        />
+                    </div>
+                    : <div className={classes.buttons}>
+                        <FlatButton
+                            label={buttons.left.text}
+                            backgroundColor={COLOR_GREEN}
+                            hoverColor={COLOR_GREEN}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.left.action}
+                        />
+                        <FlatButton
+                            label={buttons.right.text}
+                            backgroundColor={LINK_COLOR}
+                            hoverColor={LINK_COLOR}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={buttons.right.action}
+                        />
+                    </div>}
+            </div>
+        )
+    }
+
+    const getActionContent = (action, logId) => {
+        switch (action) {
+            case 'update': return (
+                <div key={logId}>
+                    {getCardContainer('В заявку внесены изменения')}
+                    {getCardContainer(isRecruiter ? 'Формирование отчета' : 'Ожидание отчета')}
+                </div>
+            )
+            case 'report_sent_to_manager': return lastLogId === logId && !isRecruiter
+                ? getActionContainer(
+                    <div className={classes.download}>
+                        <span>Отчет сформирован</span>
+                        <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
+                    </div>,
+                    {
+                        left: {
+                            text: 'Отправить клиенту',
+                            action: () => handleChangeApplicationAction('sent_to_client')
+                        },
+                        right: {
+                            text: 'Отклонить',
+                            action: () => handleChangeApplicationAction('rejected_by_manager')
+                        }
+                    }, logId)
+                : getCardContainer((
+                    <div className={classes.download}>
+                        <span>Отчет сформирован</span>
+                        <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
+                    </div>
+                ), logId)
+            case 'sent_to_client': return (
+                <div key={logId}>
+                    {getCardContainer('Отчет отправлен клиенту')}
+                    {lastLogId === logId && !isRecruiter
+                        ? getActionContainer('Ожидание ответа от клиента по отчету', {
+                            left: {
+                                text: 'Отчет одобрен',
+                                action: () => handleChangeApplicationAction('approval')
+                            },
+                            right: {
+                                text: 'Отчет отклонен',
+                                action: () => handleChangeApplicationAction('rejected_by_client')
+                            }
+                        })
+                        : null}
+                </div>
+            )
+            case 'rejected_by_manager': return (
+                <div key={logId}>
+                    {getCardContainer('Отчет отклонен менеджером')}
+                    {getCardContainer('Ожидание отчета')}
+                </div>
+            )
+            case 'rejected_by_client': return (
+                <div key={logId}>
+                    {getCardContainer('Отчет отклонен клиентом')}
+                    {getCardContainer('Ожидание отчета')}
+                </div>
+            )
+            case 'approval': return (
+                <div key={logId}>
+                    {getCardContainer('Отчет одобрен клиентом')}
+                    {hasMeetings
+                        ? <div className={classes.meetingWrapper}>
+                            <header>
+                                <h4>{t('Собеседование с клиентом')}</h4>
+                                <div className={classes.status}>
+                                    {isApprovedMeetings
+                                        ? <DoneIcon color={COLOR_GREEN}/>
+                                        : <InProgressIcon color={COLOR_YELLOW}/>}
+                                </div>
+                                {!isRecruiter &&
+                                <div className={classes.action} onClick={meetingDialog.handleOpen}>
+                                    <EditIcon color={COLOR_GREY}/>
+                                </div>}
+                            </header>
+                            <div className={classes.meetings}>
+                                {_.map(_.get(meetingData, 'list'), (item) => {
+                                    const meetingId = _.get(item, 'id')
+                                    const fullName = _.get(item, ['resume', 'fullName'])
+                                    const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
+                                    const brokenMeetingTime = meetingWasPostponed
+                                        ? moment(_.get(item, ['brokenMeetingTime'])).format('DD MMM | HH:mm') : null
+                                    const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
+                                    const isApprove = _.get(item, ['isApprove'])
+
+                                    return (
+                                        <Row key={meetingId} className={classes.meeting}>
+                                            <Col xs={6}>{fullName}</Col>
+                                            <div>{meetingTime}</div>
+                                            {isApprove
+                                                ? <ToolTip text={t('Время собеседования утверждено')} position={'left'}>
+                                                    <ApprovedIcon color={COLOR_GREEN}/>
+                                                </ToolTip>
+                                                : meetingWasPostponed
+                                                    ? <ToolTip text={brokenMeetingTime} position={'left'}>
+                                                        <NotApprovedIcon color={COLOR_YELLOW}/>
+                                                    </ToolTip>
+                                                    : null}
+                                        </Row>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                        : getActionContainer('Собеседование с клиентом', {
+                            single: {
+                                text: 'Указать кандидатов для собеседования',
+                                action: () => meetingDialog.handleOpen()
+                            }
+                        })}
+                </div>
+            )
+            default: return getCardContainer(action, logId)
+        }
+    }
+
     return (
         <div className={classes.wrapper}>
             <div className={classes.title}><span>{t('Прогресс')}</span>
@@ -217,58 +401,23 @@ const ApplicationDetailProgress = enhance((props) => {
 
             </div>
             <div className={classes.cardWrapper}>
-                {_.map(cards, (item, index) => {
-                    return (
-                        <div className={classes.cardItem} onClick={() => setCurrentItem(index)}>
-                            <span><Done color="#fff" style={doneIcon}/></span>
-                            {item.date
-                                ? <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
-                                    <div>Отчет отправлен клиенту <br/>
-                                        <div className={classNames(classes.downLoad, {
-                                            [classes.open]: currentItem === index
-                                        })}>
-                                            <div><i>22 Апр. 2018 | 15:25</i></div>
-                                            <div><a><DownLoadIcon style={downIcon} /> Скачать отчет</a></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                : <div className={classNames(classes.cardContent, {[classes.cardOpen]: currentItem === index})}>
-                                    {item.text}
-                                    <div className={classNames(classes.downLoad, {
-                                        [classes.open]: currentItem === index
-                                    })}>
-                                        {currentItem === index &&
-                                        <Link to={{pathname: ROUTE.HR_LONG_LIST_URL, query: {application: id}}}>Проверить</Link>}
-                                    </div>
-                                </div>}
-                        </div>
-                    )
+                {getCardContainer('Ожидание отчета')}
+                {_.map(logsList, (item) => {
+                    const id = _.get(item, 'id')
+                    const action = _.get(item, 'action')
+                    return getActionContent(action, id)
                 })}
-            </div>
-            <div className={classes.actionBtn}>
-                <div>Lorem ipsum haeds lolermsds sdasd asd asd asd asd asd asd as das dasdasdasdas dasdasdas das</div>
-                <div className={classes.buttons}>
-                    <FlatButton
-                        label={t('Отчет одобрен')}
-                        backgroundColor="#81c784"
-                        hoverColor="#81c784"
-                        style={{marginRight: '5px'}}
-                        labelStyle={actButton.label}/>
-                    <FlatButton
-                        backgroundColor="#13aaeb"
-                        hoverColor="#13aaeb"
-                        label={t('Отчет отклонен')}
-                        style={{marginLeft: '5px'} + actButton.button}
-                        labelStyle={actButton.label}/>
-                </div>
             </div>
         </div>
     )
 })
 
 ApplicationDetailProgress.propTypes = {
-    // Data: PropTypes.object.isRequired,
-    // Loading: PropTypes.bool.isRequired
+    logsData: PropTypes.object.isRequired
+}
+
+ApplicationDetailProgress.defaultProps = {
+    isRecruiter: false
 }
 
 export default ApplicationDetailProgress

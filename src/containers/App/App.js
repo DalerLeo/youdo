@@ -7,6 +7,10 @@ import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers, withState} from 'recompose'
 import * as ROUTES from '../../constants/routes'
+import moment from 'moment'
+
+const locale = 'ru'
+moment.locale(locale)
 
 const refreshAgentsList = 45000
 @compose(

@@ -50,21 +50,6 @@ const MainStyles = {
     field: {
         width: '100%'
     },
-    inputField: {
-        fontSize: '13px !important',
-        height: '45px !important',
-        marginTop: '7px',
-        '& div': {
-            fontSize: '13px !important'
-        },
-        '& label': {
-            top: '20px !important',
-            lineHeight: '5px !important'
-        },
-        '& input': {
-            marginTop: '0 !important'
-        }
-    },
     bottomButton: {
         bottom: '0',
         left: '0',

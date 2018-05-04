@@ -599,6 +599,14 @@ export const HR_APPLICATION_LIST = `/${HR_APPLICATION}/`
 export const HR_APPLICATION_ITEM = `/${HR_APPLICATION}/%d/`
 export const HR_APPLICATION_ITEM_STAT = `/${HR_APPLICATION}/%d/statistics/`
 
+export const HR_APPLICATION_ACTION = 'hr/application_action'
+export const HR_APP_LOGS_LIST = `/${HR_APPLICATION_ACTION}/`
+export const HR_APP_CHANGE_ACTION = `/${HR_APPLICATION_ACTION}/`
+
+export const HR_APP_APPROVAL = 'hr/application_approval'
+export const HR_APP_CREATE_MEETING = `/${HR_APP_APPROVAL}/multi/`
+export const HR_APP_GET_MEETING_LIST = `/${HR_APP_APPROVAL}/`
+
 export const HR_POSITION = 'hr/position'
 export const HR_POSITION_LIST = `/${HR_POSITION}/`
 export const HR_POSITION_ITEM = `/${HR_POSITION}/%d/`
@@ -635,7 +643,7 @@ export const HR_REPORT_LIST_CREATE = `/${HR_RESUME_CHANGE_STATUS}/moving/`
 export const HR_SHORT_LIST_CREATE = `/${HR_RESUME_CHANGE_STATUS}/moving/`
 export const HR_RESUME_MOVE = `/${HR_RESUME_CHANGE_STATUS}/`
 export const HR_RESUME_REMOVE = `/${HR_RESUME_CHANGE_STATUS}/%d/`
-export const HR_FORM_SHORT_LIST = `/${HR_APPLICATION}/%d/close/`
+export const HR_FORM_REPORT_LIST = `/${HR_APPLICATION_ACTION}/`
 
 export const HR_RESUME_COMMENT = 'hr/comment'
 export const HR_RESUME_COMMENT_CREATE = `/${HR_RESUME_COMMENT}/`
@@ -649,9 +657,6 @@ export const HR_APPLICATION_QUESTIONS_LIST = `/${HR_APPLICATION_QUESTIONS}/`
 export const HR_RESUME_ANSWERS = 'hr/application_answer'
 export const HR_RESUME_ANSWERS_CREATE = `/${HR_RESUME_ANSWERS}/multi_answer/`
 export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`
-
-export const HR_APP_LOGS = 'hr/application_status_log'
-export const HR_APP_LOGS_LIST = `/${HR_APP_LOGS}`
 
 export const HR_FEEDBACK = 'hr/feedback'
 export const HR_FEEDBACK_CREATE = `/${HR_FEEDBACK}/`
