@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
 import moment from 'moment'
+import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import classNames from 'classnames'
 import Done from 'material-ui/svg-icons/action/done'
@@ -169,7 +170,7 @@ const enhance = compose(
         action: {
             cursor: 'pointer',
             position: 'absolute',
-            right: '15px'
+            right: '20px'
         }
     }),
     withState('openLogs', 'setOpenLogs', false)
@@ -204,6 +205,7 @@ const flatButtonStyle = {
 
 const ApplicationDetailProgress = enhance((props) => {
     const {
+        isRecruiter,
         classes,
         showNotify,
         logsData,
@@ -213,10 +215,10 @@ const ApplicationDetailProgress = enhance((props) => {
         meetingData
     } = props
 
-    const logsList = logsData.list
+    const logsList = _.get(logsData, 'list')
     const lastLogId = _.get(_.last(logsList), 'id')
-    const hasMeetings = !_.isEmpty(meetingData.list)
-    const isApprovedMeetings = !_.includes(_.map(meetingData.list, item => _.get(item, 'isApprove')), false)
+    const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
+    const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false)
 
     const getCardContainer = (content, key) => {
         return (
@@ -275,10 +277,10 @@ const ApplicationDetailProgress = enhance((props) => {
             case 'update': return (
                 <div key={logId}>
                     {getCardContainer('В заявку внесены изменения')}
-                    {getCardContainer('Ожидание отчета')}
+                    {getCardContainer(isRecruiter ? 'Формирование отчета' : 'Ожидание отчета')}
                 </div>
             )
-            case 'report_sent_to_manager': return lastLogId === logId
+            case 'report_sent_to_manager': return lastLogId === logId && !isRecruiter
                 ? getActionContainer(
                     <div className={classes.download}>
                         <span>Отчет сформирован</span>
@@ -303,7 +305,7 @@ const ApplicationDetailProgress = enhance((props) => {
             case 'sent_to_client': return (
                 <div key={logId}>
                     {getCardContainer('Отчет отправлен клиенту')}
-                    {lastLogId === logId
+                    {lastLogId === logId && !isRecruiter
                         ? getActionContainer('Ожидание ответа от клиента по отчету', {
                             left: {
                                 text: 'Отчет одобрен',
@@ -341,12 +343,13 @@ const ApplicationDetailProgress = enhance((props) => {
                                         ? <DoneIcon color={COLOR_GREEN}/>
                                         : <InProgressIcon color={COLOR_YELLOW}/>}
                                 </div>
+                                {!isRecruiter &&
                                 <div className={classes.action} onClick={meetingDialog.handleOpen}>
                                     <EditIcon color={COLOR_GREY}/>
-                                </div>
+                                </div>}
                             </header>
                             <div className={classes.meetings}>
-                                {_.map(meetingData.list, (item) => {
+                                {_.map(_.get(meetingData, 'list'), (item) => {
                                     const meetingId = _.get(item, 'id')
                                     const fullName = _.get(item, ['resume', 'fullName'])
                                     const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
@@ -410,8 +413,11 @@ const ApplicationDetailProgress = enhance((props) => {
 })
 
 ApplicationDetailProgress.propTypes = {
-    // Data: PropTypes.object.isRequired,
-    // Loading: PropTypes.bool.isRequired
+    logsData: PropTypes.object.isRequired
+}
+
+ApplicationDetailProgress.defaultProps = {
+    isRecruiter: false
 }
 
 export default ApplicationDetailProgress
