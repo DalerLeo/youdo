@@ -20,6 +20,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import ToolTip from '../../ToolTip'
 import {hashHistory, Link} from 'react-router'
 import ApplicationDetail from './ApplicationDetails'
+import ApplicationMeetingDialog from './ApplicationMeetingDialog'
 import ApplicationFilterForm from './ApplicationFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
@@ -140,7 +141,10 @@ const ApplicationGridList = enhance((props) => {
         setOpenRecruiterList,
         usersData,
         privilegeData,
-        logsData
+        logsData,
+        meetingDialog,
+        reportData,
+        meetingData
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
@@ -164,7 +168,10 @@ const ApplicationGridList = enhance((props) => {
             confirmDialog={confirmDialog}
             handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
             handleChangeApplicationAction={_.get(detailData, 'handleChangeApplicationAction')}
-            logsData={logsData}/>
+            logsData={logsData}
+            meetingDialog={meetingDialog}
+            meetingData={meetingData}
+        />
     )
 
     const iconStyle = {
@@ -370,6 +377,14 @@ const ApplicationGridList = enhance((props) => {
                 onSubmit={confirmDialog.handleSendConfirmDialog}
                 open={confirmDialog.openConfirmDialog}
             />}
+
+            <ApplicationMeetingDialog
+                open={meetingDialog.open}
+                onClose={meetingDialog.handleClose}
+                onSubmit={meetingDialog.handleSubmit}
+                reportData={reportData}
+                initialValues={meetingDialog.initialValues}
+            />
         </Container>
     )
 })

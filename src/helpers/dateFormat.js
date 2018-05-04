@@ -1,4 +1,3 @@
-
 import moment from 'moment'
 import {getLanguage} from './storage'
 const dateFormat = (date, time, defaultText) => {

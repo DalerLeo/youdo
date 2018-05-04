@@ -36,7 +36,6 @@ import {
     HR_LEVEL_PC, HR_LANG_LEVELS
 } from '../../../constants/backendConstants'
 import {genderFormat} from '../../../constants/gender'
-// . import getDocuments from '../../../helpers/getDocument'
 
 const enhance = compose(
     injectSheet({
@@ -198,7 +197,7 @@ const enhance = compose(
         progress: {
             backgroundColor: '#efefef',
             overflowY: 'auto',
-            // position: 'absolute',
+            position: 'absolute',
             right: '0',
             top: '0',
             bottom: '0'
@@ -296,6 +295,8 @@ const ApplicationDetails = enhance((props) => {
         moreDetails,
         setMoreDetails,
         handleChangeApplicationAction,
+        meetingDialog,
+        meetingData,
         filter
     } = props
     const getChangesLog = (key) => {
@@ -527,7 +528,7 @@ const ApplicationDetails = enhance((props) => {
                             fullWidth/>
                     </div>
                 </div>
-                <div className={classNames(classes.block, classes.progress)}>
+                <div className={classNames(classes.block, classes.progress, 'asdasd')}>
                     <ApplicationDetailProgress
                         id={applicationId}
                         status={status}
@@ -536,6 +537,8 @@ const ApplicationDetails = enhance((props) => {
                         logsData={logsData}
                         reportUri={reportUri}
                         handleChangeApplicationAction={handleChangeApplicationAction}
+                        meetingDialog={meetingDialog}
+                        meetingData={meetingData}
                     />
                 </div>
             </div>

@@ -159,3 +159,37 @@ export const changeApplicationAction = (action, application) => {
         payload
     }
 }
+
+export const submitMeetingAction = (application, formValues) => {
+    const requestData = serializers.applicationMeetingSerializer(application, formValues)
+    const payload = axios()
+        .post(API.HR_APP_CREATE_MEETING, requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_CREATE_MEETING,
+        payload
+    }
+}
+
+export const getMeetingListAction = (application) => {
+    const params = serializers.applicationMeetingListSerializer(application)
+    const payload = axios()
+        .get(API.HR_APP_GET_MEETING_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_GET_MEETING_LIST,
+        payload
+    }
+}

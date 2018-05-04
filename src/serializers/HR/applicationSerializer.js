@@ -99,3 +99,26 @@ export const usersListSerializer = () => {
     }
 }
 
+export const applicationMeetingSerializer = (application, data) => {
+    const resume = _.filter(_.map(_.get(data, 'resumes'), (item, index) => {
+        const selected = _.get(item, 'selected')
+        return selected
+            ? {
+                id: _.toInteger(index),
+                meeting_time: moment(_.get(item, 'datetime')).format('YYYY-MM-DD HH:mm'),
+                is_approve: false
+            }
+            : null
+    }), (item) => !_.isNull(item))
+    return {
+        application,
+        resume
+    }
+}
+
+export const applicationMeetingListSerializer = (application) => {
+    return {
+        application
+    }
+}
+

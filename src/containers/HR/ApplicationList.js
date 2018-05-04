@@ -23,11 +23,18 @@ import {
     usersListFetchAction,
     privilegeListFetchAction,
     getApplicationLogs,
-    changeApplicationAction
+    changeApplicationAction,
+    submitMeetingAction,
+    getMeetingListAction
 } from '../../actions/HR/application'
+import {getReportList} from '../../actions/HR/longList'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
-import {APPLICATION_FILTER_KEY, APPLICATION_FILTER_OPEN} from '../../components/HR/Application'
+import {
+    APPLICATION_FILTER_KEY,
+    APPLICATION_FILTER_OPEN,
+    APPLICATION_MEETING_DIALOG_OPEN
+} from '../../components/HR/Application'
 import {PRICE_FILTER_KEY} from '../../components/Price'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
@@ -43,13 +50,18 @@ const enhance = compose(
         const updateLoading = _.get(state, ['application', 'update', 'loading'])
         const list = _.get(state, ['application', 'list', 'data'])
         const listLoading = _.get(state, ['application', 'list', 'loading'])
+        const meetingList = _.get(state, ['application', 'meetingList', 'data'])
+        const meetingListLoading = _.get(state, ['application', 'meetingList', 'loading'])
         const privilegeList = _.get(state, ['application', 'privilege', 'data'])
         const privilegeListLoading = _.get(state, ['application', 'privilege', 'loading'])
         const logsList = _.get(state, ['application', 'logs', 'data'])
         const logsListLoading = _.get(state, ['application', 'logs', 'loading'])
         const usersList = _.get(state, ['users', 'list', 'data'])
         const usersListLoading = _.get(state, ['users', 'list', 'loading'])
+        const reportList = _.get(state, ['longList', 'reportList', 'data'])
+        const reportListLoading = _.get(state, ['longList', 'reportList', 'loading'])
         const createForm = _.get(state, ['form', 'ApplicationCreateForm'])
+        const meetingForm = _.get(state, ['form', 'ApplicationMeetingForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -65,15 +77,23 @@ const enhance = compose(
             privilegeListLoading,
             logsList,
             logsListLoading,
+            reportList,
+            reportListLoading,
+            meetingList,
+            meetingListLoading,
             filter,
-            createForm
+            createForm,
+            meetingForm
         }
     }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
     withState('openRecruiterList', 'setOpenRecruiterList', false),
 
     withPropsOnChange((props, nextProps) => {
-        return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
+        const except = {
+            openMeetingDialog: null
+        }
+        return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
         dispatch(applicationListFetchAction(filter))
     }),
@@ -86,6 +106,7 @@ const enhance = compose(
         if (applicationId > ZERO) {
             dispatch(applicationItemFetchAction(applicationId))
             dispatch(getApplicationLogs(applicationId))
+            dispatch(getMeetingListAction(applicationId))
         }
     }),
 
@@ -112,6 +133,19 @@ const enhance = compose(
         const openUpdate = toBoolean(_.get(query, APPLICATION_UPDATE_DIALOG_OPEN))
         if (openCreate || openUpdate) {
             dispatch(privilegeListFetchAction())
+        }
+    }),
+
+    // OPEN MEETING DIALOG - GET REPORT RESUMES
+    withPropsOnChange((props, nextProps) => {
+        const prevOpen = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
+        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
+        return nextOpen !== prevOpen && nextOpen === true
+    }, ({filter, dispatch, location: {query}, params}) => {
+        const application = _.toInteger(_.get(params, 'applicationId'))
+        const openDialog = toBoolean(_.get(query, [APPLICATION_MEETING_DIALOG_OPEN]))
+        if (openDialog) {
+            dispatch(getReportList(filter, application, 'report'))
         }
     }),
 
@@ -237,6 +271,36 @@ const enhance = compose(
                 .then(() => {
                     return dispatch(getApplicationLogs(application))
                 })
+        },
+
+        handleOpenMeetingDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_OPEN]: true})
+            })
+        },
+
+        handleCloseMeetingDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_OPEN]: false})
+            })
+        },
+
+        handleSubmitMeetingDialog: props => () => {
+            const {dispatch, meetingForm, filter} = props
+            const applicationId = _.toInteger(_.get(props, ['params', 'applicationId']))
+
+            return dispatch(submitMeetingAction(applicationId, _.get(meetingForm, ['values'])))
+                .then(() => {
+                    return dispatch(getMeetingListAction(applicationId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[APPLICATION_MEETING_DIALOG_OPEN]: false}))
+                })
         }
     })
 )
@@ -260,12 +324,17 @@ const ApplicationList = enhance((props) => {
         privilegeList,
         privilegeListLoading,
         logsList,
-        logsListLoading
+        logsListLoading,
+        reportList,
+        reportListLoading,
+        meetingList,
+        meetingListLoading
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', APPLICATION_FILTER_OPEN]))
     const openCreateDialog = toBoolean(_.get(location, ['query', APPLICATION_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICATION_UPDATE_DIALOG_OPEN]))
+    const openMeetingDialog = toBoolean(_.get(location, ['query', APPLICATION_MEETING_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'applicationId'))
 
     const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
@@ -408,6 +477,35 @@ const ApplicationList = enhance((props) => {
         loading: logsListLoading
     }
 
+    const meetingData = {
+        list: meetingList,
+        loading: meetingListLoading
+    }
+
+    const meetingDialog = {
+        open: openMeetingDialog,
+        handleOpen: props.handleOpenMeetingDialog,
+        handleClose: props.handleCloseMeetingDialog,
+        handleSubmit: props.handleSubmitMeetingDialog,
+        initialValues: (() => {
+            const resumes = {}
+            _.map(meetingData.list, (item) => {
+                const id = _.get(item, ['resume', 'id'])
+                const meetingTime = moment(_.get(item, 'meetingTime')).format('DD/MM/YYYY HH:mm')
+                resumes[id] = {
+                    datetime: meetingTime,
+                    selected: true
+                }
+            })
+            return {resumes}
+        })()
+    }
+
+    const reportData = {
+        list: _.get(reportList, 'results'),
+        loading: reportListLoading
+    }
+
     return (
         <Layout {...layout}>
             <ApplicationGridList
@@ -423,6 +521,9 @@ const ApplicationList = enhance((props) => {
                 usersData={usersData}
                 privilegeData={privilegeData}
                 logsData={logsData}
+                meetingDialog={meetingDialog}
+                reportData={reportData}
+                meetingData={meetingData}
             />
         </Layout>
     )
