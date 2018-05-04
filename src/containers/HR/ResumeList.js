@@ -148,7 +148,6 @@ const enhance = compose(
                     return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
                 })
         },
-
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
             hashHistory.push({pathname, query: filter.getParams({[RESUME_CREATE_DIALOG_OPEN]: true})})

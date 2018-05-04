@@ -204,7 +204,6 @@ const ResumeGridList = enhance((props) => {
                 usersData={usersData}
                 privilegeData={privilegeData}
             />
-
             {detailData.data &&
             <ConfirmDialog
                 type="delete"
