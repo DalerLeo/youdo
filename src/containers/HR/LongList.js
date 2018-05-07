@@ -66,6 +66,7 @@ import toBoolean from '../../helpers/toBoolean'
 import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
 import numberFormat from '../../helpers/numberFormat'
+import {openErrorAction} from '../../actions/error'
 
 const except = {
     application: null,
@@ -314,6 +315,11 @@ const enhance = compose(
                     dispatch(getLongList(filter, application, HR_RESUME_LONG))
                     dispatch(getApplicationDetails(application))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleOpenMoveToDialog: props => (status) => {
@@ -398,6 +404,11 @@ const enhance = compose(
                             }
                         }
                     })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleClearFilterDialog: props => () => {
@@ -460,6 +471,11 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getApplicationDetails(application))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleSubmitResumeComment: props => () => {
@@ -473,6 +489,11 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getResumeComments(filter))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleSubmitEditNote: props => (resume, value, prevValue, status, {date, time}) => {
@@ -484,6 +505,11 @@ const enhance = compose(
                         return dispatch(openSnackbarAction({message: _.isEmpty(value)
                                 ? t('Заметка успешно удалена')
                                 : t('Заметка успешно обновлена')
+                        }))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({
+                            message: error
                         }))
                     })
             }
@@ -511,6 +537,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[OPEN_QUESTIONS_DIALOG]: false})})
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         handleSubmitResumeAnswers: props => (answer, prevAnswer) => {
@@ -521,6 +552,11 @@ const enhance = compose(
                 return dispatch(sendResumeAnswers(application, resume, _.get(resumeDetailsForm, ['values'])))
                     .then(() => {
                         return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({
+                            message: error
+                        }))
                     })
             }
             return null
@@ -546,6 +582,11 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getShortList(filter, application, HR_RESUME_SHORT))
                     dispatch(getReportList(filter, application, HR_RESUME_REPORT))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -588,6 +629,11 @@ const enhance = compose(
                     dispatch(getShortList(filter, application, HR_RESUME_SHORT))
                     dispatch(getReportList(filter, application, HR_RESUME_REPORT))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
 
         // ****
@@ -612,6 +658,11 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getReportList(filter, application, HR_RESUME_REPORT))
                     dispatch(getShortList(filter, application, HR_RESUME_SHORT))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
         handleGetPreviewReport: props => () => {
@@ -640,6 +691,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({[EDIT_RESUME_DETAILS]: false}))
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
         handleSubmitCompleteMeetingDialog: props => () => {
             const {dispatch, filter, location: {query}, meetingList} = props
@@ -662,6 +718,11 @@ const enhance = compose(
                     hashHistory.push(filter.createURL({resume: null}))
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         },
         handleSubmitRequiredFeedback: props => (id, comment, key, value) => {
             const {dispatch} = props
@@ -675,6 +736,11 @@ const enhance = compose(
             return comment && dispatch(sendRequiredCommentsAction(data))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         }
 

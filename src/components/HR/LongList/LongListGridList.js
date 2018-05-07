@@ -300,8 +300,7 @@ const enhance = compose(
             zIndex: '20'
         },
         countWrapper: {
-            display: 'flex',
-            height: '18px'
+            display: 'flex'
         },
         count: {
             display: 'block',
@@ -656,8 +655,8 @@ const LongListGridList = enhance((props) => {
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])
     const contact = _.get(data, ['contact', 'name'])
-    const contactPhone = _.get(data, ['contact', 'telephone'])
-    const contactEmail = _.get(data, ['contact', 'email'])
+    const contactPhone = _.get(data, ['contact', 'telephone']) || t('Не указан')
+    const contactEmail = _.get(data, ['contact', 'email']) || t('Не указан')
 
     const ageMin = _.get(data, ['ageMin'])
     const ageMax = _.get(data, ['ageMax'])
