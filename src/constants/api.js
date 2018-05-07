@@ -604,7 +604,8 @@ export const HR_APP_LOGS_LIST = `/${HR_APPLICATION_ACTION}/`
 export const HR_APP_CHANGE_ACTION = `/${HR_APPLICATION_ACTION}/`
 
 export const HR_APP_APPROVAL = 'hr/application_approval'
-export const HR_APP_CREATE_MEETING = `/${HR_APP_APPROVAL}/multi/`
+export const HR_APP_UPDATE_MEETING = `/${HR_APP_APPROVAL}/%d/`
+export const HR_APP_CREATE_MEETING_MULTI = `/${HR_APP_APPROVAL}/multi/`
 export const HR_APP_GET_MEETING_LIST = `/${HR_APP_APPROVAL}/`
 
 export const HR_POSITION = 'hr/position'

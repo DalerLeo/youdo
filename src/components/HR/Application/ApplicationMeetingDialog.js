@@ -97,7 +97,9 @@ const enhance = compose(
         },
         inputMaskWrapper: {
             position: 'relative',
-            width: '100%',
+            textAlign: 'right',
+            marginLeft: 'auto',
+            width: '125px',
             '&:after': {
                 background: COLOR_BLUE_GREY,
                 content: '""',
@@ -118,9 +120,11 @@ const enhance = compose(
         inputFieldMask: {
             border: 'none',
             borderBottom: '1px #ccc solid',
+            fontFamily: 'inherit',
             outline: 'none',
             height: '35px',
             lineHeight: '35px',
+            textAlign: 'right',
             position: 'relative',
             width: '100%',
             '&:disabled': {
@@ -188,7 +192,9 @@ const enhance = compose(
     }),
     connect((state) => {
         const fields = _.get(state, ['form', 'ApplicationMeetingForm', 'values', 'resumes'])
-        return {fields}
+        return {
+            fields
+        }
     }),
     reduxForm({
         form: 'ApplicationMeetingForm',
@@ -203,9 +209,11 @@ const ApplicationMeetingDialog = enhance((props) => {
         loading,
         handleSubmit,
         onClose,
+        isUpdate,
         classes,
         reportData,
         fields,
+        resume,
         currentFocused,
         updateFocus
     } = props
@@ -215,6 +223,8 @@ const ApplicationMeetingDialog = enhance((props) => {
         const selected = _.get(item, 'selected')
         return selected ? _.toInteger(index) : null
     }), (item) => !_.isNull(item))
+
+    const updatingResume = _.filter(reportData.list, {id: resume})
     return (
         <Dialog
             modal={true}
@@ -225,7 +235,7 @@ const ApplicationMeetingDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{t('Назначить собеседование')}</span>
+                <span>{isUpdate ? t('Изменить время собеседования') : t('Назначить собеседование')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -244,31 +254,31 @@ const ApplicationMeetingDialog = enhance((props) => {
                             </div>
                             : <div className={classes.resumeWrapper}>
                                 <Row className={classNames('dottedList', classes.rowItem, classes.rowItemFirst)}>
-                                    <Col xs={2}/>
+                                    {!isUpdate && <Col xs={2}/>}
                                     <Col xs={6}>{t('Ф.И.О.')}</Col>
-                                    <Col xs={4}>{t('Дата и время')}</Col>
+                                    <Col xs={isUpdate ? Number('6') : Number('4')}>{t('Дата и время')}</Col>
                                 </Row>
-                                {_.map(reportData.list, (item) => {
+                                {_.map(isUpdate ? updatingResume : _.get(reportData, 'list'), (item) => {
                                     const id = _.get(item, 'id')
                                     const fullName = _.get(item, 'fullName')
                                     const checked = _.includes(selectedResumes, id)
                                     return (
                                         <Row key={id} className={classNames('dottedList', classes.rowItem)}>
+                                            {!isUpdate &&
                                             <Col xs={2}>
                                                 <Field
                                                     name={'resumes[' + id + '][selected]'}
-                                                    component={CheckBox}
-                                                />
-                                            </Col>
+                                                    component={CheckBox}/>
+                                            </Col>}
                                             <Col xs={6}>{fullName}</Col>
-                                            <Col xs={4}>
+                                            <Col xs={isUpdate ? Number('6') : Number('4')}>
                                                 <div className={classNames(classes.inputMaskWrapper, {
                                                     [classes.focused]: currentFocused === id
                                                 })}>
                                                     <Field
                                                         name={'resumes[' + id + '][datetime]'}
                                                         component={Input}
-                                                        disabled={!checked}
+                                                        disabled={!isUpdate && !checked}
                                                         className={classes.inputFieldMask}
                                                         onFocus={() => { updateFocus(id) }}
                                                         onBlur={() => { updateFocus(null) }}
@@ -302,6 +312,10 @@ ApplicationMeetingDialog.propTyeps = {
     onClose: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired
+}
+
+ApplicationMeetingDialog.defaultProps = {
+    isUpdate: false
 }
 
 export default ApplicationMeetingDialog

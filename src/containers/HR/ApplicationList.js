@@ -10,11 +10,6 @@ import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
 import {
-    APPLICATION_CREATE_DIALOG_OPEN,
-    APPLICATION_UPDATE_DIALOG_OPEN,
-    ApplicationGridList
-} from '../../components/HR/Application/index'
-import {
     applicationCreateAction,
     applicationUpdateAction,
     applicationListFetchAction,
@@ -25,20 +20,26 @@ import {
     getApplicationLogs,
     changeApplicationAction,
     submitMeetingAction,
-    getMeetingListAction
+    getMeetingListAction,
+    confirmMeetingTime
 } from '../../actions/HR/application'
 import {getReportList} from '../../actions/HR/longList'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {
+    APPLICATION_CREATE_DIALOG_OPEN,
+    APPLICATION_UPDATE_DIALOG_OPEN,
+    ApplicationGridList,
     APPLICATION_FILTER_KEY,
     APPLICATION_FILTER_OPEN,
-    APPLICATION_MEETING_DIALOG_OPEN
+    APPLICATION_MEETING_DIALOG_OPEN,
+    APPLICATION_MEETING_DIALOG_UPDATE
 } from '../../components/HR/Application'
 import {PRICE_FILTER_KEY} from '../../components/Price'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
 import {ZERO} from '../../constants/backendConstants'
+import {openErrorAction} from '../../actions/error'
 
 const enhance = compose(
     connect((state, props) => {
@@ -91,7 +92,9 @@ const enhance = compose(
 
     withPropsOnChange((props, nextProps) => {
         const except = {
-            openMeetingDialog: null
+            meeting: null,
+            createMeetingDialog: null,
+            updateMeetingDialog: null
         }
         return props.list && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
     }, ({dispatch, filter}) => {
@@ -140,11 +143,14 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         const prevOpen = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
         const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
-        return nextOpen !== prevOpen && nextOpen === true
+        const prevUpdate = _.toInteger(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
+        const nextUpdate = _.toInteger(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
+        return (nextOpen !== prevOpen && nextOpen === true) || (prevUpdate !== nextUpdate && nextUpdate > ZERO)
     }, ({filter, dispatch, location: {query}, params}) => {
         const application = _.toInteger(_.get(params, 'applicationId'))
         const openDialog = toBoolean(_.get(query, [APPLICATION_MEETING_DIALOG_OPEN]))
-        if (openDialog) {
+        const updateDialog = _.toInteger(_.get(query, [APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
+        if (openDialog || updateDialog) {
             dispatch(getReportList(filter, application, 'report'))
         }
     }),
@@ -199,8 +205,10 @@ const enhance = compose(
                     dispatch(applicationListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
-                .catch(() => {
-                    return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -225,6 +233,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push({pathname, query: filter.getParams({[APPLICATION_CREATE_DIALOG_OPEN]: false})})
                     dispatch(applicationListFetchAction(filter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -256,6 +269,11 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[APPLICATION_UPDATE_DIALOG_OPEN]: false}))
                     dispatch(applicationListFetchAction(filter))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
                 })
         },
 
@@ -301,6 +319,66 @@ const enhance = compose(
                 .then(() => {
                     hashHistory.push(filter.createURL({[APPLICATION_MEETING_DIALOG_OPEN]: false}))
                 })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
+
+        handleOpenUpdateMeetingDialog: props => (resume, meeting) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_UPDATE]: resume, meeting: meeting})
+            })
+        },
+
+        handleCloseUpdateMeetingDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_UPDATE]: false})
+            })
+        },
+
+        handleSubmitUpdateMeetingDialog: props => () => {
+            const {dispatch, meetingForm, filter, location: {query}} = props
+            const applicationId = _.toInteger(_.get(props, ['params', 'applicationId']))
+            const resumeId = _.toInteger(_.get(query, APPLICATION_MEETING_DIALOG_UPDATE))
+            const meetingId = _.toInteger(_.get(query, 'meeting'))
+            const signleUpdate = true
+
+            return dispatch(submitMeetingAction(applicationId, _.get(meetingForm, ['values']), signleUpdate, resumeId, meetingId))
+                .then(() => {
+                    return dispatch(getMeetingListAction(applicationId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[APPLICATION_MEETING_DIALOG_UPDATE]: false}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
+
+        handleConfirmMeetingTime: props => (data) => {
+            const {dispatch, params} = props
+            const application = _.toInteger(_.get(params, ['applicationId']))
+            return dispatch(confirmMeetingTime(data, application))
+                .then(() => {
+                    return dispatch(getMeetingListAction(application))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Время подтверждено')}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
@@ -335,6 +413,7 @@ const ApplicationList = enhance((props) => {
     const openCreateDialog = toBoolean(_.get(location, ['query', APPLICATION_CREATE_DIALOG_OPEN]))
     const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICATION_UPDATE_DIALOG_OPEN]))
     const openMeetingDialog = toBoolean(_.get(location, ['query', APPLICATION_MEETING_DIALOG_OPEN]))
+    const openUpdateMeetingDialog = _.toInteger(_.get(location, ['query', APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
     const detailId = _.toInteger(_.get(params, 'applicationId'))
 
     const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
@@ -501,6 +580,14 @@ const ApplicationList = enhance((props) => {
         })()
     }
 
+    const updateMeetingDialog = {
+        open: openUpdateMeetingDialog,
+        handleOpen: props.handleOpenUpdateMeetingDialog,
+        handleClose: props.handleCloseUpdateMeetingDialog,
+        handleSubmit: props.handleSubmitUpdateMeetingDialog,
+        handleConfirm: props.handleConfirmMeetingTime
+    }
+
     const reportData = {
         list: _.get(reportList, 'results'),
         loading: reportListLoading
@@ -522,6 +609,7 @@ const ApplicationList = enhance((props) => {
                 privilegeData={privilegeData}
                 logsData={logsData}
                 meetingDialog={meetingDialog}
+                updateMeetingDialog={updateMeetingDialog}
                 reportData={reportData}
                 meetingData={meetingData}
             />

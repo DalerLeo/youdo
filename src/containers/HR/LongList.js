@@ -45,8 +45,9 @@ import {
     sendRequiredCommentsAction
 } from '../../actions/HR/longList'
 import {
+    confirmMeetingTime,
     getApplicationLogs,
-    getMeetingListAction
+    getMeetingListAction, submitMeetingAction
 } from '../../actions/HR/application'
 import {resumeItemFetchAction} from '../../actions/HR/resume'
 import {RESUME_FILTER_KEY} from '../../components/HR/Resume'
@@ -67,6 +68,7 @@ import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
 import numberFormat from '../../helpers/numberFormat'
 import {openErrorAction} from '../../actions/error'
+import {APPLICATION_MEETING_DIALOG_UPDATE} from '../../components/HR/Application'
 
 const except = {
     application: null,
@@ -80,6 +82,8 @@ const except = {
     openReportDialog: null,
     editReportDialog: null,
     page: null,
+    meeting: null,
+    updateMeetingDialog: null,
     // DETAIL URI
     sex: null,
     skills: null,
@@ -138,6 +142,7 @@ const enhance = compose(
         const logsListLoading = _.get(state, ['application', 'logs', 'loading'])
         const logMeetingList = _.get(state, ['application', 'meetingList', 'data'])
         const logMeetingListLoading = _.get(state, ['application', 'meetingList', 'loading'])
+        const meetingForm = _.get(state, ['form', 'ApplicationMeetingForm'])
         return {
             resumePreviewList,
             resumePreviewListLoading,
@@ -176,7 +181,8 @@ const enhance = compose(
             logsList,
             logsListLoading,
             logMeetingList,
-            logMeetingListLoading
+            logMeetingListLoading,
+            meetingForm
         }
     }),
 
@@ -742,8 +748,62 @@ const enhance = compose(
                         message: error
                     }))
                 })
-        }
+        },
 
+        handleOpenUpdateMeetingDialog: props => (resume, meeting) => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_UPDATE]: resume, meeting: meeting})
+            })
+        },
+
+        handleCloseUpdateMeetingDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname, query: filter.getParams({[APPLICATION_MEETING_DIALOG_UPDATE]: false})
+            })
+        },
+
+        handleSubmitUpdateMeetingDialog: props => () => {
+            const {dispatch, meetingForm, filter, location: {query}} = props
+            const applicationId = _.toInteger(_.get(query, ['application']))
+            const resumeId = _.toInteger(_.get(query, APPLICATION_MEETING_DIALOG_UPDATE))
+            const meetingId = _.toInteger(_.get(query, 'meeting'))
+            const signleUpdate = true
+
+            return dispatch(submitMeetingAction(applicationId, _.get(meetingForm, ['values']), signleUpdate, resumeId, meetingId))
+                .then(() => {
+                    return dispatch(getMeetingListAction(applicationId))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                })
+                .then(() => {
+                    hashHistory.push(filter.createURL({[APPLICATION_MEETING_DIALOG_UPDATE]: false}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        },
+
+        handleConfirmMeetingTime: props => (data) => {
+            const {dispatch, location: {query}} = props
+            const application = _.toInteger(_.get(query, ['application']))
+            return dispatch(confirmMeetingTime(data, application))
+                .then(() => {
+                    return dispatch(getMeetingListAction(application))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Время подтверждено')}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
+        }
     })
 )
 
@@ -791,6 +851,8 @@ const LongList = enhance((props) => {
     const openReportDialog = toBoolean(_.get(location, ['query', OPEN_REPORT_DIALOG]))
     const openEditReportDialog = toBoolean(_.get(location, ['query', EDIT_REPORT_DIALOG]))
     const openEditResumeDetails = toBoolean(_.get(location, ['query', EDIT_RESUME_DETAILS]))
+    const openUpdateMeetingDialog = _.toInteger(_.get(location, ['query', APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
+
     const position = filter.getParam(RESUME_FILTER_KEY.POSITIONS)
     const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
     const ageMin = filter.getParam(RESUME_FILTER_KEY.AGE_0)
@@ -1099,6 +1161,26 @@ const LongList = enhance((props) => {
         loading: logMeetingListLoading
     }
 
+    const updateMeetingDialog = {
+        open: openUpdateMeetingDialog,
+        handleOpen: props.handleOpenUpdateMeetingDialog,
+        handleClose: props.handleCloseUpdateMeetingDialog,
+        handleSubmit: props.handleSubmitUpdateMeetingDialog,
+        handleConfirm: props.handleConfirmMeetingTime,
+        initialValues: (() => {
+            const resumes = {}
+            _.map(logMeetingData.list, (item) => {
+                const id = _.get(item, ['resume', 'id'])
+                const meetingTime = moment(_.get(item, 'meetingTime')).format('DD/MM/YYYY HH:mm')
+                resumes[id] = {
+                    datetime: meetingTime,
+                    selected: true
+                }
+            })
+            return {resumes}
+        })()
+    }
+
     return (
         <Layout {...layout}>
             <LongListGridList
@@ -1127,6 +1209,7 @@ const LongList = enhance((props) => {
                 pathname={location.pathname}
                 logsData={logsData}
                 logMeetingData={logMeetingData}
+                updateMeetingDialog={updateMeetingDialog}
             />
         </Layout>
     )

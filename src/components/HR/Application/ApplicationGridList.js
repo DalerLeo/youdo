@@ -41,6 +41,7 @@ import Completed from 'material-ui/svg-icons/action/done-all'
 // . import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import InProcess from 'material-ui/svg-icons/av/loop'
 import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
+import {APPLICATION_MEETING_DIALOG_UPDATE} from './index'
 
 const listHeader = [
     {
@@ -143,12 +144,14 @@ const ApplicationGridList = enhance((props) => {
         privilegeData,
         logsData,
         meetingDialog,
+        updateMeetingDialog,
         reportData,
         meetingData
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
     const statusIsCanceled = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_CANCELED
+    const updatingResumeId = _.toInteger(_.get(filter.getParams(), APPLICATION_MEETING_DIALOG_UPDATE))
 
     const applicationfilterDialog = (
         <ApplicationFilterForm
@@ -170,6 +173,7 @@ const ApplicationGridList = enhance((props) => {
             handleChangeApplicationAction={_.get(detailData, 'handleChangeApplicationAction')}
             logsData={logsData}
             meetingDialog={meetingDialog}
+            updateMeetingDialog={updateMeetingDialog}
             meetingData={meetingData}
         />
     )
@@ -383,8 +387,15 @@ const ApplicationGridList = enhance((props) => {
                 onClose={meetingDialog.handleClose}
                 onSubmit={meetingDialog.handleSubmit}
                 reportData={reportData}
-                initialValues={meetingDialog.initialValues}
-            />
+                initialValues={meetingDialog.initialValues}/>
+
+            <ApplicationMeetingDialog
+                isUpdate
+                open={updateMeetingDialog.open}
+                onClose={updateMeetingDialog.handleClose}
+                onSubmit={updateMeetingDialog.handleSubmit}
+                resume={updatingResumeId}
+                reportData={reportData}/>
         </Container>
     )
 })

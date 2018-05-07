@@ -274,7 +274,7 @@ const TasksGridList = enhance((props) => {
         calendarData
     } = props
 
-    let resumes = []
+    const resumes = []
     _.map(_.get(calendarData, 'data'), item => {
         _.map(_.get(item, 'resume'), resume => {
             resumes.push({...resume, application: item.id})

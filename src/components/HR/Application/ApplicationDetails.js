@@ -296,6 +296,7 @@ const ApplicationDetails = enhance((props) => {
         setMoreDetails,
         handleChangeApplicationAction,
         meetingDialog,
+        updateMeetingDialog,
         meetingData,
         filter
     } = props
@@ -382,7 +383,7 @@ const ApplicationDetails = enhance((props) => {
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
 
-    const reportUri = _.get(data, 'downloadReport')
+    const reportUri = `/${_.trimStart(_.get(data, 'downloadReport'), 'ru/api/v1')}`
 
     if (loading || logsData.loading) {
         return (
@@ -528,7 +529,7 @@ const ApplicationDetails = enhance((props) => {
                             fullWidth/>
                     </div>
                 </div>
-                <div className={classNames(classes.block, classes.progress, 'asdasd')}>
+                <div className={classNames(classes.block, classes.progress)}>
                     <ApplicationDetailProgress
                         id={applicationId}
                         status={status}
@@ -538,6 +539,7 @@ const ApplicationDetails = enhance((props) => {
                         reportUri={reportUri}
                         handleChangeApplicationAction={handleChangeApplicationAction}
                         meetingDialog={meetingDialog}
+                        updateMeetingDialog={updateMeetingDialog}
                         meetingData={meetingData}
                     />
                 </div>

@@ -6,6 +6,9 @@ import {Row, Col} from 'react-flexbox-grid'
 import classNames from 'classnames'
 import Done from 'material-ui/svg-icons/action/done'
 import FlatButton from 'material-ui/FlatButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import IconButton from 'material-ui/IconButton'
 import DownLoadIcon from 'material-ui/svg-icons/file/file-download'
 import Notifications from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
@@ -23,9 +26,11 @@ import {
 } from '../../../constants/styleConstants'
 import getDocument from '../../../helpers/getDocument'
 import ToolTip from '../../ToolTip'
+import Loader from '../../Loader'
+import ConfirmDialog from '../../ConfirmDialog'
+import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
-import InProgressIcon from 'material-ui/svg-icons/action/cached'
-import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
+import InProgressIcon from 'material-ui/svg-icons/alert/warning'
 import ApprovedIcon from 'material-ui/svg-icons/action/check-circle'
 import NotApprovedIcon from 'material-ui/svg-icons/alert/error-outline'
 
@@ -118,7 +123,6 @@ const enhance = compose(
         },
         buttons: {
             display: 'flex',
-            paddingTop: '10px',
             '& > button': {
                 marginLeft: '5px !important',
                 '&:first-child': {
@@ -144,6 +148,7 @@ const enhance = compose(
                 borderBottom: BORDER_STYLE,
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: 'space-between',
                 position: 'relative',
                 padding: '15px',
                 '& svg': {
@@ -158,6 +163,7 @@ const enhance = compose(
         meeting: {
             alignItems: 'center',
             padding: '10px 15px',
+            position: 'relative',
             '& svg': {
                 marginLeft: '10px',
                 height: '16px !important',
@@ -165,15 +171,21 @@ const enhance = compose(
             }
         },
         status: {
-            marginLeft: '10px'
+
         },
-        action: {
-            cursor: 'pointer',
-            position: 'absolute',
-            right: '20px'
+        popover: {
+            position: 'absolute !important',
+            height: '20px',
+            right: '25px',
+            '& svg': {
+                margin: '0 !important',
+                height: '20px !important',
+                width: '20px !important'
+            }
         }
     }),
-    withState('openLogs', 'setOpenLogs', false)
+    withState('openLogs', 'setOpenLogs', false),
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
 )
 
 const downIcon = {
@@ -203,6 +215,35 @@ const flatButtonStyle = {
     minHeight: '30px'
 }
 
+const popoverStyle = {
+    menuItem: {
+        fontSize: '13px',
+        minHeight: '36px',
+        lineHeight: '36px'
+    },
+    innerDiv: {
+        padding: '0px 30px'
+    },
+    icon: {
+        margin: '7px',
+        width: '22px',
+        height: '22px'
+    }
+}
+
+const buttonStyle = {
+    button: {
+        padding: 0,
+        height: 20,
+        width: 20
+    },
+    icon: {
+        color: COLOR_GREY,
+        height: 20,
+        width: 20
+    }
+}
+
 const ApplicationDetailProgress = enhance((props) => {
     const {
         isRecruiter,
@@ -212,13 +253,17 @@ const ApplicationDetailProgress = enhance((props) => {
         reportUri,
         handleChangeApplicationAction,
         meetingDialog,
-        meetingData
+        updateMeetingDialog,
+        meetingData,
+        openConfirmDialog,
+        setOpenConfirmDialog
     } = props
 
     const logsList = _.get(logsData, 'list')
     const lastLogId = _.get(_.last(logsList), 'id')
     const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
-    const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false)
+    const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false) &&
+        !_.isEmpty(_.get(meetingData, 'list'))
 
     const getCardContainer = (content, key) => {
         return (
@@ -234,7 +279,8 @@ const ApplicationDetailProgress = enhance((props) => {
         const isSingle = _.get(buttons, 'single')
         return (
             <div key={key} className={classes.actionBtn}>
-                <div>{content}</div>
+                {!_.isEmpty(content) &&
+                <div style={{marginBottom: 10}}>{content}</div>}
                 {isSingle
                     ? <div className={classes.buttons}>
                         <FlatButton
@@ -343,45 +389,88 @@ const ApplicationDetailProgress = enhance((props) => {
                                         ? <DoneIcon color={COLOR_GREEN}/>
                                         : <InProgressIcon color={COLOR_YELLOW}/>}
                                 </div>
-                                {!isRecruiter &&
-                                <div className={classes.action} onClick={meetingDialog.handleOpen}>
-                                    <EditIcon color={COLOR_GREY}/>
-                                </div>}
                             </header>
-                            <div className={classes.meetings}>
-                                {_.map(_.get(meetingData, 'list'), (item) => {
-                                    const meetingId = _.get(item, 'id')
-                                    const fullName = _.get(item, ['resume', 'fullName'])
-                                    const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
-                                    const brokenMeetingTime = meetingWasPostponed
-                                        ? moment(_.get(item, ['brokenMeetingTime'])).format('DD MMM | HH:mm') : null
-                                    const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
-                                    const isApprove = _.get(item, ['isApprove'])
+                            {meetingData.loading
+                                ? <div className={classes.loader}>
+                                    <Loader size={0.75}/>
+                                </div>
+                                : <div className={classes.meetings}>
+                                    {_.map(_.get(meetingData, 'list'), (item) => {
+                                        const meetingId = _.get(item, 'id')
+                                        const resumeId = _.get(item, ['resume', 'id'])
+                                        const fullName = _.get(item, ['resume', 'fullName'])
+                                        const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
+                                        const brokenMeetingTime = meetingWasPostponed
+                                            ? moment(_.get(item, ['brokenMeetingTime'])).format('DD MMM | HH:mm') : null
+                                        const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
+                                        const isApprove = _.get(item, ['isApprove'])
 
-                                    return (
-                                        <Row key={meetingId} className={classes.meeting}>
-                                            <Col xs={6}>{fullName}</Col>
-                                            <div>{meetingTime}</div>
-                                            {isApprove
-                                                ? <ToolTip text={t('Время собеседования утверждено')} position={'left'}>
-                                                    <ApprovedIcon color={COLOR_GREEN}/>
-                                                </ToolTip>
-                                                : meetingWasPostponed
-                                                    ? <ToolTip text={brokenMeetingTime} position={'left'}>
-                                                        <NotApprovedIcon color={COLOR_YELLOW}/>
+                                        return (
+                                            <Row key={meetingId} className={classes.meeting}>
+                                                <Col xs={6}>{fullName}</Col>
+                                                <div>{meetingTime}</div>
+                                                {isApprove
+                                                    ? <ToolTip text={t('Время собеседования утверждено')} position={'left'}>
+                                                        <ApprovedIcon color={COLOR_GREEN}/>
                                                     </ToolTip>
-                                                    : null}
-                                        </Row>
-                                    )
-                                })}
-                            </div>
+                                                    : meetingWasPostponed
+                                                        ? <ToolTip text={brokenMeetingTime} position={'left'}>
+                                                            <NotApprovedIcon color={COLOR_YELLOW}/>
+                                                        </ToolTip>
+                                                        : null}
+                                                {isRecruiter && isApprove
+                                                    ? null
+                                                    : <IconMenu
+                                                        className={classes.popover}
+                                                        iconButtonElement={
+                                                            <IconButton
+                                                                disableTouchRipple
+                                                                style={buttonStyle.button}
+                                                                iconStyle={buttonStyle.icon}>
+                                                                <MoreIcon/>
+                                                            </IconButton>}
+                                                        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+                                                        targetOrigin={{horizontal: 'right', vertical: 'top'}}>
+                                                        <MenuItem
+                                                            style={popoverStyle.menuItem}
+                                                            innerDivStyle={popoverStyle.innerDiv}
+                                                            primaryText={t('Изменить')}
+                                                            onClick={() => {
+                                                                updateMeetingDialog.handleOpen(resumeId, meetingId)
+                                                            }}/>
+                                                        {!isApprove && !isRecruiter &&
+                                                        <MenuItem
+                                                            style={popoverStyle.menuItem}
+                                                            innerDivStyle={popoverStyle.innerDiv}
+                                                            primaryText={t('Подтвердить время')}
+                                                            onClick={() => {
+                                                                setOpenConfirmDialog({
+                                                                    resumeId,
+                                                                    meetingId,
+                                                                    fullName,
+                                                                    meetingTime: _.get(item, ['meetingTime'])
+                                                                })
+                                                            }}/>}
+                                                    </IconMenu>}
+                                            </Row>
+                                        )
+                                    })}
+                                </div>}
                         </div>
-                        : getActionContainer('Собеседование с клиентом', {
-                            single: {
-                                text: 'Указать кандидатов для собеседования',
-                                action: () => meetingDialog.handleOpen()
-                            }
-                        })}
+                        : isRecruiter
+                            ? getCardContainer('Согласовать время для собеседования с клиентом')
+                            : getActionContainer('Собеседование с клиентом', {
+                                single: {
+                                    text: 'Указать кандидатов для собеседования',
+                                    action: () => meetingDialog.handleOpen()
+                                }
+                            })}
+                    {isApprovedMeetings && getActionContainer('', {
+                        single: {
+                            text: 'Завершить',
+                            action: () => null
+                        }
+                    })}
                 </div>
             )
             default: return getCardContainer(action, logId)
@@ -408,6 +497,19 @@ const ApplicationDetailProgress = enhance((props) => {
                     return getActionContent(action, id)
                 })}
             </div>
+
+            <ConfirmDialog
+                type={'submit'}
+                open={_.isObject(openConfirmDialog)}
+                onClose={() => { setOpenConfirmDialog(false) }}
+                onSubmit={() => {
+                    return updateMeetingDialog.handleConfirm(openConfirmDialog)
+                        .then(() => {
+                            return setOpenConfirmDialog(false)
+                        })
+                }}
+                message={'Подтвердить время для ' + openConfirmDialog.fullName + '?'}
+            />
         </div>
     )
 })
