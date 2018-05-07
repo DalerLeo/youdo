@@ -405,14 +405,16 @@ const ResumeDetails = enhance((props) => {
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.bodyTitle}>{t('Знание языков')}</div>
-                        <ul>
-                            {_.map(languagesLevel, (item) => {
-                                const id = _.get(item, ['id'])
-                                const name = _.get(item, ['language', 'name'])
-                                const level = _.get(item, ['level', 'name'])
-                                return <li key={id} className={classes.lang}>{name} {level && <span className={classes.lowercase}>({level})</span>}</li>
-                            })}
-                        </ul>
+                        {_.isEmpty(languagesLevel)
+                            ? <div>{t('Не указано')}</div>
+                            : <ul>
+                                {_.map(languagesLevel, (item) => {
+                                    const id = _.get(item, ['id'])
+                                    const name = _.get(item, ['language', 'name'])
+                                    const level = _.get(item, ['level', 'name'])
+                                    return <li key={id} className={classes.lang}>{name} {level && <span className={classes.lowercase}>({level})</span>}</li>
+                                })}
+                            </ul>}
                     </div>
                     <div className={classes.innerBlock}>
                         <div className={classes.bodyTitle}>{t('Дополнительная информация')}</div>

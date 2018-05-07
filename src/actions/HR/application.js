@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
+import moment from 'moment'
 import axios from '../../helpers/axios'
 import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
@@ -160,19 +161,35 @@ export const changeApplicationAction = (action, application) => {
     }
 }
 
-export const submitMeetingAction = (application, formValues) => {
+export const submitMeetingAction = (application, formValues, single, resume, meeting) => {
+    const datetime = _.get(formValues, ['resumes', resume, 'datetime'])
     const requestData = serializers.applicationMeetingSerializer(application, formValues)
-    const payload = axios()
-        .post(API.HR_APP_CREATE_MEETING, requestData)
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
+    const TYPE = single ? actionTypes.HR_APP_UPDATE_MEETING : actionTypes.HR_APP_CREATE_MEETING_MULTI
+    const payload = single
+        ? axios()
+            .put(sprintf(API.HR_APP_UPDATE_MEETING, meeting), {
+                is_approve: false,
+                meeting_time: moment(datetime, 'DD/MM/YYYY HH:mm').format('YYYY-MM-DD HH:mm'),
+                application,
+                resume
+            })
+            .then((response) => {
+                return _.get(response, 'data')
+            })
+            .catch((error) => {
+                return Promise.reject(_.get(error, ['response', 'data']))
+            })
 
+        : axios()
+            .post(API.HR_APP_CREATE_MEETING_MULTI, requestData)
+            .then((response) => {
+                return _.get(response, 'data')
+            })
+            .catch((error) => {
+                return Promise.reject(_.get(error, ['response', 'data']))
+            })
     return {
-        type: actionTypes.HR_APP_CREATE_MEETING,
+        type: TYPE,
         payload
     }
 }
@@ -181,6 +198,27 @@ export const getMeetingListAction = (application) => {
     const params = serializers.applicationMeetingListSerializer(application)
     const payload = axios()
         .get(API.HR_APP_GET_MEETING_LIST, {params})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_GET_MEETING_LIST,
+        payload
+    }
+}
+
+export const confirmMeetingTime = (data, application) => {
+    const payload = axios()
+        .put(sprintf(API.HR_APP_UPDATE_MEETING, _.get(data, 'meetingId')), {
+            application,
+            resume: _.get(data, 'resumeId'),
+            meeting_time: moment(_.get(data, 'meetingTime')).format('YYYY-MM-DD HH:mm'),
+            is_approve: true
+        })
         .then((response) => {
             return _.get(response, 'data')
         })

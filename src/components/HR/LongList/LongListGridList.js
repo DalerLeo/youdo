@@ -28,6 +28,7 @@ import ResumeDetailsDialog from './ResumeDetailsDialog'
 import DateTimeCommentDialog from './DateTimeCommentDialog'
 import QuestionnaireDialog from './QuestionnaireDialog'
 import ReportDialog from './ReportDialog'
+import ApplicationMeetingDialog from '../Application/ApplicationMeetingDialog'
 import {TextField} from '../../ReduxForm'
 import t from '../../../helpers/translate'
 import {
@@ -43,7 +44,7 @@ import {
     PADDING_STANDART
 } from '../../../constants/styleConstants'
 import {genderFormat} from '../../../constants/gender'
-import {getAppStatusName, getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
+import {getBackendNames, getYearText} from '../../../helpers/hrcHelpers'
 import {
     HR_EDUCATION, HR_LEVEL_PC,
     HR_RESUME_LONG,
@@ -58,6 +59,8 @@ import * as ROUTES from '../../../constants/routes'
 import classNames from 'classnames'
 import Notifications from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
+import {APPLICATION_MEETING_DIALOG_UPDATE} from '../Application'
+import getDocument from '../../../helpers/getDocument'
 
 export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
@@ -300,8 +303,7 @@ const enhance = compose(
             zIndex: '20'
         },
         countWrapper: {
-            display: 'flex',
-            height: '18px'
+            display: 'flex'
         },
         count: {
             display: 'block',
@@ -633,7 +635,6 @@ const LongListGridList = enhance((props) => {
         deleteReportDialog,
         answersData,
         questionsData,
-        handleGetPreviewReport,
         editResumeDetails,
         setFinishConfirmDialog,
         finishConfirmDialog,
@@ -642,22 +643,25 @@ const LongListGridList = enhance((props) => {
         setShowProgress,
         showProgress,
         logsData,
-        logMeetingData
+        logMeetingData,
+        updateMeetingDialog
     } = props
 
     const resumeMeetingDetail = _.find(_.get(meetingListData, 'list'), {id: _.get(resumeDetails, ['data', 'id'])})
+    const updatingResumeId = _.toInteger(_.get(filter.getParams(), APPLICATION_MEETING_DIALOG_UPDATE))
+
     const moveToStatus = filter.getParam('moveTo')
     const complete = (filter.getParam('completed'))
     const data = _.get(detailData, 'data')
     const loading = _.get(detailData, 'loading')
     const position = _.get(data, ['position', 'name'])
     const uri = _.get(data, 'filterUri')
-    const applicationStatus = _.get(data, 'status')
+    const reportUri = `/${_.trimStart(_.get(data, 'downloadReport'), 'ru/api/v1')}`
     const application = _.get(data, ['id'])
     const client = _.get(data, ['contact', 'client', 'name'])
     const contact = _.get(data, ['contact', 'name'])
-    const contactPhone = _.get(data, ['contact', 'telephone'])
-    const contactEmail = _.get(data, ['contact', 'email'])
+    const contactPhone = _.get(data, ['contact', 'telephone']) || t('Не указан')
+    const contactEmail = _.get(data, ['contact', 'email']) || t('Не указан')
 
     const ageMin = _.get(data, ['ageMin'])
     const ageMax = _.get(data, ['ageMax'])
@@ -809,6 +813,26 @@ const LongListGridList = enhance((props) => {
         return moveToDialog.handleOpen(status)
     }
 
+    const meetingProgress = _.map(logMeetingData.list, (item) => _.get(item, 'isApprove'))
+    const meetingApproved = !_.includes(meetingProgress, false)
+
+    const getLogStatusName = () => {
+        const lastLogAction = _.get(_.last(logsData.list), 'action')
+        switch (lastLogAction) {
+            case 'update': return 'Формирование отчета'
+            case 'report_sent_to_manager': return 'Отчет отправлен начальнику'
+            case 'rejected_by_manager': return 'Отчет отклонен'
+            case 'sent_to_client': return 'Отчет отправлен клиенту'
+            case 'rejected_by_client': return 'Клиент отклонил отчет'
+            case 'approval': return meetingApproved
+                ? !_.isEmpty(logMeetingData.list)
+                    ? 'Время согласовано'
+                    : 'Отчет одобрен клиентом'
+                : 'Собеседование с клиентом'
+            default: return lastLogAction
+        }
+    }
+
     return (
         <Container>
             <div className={classes.wrapper}>
@@ -826,7 +850,7 @@ const LongListGridList = enhance((props) => {
                             <div className={classes.appStatus}>
                                 <div className={classes.appStatusHeader} onClick={() => setShowProgress(!showProgress)}>
                                     <div>
-                                        {t('Стадия')}: &nbsp; {getAppStatusName(applicationStatus, true)}
+                                        {t('Стадия')}: &nbsp; {getLogStatusName()}
                                         {showProgress ? <ArrowUp/> : <ArrowDown/>}
                                         </div>
                                     <Badge
@@ -840,7 +864,9 @@ const LongListGridList = enhance((props) => {
                                     <ApplicationDetailProgress
                                         isRecruiter
                                         logsData={logsData}
-                                        meetingData={logMeetingData}/>
+                                        meetingData={logMeetingData}
+                                        updateMeetingDialog={updateMeetingDialog}
+                                        reportUri={reportUri}/>
                                 </div>}
                             </div>
 
@@ -989,7 +1015,7 @@ const LongListGridList = enhance((props) => {
                                             <h4>{t('Отчет')} ({reportListData.count + ' ' + t('чел.')})</h4>
                                             <div>
                                                 <ToolTip text={t('Скачать отчет')} position={'bottom'}>
-                                                    <div className={classes.reportButton} onClick={() => handleGetPreviewReport()}>
+                                                    <div className={classes.reportButton} onClick={() => getDocument(reportUri)}>
                                                         <Report/>
                                                     </div>
                                                 </ToolTip>
@@ -1140,8 +1166,16 @@ const LongListGridList = enhance((props) => {
                 onClose={editReportDialog.handleClose}
                 onSubmit={editReportDialog.handleSubmit}
                 reportList={_.clone(reportListData.list)}
-                shortList={_.clone(shortListData.list)}
-            />
+                shortList={_.clone(shortListData.list)}/>
+
+            <ApplicationMeetingDialog
+                isUpdate
+                open={updateMeetingDialog.open}
+                onClose={updateMeetingDialog.handleClose}
+                onSubmit={updateMeetingDialog.handleSubmit}
+                resume={updatingResumeId}
+                reportData={reportListData}
+                initialValues={updateMeetingDialog.initialValues}/>
         </Container>
     )
 })

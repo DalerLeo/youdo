@@ -447,10 +447,10 @@ const ResumeDetailsDialog = enhance((props) => {
                         : <div className={classes.wrapper}>
                             <div className={classes.details}>
                                 {!editResumeDetails.open
-                                ? <ResumeDetails
-                                    data={data}
-                                    loading={loading}/>
-                                : <ResumeDetailsEditForm
+                                    ? <ResumeDetails
+                                        data={data}
+                                        loading={loading}/>
+                                    : <ResumeDetailsEditForm
                                         initialValues={editResumeDetails.initialValues}
                                         educations={_.get(editResumeDetails, ['initialValues', 'educations'])}
                                         experiences={_.get(editResumeDetails, ['initialValues', 'experiences'])}
