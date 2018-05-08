@@ -139,7 +139,6 @@ const enhance = compose(
     withPropsOnChange((props, nextProps) => {
         return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withDetails'])
     }, (props) => {
-
         _.get(props, ['withDetails']) &&
         _.get(props, ['input', 'value', 'value']) &&
         props.getItem(_.get(props, ['input', 'value', 'value']))
