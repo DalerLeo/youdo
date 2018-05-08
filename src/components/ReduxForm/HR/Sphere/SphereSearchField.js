@@ -13,7 +13,7 @@ const getItem = (id) => {
         })
 }
 
-const PositionSearchField = (props) => {
+const SphereSearchField = (props) => {
     const {params, pageSize} = props
 
     return (
@@ -28,4 +28,4 @@ const PositionSearchField = (props) => {
     )
 }
 
-export default PositionSearchField
+export default SphereSearchField

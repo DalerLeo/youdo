@@ -54,7 +54,7 @@ export const createSerializer = (forms) => {
             }
         })
     const modes = _(createForm)
-        .get('modes')
+        .get('modes', [])
         .filter((item) => _.get(item, 'selected'))
         .map((item) => _.get(item, 'id'))
     return {
@@ -84,7 +84,7 @@ export const createSerializer = (forms) => {
         business_trip: _.get(createForm, ['businessTrip']),
         salary_min: numberWithoutSpaces(_.get(createForm, ['salary', 'min'])),
         salary_max: numberWithoutSpaces(_.get(createForm, ['salary', 'max'])),
-        status: 'top'
+        status: _.get(createForm, ['status', 'value']) || 'top'
     }
 }
 

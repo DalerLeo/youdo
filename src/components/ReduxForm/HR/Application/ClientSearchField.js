@@ -7,7 +7,15 @@ import * as PATH from '../../../../constants/api'
 import toCamelCase from '../../../../helpers/toCamelCase'
 import * as actionTypes from '../../../../constants/actionTypes'
 import {connect} from 'react-redux'
+import {compose, mapPropsStream} from 'recompose'
 import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
+
+const enhance = compose(
+    connect(),
+    mapPropsStream(props$ => {
+        return props$
+    })
+)
 
 export const setItemAction = (data, loading) => {
     return {
@@ -27,7 +35,7 @@ const getItem = (id, dispatch) => {
         })
 }
 
-const ClientSearchField = connect()((props) => {
+const ClientSearchField = (props) => {
     const {dispatch, params, pageSize, ...defaultProps} = props
     const test = (id) => {
         return getItem(id, dispatch)
@@ -44,6 +52,6 @@ const ClientSearchField = connect()((props) => {
             {...defaultProps}
         />
     )
-})
+}
 
-export default ClientSearchField
+export default enhance(ClientSearchField)

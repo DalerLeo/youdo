@@ -11,7 +11,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {TextField} from '../../ReduxForm'
-import PositionMultiSearchField from '../../ReduxForm/HR/Position/PositionMultiSearchField'
+import SphereMultiSearchField from '../../ReduxForm/HR/Sphere/SphereMultiSearchField'
 import WorkScheduleMultiSearchField from '../../ReduxForm/HR/WorkScheduleMultiSearchField'
 import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
 import EducationMultiSearchField from '../../ReduxForm/HR/EducationMultiSearchField'
@@ -217,7 +217,7 @@ const ResumeFilterForm = enhance((props) => {
                 <Field
                     name="position"
                     className={classes.inputFieldCustom}
-                    component={PositionMultiSearchField}
+                    component={SphereMultiSearchField}
                     label={t('Специальность')}
                     fullWidth={true}/>
                 <Field

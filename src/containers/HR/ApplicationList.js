@@ -5,7 +5,7 @@ import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../components/Layout/index'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withState, withHandlers, mapPropsStream, createEventHandler} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
@@ -21,7 +21,8 @@ import {
     changeApplicationAction,
     submitMeetingAction,
     getMeetingListAction,
-    confirmMeetingTime
+    confirmMeetingTime,
+    confirmCompleteApplication
 } from '../../actions/HR/application'
 import {getReportList} from '../../actions/HR/longList'
 import {openSnackbarAction} from '../../actions/snackbar'
@@ -63,6 +64,8 @@ const enhance = compose(
         const reportListLoading = _.get(state, ['longList', 'reportList', 'loading'])
         const createForm = _.get(state, ['form', 'ApplicationCreateForm'])
         const meetingForm = _.get(state, ['form', 'ApplicationMeetingForm'])
+        const progressForm = _.get(state, ['form', 'ApplicationProgressForm'])
+        const sendReportForm = _.get(state, ['form', 'ApplicationSendReportForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -84,7 +87,9 @@ const enhance = compose(
             meetingListLoading,
             filter,
             createForm,
-            meetingForm
+            meetingForm,
+            progressForm,
+            sendReportForm
         }
     }),
     withState('openConfirmDialog', 'setOpenConfirmDialog', false),
@@ -139,33 +144,44 @@ const enhance = compose(
         }
     }),
 
-    // OPEN MEETING DIALOG - GET REPORT RESUMES
-    withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
-        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
-        const prevUpdate = _.toInteger(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
-        const nextUpdate = _.toInteger(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
-        return (nextOpen !== prevOpen && nextOpen === true) || (prevUpdate !== nextUpdate && nextUpdate > ZERO)
-    }, ({filter, dispatch, location: {query}, params}) => {
-        const application = _.toInteger(_.get(params, 'applicationId'))
-        const openDialog = toBoolean(_.get(query, [APPLICATION_MEETING_DIALOG_OPEN]))
-        const updateDialog = _.toInteger(_.get(query, [APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
-        if (openDialog || updateDialog) {
-            dispatch(getReportList(filter, application, 'report'))
-        }
+    mapPropsStream(props$ => {
+        const {stream: handleOpenFilterDialog$, handler: handleOpenFilterDialog} = createEventHandler()
+        const {stream: handleCloseFilterDialog$, handler: handleCloseFilterDialog} = createEventHandler()
+
+        handleOpenFilterDialog$
+            .withLatestFrom(props$)
+            .subscribe(([event, props]) => {
+                const {location: {pathname}, filter} = props
+                hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: true})})
+            })
+
+        handleCloseFilterDialog$
+            .withLatestFrom(props$)
+            .subscribe(([event, props]) => {
+                const {location: {pathname}, filter} = props
+                hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: false})})
+            })
+
+        props$
+            .filter((props) => {
+                const a = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
+                const b = _.toInteger(_.get(props.location.query, [APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
+
+                return a || b
+            })
+            .subscribe(props => {
+                const application = _.toInteger(_.get(props.params, 'applicationId'))
+                return props.dispatch(getReportList(props.filter, application, 'report'))
+            })
+
+        props$
+            .first()
+            .subscribe(({filter, ...props}) => props.dispatch(applicationListFetchAction(filter)))
+
+        return props$.combineLatest(props => ({...props, handleOpenFilterDialog, handleCloseFilterDialog}))
     }),
 
     withHandlers({
-        handleOpenFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: true})})
-        },
-
-        handleCloseFilterDialog: props => () => {
-            const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[APPLICATION_FILTER_OPEN]: false})})
-        },
-
         handleClearFilterDialog: props => () => {
             const {location: {pathname}, dispatch} = props
             hashHistory.push({pathname, query: {}})
@@ -283,9 +299,10 @@ const enhance = compose(
         },
 
         handleChangeApplicationAction: props => (action) => {
-            const {params, dispatch} = props
+            const {params, dispatch, sendReportForm} = props
             const application = _.toInteger(_.get(params, 'applicationId'))
-            return dispatch(changeApplicationAction(action, application))
+            const formValues = _.get(sendReportForm, 'values')
+            return dispatch(changeApplicationAction(action, application, formValues))
                 .then(() => {
                     return dispatch(getApplicationLogs(application))
                 })
@@ -379,6 +396,27 @@ const enhance = compose(
                         message: error
                     }))
                 })
+        },
+
+        handleConfirmCompleteApp: props => () => {
+            const {dispatch, params, progressForm} = props
+            const application = _.toInteger(_.get(params, ['applicationId']))
+            const formValues = _.get(progressForm, 'values')
+            return dispatch(confirmCompleteApplication(application, formValues))
+                .then(() => {
+                    return dispatch(applicationItemFetchAction(application))
+                })
+                .then(() => {
+                    return dispatch(getApplicationLogs(application))
+                })
+                .then(() => {
+                    return dispatch(openSnackbarAction({message: t('Заявка завершена успешно')}))
+                })
+                .catch((error) => {
+                    dispatch(openErrorAction({
+                        message: error
+                    }))
+                })
         }
     })
 )
@@ -463,62 +501,77 @@ const ApplicationList = enhance((props) => {
 
     const updateDialog = {
         initialValues: (() => {
-            if (!detail || openCreateDialog) {
+            if (openUpdateDialog && detail) {
+                const required = {}
+                const requiredLangs = _.get(_.last(_.get(detail, 'filterRequired')), 'langLevel')
+                _.map(_.get(detail, 'filterRequired'), (item) => {
+                    if (!_.isObject(item)) {
+                        required[item] = true
+                    }
+                })
                 return {
-                    languages: [{}],
-                    privileges: isSelectedPrivileges
+                    age: {
+                        min: _.get(detail, 'ageMin'),
+                        max: _.get(detail, 'ageMax')
+                    },
+                    businessTrip: _.get(detail, 'businessTrip'),
+                    client: {
+                        value: _.get(detail, ['contact', 'client', 'id'])
+                    },
+                    contact: String(_.get(detail, ['contact', 'id'])),
+                    education: {
+                        value: _.get(detail, 'education')
+                    },
+                    experience: _.get(detail, 'experience'),
+                    deadline: moment(_.get(detail, 'deadline')).toDate(),
+                    languages: _.map(_.get(detail, 'languages'), (item) => {
+                        return {
+                            name: {
+                                value: _.get(item, ['language', 'id'])
+                            },
+                            level: {
+                                value: _.get(item, 'level')
+                            },
+                            required: _.includes(requiredLangs, _.get(item, ['language', 'id']))
+                        }
+                    }),
+                    levelPc: {
+                        value: _.get(detail, 'levelPc')
+                    },
+                    planningDate: moment(_.get(detail, 'planningDate')).toDate(),
+                    position: {
+                        value: _.get(detail, ['position', 'id'])
+                    },
+                    privileges: isSelectedPrivileges,
+                    trialSalary: {
+                        min: numberFormat(_.get(detail, 'trialSalaryMin')),
+                        max: numberFormat(_.get(detail, 'trialSalaryMax'))
+                    },
+                    realSalary: {
+                        min: numberFormat(_.get(detail, 'realSalaryMin')),
+                        max: numberFormat(_.get(detail, 'realSalaryMax'))
+                    },
+                    responsibility: _.get(detail, 'responsibility'),
+                    requirements: _.map(_.get(detail, 'requirements'), (item) => {
+                        return {
+                            text: _.get(item, 'text'),
+                            required: _.get(item, 'required')
+                        }
+                    }),
+                    required,
+                    sex: {
+                        value: _.get(detail, 'sex')
+                    },
+                    schedule: {
+                        value: _.get(detail, 'mode')
+                    },
+                    skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name')),
+                    recruiter: _.get(detail, ['recruiter'])
                 }
             }
             return {
-                age: {
-                    min: _.get(detail, 'ageMin'),
-                    max: _.get(detail, 'ageMax')
-                },
-                businessTrip: _.get(detail, 'businessTrip'),
-                client: {
-                    value: _.get(detail, ['contact', 'client', 'id'])
-                },
-                contact: String(_.get(detail, ['contact', 'id'])),
-                education: {
-                    value: _.get(detail, 'education')
-                },
-                experience: _.get(detail, 'experience'),
-                deadline: moment(_.get(detail, 'deadline')).toDate(),
-                languages: _.map(_.get(detail, 'languages'), (item) => {
-                    return {
-                        name: {
-                            value: _.get(item, ['language', 'id'])
-                        },
-                        level: {
-                            value: _.get(item, 'level')
-                        }
-                    }
-                }),
-                levelPc: {
-                    value: _.get(detail, 'levelPc')
-                },
-                planningDate: moment(_.get(detail, 'planningDate')).toDate(),
-                position: {
-                    value: _.get(detail, ['position', 'id'])
-                },
-                privileges: isSelectedPrivileges,
-                trialSalary: {
-                    min: numberFormat(_.get(detail, 'trialSalaryMin')),
-                    max: numberFormat(_.get(detail, 'trialSalaryMax'))
-                },
-                realSalary: {
-                    min: numberFormat(_.get(detail, 'realSalaryMin')),
-                    max: numberFormat(_.get(detail, 'realSalaryMax'))
-                },
-                responsibility: _.get(detail, 'responsibility'),
-                sex: {
-                    value: _.get(detail, 'sex')
-                },
-                schedule: {
-                    value: _.get(detail, 'mode')
-                },
-                skills: _.map(_.get(detail, 'skills'), (item) => _.get(item, 'name')),
-                recruiter: _.get(detail, ['recruiter'])
+                languages: [{}],
+                privileges: isSelectedPrivileges
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -593,6 +646,10 @@ const ApplicationList = enhance((props) => {
         loading: reportListLoading
     }
 
+    const confirmData = {
+        handleComplete: props.handleConfirmCompleteApp
+    }
+
     return (
         <Layout {...layout}>
             <ApplicationGridList
@@ -612,6 +669,7 @@ const ApplicationList = enhance((props) => {
                 updateMeetingDialog={updateMeetingDialog}
                 reportData={reportData}
                 meetingData={meetingData}
+                confirmData={confirmData}
             />
         </Layout>
     )

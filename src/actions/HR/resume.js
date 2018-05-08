@@ -55,6 +55,25 @@ export const resumeUpdateAction = (id, formValues) => {
     }
 }
 
+export const resumeChangeStatusAction = (resume, status) => {
+    const payload = axios()
+        .post(API.HR_RESUME_UPDATE_STATUS, {
+            resume,
+            status
+        })
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: '',
+        payload
+    }
+}
+
 export const resumeListFetchAction = (filter) => {
     const params = serializers.listFilterSerializer(filter.getParams())
     const payload = axios()

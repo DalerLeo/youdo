@@ -11,7 +11,7 @@ export const createSerializer = (data) => {
     const education = _.get(data, ['education', 'value'])
     const experience = _.toNumber(_.get(data, ['experience']))
     const responsibility = _.get(data, ['responsibility'])
-    const position = _.get(data, ['position'])
+    const position = _.get(data, ['position', 'value'])
     const planningDate = moment(_.get(data, ['planningDate'])).format('YYYY-MM-DD')
     const guaranteedDate = moment(_.get(data, ['guaranteedDate'])).format('YYYY-MM-DD')
     const deadlineDate = moment(_.get(data, ['deadline'])).format('YYYY-MM-DD HH:mm')
@@ -55,7 +55,7 @@ export const createSerializer = (data) => {
         level_pc: compLevel,
         responsibility,
         order: 1,
-        position: position,
+        position,
         planning_date: planningDate,
         privileges,
         trial_salary_min: trialSalaryMin,
@@ -123,3 +123,9 @@ export const applicationMeetingListSerializer = (application) => {
     }
 }
 
+export const applicationCompleteSerializer = (data) => {
+    return _.filter(_.map(_.get(data, 'candidates'), (item, index) => {
+        const selected = _.get(item, 'selected')
+        return selected ? index : null
+    }), item => !_.isNull(item))
+}

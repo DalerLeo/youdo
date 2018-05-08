@@ -27,7 +27,8 @@ import t from '../../../helpers/translate'
 import {
     APPLICATION_ASSIGNED,
     APPLICATION_CANCELED,
-    APPLICATION_COMPLETED
+    APPLICATION_COMPLETED,
+    ZERO
 } from '../../../constants/backendConstants'
 import {
     COLOR_GREEN,
@@ -38,7 +39,6 @@ import {
 import List from 'material-ui/svg-icons/action/assignment'
 import Canceled from 'material-ui/svg-icons/notification/do-not-disturb-alt'
 import Completed from 'material-ui/svg-icons/action/done-all'
-// . import MenuItemIcon from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import InProcess from 'material-ui/svg-icons/av/loop'
 import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
 import {APPLICATION_MEETING_DIALOG_UPDATE} from './index'
@@ -124,6 +124,25 @@ const enhance = compose(
             top: '116px',
             right: '2px',
             zIndex: '2'
+        },
+        notification: {
+            position: 'relative'
+        },
+        badge: {
+            background: '#ff5c5c',
+            borderRadius: '50%',
+            border: '2px #fff solid',
+            boxSizing: 'content-box',
+            color: COLOR_WHITE,
+            display: 'flex',
+            fontSize: '10px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            top: '-10px',
+            right: '-15px',
+            height: '18px',
+            width: '18px'
         }
     })
 )
@@ -146,7 +165,8 @@ const ApplicationGridList = enhance((props) => {
         meetingDialog,
         updateMeetingDialog,
         reportData,
-        meetingData
+        meetingData,
+        confirmData
     } = props
 
     const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
@@ -175,6 +195,7 @@ const ApplicationGridList = enhance((props) => {
             meetingDialog={meetingDialog}
             updateMeetingDialog={updateMeetingDialog}
             meetingData={meetingData}
+            confirmData={confirmData}
         />
     )
 
@@ -202,6 +223,7 @@ const ApplicationGridList = enhance((props) => {
         const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
         const doing = _.get(item, 'doing')
+        const notifCount = _.random(Number('7'))
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
@@ -217,8 +239,12 @@ const ApplicationGridList = enhance((props) => {
                         <ToolTip position={'left'} text={getAppStatusName(status, false, doing)}>
                             <IconButton
                                 style={iconStyle.button}
-                                iconStyle={iconStyle.icon}>
-                                {getAppStatusIcon(status, doing)}
+                                iconStyle={iconStyle.icon}
+                                disableTouchRipple>
+                                <div className={classes.notification}>
+                                    {notifCount > ZERO && <div className={classes.badge}>{notifCount}</div>}
+                                    {getAppStatusIcon(status, doing)}
+                                </div>
                             </IconButton>
                         </ToolTip>
                     </Col>

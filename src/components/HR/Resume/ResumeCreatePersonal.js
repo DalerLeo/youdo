@@ -8,7 +8,7 @@ import {connect} from 'react-redux'
 import {TextField, DateField} from '../../ReduxForm'
 import MaritalStatusSearchField from '../../ReduxForm/HR/Resume/MaritalStatusSearchField'
 import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
-import PositionSearchField from '../../ReduxForm/HR/Position/PositionSearchField'
+import SphereSearchField from '../../ReduxForm/HR/Sphere/SphereSearchField'
 import CountrySearchField from '../../ReduxForm/HR/CountrySearchField'
 import CitySearchField from '../../ReduxForm/HR/CitySearchField'
 
@@ -130,7 +130,7 @@ const ResumeCreatePersonal = enhance((props) => {
             <Field
                 name="position"
                 label={t('Желаемая специальность')}
-                component={PositionSearchField}
+                component={SphereSearchField}
                 className={classes.inputFieldCustom}
                 fullWidth={true}/>
             {nextButton}

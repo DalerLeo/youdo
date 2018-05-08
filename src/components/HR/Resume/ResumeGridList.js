@@ -106,7 +106,8 @@ const ResumeGridList = enhance((props) => {
         openRecruiterList,
         setOpenRecruiterList,
         usersData,
-        privilegeData
+        privilegeData,
+        dispatch
     } = props
 
     const resumefilterDialog = (
@@ -124,7 +125,8 @@ const ResumeGridList = enhance((props) => {
             loading={_.get(detailData, 'detailLoading')}
             handleOpenUpdateDialog={updateDialog.handleOpenUpdateDialog}
             confirmDialog={confirmDialog}
-            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}/>
+            handleCloseDetail={_.get(detailData, 'handleCloseDetail')}
+            dispatch={dispatch}/>
     )
 
     const resumeList = _.map(_.get(listData, 'data'), (item) => {

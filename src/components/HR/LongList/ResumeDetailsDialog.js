@@ -273,6 +273,8 @@ const enhance = compose(
             color: LINK_COLOR
         },
         requirements: {
+            display: 'flex',
+            flexDirection: 'column',
             padding: PADDING_STANDART,
             borderBottom: BORDER_STYLE,
             '& h2': {
@@ -286,6 +288,7 @@ const enhance = compose(
         },
         requiredLanguages: {
             marginTop: '20px',
+            order: '2',
             '& h3': {
                 fontWeight: '600',
                 fontSize: '13px',
@@ -309,6 +312,7 @@ const enhance = compose(
         },
         requiredLangs: {
             extend: 'requiredItems',
+            marginBottom: '10px',
             '& > div': {
                 width: 'auto'
             }
@@ -342,6 +346,7 @@ const enhance = compose(
     }),
     withState('openAddComment', 'setOpenAddComment', false),
     withState('currentTab', 'setCurrentTab', TAB_DETAILS),
+    withState('currentComment', 'updateCurrentComment', ''),
     connect((state) => {
         const requiredFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'requirements'])
         const optionalFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'optional'])
@@ -381,7 +386,9 @@ const ResumeDetailsDialog = enhance((props) => {
         setFinishConfirmDialog,
         isMeetingCompleted,
         handleSubmitRequiredFeedback,
-        relationId
+        relationId,
+        currentComment,
+        updateCurrentComment
     } = props
 
     const currentStatus = filter.getParam('status')
@@ -393,6 +400,7 @@ const ResumeDetailsDialog = enhance((props) => {
     const fullName = _.get(data, 'fullName')
     const languages = _.get(application, 'languages')
     const filterRequired = _.get(application, 'filterRequired')
+    const optionalRequirements = _.get(application, 'requirements')
 
     const allLanguagesIds = _.map(languages, (item) => _.get(item, ['language', 'id']))
     const requiredLanguagesIds = _.get(_.find(filterRequired, _.isObject), ['langLevel'])
@@ -551,12 +559,14 @@ const ResumeDetailsDialog = enhance((props) => {
     const offsetBetweenDialogs = 15
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
-    const getRequirements = (key, required, selected, index) => {
+    const getRequirements = (key, required, selected, index, optionalReqs) => {
         const formName = required ? 'requirements' : 'optional'
         const getField = (name, value) => {
             return (
                 <div key={key + '_' + index} className={classes.requiredItems}>
-                    <span>{name}: {value}</span>
+                    {value
+                        ? <span>{name}: {value}</span>
+                        : <span>{name}</span>}
                     <Field
                         name={formName + '[' + key + '][checked]'}
                         component={CheckBox}
@@ -570,8 +580,14 @@ const ResumeDetailsDialog = enhance((props) => {
                             hintStyle={{bottom: 16}}
                             className={classes.textFieldArea}
                             onBlur={(event, comment) => {
-                                handleSubmitRequiredFeedback(relationId, comment, key, value)
+                                if (comment !== currentComment) {
+                                    return optionalReqs
+                                        ? handleSubmitRequiredFeedback(relationId, comment, 'requirements', key)
+                                        : handleSubmitRequiredFeedback(relationId, comment, key, '')
+                                }
+                                return null
                             }}
+                            onFocus={(event) => { updateCurrentComment(event.target.value) }}
                             fullWidth
                             multiLine
                             rows={1}/>
@@ -596,7 +612,7 @@ const ResumeDetailsDialog = enhance((props) => {
                             hintStyle={{bottom: 16}}
                             className={classes.textFieldArea}
                             onBlur={(event, comment) => {
-                                handleSubmitRequiredFeedback(relationId, comment, key, value)
+                                handleSubmitRequiredFeedback(relationId, comment, 'lang_level', id)
                             }}
                             fullWidth
                             multiLine
@@ -629,8 +645,11 @@ const ResumeDetailsDialog = enhance((props) => {
                     </div>
                 ) : null
         }
+        if (optionalReqs) {
+            return getField(index)
+        }
         switch (key) {
-            case AGE: return getField(t('Возраст'), getYearText(_.get(application, 'ageMin')) + ' - ' + getYearText(_.get(application, 'ageMax')))
+            case AGE: return getField(t('Возраст'), _.get(application, 'ageMin') + ' - ' + getYearText(_.get(application, 'ageMax')))
             case SEX: return getField(t('Пол'), getBackendNames(HR_GENDER, _.get(application, key)))
             case EDU: return getField(t('Образование'), getBackendNames(HR_EDUCATION, _.get(application, key)))
             case LEVEL_PC: return getField(t('Уревень владения ПК'), getBackendNames(HR_LEVEL_PC, _.get(application, 'levelPc')))
@@ -745,6 +764,13 @@ const ResumeDetailsDialog = enhance((props) => {
                                         const checked = _.get(requiredFields, [item, 'checked'])
                                         return getRequirements(item, true, checked, index)
                                     })}
+                                    {_.map(_.filter(optionalRequirements, 'required'), (item) => {
+                                        const id = _.get(item, 'id')
+                                        const checked = _.get(requiredFields, [id, 'checked'])
+                                        const text = _.get(item, 'text')
+                                        const optionals = true
+                                        return getRequirements(id, true, checked, text, optionals)
+                                    })}
                                 </div>
                                 <div className={classes.requirements}>
                                     <h2>{t('Необязательные требования')}</h2>
@@ -752,7 +778,6 @@ const ResumeDetailsDialog = enhance((props) => {
                                         const checked = _.get(optionalFields, [item, 'checked'])
                                         return getRequirements(item, false, checked, index)
                                     })}
-
                                 </div>
                             </Tab>
                         </Tabs>

@@ -246,7 +246,7 @@ const enhance = compose(
             fontWeight: 'normal'
         }
     }),
-    withState('moreDetails', 'setMoreDetails', false)
+    withState('moreDetails', 'setMoreDetails', true)
 )
 
 const flatButtonStyle = {
@@ -298,7 +298,7 @@ const ApplicationDetails = enhance((props) => {
         meetingDialog,
         updateMeetingDialog,
         meetingData,
-        filter
+        confirmData
     } = props
     const getChangesLog = (key) => {
         const changelog = []
@@ -382,6 +382,14 @@ const ApplicationDetails = enhance((props) => {
     const languages = _.get(data, 'languages')
     const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
     const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
+    const requirements = _.map(_.get(data, 'requirements'), (item) => {
+        const id = _.get(item, 'id')
+        const text = _.get(item, 'text')
+        const required = _.get(item, 'required')
+        return (
+            <div key={id}>{text} {required && <strong>- обязатеьлно</strong>}</div>
+        )
+    })
 
     const reportUri = `/${_.trimStart(_.get(data, 'downloadReport'), 'ru/api/v1')}`
 
@@ -513,10 +521,12 @@ const ApplicationDetails = enhance((props) => {
                                 </div>
                                 {getChangesLog('skills')}
                             </div>
+                            {requirements}
                             <div className={classes.bodyTitle}>{t('Функциональные обязанности')}</div>
                             <div>{responsibility}{getChangesLog('responsibility')}</div>
                         </div>
                     </div>}
+                    {false &&
                     <div className={classes.moreDetails}>
                         <FlatButton
                             label={moreDetails ? 'Cкрыть' : 'Больше'}
@@ -527,13 +537,12 @@ const ApplicationDetails = enhance((props) => {
                             rippleColor={COLOR_WHITE}
                             onTouchTap={() => setMoreDetails(!moreDetails)}
                             fullWidth/>
-                    </div>
+                    </div>}
                 </div>
                 <div className={classNames(classes.block, classes.progress)}>
                     <ApplicationDetailProgress
-                        id={applicationId}
                         status={status}
-                        filter={filter}
+                        email={_.get(data, ['contact', 'email'])}
                         showNotify={true}
                         logsData={logsData}
                         reportUri={reportUri}
@@ -541,6 +550,7 @@ const ApplicationDetails = enhance((props) => {
                         meetingDialog={meetingDialog}
                         updateMeetingDialog={updateMeetingDialog}
                         meetingData={meetingData}
+                        confirmData={confirmData}
                     />
                 </div>
             </div>
