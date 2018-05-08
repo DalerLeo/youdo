@@ -22,9 +22,13 @@ const ONE = 1
 const TWO = 2
 const FOUR = 4
 const TEN = 10
+const TWELVE = 12
 
 export const getYearText = (value) => {
     const count = value % TEN
+    if (value === TWELVE) {
+        return value + ' ' + t('лет')
+    }
     if (count === ONE) {
         return value + ' ' + t('год')
     } else if (count >= TWO && count <= FOUR) {

@@ -5,7 +5,7 @@ import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
-import PositionSearchField from '../Position/PositionSearchField'
+import SphereSearchField from '../Sphere/SphereSearchField'
 import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
@@ -178,7 +178,7 @@ const ExperiencesField = enhance((props) => {
                     <Field
                         label={t('Должность')}
                         name={`${detail}.position`}
-                        component={PositionSearchField}
+                        component={SphereSearchField}
                         className={classes.inputFieldCustom}
                         fullWidth={true}/>
                     <Field

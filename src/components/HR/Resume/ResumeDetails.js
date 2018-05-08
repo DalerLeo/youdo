@@ -18,6 +18,7 @@ import {
     BORDER_STYLE, LINK_COLOR
 } from '../../../constants/styleConstants'
 import {FlatButton, IconMenu, MenuItem} from 'material-ui'
+import {resumeChangeStatusAction} from '../../../actions/HR/resume'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -189,18 +190,31 @@ const enhance = compose(
             const props = this.props
             const loading = _.get(props, ['loading'])
             const nextLoading = _.get(nextProps, ['loading'])
-            const status = _.get(props, ['detailStatus'])
-            const nextStatus = _.get(nextProps, ['detailStatus'])
+            const status = _.get(props, ['detailStatus', 'id'])
+            const nextStatus = _.get(nextProps, ['detailStatus', 'id'])
+
+            const setDetailStatus = _.get(nextProps, 'setDetailStatus')
             if (loading !== nextLoading && nextLoading === false) {
-                const setDetailStatus = _.get(nextProps, 'setDetailStatus')
                 const detailStatus = _.get(nextProps, ['data', 'status'])
-                setDetailStatus(getBackendNames(getResumeStatus(), detailStatus))
+                setDetailStatus({
+                    id: detailStatus,
+                    text: getBackendNames(getResumeStatus(), detailStatus)
+                })
             }
 
-            if (status !== nextStatus && !_.isNull(status)) {
-                // . const dispatch = _.get(nextProps, 'dispatch')
-                // PUT REQUEST TO CHANGE STATUS OF RESUME
+            if (status !== nextStatus && !_.isNil(status)) {
+                const dispatch = _.get(nextProps, 'dispatch')
+                const resumeId = _.get(nextProps, ['data', 'id'])
+                const updatedStatus = _.get(nextProps, ['detailStatus', 'id'])
+                return dispatch(resumeChangeStatusAction(resumeId, updatedStatus))
+                    .then(() => {
+                        setDetailStatus({
+                            id: updatedStatus,
+                            text: getBackendNames(getResumeStatus(), updatedStatus)
+                        })
+                    })
             }
+            return null
         }
     })
 )
@@ -310,7 +324,9 @@ const ResumeDetails = enhance((props) => {
                 className={classes.popover}
                 iconButtonElement={
                     <FlatButton
-                        label={<span>{t('Статус:')} <br/><span style={{color: LINK_COLOR}}>{detailStatus}</span></span>}
+                        label={(
+                            <span>{t('Статус')}: <br/><span style={{color: LINK_COLOR}}>{_.get(detailStatus, 'text')}</span></span>
+                        )}
                         style={{display: 'flex', alignItems: 'center', height: '50px', textAlign: 'left'}}
                         backgroundColor={'#efefef'}
                         hoverColor={'#efefef'}
@@ -333,7 +349,12 @@ const ResumeDetails = enhance((props) => {
                         <MenuItem
                             key={item.id}
                             style={popoverStyle.menuItem}
-                            onTouchTap={() => { setDetailStatus(item.name) }}
+                            onTouchTap={() => {
+                                setDetailStatus({
+                                    id: item.id,
+                                    text: item.name
+                                })
+                            }}
                             primaryText={item.name}/>
                     )
                 })}

@@ -34,7 +34,7 @@ const enhance = compose(
     })
 )
 
-const PositionSearchField = enhance((props) => {
+const SphereSearchField = enhance((props) => {
     const {params, pageSize} = props
     return (
         <SearchField
@@ -49,4 +49,4 @@ const PositionSearchField = enhance((props) => {
     )
 })
 
-export default PositionSearchField
+export default SphereSearchField

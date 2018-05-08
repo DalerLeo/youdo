@@ -69,6 +69,7 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import numberFormat from '../../helpers/numberFormat'
 import {openErrorAction} from '../../actions/error'
 import {APPLICATION_MEETING_DIALOG_UPDATE} from '../../components/HR/Application'
+import {getYearText} from '../../helpers/hrcHelpers'
 
 const except = {
     application: null,
@@ -186,6 +187,10 @@ const enhance = compose(
         }
     }),
 
+    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openConfirmDeleteReport', 'setOpenConfirmDeleteReport', false),
+    withState('showProgress', 'setShowProgress', false),
+
     // LONG LIST
     withPropsOnChange((props, nextProps) => {
         return props.longList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
@@ -231,7 +236,6 @@ const enhance = compose(
          const app = _.toInteger(_.get(query, ['application']))
          if (app > ZERO) {
              dispatch(getApplicationDetails(app))
-             dispatch(getApplicationLogs(app))
              dispatch(getMeetingListAction(app))
          }
      }),
@@ -293,8 +297,16 @@ const enhance = compose(
         }
     }),
 
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
-    withState('openConfirmDeleteReport', 'setOpenConfirmDeleteReport', false),
+    // SHOW LOGS WHEN OPEN
+    withPropsOnChange((props, nextProps) => {
+        const open = toBoolean(_.get(props, 'showProgress'))
+        const nextOpen = toBoolean(_.get(nextProps, 'showProgress'))
+        return open !== nextOpen && nextOpen === true
+    }, ({dispatch, showProgress, location: {query}}) => {
+        const application = _.toInteger(_.get(query, ['application']))
+        dispatch(getApplicationLogs(application))
+    }),
+
     withHandlers({
         handleOpenAddDialog: props => (uri) => {
             const {location: {pathname}, filter} = props
@@ -361,6 +373,7 @@ const enhance = compose(
                     case HR_RESUME_LONG: return dispatch(getLongList(filter, application, customStatus))
                     case HR_RESUME_MEETING: return dispatch(getInterviewList(filter, application, customStatus))
                     case HR_RESUME_SHORT: return dispatch(getShortList(filter, application, customStatus))
+                    case HR_RESUME_REPORT: return dispatch(getReportList(filter, application, customStatus))
                     default: return null
                 }
             }
@@ -407,6 +420,11 @@ const enhance = compose(
                                 getListsByStatus(HR_RESUME_SHORT)
                             } else if (toStatus === HR_RESUME_REMOVED) {
                                 getListsByStatus(HR_RESUME_SHORT)
+                            }
+                        }
+                        if (currentStatus === HR_RESUME_REPORT) {
+                            if (toStatus === HR_RESUME_REMOVED) {
+                                getListsByStatus(HR_RESUME_REPORT)
                             }
                         }
                     })
@@ -840,7 +858,9 @@ const LongList = enhance((props) => {
         logsList,
         logsListLoading,
         logMeetingList,
-        logMeetingListLoading
+        logMeetingListLoading,
+        showProgress,
+        setShowProgress
     } = props
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
@@ -993,7 +1013,15 @@ const LongList = enhance((props) => {
                 const question = _.get(item, 'question')
                 answers[question] = {answer}
             })
-            return {answers}
+            return {
+                answers,
+                requirements: {
+                    age: {
+                        checked: true,
+                        comment: getYearText(_.get(resumeDetail, 'age'))
+                    }
+                }
+            }
         })()
     }
 
@@ -1210,6 +1238,8 @@ const LongList = enhance((props) => {
                 logsData={logsData}
                 logMeetingData={logMeetingData}
                 updateMeetingDialog={updateMeetingDialog}
+                showProgress={showProgress}
+                setShowProgress={setShowProgress}
             />
         </Layout>
     )

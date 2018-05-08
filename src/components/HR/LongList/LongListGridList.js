@@ -66,7 +66,6 @@ export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
 
 const enhance = compose(
-    withState('showProgress', 'setShowProgress', false),
     injectSheet({
         loader: {
             display: 'flex',
@@ -676,8 +675,10 @@ const LongListGridList = enhance((props) => {
         return <span key={id}>{name} {level && <span>({level})</span>}</span>
     })
     const skills = _.map(_.get(data, ['skills']), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
         return (
-            <span className={classes.tag}>{_.get(item, 'name')}</span>
+            <span key={id} className={classes.tag}>{name}</span>
         )
     })
 
@@ -967,11 +968,18 @@ const LongListGridList = enhance((props) => {
                                                 [classes.countClickabled]: complete === 'false'
                                             })}> {_.get(appCount, 'notCompleted')} {t('незаверш.')}
                                         </span>
-                                        {(complete === 'false' || complete === 'true') && <span style={{cursor: 'pointer'}} onClick={() => meetingFilter(null)}><Clear style={{color: '#fff', height: '18px', width: '18px'}}/></span>}
+                                        {(complete === 'false' || complete === 'true') &&
+                                        <span
+                                            style={{cursor: 'pointer'}}
+                                            onClick={() => meetingFilter(null)}>
+                                            <Clear style={{color: '#fff', height: '18px', width: '18px'}}/>
+                                        </span>}
                                     </div>
                                 </div>
                                 <ToolTip text={t('Вопросник')} position={'left'}>
-                                    <div className={classes.add} onClick={() => { questionsDialog.handleOpen() }}><Assignment/></div>
+                                    <div className={classes.add} onClick={() => { questionsDialog.handleOpen() }}>
+                                        <Assignment/>
+                                    </div>
                                 </ToolTip>
                             </header>
                             {meetingListData.loading
@@ -988,7 +996,8 @@ const LongListGridList = enhance((props) => {
                                 <div>
                                     <h3>{t('Шортлист')}</h3>
                                     <div className={classes.countWrapper}>
-                                        {shortListData.count > ZERO && <span className={classes.count}>{shortListData.count} {t('чел.')}</span>}
+                                        {shortListData.count > ZERO &&
+                                        <span className={classes.count}>{shortListData.count} {t('чел.')}</span>}
                                     </div>
                                 </div>
                             </header>

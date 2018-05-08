@@ -17,6 +17,7 @@ import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 import LanguageField from '../../ReduxForm/HR/LanguageField'
 import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
 import RequirementsField from '../../ReduxForm/HR/Application/RequirementsField'
+import SphereSearchField from '../../ReduxForm/HR/Sphere/SphereSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddPerson from 'material-ui/svg-icons/social/person-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
@@ -448,7 +449,7 @@ const ApplicationCreateDialog = enhance((props) => {
                             <h4>3. {t('Описание вакантной должности')}</h4>
                             <Field
                                 name="position"
-                                component={TextField}
+                                component={SphereSearchField}
                                 className={classes.inputFieldCustom}
                                 label={t('Должность')}
                                 fullWidth={true}/>

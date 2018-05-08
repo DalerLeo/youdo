@@ -6,6 +6,8 @@ import * as API from '../../constants/api'
 import * as actionTypes from '../../constants/actionTypes'
 import * as serializers from '../../serializers/HR/applicationSerializer'
 
+const CancelToken = axios().CancelToken
+
 export const applicationCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
     const payload = axios()
@@ -122,13 +124,19 @@ export const privilegeListFetchAction = () => {
     }
 }
 
+let applicationLogsToken = null
 export const getApplicationLogs = (application) => {
+    if (applicationLogsToken) {
+        applicationLogsToken.cancel()
+    }
+    applicationLogsToken = CancelToken.source()
     const payload = axios()
         .get(API.HR_APP_LOGS_LIST, {params: {
             application,
             page_size: 20,
             ordering: 'created_date'
-        }})
+        },
+            cancelToken: applicationLogsToken.token})
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -142,12 +150,20 @@ export const getApplicationLogs = (application) => {
     }
 }
 
-export const changeApplicationAction = (action, application) => {
-    const payload = axios()
-        .post(API.HR_APP_CHANGE_ACTION, {
+export const changeApplicationAction = (action, application, formValues) => {
+    const requestData = action === 'sent_to_client'
+        ? {
+            action,
+            application,
+            email: _.get(formValues, 'email'),
+            message: _.get(formValues, 'message')
+        }
+        : {
             action,
             application
-        })
+        }
+    const payload = axios()
+        .post(API.HR_APP_CHANGE_ACTION, requestData)
         .then((response) => {
             return _.get(response, 'data')
         })
@@ -228,6 +244,23 @@ export const confirmMeetingTime = (data, application) => {
 
     return {
         type: actionTypes.HR_APP_GET_MEETING_LIST,
+        payload
+    }
+}
+
+export const confirmCompleteApplication = (application, formValues) => {
+    const requestData = serializers.applicationCompleteSerializer(formValues)
+    const payload = axios()
+        .post(sprintf(API.HR_APP_COMPLETE, application), requestData)
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_APP_COMPLETE,
         payload
     }
 }

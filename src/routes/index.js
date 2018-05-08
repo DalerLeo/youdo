@@ -795,7 +795,7 @@ export default {
             ]
         },
 
-        // Position
+        // Sphere
         {
             path: ROUTES.POSITION_LIST_URL,
             component: userIsAdminChain(PositionList),

@@ -10,8 +10,6 @@ import IconMenu from 'material-ui/IconMenu'
 import MenuItem from 'material-ui/MenuItem'
 import IconButton from 'material-ui/IconButton'
 import DownLoadIcon from 'material-ui/svg-icons/file/file-download'
-import Notifications from 'material-ui/svg-icons/social/notifications'
-import Badge from 'material-ui/Badge'
 import {compose, withState} from 'recompose'
 import injectSheet from 'react-jss'
 import t from '../../../helpers/translate'
@@ -28,11 +26,16 @@ import getDocument from '../../../helpers/getDocument'
 import ToolTip from '../../ToolTip'
 import Loader from '../../Loader'
 import ConfirmDialog from '../../ConfirmDialog'
+import ApplicationSendReportDialog from './ApplicationSendReportDialog'
+import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
 import DoneIcon from 'material-ui/svg-icons/action/done-all'
 import InProgressIcon from 'material-ui/svg-icons/alert/warning'
 import ApprovedIcon from 'material-ui/svg-icons/action/check-circle'
 import NotApprovedIcon from 'material-ui/svg-icons/alert/error-outline'
+import {reduxForm, Field} from 'redux-form'
+import {CheckBox} from '../../ReduxForm'
+import {APPLICATION_COMPLETED} from '../../../constants/backendConstants'
 
 const boxShadow = 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 3px 4px 0px'
 
@@ -54,13 +57,11 @@ const enhance = compose(
             display: 'flex',
             alignItems: 'center',
             '& span': {
-                '&:first-child': {
-                    backgroundColor: '#bec6c9',
-                    padding: '8px 10px',
-                    color: '#fff',
-                    marginRight: '10px',
-                    fontWeight: '550'
-                }
+                backgroundColor: '#bec6c9',
+                padding: '8px 10px',
+                color: COLOR_WHITE,
+                marginRight: '10px',
+                fontWeight: '600'
             }
         },
         block: {
@@ -182,10 +183,56 @@ const enhance = compose(
                 height: '20px !important',
                 width: '20px !important'
             }
+        },
+        completeDialog: {
+            marginTop: '15px',
+            '& h2': {
+                fontSize: '13px'
+            },
+            '& > div': {
+                margin: '0'
+            }
+        },
+        completeWrapper: {
+            background: COLOR_WHITE,
+            boxShadow,
+            padding: '15px',
+            position: 'relative'
+        },
+        closeComplete: {
+            cursor: 'pointer',
+            position: 'absolute',
+            top: '7px',
+            right: '10px',
+            height: '30px',
+            width: '30px',
+            padding: '5px',
+            '& > svg': {
+                height: '20px !important',
+                width: '20px !important'
+            }
+        },
+        candidates: {
+            borderTop: BORDER_STYLE,
+            borderBottom: BORDER_STYLE,
+            margin: '20px 0'
+        },
+        candidate: {
+            alignItems: 'center',
+            padding: '10px 0'
         }
     }),
+    reduxForm({
+        form: 'ApplicationProgressForm',
+        enableReinitialize: true
+    }),
     withState('openLogs', 'setOpenLogs', false),
-    withState('openConfirmDialog', 'setOpenConfirmDialog', false),
+    withState('openCompleteDialog', 'setOpenCompleteDialog', false),
+
+    // CONFIRM MODALS
+    withState('openConfirmSendToClientDialog', 'setOpenConfirmSendToClientDialog', false),
+    withState('openConfirmMeetingDialog', 'setOpenConfirmMeetingDialog', false),
+    withState('openConfirmCompleteDialog', 'setOpenConfirmCompleteDialog', false),
 )
 
 const downIcon = {
@@ -246,21 +293,32 @@ const buttonStyle = {
 
 const ApplicationDetailProgress = enhance((props) => {
     const {
+        email,
+        status,
         isRecruiter,
         classes,
-        showNotify,
         logsData,
         reportUri,
         handleChangeApplicationAction,
         meetingDialog,
         updateMeetingDialog,
         meetingData,
-        openConfirmDialog,
-        setOpenConfirmDialog
+        confirmData,
+        openCompleteDialog,
+        setOpenCompleteDialog,
+
+        // CONFIRM MODALS
+        openConfirmSendToClientDialog,
+        setOpenConfirmSendToClientDialog,
+        openConfirmMeetingDialog,
+        setOpenConfirmMeetingDialog,
+        openConfirmCompleteDialog,
+        setOpenConfirmCompleteDialog
     } = props
 
     const logsList = _.get(logsData, 'list')
     const lastLogId = _.get(_.last(logsList), 'id')
+    const lastLogAction = _.get(_.last(logsList), 'action')
     const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
     const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false) &&
         !_.isEmpty(_.get(meetingData, 'list'))
@@ -335,7 +393,7 @@ const ApplicationDetailProgress = enhance((props) => {
                     {
                         left: {
                             text: 'Отправить клиенту',
-                            action: () => handleChangeApplicationAction('sent_to_client')
+                            action: () => setOpenConfirmSendToClientDialog(true)
                         },
                         right: {
                             text: 'Отклонить',
@@ -418,7 +476,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                                             <NotApprovedIcon color={COLOR_YELLOW}/>
                                                         </ToolTip>
                                                         : null}
-                                                {isRecruiter && isApprove
+                                                {(isRecruiter && isApprove) || status === APPLICATION_COMPLETED
                                                     ? null
                                                     : <IconMenu
                                                         className={classes.popover}
@@ -444,7 +502,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                                             innerDivStyle={popoverStyle.innerDiv}
                                                             primaryText={t('Подтвердить время')}
                                                             onClick={() => {
-                                                                setOpenConfirmDialog({
+                                                                setOpenConfirmMeetingDialog({
                                                                     resumeId,
                                                                     meetingId,
                                                                     fullName,
@@ -465,12 +523,6 @@ const ApplicationDetailProgress = enhance((props) => {
                                     action: () => meetingDialog.handleOpen()
                                 }
                             })}
-                    {isApprovedMeetings && getActionContainer('', {
-                        single: {
-                            text: 'Завершить',
-                            action: () => null
-                        }
-                    })}
                 </div>
             )
             default: return getCardContainer(action, logId)
@@ -479,15 +531,8 @@ const ApplicationDetailProgress = enhance((props) => {
 
     return (
         <div className={classes.wrapper}>
-            <div className={classes.title}><span>{t('Прогресс')}</span>
-                {showNotify &&
-                <Badge
-                    className={classes.badge}
-                    badgeContent={4}
-                    primary={true}>
-                    <Notifications color="#bec6c9"/>
-                </Badge>}
-
+            <div className={classes.title}>
+                <span>{t('Прогресс')}</span>
             </div>
             <div className={classes.cardWrapper}>
                 {getCardContainer('Ожидание отчета')}
@@ -497,18 +542,88 @@ const ApplicationDetailProgress = enhance((props) => {
                     return getActionContent(action, id)
                 })}
             </div>
+            {isApprovedMeetings && status !== APPLICATION_COMPLETED && !isRecruiter && lastLogAction === 'approval' &&
+            <div className={classes.completeDialog}>
+                {openCompleteDialog
+                    ? <div className={classes.completeWrapper}>
+                        <h2>{t('Выберите кандидатов')}</h2>
+                        <div className={classes.closeComplete} onClick={() => { setOpenCompleteDialog(false) }}>
+                            <CloseIcon color={COLOR_GREY}/>
+                        </div>
+                        <form className={classes.candidates}>
+                            {_.map(_.filter(meetingData.list, 'isApprove'), (item) => {
+                                const resume = _.get(item, ['resume', 'id'])
+                                const fullName = _.get(item, ['resume', 'fullName'])
+                                return (
+                                    <Row key={resume} className={classes.candidate}>
+                                        <Col xs={2}>
+                                            <Field
+                                                name={'candidates[' + resume + '][selected]'}
+                                                style={{margin: '0'}}
+                                                component={CheckBox}/>
+                                        </Col>
+                                        <Col xs={10}>{fullName}</Col>
+                                    </Row>
+                                )
+                            })}
+                        </form>
+                        <FlatButton
+                            label={t('Завершить')}
+                            backgroundColor={COLOR_GREEN}
+                            hoverColor={COLOR_GREEN}
+                            rippleColor={COLOR_WHITE}
+                            style={flatButtonStyle}
+                            labelStyle={actButton.label}
+                            onClick={() => { setOpenConfirmCompleteDialog(true) }}
+                            fullWidth
+                        />
+                    </div>
+                    : getActionContainer('', {
+                        single: {
+                            text: 'Завершить',
+                            action: () => { setOpenCompleteDialog(true) }
+                        }
+                    })}
+            </div>}
+            {status === APPLICATION_COMPLETED &&
+            <div className={classNames(classes.completeWrapper, classes.completeDialog)}>
+                <span>{t('Заявка закрыта')}</span>
+            </div>}
 
             <ConfirmDialog
                 type={'submit'}
-                open={_.isObject(openConfirmDialog)}
-                onClose={() => { setOpenConfirmDialog(false) }}
+                open={_.isObject(openConfirmMeetingDialog)}
+                onClose={() => { setOpenConfirmMeetingDialog(false) }}
                 onSubmit={() => {
-                    return updateMeetingDialog.handleConfirm(openConfirmDialog)
+                    return updateMeetingDialog.handleConfirm(openConfirmMeetingDialog)
                         .then(() => {
-                            return setOpenConfirmDialog(false)
+                            return setOpenConfirmMeetingDialog(false)
                         })
                 }}
-                message={'Подтвердить время для ' + openConfirmDialog.fullName + '?'}
+                message={'Подтвердить время для ' + openConfirmMeetingDialog.fullName + '?'}/>
+
+            <ConfirmDialog
+                type={'submit'}
+                message={t('Вы уверены, что хотите завершить задание?')}
+                open={openConfirmCompleteDialog}
+                onClose={() => { setOpenConfirmCompleteDialog(false) }}
+                onSubmit={() => {
+                    return confirmData.handleComplete()
+                        .then(() => {
+                            return setOpenConfirmCompleteDialog(false)
+                        })
+                }}/>
+
+            <ApplicationSendReportDialog
+                open={openConfirmSendToClientDialog}
+                onClose={() => { setOpenConfirmSendToClientDialog(false) }}
+                onSubmit={() => {
+                    return handleChangeApplicationAction('sent_to_client')
+                        .then(() => {
+                            return setOpenConfirmSendToClientDialog(false)
+                        })
+                }}
+                initialValues={{email}}
             />
         </div>
     )
