@@ -18,6 +18,7 @@ import LanguageField from '../../ReduxForm/HR/LanguageField'
 import ClientSearchField from '../../ReduxForm/HR/Application/ClientSearchField'
 import RequirementsField from '../../ReduxForm/HR/Application/RequirementsField'
 import SphereSearchField from '../../ReduxForm/HR/Sphere/SphereSearchField'
+import PositionSearchField from '../../ReduxForm/HR/Sphere/PositionSearchField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import AddPerson from 'material-ui/svg-icons/social/person-add'
 import PersonIcon from 'material-ui/svg-icons/social/person'
@@ -282,8 +283,10 @@ const enhance = compose(
     withState('chosenRecruiter', 'chooseRecruiter', false),
     connect((state) => {
         const recruiter = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'recruiter']) || false
+        const sphere = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'sphere', 'value'])
         return {
-            recruiter
+            recruiter,
+            sphere
         }
     })
 )
@@ -303,7 +306,8 @@ const ApplicationCreateDialog = enhance((props) => {
         usersData,
         privilegeData,
         recruiter,
-        chooseRecruiter
+        chooseRecruiter,
+        sphere
     } = props
     const formNames = []
     const onSubmit = handleSubmit(() => props.onSubmit()
@@ -448,11 +452,19 @@ const ApplicationCreateDialog = enhance((props) => {
                         <div className={classes.block}>
                             <h4>3. {t('Описание вакантной должности')}</h4>
                             <Field
-                                name="position"
+                                name="sphere"
                                 component={SphereSearchField}
                                 className={classes.inputFieldCustom}
-                                label={t('Должность')}
+                                label={t('Сфера')}
                                 fullWidth={true}/>
+                            {sphere &&
+                            <Field
+                                name="position"
+                                component={PositionSearchField}
+                                className={classes.inputFieldCustom}
+                                label={t('Должность')}
+                                params={{child: sphere}}
+                                fullWidth={true}/>}
                             <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
                                 <span>{t('З/п на испытательный срок')}:</span>
                                 <div className={classes.salaryField}>

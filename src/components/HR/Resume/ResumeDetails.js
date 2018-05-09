@@ -19,6 +19,8 @@ import {
 } from '../../../constants/styleConstants'
 import {FlatButton, IconMenu, MenuItem} from 'material-ui'
 import {resumeChangeStatusAction} from '../../../actions/HR/resume'
+import {openErrorAction} from '../../../actions/error'
+import {openSnackbarAction} from '../../../actions/snackbar'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -205,12 +207,25 @@ const enhance = compose(
             if (status !== nextStatus && !_.isNil(status)) {
                 const dispatch = _.get(nextProps, 'dispatch')
                 const resumeId = _.get(nextProps, ['data', 'id'])
+                const prevStatus = _.get(props, ['detailStatus', 'id'])
                 const updatedStatus = _.get(nextProps, ['detailStatus', 'id'])
                 return dispatch(resumeChangeStatusAction(resumeId, updatedStatus))
                     .then(() => {
-                        setDetailStatus({
+                        return setDetailStatus({
                             id: updatedStatus,
                             text: getBackendNames(getResumeStatus(), updatedStatus)
+                        })
+                    })
+                    .then(() => {
+                        return dispatch(openSnackbarAction({message: t('Статус изменен')}))
+                    })
+                    .catch((error) => {
+                        dispatch(openErrorAction({
+                            message: error
+                        }))
+                        return setDetailStatus({
+                            id: prevStatus,
+                            text: getBackendNames(getResumeStatus(), prevStatus)
                         })
                     })
             }
@@ -344,7 +359,7 @@ const ResumeDetails = enhance((props) => {
                 }
                 anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                 targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                {_.map(getResumeStatus(), item => {
+                {_.map(_.filter(getResumeStatus(), item => item.id !== 'on_guarantee'), item => {
                     return (
                         <MenuItem
                             key={item.id}
