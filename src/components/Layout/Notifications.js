@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import moment from 'moment'
-import sprintf from 'sprintf'
 import filterHelper from '../../helpers/filter'
 import {formattedType} from '../../constants/notificationTypes'
 import {
@@ -31,9 +30,9 @@ import {
 import {openSnackbarAction} from '../../actions/snackbar'
 import Notifications from '../Images/Notification.png'
 import InfiniteScroll from 'react-infinite-scroller'
-import * as ROUTE from '../../constants/routes'
-import {Link} from 'react-router'
 import t from '../../helpers/translate'
+import classNames from 'classnames'
+import {COLOR_YELLOW} from '../../constants/styleConstants'
 
 const iconStyle = {
     icon: {
@@ -48,9 +47,9 @@ const iconStyle = {
         zIndex: 2
     },
     buttonClose: {
-        width: 35,
-        height: 35,
-        padding: 0,
+        width: 36,
+        height: 36,
+        padding: 7,
         zIndex: 2
     }
 }
@@ -129,7 +128,7 @@ const enhance = compose(
             borderBottom: '1px #efefef solid',
             fontSize: '14px',
             fontWeight: '600',
-            padding: '10px 30px',
+            padding: '10px 15px 10px 30px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -165,7 +164,7 @@ const enhance = compose(
             justifyContent: 'center',
             width: '36px',
             height: '20.78px',
-            backgroundColor: '#dadada',
+            backgroundColor: COLOR_YELLOW,
             margin: '10.39px 0',
             '&:before': {
                 content: '""',
@@ -175,7 +174,7 @@ const enhance = compose(
                 borderRight: '18px solid transparent',
                 bottom: '100%',
                 left: '0',
-                borderBottom: '10.39px solid #dadada'
+                borderBottom: '10.39px solid ' + COLOR_YELLOW
             },
             '&:after': {
                 content: '""',
@@ -185,7 +184,7 @@ const enhance = compose(
                 borderRight: '18px solid transparent',
                 top: '100%',
                 left: '0',
-                borderTop: '10.39px solid #dadada'
+                borderTop: '10.39px solid ' + COLOR_YELLOW
             },
             '& svg': {
                 width: '17px !important',
@@ -329,39 +328,28 @@ const Layout = enhance((props) => {
         const text = _.get(item, 'text')
         const createdDate = moment(_.get(item, 'createdDate')).format('DD.MM.YYYY HH:mm')
         const viewed = _.get(item, 'viewed')
-        const objectId = _.toInteger(_.get(item, 'objectId'))
         const template = _.get(item, ['template', 'name'])
         const getIcon = () => {
             switch (template) {
-                case 'supply_accepted': return <div className={classes.notifIcon + ' ' + classes.supply}><SupplyAccept/></div>
-                case 'order_ready': return <div className={classes.notifIcon + ' ' + classes.order}><OrderReady/></div>
-                case 'order_delivered': return <div className={classes.notifIcon + ' ' + classes.order}><OrderDelivered/></div>
-                case 'order_request': return <div className={classes.notifIcon + ' ' + classes.order}><OrderRequest/></div>
-                case 'goods_on_demand': return <div className={classes.notifIcon + ' ' + classes.stock}><GoodsDemand/></div>
+                case 'supply_accepted': return <div className={classNames(classes.notifIcon, classes.supply)}><SupplyAccept/></div>
+                case 'order_ready': return <div className={classNames(classes.notifIcon, classes.order)}><OrderReady/></div>
+                case 'order_delivered': return <div className={classNames(classes.notifIcon, classes.order)}><OrderDelivered/></div>
+                case 'order_request': return <div className={classNames(classes.notifIcon, classes.order)}><OrderRequest/></div>
+                case 'goods_on_demand': return <div className={classNames(classes.notifIcon, classes.stock)}><GoodsDemand/></div>
                 default: return <div className={classes.notifIcon}><DefaultNotificationIcon/></div>
             }
         }
-        const isOrder = _.includes(template, 'order')
-        const isSupply = _.includes(template, 'supply')
-        const pathName = isOrder
-            ? sprintf(ROUTE.ORDER_ITEM_PATH, objectId)
-            : isSupply
-                ? sprintf(ROUTE.SUPPLY_ITEM_PATH, objectId)
-                : null
 
         return (
             <div key={id} className={classes.notif}
-                 onMouseEnter={() => { setClickNotifications(id) }}
-                 onMouseLeave={() => { setClickNotifications(null) }}
+                 onMouseEnter={() => {
+                     setClickNotifications(id)
+                 }}
+                 onMouseLeave={() => {
+                     setClickNotifications(null)
+                 }}
                  style={viewed ? {opacity: '0.5'} : {opacity: '1'}}>
                 {getIcon()}
-                <Link
-                    target={'_blank'}
-                    to={{
-                        pathname: pathName,
-                        query: {search: objectId}
-                    }}
-                    className={classes.link}/>
                 <div className={classes.notifContent}>
                     <div className={classes.notifTitle}>
                         <div>{title}</div>

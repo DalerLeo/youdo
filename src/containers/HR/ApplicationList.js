@@ -144,6 +144,22 @@ const enhance = compose(
         }
     }),
 
+    // OPEN MEETING DIALOG - GET REPORT RESUMES
+    withPropsOnChange((props, nextProps) => {
+        const prevOpen = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
+        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
+        const prevUpdate = _.toInteger(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
+        const nextUpdate = _.toInteger(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
+        return (nextOpen !== prevOpen && nextOpen === true) || (prevUpdate !== nextUpdate && nextUpdate > ZERO)
+    }, ({filter, dispatch, location: {query}, params}) => {
+        const application = _.toInteger(_.get(params, 'applicationId'))
+        const openDialog = toBoolean(_.get(query, [APPLICATION_MEETING_DIALOG_OPEN]))
+        const updateDialog = _.toInteger(_.get(query, [APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
+        if (openDialog || updateDialog) {
+            dispatch(getReportList(filter, application, 'report'))
+        }
+    }),
+
     mapPropsStream(props$ => {
         const {stream: handleOpenFilterDialog$, handler: handleOpenFilterDialog} = createEventHandler()
         const {stream: handleCloseFilterDialog$, handler: handleCloseFilterDialog} = createEventHandler()
@@ -169,10 +185,10 @@ const enhance = compose(
 
                 return a || b
             })
-            .subscribe(props => {
-                const application = _.toInteger(_.get(props.params, 'applicationId'))
-                return props.dispatch(getReportList(props.filter, application, 'report'))
-            })
+            // . .subscribe(props => {
+            // .     const application = _.toInteger(_.get(props.params, 'applicationId'))
+            // .     return props.dispatch(getReportList(props.filter, application, 'report'))
+            // . })
 
         props$
             .first()
@@ -305,6 +321,12 @@ const enhance = compose(
             return dispatch(changeApplicationAction(action, application, formValues))
                 .then(() => {
                     return dispatch(getApplicationLogs(application))
+                })
+                .then(() => {
+                    if (action === 'sent_to_client') {
+                        return dispatch(openSnackbarAction({message: t('Отчет отправлен клиенту')}))
+                    }
+                    return null
                 })
         },
 

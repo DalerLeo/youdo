@@ -453,7 +453,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                     <Loader size={0.75}/>
                                 </div>
                                 : <div className={classes.meetings}>
-                                    {_.map(_.get(meetingData, 'list'), (item) => {
+                                    {_.map(_.get(meetingData, 'list'), (item, index) => {
                                         const meetingId = _.get(item, 'id')
                                         const resumeId = _.get(item, ['resume', 'id'])
                                         const fullName = _.get(item, ['resume', 'fullName'])
@@ -462,9 +462,10 @@ const ApplicationDetailProgress = enhance((props) => {
                                             ? moment(_.get(item, ['brokenMeetingTime'])).format('DD MMM | HH:mm') : null
                                         const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
                                         const isApprove = _.get(item, ['isApprove'])
+                                        const random = _.random(Number('100'), true)
 
                                         return (
-                                            <Row key={meetingId} className={classes.meeting}>
+                                            <Row key={`${meetingId}_${resumeId}_${index}_${random}`} className={classes.meeting}>
                                                 <Col xs={6}>{fullName}</Col>
                                                 <div>{meetingTime}</div>
                                                 {isApprove
@@ -527,6 +528,12 @@ const ApplicationDetailProgress = enhance((props) => {
             )
             default: return getCardContainer(action, logId)
         }
+    }
+
+    if (_.get(logsData, 'loading')) {
+        return <div className={classes.loader}>
+            <Loader size={0.75}/>
+        </div>
     }
 
     return (

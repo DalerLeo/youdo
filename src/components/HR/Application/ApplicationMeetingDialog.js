@@ -18,7 +18,13 @@ import moment from 'moment'
 import classNames from 'classnames'
 import {connect} from 'react-redux'
 
-const Input = ({input, ...props}) => {
+const Input = ({input, ...defaultProps}) => {
+    const props = {}
+    _.map(defaultProps, (obj, index) => {
+        if (index !== 'meta' && index !== 'sheet') {
+            props[index] = obj
+        }
+    })
     return (
         <InputMask mask="99/99/9999 99:99" {...props} {...input}/>
     )

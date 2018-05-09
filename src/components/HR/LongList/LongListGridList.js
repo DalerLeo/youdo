@@ -61,6 +61,7 @@ import Notifications from 'material-ui/svg-icons/social/notifications'
 import Badge from 'material-ui/Badge'
 import {APPLICATION_MEETING_DIALOG_UPDATE} from '../Application'
 import getDocument from '../../../helpers/getDocument'
+import {connect} from 'react-redux'
 
 export const CUSTOM_BOX_SHADOW = '0 1px 2px rgba(0, 0, 0, 0.1)'
 export const CUSTOM_BOX_SHADOW_HOVER = '0 2px 4px rgba(0, 0, 0, 0.19)'
@@ -562,8 +563,10 @@ const enhance = compose(
             padding: '7px 5px 4px 0 !important',
             '& span': {
                 backgroundColor: '#ef5350 !important',
-                width: '20px !important',
-                height: '20px !important'
+                fontSize: '10px !important',
+                fontWeight: '600 !important',
+                width: '18px !important',
+                height: '18px !important'
             }
         },
         appStatus: {
@@ -603,6 +606,13 @@ const enhance = compose(
     withState('openAddReport', 'setOpenAddReport', false),
     withState('checkedList', 'updateCheckedList', []),
     withState('finishConfirmDialog', 'setFinishConfirmDialog', false),
+
+    connect((state) => {
+        const notificationCount = _.get(state, ['notifications', 'count', 'data', 'count']) || ZERO
+        return {
+            notificationCount
+        }
+    })
 )
 
 const LongListGridList = enhance((props) => {
@@ -643,11 +653,13 @@ const LongListGridList = enhance((props) => {
         showProgress,
         logsData,
         logMeetingData,
-        updateMeetingDialog
+        updateMeetingDialog,
+        notificationCount
     } = props
 
     const resumeMeetingDetail = _.find(_.get(meetingListData, 'list'), {id: _.get(resumeDetails, ['data', 'id'])})
     const updatingResumeId = _.toInteger(_.get(filter.getParams(), APPLICATION_MEETING_DIALOG_UPDATE))
+    const resumeRelationId = _.toInteger(filter.getParam('relation'))
 
     const moveToStatus = filter.getParam('moveTo')
     const complete = (filter.getParam('completed'))
@@ -830,7 +842,7 @@ const LongListGridList = enhance((props) => {
                     ? 'Время согласовано'
                     : 'Отчет одобрен клиентом'
                 : 'Собеседование с клиентом'
-            default: return lastLogAction
+            default: return 'Формирование отчета'
         }
     }
 
@@ -854,12 +866,14 @@ const LongListGridList = enhance((props) => {
                                         {t('Стадия')}: &nbsp; {getLogStatusName()}
                                         {showProgress ? <ArrowUp/> : <ArrowDown/>}
                                         </div>
-                                    <Badge
-                                        className={classes.badge}
-                                        badgeContent={4}
-                                        primary={true}>
-                                        <Notifications color="#bec6c9"/>
-                                    </Badge>
+                                    {notificationCount > ZERO
+                                        ? <Badge
+                                            className={classes.badge}
+                                            badgeContent={notificationCount}
+                                            primary={true}>
+                                            <Notifications color="#bec6c9"/>
+                                        </Badge>
+                                        : <Notifications color="#bec6c9"/>}
                                 </div>
                                 {showProgress && <div className={classes.appStatusBody}>
                                     <ApplicationDetailProgress
@@ -1155,7 +1169,7 @@ const LongListGridList = enhance((props) => {
                 questionsData={questionsData}
                 setFinishConfirmDialog={setFinishConfirmDialog}
                 isMeetingCompleted={_.get(resumeMeetingDetail, 'isCompleted')}
-                relationId={_.get(resumeMeetingDetail, 'relationId')}
+                relationId={resumeRelationId}
                 initialValues={resumeDetails.initialValues}/>
 
             <QuestionnaireDialog

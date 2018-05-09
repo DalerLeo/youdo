@@ -44,9 +44,9 @@ export const notificationListFetchAction = (page) => {
     }
 }
 
-export const notificationCountFetchAction = () => {
+export const notificationCountFetchAction = (type) => {
     const payload = axios()
-        .get(API.NOTIFICATIONS_GET_COUNT)
+        .get(API.NOTIFICATIONS_GET_COUNT, {params: {to: type}})
         .then((response) => {
             return _.get(response, 'data')
         })
