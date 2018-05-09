@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import React from 'react'
 import * as ROUTES from '../../constants/routes'
-import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
+// . import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
 // . import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
-// .import Map from 'material-ui/svg-icons/maps/map'
-import Settings from 'material-ui/svg-icons/action/settings'
+// . import Map from 'material-ui/svg-icons/maps/map'
+// . import Settings from 'material-ui/svg-icons/action/settings'
 // . import Statistics from 'material-ui/svg-icons/action/timeline'
 // . import Store from 'material-ui/svg-icons/device/storage'
 // . import Markets from 'material-ui/svg-icons/action/store'
@@ -14,16 +14,16 @@ import Settings from 'material-ui/svg-icons/action/settings'
 // . import Telegram from '../CustomIcons/Telegram'
 import Resume from '../CustomIcons/ResumeIcon'
 import Tasks from 'material-ui/svg-icons/action/assignment'
-import {getPageSize} from '../../helpers/storage'
+// . import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
 const NOT_FOUND = -1
 
-const SETTINGS_STAFF = t('Персонал')
-const SETTINGS_FINANCE = t('Финансы')
-const SETTINGS_PRODUCTS = t('Продукты')
-const SETTINGS_MISC = t('Разное')
-const SETTINGS_STOCK = t('Склад')
+// . const SETTINGS_STAFF = t('Персонал')
+// . const SETTINGS_FINANCE = t('Финансы')
+// . const SETTINGS_PRODUCTS = t('Продукты')
+// . const SETTINGS_MISC = t('Разное')
+// . const SETTINGS_STOCK = t('Склад')
 
 // . const STATS_SALES = t('Продажи')
 // . const STATS_FINANCE = t('Финансы')
@@ -32,27 +32,26 @@ const SETTINGS_STOCK = t('Склад')
 // . const STATS_STOCK = t('Склад')
 // . const STATS_OVERALL = t('Общее')
 
-const DEFAULT_PAGE_SIZE = getPageSize()
-const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
+// . const DEFAULT_PAGE_SIZE = getPageSize()
+// . const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
 export const MenuItems = [
 
-    {
+    /* {
         name: t('Продажи'),
         icon: (<AttachMoney/>),
         url: ROUTES.ORDER_LIST_URL,
         query: defaultPageSizeQuery,
         childs: [
-            {name: t('Заказы'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_orders'}
-
-/*            {name: t('Возвраты'), url: ROUTES.RETURN_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_order_returns'},
+            {name: t('Заказы'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_orders'},
+            {name: t('Возвраты'), url: ROUTES.RETURN_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_order_returns'},
             {name: t('Активность'), url: ROUTES.ACTIVITY_LIST_URL, permission: 'frontend_activity'},
             {name: t('План'), url: ROUTES.PLAN_LIST_URL, permission: 'frontend_plan'},
             {name: t('Формирование цен'), url: ROUTES.PRICE_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_prices'},
             {name: t('Отслеживание'), url: ROUTES.TRACKING_LIST_URL, permission: 'frontend_tracking'},
             {name: t('Маркетинговые акции'), url: ROUTES.PRICES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_bonuses'},
-            {name: t('Зоны'), url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'} */
+            {name: t('Зоны'), url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'}
         ]
-    },
+    }, */
 
 /*    {
         name: t('Магазины'),
@@ -226,9 +225,9 @@ export const MenuItems = [
             },
             permission: 'frontend_hrc_tasks'
         }]
-    },
+    }
     // ************************** HRC **************************
-    {
+    /* {
         name: t('Настройки'),
         icon: (<Settings/>),
         section: 'Settings',
@@ -260,7 +259,7 @@ export const MenuItems = [
             {section: SETTINGS_MISC, name: t('Ограничение времени'), url: ROUTES.PERMISSION_LIST_URL, permission: 'frontend_settings_permissions'},
             {section: SETTINGS_MISC, name: t('Уведомления'), url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
-    }
+    } */
 ]
 
 export const getNeedMenu = (userPermissions) => {
