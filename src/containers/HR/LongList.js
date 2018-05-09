@@ -42,6 +42,7 @@ import {
     finishMeetingAction,
     getResumeLogsList,
     getAppStatAction,
+    getRequiredCommentsAction,
     sendRequiredCommentsAction
 } from '../../actions/HR/longList'
 import {
@@ -70,6 +71,7 @@ import numberFormat from '../../helpers/numberFormat'
 import {openErrorAction} from '../../actions/error'
 import {APPLICATION_MEETING_DIALOG_UPDATE} from '../../components/HR/Application'
 import {getYearText} from '../../helpers/hrcHelpers'
+import {notificationCountFetchAction} from '../../actions/notifications'
 
 const except = {
     application: null,
@@ -143,6 +145,8 @@ const enhance = compose(
         const logsListLoading = _.get(state, ['application', 'logs', 'loading'])
         const logMeetingList = _.get(state, ['application', 'meetingList', 'data'])
         const logMeetingListLoading = _.get(state, ['application', 'meetingList', 'loading'])
+        const feedbackList = _.get(state, ['longList', 'feedbackList', 'data'])
+        const feedbackListLoading = _.get(state, ['longList', 'feedbackList', 'loading'])
         const meetingForm = _.get(state, ['form', 'ApplicationMeetingForm'])
         return {
             resumePreviewList,
@@ -183,6 +187,8 @@ const enhance = compose(
             logsListLoading,
             logMeetingList,
             logMeetingListLoading,
+            feedbackList,
+            feedbackListLoading,
             meetingForm
         }
     }),
@@ -248,12 +254,17 @@ const enhance = compose(
          return resume !== nextResume && nextResume && !nextDialog
      }, ({dispatch, location: {query}, filter}) => {
          const application = _.toInteger(_.get(query, ['application']))
+         const relation = _.toInteger(_.get(query, ['relation']))
          const resume = _.toInteger(_.get(query, ['resume']))
+         const status = _.get(query, ['status'])
          if (resume > ZERO) {
+             if (status === HR_RESUME_MEETING) {
+                 dispatch(getResumeAnswersList(application, resume))
+                 dispatch(getQuestionsList(application))
+                 dispatch(getRequiredCommentsAction(relation))
+             }
              dispatch(resumeItemFetchAction(resume))
              dispatch(getResumeComments(filter))
-             dispatch(getResumeAnswersList(application, resume))
-             dispatch(getQuestionsList(application))
              dispatch(getResumeLogsList(resume))
          }
      }),
@@ -304,7 +315,10 @@ const enhance = compose(
         return open !== nextOpen && nextOpen === true
     }, ({dispatch, showProgress, location: {query}}) => {
         const application = _.toInteger(_.get(query, ['application']))
-        dispatch(getApplicationLogs(application))
+        return dispatch(getApplicationLogs(application))
+            .then(() => {
+                dispatch(notificationCountFetchAction('application'))
+            })
     }),
 
     withHandlers({
@@ -751,11 +765,11 @@ const enhance = compose(
         handleSubmitRequiredFeedback: props => (id, comment, key, value) => {
             const {dispatch} = props
             const data = {
-                'application_resume': id,
+                application_resume: id,
                 value,
                 comment,
                 key,
-                'do': true
+                do: true
             }
             return comment && dispatch(sendRequiredCommentsAction(data))
                 .then(() => {
@@ -860,7 +874,9 @@ const LongList = enhance((props) => {
         logMeetingList,
         logMeetingListLoading,
         showProgress,
-        setShowProgress
+        setShowProgress,
+        feedbackList,
+        feedbackListLoading
     } = props
 
     const detailId = _.toInteger(_.get(params, 'longListId'))
@@ -994,6 +1010,14 @@ const LongList = enhance((props) => {
         loading: answersListLoading
     }
 
+    const feedbackData = {
+        list: _.get(feedbackList, 'results'),
+        loading: feedbackListLoading
+    }
+    const langsFeedbacks = _.filter(feedbackData.list, {'key': 'lang_level'})
+    const optionalFeedbacks = _.filter(feedbackData.list, {'key': 'requirements'})
+    const otherFeedbacks = _.differenceBy(feedbackData.list, _.concat(langsFeedbacks, optionalFeedbacks))
+
     const resumeDetails = {
         open: openResumeDialog,
         data: resumeDetail,
@@ -1008,19 +1032,45 @@ const LongList = enhance((props) => {
         commentsLoading: resumeCommentsLoading,
         initialValues: (() => {
             const answers = {}
+            const langs = {}
+            const feedbacks = {}
+            const requirements = {}
+
+            const getFeedback = (array, object, type) => {
+                _.map(array, (item) => {
+                    const value = _.get(item, 'value')
+                    const comment = _.get(item, 'comment')
+                    const key = _.get(item, 'key')
+                    if (type === 'lang' || type === 'optional') {
+                        object[value] = {
+                            checked: true,
+                            comment
+                        }
+                    } else {
+                        object[key] = {
+                            checked: true,
+                            comment
+                        }
+                    }
+                })
+            }
             _.map(answersData.list, (item) => {
                 const answer = _.get(item, 'answer')
                 const question = _.get(item, 'question')
                 answers[question] = {answer}
             })
+            getFeedback(otherFeedbacks, feedbacks)
+            getFeedback(langsFeedbacks, langs, 'lang')
+            getFeedback(optionalFeedbacks, requirements, 'optional')
             return {
                 answers,
-                requirements: {
+                requirements: _.merge({
                     age: {
                         checked: true,
                         comment: getYearText(_.get(resumeDetail, 'age'))
-                    }
-                }
+                    },
+                    langs
+                }, feedbacks, requirements)
             }
         })()
     }

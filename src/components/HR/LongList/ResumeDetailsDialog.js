@@ -560,7 +560,7 @@ const ResumeDetailsDialog = enhance((props) => {
     const half = 2
     const dialogMargin = (mainDialogWidth + secondaryDialogWidth + offsetBetweenDialogs) / half
     const getRequirements = (key, required, selected, index, optionalReqs) => {
-        const formName = required ? 'requirements' : 'optional'
+        const formName = 'requirements'
         const getField = (name, value) => {
             return (
                 <div key={key + '_' + index} className={classes.requiredItems}>
@@ -614,6 +614,7 @@ const ResumeDetailsDialog = enhance((props) => {
                             onBlur={(event, comment) => {
                                 handleSubmitRequiredFeedback(relationId, comment, 'lang_level', id)
                             }}
+                            onFocus={(event) => { updateCurrentComment(event.target.value) }}
                             fullWidth
                             multiLine
                             rows={1}/>
@@ -775,7 +776,7 @@ const ResumeDetailsDialog = enhance((props) => {
                                 <div className={classes.requirements}>
                                     <h2>{t('Необязательные требования')}</h2>
                                     {_.map(optionalRequired, (item, index) => {
-                                        const checked = _.get(optionalFields, [item, 'checked'])
+                                        const checked = _.get(requiredFields, [item, 'checked'])
                                         return getRequirements(item, false, checked, index)
                                     })}
                                 </div>

@@ -663,6 +663,7 @@ export const HR_RESUME_ANSWERS_LIST = `/${HR_RESUME_ANSWERS}/`
 
 export const HR_FEEDBACK = 'hr/feedback'
 export const HR_FEEDBACK_CREATE = `/${HR_FEEDBACK}/`
+export const HR_FEEDBACK_LIST = `/${HR_FEEDBACK}/`
 
 export const HR_CALENDAR_LIST = `/${HR_APPLICATION}/calendar`
 

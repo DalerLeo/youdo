@@ -413,6 +413,25 @@ export const getAppStatAction = (application) => {
     }
 }
 
+export const getRequiredCommentsAction = (relationId) => {
+    const payload = axios()
+        .get(API.HR_FEEDBACK_LIST, {params: {
+            application_resume: relationId,
+            page_size: 50
+        }})
+        .then((response) => {
+            return _.get(response, 'data')
+        })
+        .catch((error) => {
+            return Promise.reject(_.get(error, ['response', 'data']))
+        })
+
+    return {
+        type: actionTypes.HR_FEEDBACK_LIST,
+        payload
+    }
+}
+
 export const sendRequiredCommentsAction = (data) => {
     const payload = axios()
         .post(API.HR_FEEDBACK_CREATE, data)
@@ -424,7 +443,7 @@ export const sendRequiredCommentsAction = (data) => {
         })
 
     return {
-        type: actionTypes.HR_RESUME_ANSWERS_CREATE,
+        type: actionTypes.HR_FEEDBACK_CREATE,
         payload
     }
 }

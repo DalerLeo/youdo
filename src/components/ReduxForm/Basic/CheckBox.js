@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import React from 'react'
 import MUICheckbox from 'material-ui/Checkbox'
 import {compose} from 'recompose'
@@ -28,6 +29,12 @@ const enhance = compose(
 )
 
 const Checkbox = ({classes, className, input, label, ...defaultProps}) => {
+    const props = {}
+    _.map(defaultProps, (obj, index) => {
+        if (index !== 'meta' && index !== 'sheet') {
+            props[index] = obj
+        }
+    })
     return (
         <MUICheckbox
             label={label}
@@ -36,7 +43,7 @@ const Checkbox = ({classes, className, input, label, ...defaultProps}) => {
             labelStyle={{lineHeight: '20px', left: '-10px'}}
             checked={toBoolean(input.value)}
             onCheck={input.onChange}
-            {...defaultProps}
+            {...props}
         />)
 }
 

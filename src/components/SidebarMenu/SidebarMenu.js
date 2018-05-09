@@ -213,7 +213,6 @@ const SideBarMenu = enhance((props) => {
                         handleOpen={handleOpenNotificationBar}
                         rippleColor={rippleColor}
                         style={style.style}/>
-
                 </div>
                 {items}
                 {!_.isEmpty(afterLine) &&
