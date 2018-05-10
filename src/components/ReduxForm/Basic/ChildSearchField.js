@@ -92,17 +92,25 @@ const enhance = compose(
     withState('mount', 'setMount', false),
 
     withPropsOnChange((props, nextProps) => {
-        const params = _.get(props, ['params'])
-        const nextParams = _.get(nextProps, ['params'])
+        const parent = _.get(props, ['parent'])
+        const nextParent = _.get(nextProps, ['parent'])
         const mount = _.get(props, ['mount'])
         const nextMount = _.get(nextProps, ['mount'])
-        return (!_.isEqual(params, nextParams) && nextParams) || (mount !== nextMount && nextMount)
+        return (parent !== nextParent && nextParent) || (mount !== nextMount && nextMount)
     }, (props) => {
         props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props, true)
     }),
     withPropsOnChange((props, nextProps) => {
-        return _.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text'])
-    }, (props) => props.mount && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+        const text = _.get(props, ['state', 'text'])
+        const nextText = _.get(nextProps, ['state', 'text'])
+        const nextOpen = _.get(nextProps, ['state', 'open'])
+        return text !== nextText && nextOpen
+    }, (props) => {
+        if (props.state.open) {
+            return _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+        }
+        return null
+    }),
 
     withHandlers({
         valueRenderer: props => (option) => {

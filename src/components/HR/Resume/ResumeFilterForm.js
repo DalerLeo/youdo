@@ -44,7 +44,7 @@ export const RESUME_FILTER_KEY = {
     AGE_1: 'age1',
     POSITIONS: 'positions',
     EDUCATIONS: 'educations',
-    LANG_LEVEL: 'langLevel',
+    LANG_LEVEL: 'languagesLevel',
     TOTAL_EXP_0: 'totalExp0'
 }
 

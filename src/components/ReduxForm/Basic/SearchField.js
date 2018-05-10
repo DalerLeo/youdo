@@ -144,9 +144,11 @@ const enhance = compose(
         props.getItem(_.get(props, ['input', 'value', 'value']))
     }),
     withPropsOnChange((props, nextProps) => {
-        return (_.get(props, ['state', 'text']) !== _.get(nextProps, ['state', 'text']) ||
-            _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
-            _.get(nextProps, ['state', 'open'])
+        const text = _.get(props, ['state', 'text'])
+        const open = _.get(props, ['state', 'open'])
+        const nextText = _.get(nextProps, ['state', 'text'])
+        const nextOpen = _.get(nextProps, ['state', 'open'])
+        return (text !== nextText || open !== nextOpen) && nextOpen
     }, (props) => {
         props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
     }),
@@ -187,11 +189,13 @@ const SearchField = enhance((props) => {
         placeHolder
     } = props
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
+    const inputValue = _.get(input, ['value', 'value'])
+    const isEmptyValue = _.isNumber(inputValue) ? false : (_.isEmpty(inputValue) || _.isNaN(inputValue))
 
     return (
         <div className={classes.wrapper}>
             <div className={classNames({
-                [classes.label]: meta.active || !_.isEmpty(input.value),
+                [classes.label]: meta.active || !isEmptyValue,
                 [classes.labelColor]: meta.active
             })}>{label}</div>
             <Select

@@ -10,12 +10,9 @@ import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
 import ApplicationDetailProgress from './ApplicationDetailProgress'
 import MenuItem from 'material-ui/MenuItem'
-import Divider from 'material-ui/Divider'
 import FlatButton from 'material-ui/FlatButton'
 import Delete from 'material-ui/svg-icons/action/delete'
 import MoreIcon from 'material-ui/svg-icons/navigation/more-vert'
-import ReworkIcon from 'material-ui/svg-icons/content/reply'
-import AcceptIcon from 'material-ui/svg-icons/action/done-all'
 import Info from 'material-ui/svg-icons/action/info-outline'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
@@ -421,17 +418,6 @@ const ApplicationDetails = enhance((props) => {
                         }
                         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
                         targetOrigin={{horizontal: 'right', vertical: 'top'}}>
-                        <MenuItem
-                            style={popoverStyle.menuItem}
-                            innerDivStyle={popoverStyle.innerDiv}
-                            leftIcon={<ReworkIcon style={popoverStyle.icon}/>}
-                            primaryText={t('Отправить на доработку')}/>
-                        <MenuItem
-                            style={popoverStyle.menuItem}
-                            innerDivStyle={popoverStyle.innerDiv}
-                            leftIcon={<AcceptIcon style={popoverStyle.icon}/>}
-                            primaryText={t('Принять заявку')}/>
-                        <Divider/>
                         {status !== 'frozen' &&
                         <MenuItem
                             style={popoverStyle.menuItem}

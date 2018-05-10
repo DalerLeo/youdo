@@ -147,16 +147,13 @@ const EducationsField = enhance((props) => {
         const checked = _.get(item, 'studyTillNow') === true
         return checked ? index : null
     })
-    const indexesWhereExistCountry = _.map(allFields, (item, index) => {
-        const country = _.isNumber(_.get(item, ['country', 'value']))
-        return country ? index : null
-    })
+    const countries = _.map(allFields, (item) => _.get(item, ['country', 'value']))
     const details = fields.map((detail, index) => {
         const hideWorkEnd = _.includes(indexesOfCheckedTillNow, index)
-        const showCity = _.includes(indexesWhereExistCountry, index)
+        const country = _.get(countries, index)
         return (
             <div key={index} className={classes.detail}>
-                <div className="edu-wrapper">
+                <div>
                     <Field
                         label={t('Уровень образования')}
                         name={`${detail}.education`}
@@ -207,11 +204,12 @@ const EducationsField = enhance((props) => {
                         component={CountrySearchField}
                         className={classes.inputFieldCustom}
                         fullWidth={true}/>
-                    {showCity &&
+                    {country &&
                     <Field
                         label={t('Город')}
                         name={`${detail}.city`}
                         component={CitySearchField}
+                        params={{country}}
                         className={classes.inputFieldCustom}
                         fullWidth={true}/>}
                 </div>

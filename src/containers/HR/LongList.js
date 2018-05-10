@@ -97,7 +97,7 @@ const except = {
     levelPc: null,
     positions: null,
     educations: null,
-    langLevel: null,
+    languagesLevel: null,
     totalExp0: null,
     totalExp1: null,
     editResumeDetails: null,
@@ -600,16 +600,6 @@ const enhance = compose(
             return null
         },
 
-        // . handleCompleteResumeInterview: props => () => {
-        // .     const {dispatch, resumeDetailsForm, location: {query}} = props
-        // .     const application = _.toInteger(_.get(query, 'application'))
-        // .     const resume = _.toInteger(_.get(query, 'resume'))
-        // .     return dispatch(sendResumeAnswers(resume, _.get(resumeDetailsForm, ['values'])))
-        // .         .then(() => {
-        // .             return dispatch(openSnackbarAction({message: t('Ответы успешно сохранены')}))
-        // .         })
-        // . },
-
         handleAddReportList: props => (resume) => {
             const {dispatch, filter, location: {query}} = props
             const application = _.toInteger(_.get(query, 'application'))
@@ -754,7 +744,10 @@ const enhance = compose(
                 .then(() => {
                     dispatch(getInterviewList(filter, application, HR_RESUME_MEETING))
                     hashHistory.push(filter.createURL({resume: null}))
-                    return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
+                    return dispatch(openSnackbarAction({message: t('Собеседование завершено')}))
+                })
+                .then(() => {
+                    return dispatch(getAppStatAction(application))
                 })
                 .catch((error) => {
                     dispatch(openErrorAction({

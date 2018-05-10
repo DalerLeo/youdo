@@ -349,10 +349,8 @@ const enhance = compose(
     withState('currentComment', 'updateCurrentComment', ''),
     connect((state) => {
         const requiredFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'requirements'])
-        const optionalFields = _.get(state, ['form', 'ResumeDetailsForm', 'values', 'optional'])
         return {
-            requiredFields,
-            optionalFields
+            requiredFields
         }
     })
 )
@@ -382,7 +380,6 @@ const ResumeDetailsDialog = enhance((props) => {
         application,
         appLogs,
         requiredFields,
-        optionalFields,
         setFinishConfirmDialog,
         isMeetingCompleted,
         handleSubmitRequiredFeedback,
@@ -638,9 +635,7 @@ const ResumeDetailsDialog = enhance((props) => {
                             const langName = _.get(language, ['language', 'name'])
                             const langLevel = getBackendNames(HR_LANG_LEVELS, _.get(language, ['level']))
                             const output = langName + ' (' + langLevel + ')'
-                            const checked = required
-                                ? _.get(requiredFields, ['langs', languageId, 'checked'])
-                                : _.get(optionalFields, ['langs', languageId, 'checked'])
+                            const checked = _.get(requiredFields, ['langs', languageId, 'checked'])
                             return getLanguageField(output, languageId, checked)
                         })}
                     </div>

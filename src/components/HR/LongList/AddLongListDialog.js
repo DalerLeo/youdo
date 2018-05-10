@@ -16,6 +16,7 @@ import {BORDER_STYLE, COLOR_DEFAULT, PADDING_STANDART} from '../../../constants/
 import ResumeFilterForm from '../Resume/ResumeFilterForm'
 import formValidate from '../../../helpers/formValidate'
 import NotFound from '../../Images/not-found.png'
+import {getBackendNames, getResumeStatus} from '../../../helpers/hrcHelpers'
 
 const enhance = compose(
     injectSheet({
@@ -277,7 +278,7 @@ const AddLongListDialog = enhance((props) => {
                                         const relationId = _.get(item, 'relationId')
                                         const position = _.get(item, ['position', 'name'])
                                         const fullName = _.get(item, ['fullName'])
-                                        const status = _.get(item, ['status'])
+                                        const status = getBackendNames(getResumeStatus(), _.get(item, ['status']))
                                         return (
                                             <Row key={id} className={'dottedList'}>
                                                 <Col xs={1} className={classes.checkbox}>
