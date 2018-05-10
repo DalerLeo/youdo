@@ -82,8 +82,13 @@ const enhance = compose(
         },
         cardWrapper: {
             borderLeft: 'solid 2px #bec6c9',
-            marginLeft: '20px',
-            marginTop: '-4px'
+            display: 'flex',
+            flexDirection: 'column-reverse',
+            marginLeft: '20px'
+        },
+        reverse: {
+            display: 'flex',
+            flexDirection: 'column-reverse'
         },
         cardItem: {
             cursor: 'pointer',
@@ -379,7 +384,7 @@ const ApplicationDetailProgress = enhance((props) => {
     const getActionContent = (action, logId) => {
         switch (action) {
             case 'update': return (
-                <div key={logId}>
+                <div key={logId} className={classes.reverse}>
                     {getCardContainer('В заявку внесены изменения')}
                     {getCardContainer(isRecruiter ? 'Формирование отчета' : 'Ожидание отчета')}
                 </div>
@@ -407,7 +412,7 @@ const ApplicationDetailProgress = enhance((props) => {
                     </div>
                 ), logId)
             case 'sent_to_client': return (
-                <div key={logId}>
+                <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отправлен клиенту')}
                     {lastLogId === logId && !isRecruiter
                         ? getActionContainer('Ожидание ответа от клиента по отчету', {
@@ -424,19 +429,19 @@ const ApplicationDetailProgress = enhance((props) => {
                 </div>
             )
             case 'rejected_by_manager': return (
-                <div key={logId}>
+                <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отклонен менеджером')}
                     {getCardContainer('Ожидание отчета')}
                 </div>
             )
             case 'rejected_by_client': return (
-                <div key={logId}>
+                <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отклонен клиентом')}
                     {getCardContainer('Ожидание отчета')}
                 </div>
             )
             case 'approval': return (
-                <div key={logId}>
+                <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет одобрен клиентом')}
                     {hasMeetings
                         ? <div className={classes.meetingWrapper}>
@@ -497,7 +502,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                                             onClick={() => {
                                                                 updateMeetingDialog.handleOpen(resumeId, meetingId)
                                                             }}/>
-                                                        {!isApprove && !isRecruiter &&
+                                                        {!isApprove &&
                                                         <MenuItem
                                                             style={popoverStyle.menuItem}
                                                             innerDivStyle={popoverStyle.innerDiv}
@@ -541,14 +546,10 @@ const ApplicationDetailProgress = enhance((props) => {
             <div className={classes.title}>
                 <span>{t('Прогресс')}</span>
             </div>
-            <div className={classes.cardWrapper}>
-                {getCardContainer('Ожидание отчета')}
-                {_.map(logsList, (item) => {
-                    const id = _.get(item, 'id')
-                    const action = _.get(item, 'action')
-                    return getActionContent(action, id)
-                })}
-            </div>
+            {status === APPLICATION_COMPLETED &&
+            <div className={classNames(classes.completeWrapper, classes.completeDialog)}>
+                <span>{t('Заявка закрыта')}</span>
+            </div>}
             {isApprovedMeetings && status !== APPLICATION_COMPLETED && !isRecruiter && lastLogAction === 'approval' &&
             <div className={classes.completeDialog}>
                 {openCompleteDialog
@@ -592,10 +593,14 @@ const ApplicationDetailProgress = enhance((props) => {
                         }
                     })}
             </div>}
-            {status === APPLICATION_COMPLETED &&
-            <div className={classNames(classes.completeWrapper, classes.completeDialog)}>
-                <span>{t('Заявка закрыта')}</span>
-            </div>}
+            <div className={classes.cardWrapper}>
+                {getCardContainer('Ожидание отчета')}
+                {_.map(logsList, (item) => {
+                    const id = _.get(item, 'id')
+                    const action = _.get(item, 'action')
+                    return getActionContent(action, id)
+                })}
+            </div>
 
             <ConfirmDialog
                 type={'submit'}
