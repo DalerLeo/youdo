@@ -9,6 +9,7 @@ import {TextField, DateField} from '../../ReduxForm'
 import MaritalStatusSearchField from '../../ReduxForm/HR/Resume/MaritalStatusSearchField'
 import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
 import SphereSearchField from '../../ReduxForm/HR/Sphere/SphereSearchField'
+import PositionSearchField from '../../ReduxForm/HR/Sphere/PositionSearchField'
 import CountrySearchField from '../../ReduxForm/HR/CountrySearchField'
 import CitySearchField from '../../ReduxForm/HR/CitySearchField'
 
@@ -23,6 +24,7 @@ const validate = values => {
         'email',
         'country',
         'city',
+        'sphere',
         'position'
     ]
     const errors = {}
@@ -39,8 +41,10 @@ const enhance = compose(
     injectSheet({}),
     connect((state) => {
         const country = _.get(state, ['form', 'ResumePersonalForm', 'values', 'country', 'value'])
+        const sphere = _.get(state, ['form', 'ResumePersonalForm', 'values', 'sphere', 'value'])
         return {
-            country
+            country,
+            sphere
         }
     }),
     reduxForm({
@@ -63,6 +67,7 @@ const ResumeCreatePersonal = enhance((props) => {
     const {
         classes,
         country,
+        sphere,
         nextButton
     } = props
 
@@ -128,11 +133,20 @@ const ResumeCreatePersonal = enhance((props) => {
                 className={classes.inputFieldCustom}
                 fullWidth={true}/>}
             <Field
-                name="position"
+                name="sphere"
                 label={t('Желаемая специальность')}
                 component={SphereSearchField}
                 className={classes.inputFieldCustom}
+                params={{only_parent: true, ordering: 'name'}}
                 fullWidth={true}/>
+            {sphere &&
+            <Field
+                name="position"
+                label={t('Должность')}
+                component={PositionSearchField}
+                className={classes.inputFieldCustom}
+                params={{child: sphere, ordering: 'name'}}
+                fullWidth={true}/>}
             {nextButton}
         </div>
     )

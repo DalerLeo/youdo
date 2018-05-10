@@ -11,7 +11,7 @@ export const createSerializer = (data) => {
     const education = _.get(data, ['education', 'value'])
     const experience = _.toNumber(_.get(data, ['experience']))
     const responsibility = _.get(data, ['responsibility'])
-    const position = _.get(data, ['position', 'value'])
+    const position = _.get(data, ['position', 'value']) || _.get(data, ['sphere', 'value'])
     const planningDate = moment(_.get(data, ['planningDate'])).format('YYYY-MM-DD')
     const guaranteedDate = moment(_.get(data, ['guaranteedDate'])).format('YYYY-MM-DD')
     const deadlineDate = moment(_.get(data, ['deadline'])).format('YYYY-MM-DD HH:mm')

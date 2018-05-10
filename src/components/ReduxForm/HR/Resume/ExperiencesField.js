@@ -6,6 +6,7 @@ import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
 import {TextField, DateField, CheckBox} from '../../index'
 import SphereSearchField from '../Sphere/SphereSearchField'
+import PositionSearchField from '../Sphere/PositionSearchField'
 import {COLOR_RED} from '../../../../constants/styleConstants'
 import {connect} from 'react-redux'
 
@@ -139,8 +140,10 @@ const ExperiencesField = enhance((props) => {
         const checked = _.get(item, 'workTillNow') === true
         return checked ? index : null
     })
+    const spheres = _.map(allFields, (item) => _.get(item, ['sphere', 'value']))
     const details = fields.map((detail, index) => {
         const hideWorkEnd = _.includes(indexesOfCheckedTillNow, index)
+        const sphere = _.get(spheres, index)
         return (
             <div key={index} className={classes.detail}>
                 <div className="exp-wrapper">
@@ -175,12 +178,23 @@ const ExperiencesField = enhance((props) => {
                         component={TextField}
                         className={classes.inputFieldCustom}
                         fullWidth={true}/>
-                    <Field
-                        label={t('Должность')}
-                        name={`${detail}.position`}
-                        component={SphereSearchField}
-                        className={classes.inputFieldCustom}
-                        fullWidth={true}/>
+                    <div style={{zIndex: 2}}>
+                        <Field
+                            label={t('Сфера')}
+                            name={`${detail}.sphere`}
+                            component={SphereSearchField}
+                            className={classes.inputFieldCustom}
+                            params={{only_parent: true, ordering: 'name'}}
+                            fullWidth={true}/>
+                        {sphere &&
+                        <Field
+                            name={`${detail}.position`}
+                            label={t('Должность')}
+                            component={PositionSearchField}
+                            className={classes.inputFieldCustom}
+                            params={{child: sphere, ordering: 'name'}}
+                            fullWidth={true}/>}
+                    </div>
                     <Field
                         label={t('Обязанности')}
                         name={`${detail}.responsibility`}

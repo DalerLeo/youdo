@@ -7,6 +7,7 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 import t from '../../../helpers/translate'
+import classNames from 'classnames'
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
     dispatch({loading: true})
@@ -27,13 +28,34 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
 const enhance = compose(
     injectSheet({
         wrapper: {
+            marginTop: '5px',
+            minHeight: 52,
+            position: 'relative',
             width: '100%',
             '& .is-focused:not(.is-open) > .Select-control': {
                 borderBottom: 'solid 2px #5d6474',
                 boxShadow: 'unset'
+            },
+            '& > div:first-child': {
+                position: 'absolute',
+                top: 30,
+                color: 'rgba(0, 0, 0, 0.3)',
+                transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                MozTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                WebkitTransition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms',
+                transformOrigin: 'left top 0px',
+                transform: 'scale(1)'
             }
         },
+        label: {
+            top: '0 !important',
+            transform: 'scale(0.75) !important'
+        },
+        labelColor: {
+            color: 'rgb(93, 100, 116) !important'
+        },
         select: {
+            paddingTop: 18,
             '& .Select-menu': {
                 background: '#fff',
                 maxHeight: '200px'
@@ -52,11 +74,10 @@ const enhance = compose(
                 border: '0',
                 borderBottom: '1px solid #e8e8e8',
                 backgroundColor: 'unset',
-                height: '44px',
                 marginBottom: '8px',
                 '& .Select-value': {
                     paddingLeft: '0',
-                    margin: '0 5px 5px 0',
+                    margin: '5px 5px 0 0',
                     backgroundColor: '#f2f5f8',
                     borderColor: '#efefef',
                     color: '#666666',
@@ -75,10 +96,7 @@ const enhance = compose(
                     top: '12px'
                 },
                 '& .Select-input': {
-                    paddingLeft: '0',
-                    paddingTop: '12px',
-                    marginLeft: '0',
-                    height: '44px'
+                    marginLeft: 0
                 },
                 '& .Select--multi .Select-value': {
                     backgroundColor: '#f2f5f8',
@@ -87,11 +105,9 @@ const enhance = compose(
                 }
             },
             '& .Select-input > input': {
-                width: '100% !important',
-                overflow: 'hidden'
             },
             '& .Select-option.is-focused, .Select-option.is-selected': {
-                background: '#f6f6f6'
+                background: 'unset'
             },
             '& .Select-arrow-zone': {
                 paddingTop: '12px'
@@ -173,18 +189,23 @@ const MultiSelectField = enhance((props) => {
         handleChange,
         disabled,
         input,
+        meta,
         filterOptionRender
     } = props
     const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
     return (
         <div className={classes.wrapper}>
+            <div className={classNames({
+                [classes.label]: meta.active || !_.isEmpty(input.value),
+                [classes.labelColor]: meta.active
+            })}>{label}</div>
             <Select.Creatable
                 className={classes.select}
                 options={state.dataSource}
                 value={input.value}
                 onInputChange={text => { dispatch({text: text}) }}
                 onChange={handleChange}
-                placeholder={label}
+                placeholder={''}
                 noResultsText={hintText}
                 isLoading={state.loading}
                 labelKey={'text'}

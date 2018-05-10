@@ -456,6 +456,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 component={SphereSearchField}
                                 className={classes.inputFieldCustom}
                                 label={t('Сфера')}
+                                params={{only_parent: true, ordering: 'name'}}
                                 fullWidth={true}/>
                             {sphere &&
                             <Field
@@ -463,7 +464,7 @@ const ApplicationCreateDialog = enhance((props) => {
                                 component={PositionSearchField}
                                 className={classes.inputFieldCustom}
                                 label={t('Должность')}
-                                params={{child: sphere}}
+                                params={{child: sphere, ordering: 'name'}}
                                 fullWidth={true}/>}
                             <div className={classes.flexBetween + ' ' + classes.alignBaseline}>
                                 <span>{t('З/п на испытательный срок')}:</span>

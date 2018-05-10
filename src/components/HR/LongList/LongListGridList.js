@@ -423,7 +423,13 @@ const enhance = compose(
         },
         activeResume: {
             extend: 'resume',
-            borderLeft: '4px ' + COLOR_GREEN + ' solid'
+            borderLeft: `4px ${COLOR_GREEN} solid`
+        },
+        completedInterview: {
+            borderLeft: `3px ${COLOR_GREY_LIGHTEN} solid`
+        },
+        progressInterview: {
+            borderLeft: `3px ${COLOR_GREEN} solid`
         },
         createdDate: {
             color: COLOR_GREY_LIGHTEN,
@@ -743,6 +749,7 @@ const LongListGridList = enhance((props) => {
             const time = moment(_.get(item, 'dateMeeting')).format('HH:mm')
             const createdDate = dateFormat(_.get(item, 'dateUpdate'))
             const isInterview = status === HR_RESUME_MEETING
+            const isCompleted = _.get(item, 'isCompleted')
 
             const updatedList = _.uniq(_.concat(checkedList, id))
             const isActive = _.includes(checkedList, id) && openAddReport
@@ -750,7 +757,11 @@ const LongListGridList = enhance((props) => {
             return (
                 <div
                     key={id}
-                    className={isActive ? classes.activeResume : classes.resume}
+                    className={classNames(classes.resume, {
+                        [classes.activeResume]: isActive,
+                        [classes.completedInterview]: isCompleted && status === HR_RESUME_MEETING,
+                        [classes.progressInterview]: !isCompleted && status === HR_RESUME_MEETING
+                    })}
                     style={{paddingLeft: isInterview ? '15px' : 'auto', cursor: openAddReport ? 'pointer' : 'auto'}}
                     onClick={() => {
                         openAddReport

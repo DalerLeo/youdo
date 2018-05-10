@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
 import SearchField from '../../Basic/ChildSearchField'
@@ -23,6 +24,7 @@ const PositionSearchField = (props) => {
             getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
             getItem={getItem}
             getItemText={SearchField.defaultGetText('name')}
+            parent={_.get(params, 'child')}
             {...props}
         />
     )
