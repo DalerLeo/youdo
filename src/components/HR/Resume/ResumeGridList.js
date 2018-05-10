@@ -88,7 +88,8 @@ const enhance = compose(
         buttons: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'flex-end'
+            justifyContent: 'flex-end',
+            textAlign: 'right'
         }
     })
 )

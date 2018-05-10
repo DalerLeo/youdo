@@ -315,10 +315,12 @@ const enhance = compose(
         return open !== nextOpen && nextOpen === true
     }, ({dispatch, showProgress, location: {query}}) => {
         const application = _.toInteger(_.get(query, ['application']))
-        return dispatch(getApplicationLogs(application))
-            .then(() => {
-                dispatch(notificationCountFetchAction('application'))
-            })
+        if (showProgress) {
+            dispatch(getApplicationLogs(application))
+                .then(() => {
+                    dispatch(notificationCountFetchAction('application'))
+                })
+        }
     }),
 
     withHandlers({
@@ -1059,7 +1061,7 @@ const LongList = enhance((props) => {
                 answers,
                 requirements: _.merge({
                     age: {
-                        checked: true,
+                        checked: false,
                         comment: getYearText(_.get(resumeDetail, 'age'))
                     },
                     langs

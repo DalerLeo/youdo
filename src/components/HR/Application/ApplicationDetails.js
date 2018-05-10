@@ -331,7 +331,7 @@ const ApplicationDetails = enhance((props) => {
                                 case 'mode': return getBackendNames(HR_WORK_SCHEDULE, value)
                                 case 'sex': return genderFormat[value]
                                 case 'skills': return _.join(value, ', ')
-                                default: return value
+                                default: return (_.isEmpty(value)) ? 'Новое добавление' : value
                             }
                         }
                         const date = dateFormat(_.get(item, 'createdDate'))

@@ -5,13 +5,15 @@ import {reduxForm, Field, FieldArray} from 'redux-form'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {Link} from 'react-router'
+import {connect} from 'react-redux'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {TextField} from '../../ReduxForm'
-import SphereMultiSearchField from '../../ReduxForm/HR/Sphere/SphereMultiSearchField'
+import SphereSearchField from '../../ReduxForm/HR/Sphere/SphereSearchField'
+import PositionSearchField from '../../ReduxForm/HR/Sphere/PositionSearchField'
 import WorkScheduleMultiSearchField from '../../ReduxForm/HR/WorkScheduleMultiSearchField'
 import GenderSearchField from '../../ReduxForm/HR/GenderSearchField'
 import EducationMultiSearchField from '../../ReduxForm/HR/EducationMultiSearchField'
@@ -27,6 +29,7 @@ import {COLOR_RED, LINK_COLOR} from '../../../constants/styleConstants'
 export const RESUME_FILTER_OPEN = 'openFilterDialog'
 
 export const RESUME_FILTER_KEY = {
+    SPHERE: 'sphere',
     POSITION: 'position',
     MODE: 'mode',
     AGE_MIN: 'ageMin',
@@ -154,6 +157,12 @@ const enhance = compose(
         form: 'ResumeFilterForm',
         enableReinitialize: true
     }),
+    connect((state) => {
+        const sphere = _.get(state, ['form', 'ResumeFilterForm', 'values', 'sphere', 'value'])
+        return {
+            sphere
+        }
+    }),
     withHandlers({
         getCount: props => () => {
             const {filter} = props
@@ -168,7 +177,7 @@ const enhance = compose(
 )
 
 const ResumeFilterForm = enhance((props) => {
-    const {classes, filterDialog, getCount, handleSubmit, forDialog} = props
+    const {classes, filterDialog, getCount, handleSubmit, forDialog, sphere} = props
     const filterCounts = getCount()
     if (!filterDialog.openFilterDialog) {
         if (filterCounts) {
@@ -215,11 +224,20 @@ const ResumeFilterForm = enhance((props) => {
                     label={t('Поиск')}
                     fullWidth={true}/>
                 <Field
+                    name="sphere"
+                    className={classes.inputFieldCustom}
+                    component={SphereSearchField}
+                    label={t('Специальность')}
+                    params={{only_parent: true, ordering: 'name'}}
+                    fullWidth={true}/>
+                {sphere &&
+                <Field
                     name="position"
                     className={classes.inputFieldCustom}
-                    component={SphereMultiSearchField}
-                    label={t('Специальность')}
-                    fullWidth={true}/>
+                    component={PositionSearchField}
+                    label={t('Должность')}
+                    params={{child: sphere, ordering: 'name'}}
+                    fullWidth={true}/>}
                 <Field
                     name="mode"
                     className={classes.inputFieldCustom}

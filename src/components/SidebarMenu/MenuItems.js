@@ -7,14 +7,13 @@ import * as ROUTES from '../../constants/routes'
 // . import Settings from 'material-ui/svg-icons/action/settings'
 // . import Statistics from 'material-ui/svg-icons/action/timeline'
 // . import Store from 'material-ui/svg-icons/device/storage'
-// . import Markets from 'material-ui/svg-icons/action/store'
-// . import Clients from 'material-ui/svg-icons/social/group'
+import Clients from 'material-ui/svg-icons/social/group'
 // . import Supply from 'material-ui/svg-icons/action/swap-horiz'
 // . import Products from 'material-ui/svg-icons/device/widgets'
 // . import Telegram from '../CustomIcons/Telegram'
 import Resume from '../CustomIcons/ResumeIcon'
 import Tasks from 'material-ui/svg-icons/action/assignment'
-// . import {getPageSize} from '../../helpers/storage'
+import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
 const NOT_FOUND = -1
@@ -32,9 +31,19 @@ const NOT_FOUND = -1
 // . const STATS_STOCK = t('Склад')
 // . const STATS_OVERALL = t('Общее')
 
-// . const DEFAULT_PAGE_SIZE = getPageSize()
-// . const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
+const DEFAULT_PAGE_SIZE = getPageSize()
+const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
 export const MenuItems = [
+    {
+        name: t('Клиенты'),
+        icon: (<Clients/>),
+        url: ROUTES.CLIENT_LIST_URL,
+        query: defaultPageSizeQuery,
+        dynamic: true,
+        childs: [
+            {name: t('Клиенты'), url: ROUTES.CLIENT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)}
+        ]
+    },
 
     /* {
         name: t('Продажи'),

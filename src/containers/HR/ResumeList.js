@@ -100,21 +100,23 @@ const enhance = compose(
 
         handleSubmitFilterDialog: props => () => {
             const {filter, filterForm} = props
-            const position = _.get(filterForm, ['values', 'position']) || null
-            const mode = _.get(filterForm, ['values', 'mode']) || null
-            const ageMin = _.get(filterForm, ['values', 'age', 'min']) || null
-            const ageMax = _.get(filterForm, ['values', 'age', 'max']) || null
-            const sex = _.get(filterForm, ['values', 'sex', 'value']) || null
-            const education = _.get(filterForm, ['values', 'education']) || null
-            const levelPc = _.get(filterForm, ['values', 'levelPc', 'value']) || null
-            const languages = _.get(filterForm, ['values', 'languages']) || null
-            const experience = _.get(filterForm, ['values', 'experience']) || null
-            const skills = _.get(filterForm, ['values', 'skills']) || null
+            const sphere = _.get(filterForm, ['sphere', 'value']) || null
+            const position = _.get(filterForm, ['position', 'value']) || null
+            const mode = _.get(filterForm, ['mode']) || null
+            const ageMin = _.get(filterForm, ['age', 'min']) || null
+            const ageMax = _.get(filterForm, ['age', 'max']) || null
+            const sex = _.get(filterForm, ['sex', 'value']) || null
+            const education = _.get(filterForm, ['education']) || null
+            const levelPc = _.get(filterForm, ['levelPc', 'value']) || null
+            const languages = _.get(filterForm, ['languages']) || null
+            const experience = _.get(filterForm, ['experience']) || null
+            const skills = _.get(filterForm, ['skills']) || null
             const langToUrl = langQueryFormat(languages)
 
             filter.filterBy({
                 [RESUME_FILTER_OPEN]: false,
-                [RESUME_FILTER_KEY.POSITION]: joinArray(position),
+                [RESUME_FILTER_KEY.SPHERE]: sphere,
+                [RESUME_FILTER_KEY.POSITION]: position,
                 [RESUME_FILTER_KEY.MODE]: joinArray(mode),
                 [RESUME_FILTER_KEY.AGE_MIN]: ageMin && numberWithoutSpaces(ageMin),
                 [RESUME_FILTER_KEY.AGE_MAX]: ageMax && numberWithoutSpaces(ageMax),
@@ -230,6 +232,7 @@ const ResumeList = enhance((props) => {
     const openUpdateDialog = toBoolean(_.get(location, ['query', RESUME_UPDATE_DIALOG_OPEN]))
     const detailId = _.toInteger(_.get(params, 'resumeId'))
 
+    const sphere = filter.getParam(RESUME_FILTER_KEY.SPHERE)
     const position = filter.getParam(RESUME_FILTER_KEY.POSITION)
     const mode = filter.getParam(RESUME_FILTER_KEY.MODE)
     const ageMin = filter.getParam(RESUME_FILTER_KEY.AGE_MIN)
@@ -244,7 +247,12 @@ const ResumeList = enhance((props) => {
 
     const filterDialog = {
         initialValues: {
-            position: position && splitToArray(position),
+            sphere: {
+                value: sphere
+            },
+            position: {
+                value: position
+            },
             mode: mode && splitToArray(mode),
             age: {
                 min: ageMin && numberFormat(ageMin),
@@ -342,6 +350,9 @@ const ResumeList = enhance((props) => {
                 email: _.get(detail, 'email'),
                 experiences: _.map(_.get(detail, 'experiences'), (item) => {
                     return {
+                        sphere: {
+                            value: _.get(item, ['position', 'child'])
+                        },
                         position: {
                             value: _.get(item, ['position', 'id'])
                         },
@@ -372,6 +383,9 @@ const ResumeList = enhance((props) => {
                 },
                 modes: isSelectedModes,
                 phone: _.get(detail, 'phone'),
+                sphere: {
+                    value: _.get(detail, ['position', 'child'])
+                },
                 position: {
                     value: _.get(detail, ['position', 'id'])
                 },

@@ -546,6 +546,7 @@ const ApplicationList = enhance((props) => {
                     },
                     experience: _.get(detail, 'experience'),
                     deadline: moment(_.get(detail, 'deadline')).toDate(),
+                    guaranteedDate: moment(_.get(detail, 'dateGuarantee')).toDate(),
                     languages: _.map(_.get(detail, 'languages'), (item) => {
                         return {
                             name: {
@@ -561,6 +562,9 @@ const ApplicationList = enhance((props) => {
                         value: _.get(detail, 'levelPc')
                     },
                     planningDate: moment(_.get(detail, 'planningDate')).toDate(),
+                    sphere: {
+                        value: _.get(detail, ['position', 'child'])
+                    },
                     position: {
                         value: _.get(detail, ['position', 'id'])
                     },
