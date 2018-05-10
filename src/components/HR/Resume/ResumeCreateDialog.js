@@ -335,7 +335,7 @@ const ResumeCreateDialog = enhance((props) => {
         )
     }
 
-/* ..    const getStepperContent = () => {
+    /* Const getStepperContent = () => {
         switch (stepIndex) {
             case ZERO: return (
                 <div className={classes.container}>

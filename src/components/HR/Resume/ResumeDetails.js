@@ -21,6 +21,7 @@ import {FlatButton, IconMenu, MenuItem} from 'material-ui'
 import {resumeChangeStatusAction} from '../../../actions/HR/resume'
 import {openErrorAction} from '../../../actions/error'
 import {openSnackbarAction} from '../../../actions/snackbar'
+import {HR_LANG_LEVELS, HR_LEVEL_PC} from '../../../constants/backendConstants'
 
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
@@ -310,7 +311,7 @@ const ResumeDetails = enhance((props) => {
     const educations = _.get(data, 'educations')
 
     const languagesLevel = _.get(data, 'languages')
-    const levelPc = _.get(data, 'levelPc')
+    const levelPc = getBackendNames(HR_LEVEL_PC, _.get(data, 'levelPc'))
     const hobby = _.get(data, 'hobby') || t('Не указано')
     const driverLicense = _.join(_.map(_.get(data, 'driverLicense'), item => {
         return _.get(item, 'name')
@@ -447,7 +448,7 @@ const ResumeDetails = enhance((props) => {
                                 {_.map(languagesLevel, (item) => {
                                     const id = _.get(item, ['id'])
                                     const name = _.get(item, ['language', 'name'])
-                                    const level = _.get(item, ['level', 'name'])
+                                    const level = getBackendNames(HR_LANG_LEVELS, _.get(item, ['level']))
                                     return <li key={id} className={classes.lang}>{name} {level && <span className={classes.lowercase}>({level})</span>}</li>
                                 })}
                             </ul>}

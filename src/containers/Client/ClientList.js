@@ -275,6 +275,7 @@ const ClientList = enhance((props) => {
                     value: _.get(detail, 'from')
                 },
                 address: _.get(detail, 'address'),
+                sphere: _.get(detail, 'sphere'),
                 contacts: _.union(contacts, [{}]),
                 inBlacklist: _.get(detail, 'inBlacklist')
             }

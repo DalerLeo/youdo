@@ -12,6 +12,7 @@ import ToolTip from '../ToolTip'
 import dateFormat from '../../helpers/dateFormat'
 import Blacklist from 'material-ui/svg-icons/alert/warning'
 import t from '../../helpers/translate'
+import {BORDER_STYLE, PADDING_STANDART} from '../../constants/styleConstants'
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
@@ -39,7 +40,7 @@ const enhance = compose(
             width: '100%',
             height: '65px',
             padding: '0 30px',
-            borderBottom: '1px #efefef solid',
+            borderBottom: BORDER_STYLE,
             position: 'relative'
         },
         blacklistTitle: {
@@ -50,22 +51,27 @@ const enhance = compose(
             display: 'flex',
             width: '100%'
         },
+        sphere: {
+            borderTop: BORDER_STYLE,
+            padding: PADDING_STANDART,
+            width: '100%'
+        },
         sides: {
             flexBasis: '27%'
         },
         leftSide: {
             extend: 'sides',
-            borderRight: '1px #efefef solid',
+            borderRight: BORDER_STYLE,
             padding: '20px 30px'
         },
         rightSide: {
             extend: 'sides',
-            borderLeft: '1px #efefef solid',
+            borderLeft: BORDER_STYLE,
             padding: '20px 30px'
         },
         body: {
             flexBasis: '66%',
-            padding: '20px 30px',
+            padding: PADDING_STANDART,
             '& .dottedList': {
                 padding: '10px 0',
                 '&:after': {
@@ -96,7 +102,7 @@ const enhance = compose(
         },
         bodyTitle: {
             fontWeight: '600',
-            marginBottom: '5px 0',
+            marginTop: '5px',
             '&:first-child': {
                 marginTop: '0'
             }
@@ -127,10 +133,8 @@ const ClientDetails = enhance((props) => {
     const date = dateFormat(_.get(data, 'createdDate'))
     const inBlacklist = _.get(data, 'inBlacklist')
     const address = _.get(data, 'address') || 'Не указан'
+    const sphere = _.get(data, 'sphere')
     const providerName = _.get(data, 'name')
-    const fromWhom = _.get(data, 'fromWhom')
-        ? _.get(data, ['fromWhom', 'firstName']) + ' ' + _.get(data, ['fromWhom', 'secondName'])
-        : t('Неизвестно')
 
     if (loading) {
         return (
@@ -203,8 +207,6 @@ const ClientDetails = enhance((props) => {
             </div>
             <div className={classes.container}>
                 <div className={classes.leftSide}>
-                    <div className={classes.bodyTitle}>{t('По рекомендации')}:</div>
-                    <div>{fromWhom}</div>
                     <div className={classes.bodyTitle}>{t('Адрес')}:</div>
                     <div>{address}</div>
                 </div>
@@ -230,6 +232,13 @@ const ClientDetails = enhance((props) => {
                     <div>{date}</div>
                 </div>
             </div>
+            {sphere &&
+            <div className={classes.container}>
+                <div className={classes.sphere}>
+                    <div className={classes.bodyTitle}>{t('Сфера деятельности')}</div>
+                    <div>{sphere}</div>
+                </div>
+            </div>}
         </div>
     )
 })

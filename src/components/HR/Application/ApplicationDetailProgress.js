@@ -526,7 +526,7 @@ const ApplicationDetailProgress = enhance((props) => {
                             })}
                 </div>
             )
-            default: return getCardContainer(action, logId)
+            default: return null
         }
     }
 

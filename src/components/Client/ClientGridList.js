@@ -155,18 +155,12 @@ const ClientGridList = enhance((props) => {
         {
             sorting: false,
             name: 'name',
-            xs: 3,
+            xs: 5,
             title: t('Наименование')
         },
         {
-            sorting: false,
-            name: 'fromWhom',
-            xs: 3,
-            title: t('По рекомендации')
-        },
-        {
             sorting: true,
-            xs: 3,
+            xs: 4,
             name: 'address',
             title: t('Адрес')
         },
@@ -200,22 +194,18 @@ const ClientGridList = enhance((props) => {
     const clientList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
-        const fromWhom = _.get(item, 'fromWhom')
-            ? _.get(item, ['fromWhom', 'firstName']) + ' ' + _.get(item, ['fromWhom', 'secondName'])
-            : t('Неизвестно')
         const address = _.get(item, 'address')
         const inBlacklist = _.get(item, 'inBlacklist')
         const createdDate = dateFormat(_.get(item, 'createdDate'))
         return (
             <Row key={id} className={inBlacklist ? classes.blacklistRow : classes.listRow}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={3}>{name}</Col>
+                <Col xs={5}>{name}</Col>
                 <Link to={{
                     pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
                     query: filter.getParams()
                 }}/>
-                <Col xs={3}>{fromWhom}</Col>
-                <Col xs={3}>{address}</Col>
+                <Col xs={4}>{address}</Col>
                 <Col xs={2}>{createdDate}</Col>
             </Row>
         )

@@ -224,7 +224,7 @@ const ApplicationGridList = enhance((props) => {
         const deadline = dateFormat(_.get(item, 'deadline'))
         const status = _.get(item, 'status')
         const doing = _.get(item, 'doing')
-        const notifCount = _.random(Number('7'))
+        const notifCount = _.get(item, 'notifyCount')
         return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{

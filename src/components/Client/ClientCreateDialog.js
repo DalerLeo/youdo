@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import {Field, FieldArray, reduxForm} from 'redux-form'
-import {TextField, UsersSearchField, CheckBox} from '../ReduxForm'
+import {TextField, CheckBox} from '../ReduxForm'
 import ClientContactsListField from '../ReduxForm/Client/ClientContactsListField'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
@@ -101,12 +101,6 @@ const ClientCreateDialog = enhance((props) => {
                                 className={classes.inputFieldCustom}
                                 label={t('Местположение')}
                                 fullWidth={true}/>
-                            <Field
-                                name="from"
-                                component={UsersSearchField}
-                                className={classes.inputFieldCustom}
-                                label={t('По рекомендации')}
-                                fullWidth={true}/>
 
                             <div className={classes.contacts}>
                                 {t('Контактные данные')}
@@ -119,7 +113,6 @@ const ClientCreateDialog = enhance((props) => {
                                 <Field
                                     name="inBlacklist"
                                     component={CheckBox}
-                                    className={classes.inputFieldCustom}
                                     label={t('Добавить в черный список')}
                                     fullWidth={true}/>
                             </div>

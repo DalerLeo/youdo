@@ -84,7 +84,8 @@ export const createSerializer = (forms) => {
         business_trip: _.get(createForm, ['businessTrip']),
         salary_min: numberWithoutSpaces(_.get(createForm, ['salary', 'min'])),
         salary_max: numberWithoutSpaces(_.get(createForm, ['salary', 'max'])),
-        status: _.get(createForm, ['status', 'value']) || 'top'
+        status: _.get(createForm, ['status', 'value']) || 'top',
+        skills: _.get(skillsForm, 'skills')
     }
 }
 
@@ -93,7 +94,7 @@ export const listFilterSerializer = (data, application, appStatus) => {
     const ordering = _.get(data, 'ordering')
 
     return {
-        'positions': _.get(defaultData, 'position'),
+        'positions': _.get(defaultData, 'position') || _.get(defaultData, 'sphere'),
         'mode': _.get(defaultData, 'mode'),
         'age_0': _.get(defaultData, 'ageMin'),
         'age_1': _.get(defaultData, 'ageMax'),

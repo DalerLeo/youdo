@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import {compose, lifecycle} from 'recompose'
+import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import {Field} from 'redux-form'
 import t from '../../../../helpers/translate'
@@ -108,14 +108,6 @@ const enhance = compose(
         const allFields = _.get(state, ['form', 'ResumeExperienceForm', 'values', 'experiences'])
         return {
             allFields
-        }
-    }),
-    lifecycle({
-        componentWillReceiveProps (nextProps) {
-            const props = this.props
-            if ((props.invalid !== nextProps.invalid)) {
-                nextProps.updateExperienceError(nextProps.invalid)
-            }
         }
     })
 )
