@@ -1,49 +1,44 @@
 import _ from 'lodash'
 import React from 'react'
 import * as ROUTES from '../../constants/routes'
-// . import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
-// . import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
-// . import Map from 'material-ui/svg-icons/maps/map'
-// . import Settings from 'material-ui/svg-icons/action/settings'
-// . import Statistics from 'material-ui/svg-icons/action/timeline'
-// . import Store from 'material-ui/svg-icons/device/storage'
+import t from '../../helpers/translate'
+
+import Administration from 'material-ui/svg-icons/action/dashboard'
+
+/* .import React from 'react'
+import * as ROUTES from '../../constants/routes'
+import AttachMoney from 'material-ui/svg-icons/editor/attach-money'
+import Finance from 'material-ui/svg-icons/action/account-balance-wallet'
+import Map from 'material-ui/svg-icons/maps/map'
+import Settings from 'material-ui/svg-icons/action/settings'
+import Statistics from 'material-ui/svg-icons/action/timeline'
+import Store from 'material-ui/svg-icons/device/storage'
+import Markets from 'material-ui/svg-icons/action/store'
 import Clients from 'material-ui/svg-icons/social/group'
-// . import Supply from 'material-ui/svg-icons/action/swap-horiz'
-// . import Products from 'material-ui/svg-icons/device/widgets'
-// . import Telegram from '../CustomIcons/Telegram'
-import Resume from '../CustomIcons/ResumeIcon'
-import Tasks from 'material-ui/svg-icons/action/assignment'
+import Supply from 'material-ui/svg-icons/action/swap-horiz'
+import Products from 'material-ui/svg-icons/device/widgets'
+import Telegram from '../CustomIcons/Telegram'
 import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
 const NOT_FOUND = -1
 
-// . const SETTINGS_STAFF = t('Персонал')
-// . const SETTINGS_FINANCE = t('Финансы')
-// . const SETTINGS_PRODUCTS = t('Продукты')
-// . const SETTINGS_MISC = t('Разное')
-// . const SETTINGS_STOCK = t('Склад')
-
-// . const STATS_SALES = t('Продажи')
-// . const STATS_FINANCE = t('Финансы')
-// . const STATS_CLIENTS = t('Клиенты')
-// . const STATS_PROVIDERS = t('Поставщики')
-// . const STATS_STOCK = t('Склад')
-// . const STATS_OVERALL = t('Общее')
+const SETTINGS_STAFF = t('Персонал')
+const SETTINGS_FINANCE = t('Финансы')
+const SETTINGS_PRODUCTS = t('Продукты')
+const SETTINGS_MISC = t('Разное')
+const SETTINGS_STOCK = t('Склад')
+const STATS_SALES = t('Продажи')
+const STATS_FINANCE = t('Финансы')
+const STATS_CLIENTS = t('Клиенты')
+const STATS_PROVIDERS = t('Поставщики')
+const STATS_STOCK = t('Склад')
+const STATS_OVERALL = t('Общее')
 
 const DEFAULT_PAGE_SIZE = getPageSize()
-const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
+const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE} */
+const NOT_FOUND = -1
 export const MenuItems = [
-    {
-        name: t('Клиенты'),
-        icon: (<Clients/>),
-        url: ROUTES.CLIENT_LIST_URL,
-        query: defaultPageSizeQuery,
-        dynamic: true,
-        childs: [
-            {name: t('Клиенты'), url: ROUTES.CLIENT_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_clients', icon: (<Clients/>)}
-        ]
-    },
 
     /* {
         name: t('Продажи'),
@@ -60,9 +55,9 @@ export const MenuItems = [
             {name: t('Маркетинговые акции'), url: ROUTES.PRICES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_bonuses'},
             {name: t('Зоны'), url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'}
         ]
-    }, */
+    },
 
-/*    {
+    {
         name: t('Магазины'),
         icon: (<Markets/>),
         url: ROUTES.SHOP_LIST_URL,
@@ -195,48 +190,9 @@ export const MenuItems = [
             {name: t('Оплаты'), url: ROUTES.CLIENT_TRANSACTION_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_client_transaction'},
             {name: t('Системные страницы'), url: ROUTES.SYSTEM_PAGES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_system_pages'}
         ]
-    }, */
+    },
 
-    // ************************** HRC **************************
     {
-        name: t('Анкеты'),
-        icon: (<Resume/>),
-        url: ROUTES.HR_RESUME_LIST_URL,
-        childs: [{
-            url: ROUTES.HR_RESUME_LIST_URL,
-            extraURLs: {
-                1: ROUTES.HR_RESUME_LIST_URL
-            },
-            permission: 'frontend_hrc_resume'
-        }]
-    },
-    {
-        name: t('Заявки'),
-        icon: (<Tasks/>),
-        url: ROUTES.HR_APPLICATION_LIST_URL,
-        childs: [{
-            url: ROUTES.HR_APPLICATION_LIST_URL,
-            extraURLs: {
-                1: ROUTES.HR_APPLICATION_LIST_URL
-            },
-            permission: 'frontend_hrc_application'
-        }]
-    },
-    {
-        name: t('Задания'),
-        icon: (<Tasks/>),
-        url: ROUTES.HR_TASKS_LIST_URL,
-        childs: [{
-            url: ROUTES.HR_TASKS_LIST_URL,
-            extraURLs: {
-                1: ROUTES.HR_TASKS_LIST_URL,
-                2: ROUTES.HR_LONG_LIST_URL
-            },
-            permission: 'frontend_hrc_tasks'
-        }]
-    }
-    // ************************** HRC **************************
-    /* {
         name: t('Настройки'),
         icon: (<Settings/>),
         section: 'Settings',
@@ -269,6 +225,15 @@ export const MenuItems = [
             {section: SETTINGS_MISC, name: t('Уведомления'), url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
     } */
+    {
+        name: t('Управление сайтом'),
+        icon: (<Administration/>),
+        section: 'Administration',
+        url: ROUTES.ARTICLES_LIST_URL,
+        childs: [
+            {section: 'Основные', name: t('Статьи'), url: ROUTES.ARTICLES_LIST_URL, permission: ''}
+        ]
+    }
 ]
 
 export const getNeedMenu = (userPermissions) => {

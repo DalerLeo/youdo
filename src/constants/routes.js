@@ -405,3 +405,8 @@ export const HR_TASKS_ITEM_URL = `${HR_TASKS}/:tasksId`
 export const HR_LONG_LIST = `${HR_URL}/long-list`
 export const HR_LONG_LIST_URL = `${HR_LONG_LIST}`
 export const HR_LONG_LIST_ITEM_URL = `${HR_LONG_LIST}/:listId`
+
+export const ARTICLES = 'articles'
+export const ARTICLES_LIST_URL = `/${ARTICLES}`
+export const ARTICLES_ITEM_URL = `${ARTICLES_LIST_URL}/:articleId`
+export const ARTICLES_ITEM_PATH = `${ARTICLES}/%d`

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {connect} from 'react-redux'
 import {setTokenAction, signOutAction, setAuthConfirmAction} from '../../actions/signIn'
-import {trackingListFetchAction} from '../../actions/tracking'
 import DocumentTitle from 'react-document-title'
 import {hashHistory} from 'react-router'
 import {compose, withHandlers, withState} from 'recompose'
@@ -12,7 +11,6 @@ import moment from 'moment'
 const locale = 'ru'
 moment.locale(locale)
 
-const refreshAgentsList = 45000
 @compose(
     connect(),
     withHandlers({
@@ -31,15 +29,9 @@ const refreshAgentsList = 45000
 class App extends React.Component {
     constructor (props) {
         super(props)
-        const pathname = _.get(props, ['location', 'pathname'])
         const {dispatch} = props
         dispatch(setTokenAction())
         dispatch(setAuthConfirmAction())
-        if (pathname === '/' + ROUTES.TRACKING) {
-            setInterval(() => {
-                dispatch(trackingListFetchAction())
-            }, refreshAgentsList)
-        }
     }
 
     componentWillReceiveProps (nextProps) {
@@ -55,7 +47,7 @@ class App extends React.Component {
     render () {
         const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}} = this.props
         const layout = {handleSignOut, scrollValue, updateScrollValue, pathname}
-        const title = 'Rhythm ERP'
+        const title = 'MyJob Administration'
 
         return (
             <DocumentTitle title={title}>

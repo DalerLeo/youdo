@@ -10,15 +10,12 @@ export const USER = 'user'
 export const SIGN_IN = `/${USER}/auth/`
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
-export const CONFIG = 'config'
 
 export const CLIENT_TRANSACTION = 'sales/client_transaction'
 export const CLIENT_TRANSACTION_CREATE = `/${CLIENT_TRANSACTION}/`
 export const CLIENT_TRANSACTION_RETURN = 'sales/order_return/from_client/'
 export const CLIENT_TRANSACTION_RETURN_UPDATE = 'sales/order_return/%d/from_client_update/'
 export const CLIENT_TRANSACTION_LIST = `/${CLIENT_TRANSACTION}/`
-export const CLIENT_TRANSACTION_ITEM = `/${CLIENT_TRANSACTION}/%d/`
-export const CLIENT_TRANSACTION_SEND = '/transfer/'
 export const CLIENT_TRANSACTION_DELETE = `/${CLIENT_TRANSACTION}/%d/cancel/`
 export const CLIENT_TRANSACTION_RESEND = 'telegram/resend_client_transaction/'
 export const CLIENT_TRANSACTION_TOTAL = `/${CLIENT_TRANSACTION}/total/`
@@ -39,7 +36,6 @@ export const MEASUREMENT = 'main/measurement'
 export const MEASUREMENT_CREATE = `/${MEASUREMENT}/`
 export const MEASUREMENT_LIST = `/${MEASUREMENT}/`
 export const MEASUREMENT_H_LIST = `/${MEASUREMENT}/hierarchy/`
-export const MEASUREMENT_H_ITEM = `/${MEASUREMENT}/hierarchy/%d/`
 export const MEASUREMENT_ITEM = `/${MEASUREMENT}/%d/`
 export const MEASUREMENT_DELETE = `/${MEASUREMENT}/%d/`
 
@@ -83,7 +79,6 @@ export const CURRENCY_CREATE = `/${CURRENCY}/`
 export const CURRENCY_LIST = `/${CURRENCY}/`
 export const CURRENCY_DELETE = `/${CURRENCY}/%d/`
 export const CURRENCY_ITEM = `/${CURRENCY}/%d/`
-export const CURRENCY_PRIMARY = 'currency_primary'
 export const CURRENCY_RATE = 'finance/currency_rate/'
 
 export const SHOP = 'market/market'
@@ -166,13 +161,11 @@ export const ORDER_SALES_RELEASE = '/stock/delivery_products/custom_release/expo
 export const ORDER_CANCEL = `/${ORDER}/%d/cancel/`
 export const ORDER_EXCEL = `/${ORDER}/download_invoice/`
 export const ORDER_CHECK_DELIVERY = `/${ORDER}/delivered/`
-export const GET_DOCUMENT = 'order_document/%d/'
 
 export const SUPPLY_EXPENSE = 'stock/supply_expense'
 export const SUPPLY_EXPENSE_CREATE = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_EXPENSE_LIST = `/${SUPPLY_EXPENSE}/`
 export const SUPPLY_PAID_LIST = 'finance/transaction/'
-export const SUPPLY_EXPENSE_ITEM = `/${SUPPLY_EXPENSE}/%d/`
 export const SUPPLY_EXPENSE_DELETE = `/${SUPPLY_EXPENSE}/%d/`
 
 export const PRODUCT = 'main/product'
@@ -180,7 +173,6 @@ export const PRODUCT_CREATE = `/${PRODUCT}/`
 export const PRODUCT_LIST = `/${PRODUCT}/`
 export const PRODUCT_ITEM = `/${PRODUCT}/%d/`
 export const PRODUCT_DELETE = `/${PRODUCT}/%d/`
-export const PRODUCT_INGREDIENT = 'main/product/%d/ingredient_list/'
 
 export const PRODUCT_FOR_SELECT = 'main/product/for_select'
 export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
@@ -188,7 +180,6 @@ export const PRODUCT_FOR_SELECT_LIST = `${PRODUCT_FOR_SELECT}/`
 export const PRODUCT_MOBILE = 'main/product_mobile'
 export const PRODUCT_MOBILE_URL = 'main/product_mobile/'
 export const PRODUCT_MOBILE_ITEM = `${PRODUCT_MOBILE}/`
-export const PRODUCT_EXTRA = `${PRODUCT_MOBILE}/%d/`
 export const PRODUCT_FOR_ORDER_SELECT_LIST = `${PRODUCT_MOBILE}/`
 
 export const PRODUCT_PRICE = 'main/product'
@@ -220,13 +211,11 @@ export const INGREDIENT_DELETE = `/${INGREDIENT}/%d/`
 export const FILE_UPLOAD = '/main/file/'
 
 export const MANUFACTURE = 'manufacture/manufacturing'
-export const MANUFACTURE_CREATE = `/${MANUFACTURE}/`
 export const MANUFACTURE_LIST = `/${MANUFACTURE}/`
 export const MANUFACTURE_ITEM = `/${MANUFACTURE}/%d/`
 
 export const NOTIFICATIONS = 'notification/notifications'
 export const NOTIFICATIONS_LIST = `/${NOTIFICATIONS}/`
-export const NOTIFICATIONS_ITEM = `/${NOTIFICATIONS}/%d/`
 export const NOTIFICATIONS_DELETE = `/${NOTIFICATIONS}/%d/`
 export const NOTIFICATIONS_GET_COUNT = 'notification/notifications/get_not_viewed'
 
@@ -242,18 +231,11 @@ export const USER_SHIFT_LIST = `/${USER_SHIFT}/`
 export const USER_SHIFT_ITEM = `/${USER_SHIFT}/%d/`
 export const USER_SHIFT_DELETE = `/${USER_SHIFT}/%d/`
 
-export const PENDING_EXPENSES = 'stock/supply_expense'
-export const PENDING_EXPENSES_UPDATE = 'finance/transaction/'
 export const PENDING_EXPENSES_LIST = 'finance/pending_payments/'
-export const PENDING_EXPENSES_ITEM = `/${PENDING_EXPENSES}/%d/`
 
 export const STATSTOCK = 'stock/stock'
-export const STATSTOCK_CREATE = `/${STATSTOCK}/`
 export const STATSTOCK_LIST = `/${STATSTOCK}/`
-export const STATSTOCK_ITEM = `/${STATSTOCK}/%d/`
-export const STATSTOCK_DELETE = `/${STATSTOCK}/%d/`
 export const STATSTOCK_DATA = '/stock/stock_stat/'
-export const STATSTOCK_GET_DOCUMENT = 'stock/stock/export_balances/'
 
 export const REMAINDER_STOCK = 'stock'
 export const REMAINDER_STOCK_CREATE = `/${REMAINDER_STOCK}/all_balances/`
@@ -272,24 +254,18 @@ export const TRANSACTION_STOCK_LIST = `/${TRANSACTION_STOCK}/`
 
 export const PENDING_PAYMENTS = 'sales/order'
 export const PENDING_PAYMENTS_CONVERT = 'finance/convert'
-export const PENDING_PAYMENTS_CREATE = '/sales/order_payment/'
 export const PENDING_PAYMENTS_LIST = `/${PENDING_PAYMENTS}/`
 export const PENDING_PAYMENTS_ITEM = `/${PENDING_PAYMENTS}/%d/`
 
 export const STAT_MANUFACTURE = 'manufacture/manufacturing'
-export const STAT_MANUFACTURE_CREATE = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_LIST = `/${STAT_MANUFACTURE}/`
 export const STAT_MANUFACTURE_ITEM = `/${STAT_MANUFACTURE}/%d/`
-export const STAT_MANUFACTURE_DELETE = `/${STAT_MANUFACTURE}/%d/`
 
 export const STAT_CASHBOX_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX_ITEM_SUM = '/stats/cashboxes_sum/'
 export const STAT_CASHBOX_SUM_LIST = '/stats/cashboxes_sum_list/'
 export const STAT_CASHBOX = 'finance/cashbox'
-export const STAT_CASHBOX_CREATE = `/${STAT_CASHBOX}/`
-export const STAT_CASHBOX_LIST = `/${STAT_CASHBOX}/`
 export const STAT_CASHBOX_ITEM = `/${STAT_CASHBOX}/%d/`
-export const STAT_CASHBOX_DELETE = `/${STAT_CASHBOX}/%d/`
 export const STAT_CASHBOX_DATA_ITEM = 'stats/cashbox/%d/'
 export const STAT_CASHBOX_GET_DOCUMENT = '/stats/cashboxes_export/'
 
@@ -306,7 +282,6 @@ export const REMAINDER_RESERVED = '/stock/reserved_product/'
 
 export const MANUFACTURE_PRODUCT = 'manufacture/create_ingredient'
 export const MANUFACTURE_PRODUCT_CREATE = `/${MANUFACTURE_PRODUCT}/`
-export const MANUFACTURE_PRODUCT_LIST = `/${MANUFACTURE_PRODUCT}/`
 export const MANUFACTURE_PRODUCT_DELETE = 'manufacture/delete_ingredient/%d/'
 export const MANUFACTURE_PRODUCT_CHANGE = '/main/product/%d/change_manufacture/'
 
@@ -342,21 +317,12 @@ export const PRICE_LIST_SETTING_ITEM = `/${PRICE_LIST_SETTING}/%d/`
 export const PRICE_LIST_SETTING_DELETE = `/${PRICE_LIST_SETTING}/%d/`
 
 export const ZONE = 'market/border'
-export const ZONE_CREATE = `/${ZONE}/`
-export const ZONE_UPDATE = `/${ZONE}/%d/`
 export const ZONE_LIST = `/${ZONE}/`
-export const ZONE_ITEM = `/${ZONE}/%d/`
-export const ZONE_DELETE = `/${ZONE}/%d/`
-export const ZONE_STAT = `/${ZONE}/statistics/`
-export const ZONE_BIND_AGENT = `${ZONE}/%d/bind_agent/`
-export const ZONE_UNBIND_AGENT = `${ZONE}/%d/unbind_agent/`
 
 export const PRICE = 'stock/products_net_costs'
-export const PRICE_CREATE = `/${PRICE}/`
 export const PRICE_LIST = `/${PRICE}/`
 export const PRICE_ITEM = 'main/product_mobile/%d/get_custom_price/'
 export const PRICE_ITEM_SET_DEFAULT = 'stock/default_net_cost/'
-export const PRICE_DELETE = `/${PRICE}/%d/`
 export const PRICE_GET_DOCUMENT = '/sales/product_price_list/export/'
 
 export const PRICE_LIST_ITEM = 'sales/price_list_item'
@@ -365,12 +331,6 @@ export const PRICE_LIST_ITEM_EXPENSES = 'stock/supply_product_expenses/%d/'
 export const PRICE_LIST_ITEM_LIST = `/${PRICE_LIST_ITEM}/`
 export const PRICE_LIST_ITEM_ADD = `/${PRICE_LIST_ITEM}/add_items/`
 export const SET_PRICE_LIST = 'sales/price_list_item/add_items_separately/'
-
-export const TRACKING = 'market/agents_location/'
-export const TRACKING_LIST = `${TRACKING}`
-export const TRACKING_ITEM = `${TRACKING}/%d/`
-export const MARKETS_LOCATION = `${SHOP}/locations/`
-export const LOCATION_LIST = 'market/location/'
 
 export const STAT_AGENT_LIST = 'stats/agents/statistics/all/'
 export const STAT_AGENT_SUM = 'stats/agents/statistics/all/sum/'
@@ -393,19 +353,12 @@ export const STAT_MARKET_SUM = `${STAT_MARKET}/sum/`
 export const STAT_MARKET_TYPE = 'stats/market_types'
 export const STAT_MARKET_TYPE_LIST = `${STAT_MARKET_TYPE}/`
 export const STAT_MARKET_TYPE_GET_DOCUMENT = '/stats/market_types/export'
-export const STAT_MARKET_ITEM = 'sales/order/'
 export const STAT_MARKET_GET_DOCUMENT = '/stats/markets/export'
-export const STAT_MARKET_DATA = '/stats/orders/'
 
 export const STAT_FINANCE_LIST = 'finance/transaction/'
 export const STAT_FINANCE_DATA = 'stats/transactions/'
 export const STAT_FINANCE_GET_DOCUMENT = '/finance/transaction/export/'
 
-export const STAT_INCOME_DATA = 'stats/transactions/'
-export const STAT_INCOME_LIST = 'finance/transaction/'
-
-export const STAT_OUTCOME_DATA = 'stats/transactions/'
-export const STAT_OUTCOME_LIST = 'finance/transaction/'
 export const STAT_OUTCOME_GET_DOCUMENT = '/stats/expenses/export/'
 
 export const STAT_SALES_DATA = '/stats/orders/'
@@ -424,8 +377,6 @@ export const STAT_RETURN_SUM_DETAILS = `${STAT_RETURN_LIST}statistics`
 
 export const STAT_OUTCOME_CATEGORY_LIST = 'stats/expenses/'
 export const STAT_OUTCOME_CATEGORY_DETAIL = 'stats/expenses/currencies/%d/'
-export const STAT_OUTCOME_CATEGORY_ITEM = 'sales/order/'
-export const STAT_OUTCOME_CATEGORY_GET_DOCUMENT = 'stats/agents/export/'
 export const STAT_REMAINDER_LIST = `/${REMAINDER_STOCK}/all_balances/`
 export const STAT_REMAINDER_ITEM = `/${REMAINDER}/balances_by_product/%d/`
 export const STAT_REMAINDER_SUM = '/stats/stock/balances_sum/'
@@ -435,7 +386,6 @@ export const STATISTICS_CASHBOX_ITEM = `/${CASHBOX}/%d/`
 
 export const STAT_EXPENDITURE_ON_STAFF_LIST = '/stats/staff_expenses/'
 export const STAT_EXPENDITURE_ON_STAFF_DETAIL = '/stats/staff_expenses/currencies/%d/'
-export const STAT_EXPENDITURE_ON_STAFF_ITEM = '/sales/order/'
 export const STAT_EXPENDITURE_ON_STAFFGET_DOCUMENT = '/stats/staff_expenses/export'
 
 export const CONTENT_TYPE_SEARCH = 'stock/barcode_history/types/'
@@ -464,12 +414,9 @@ export const STOCK_RECEIVE_HISTORY_SUPPLY_URL = 'stock/supply/%d/cancel_accepts/
 export const STOCK_RECEIVE_CREATE = '/stock/supply/%d/accept_products/'
 export const STOCK_RECEIVE_UPDATE = '/stock/supply/%d/update_accept/'
 
-export const STOCK_BARCODE_LIST = STOCK_RECEIVE_CREATE
-
 export const CLIENT_BALANCE = 'sales/client_balances'
 export const CLIENT_BALANCE_LIST = `/${CLIENT_BALANCE}/`
 export const CLIENT_BALANCE_ITEM = 'sales/client_transaction/'
-export const CLIENT_BALANCE_UPDATE = `/${CLIENT_BALANCE}/%d/`
 export const CLIENT_BALANCE_SUPER_USER = '/sales/client_transaction/%d/'
 export const CLIENT_BALANCE_GET_DOCUMENT = '/sales/client_balances/export/'
 export const CLIENT_BALANCE_SUM = '/stats/client/balances/'
@@ -483,26 +430,6 @@ export const ACTIVITY_VISIT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_REPORT_LIST = `/${ACTIVITY}/`
 export const ACTIVITY_REPORT_SHOW_IMAGE = 'main/file/%d/'
 export const ACTIVITY_ORDER_RETURN_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_PAYMENT_LIST = `/${ACTIVITY}/`
-export const ACTIVITY_DELIVERY_LIST = `/${ACTIVITY}/`
-
-export const PLAN = 'market/plan'
-export const PLAN_CREATE = `${PLAN}/`
-export const PLAN_UPDATE = `${PLAN}/%d/`
-export const PLAN_DELETE = `${PLAN}/%d/`
-export const PLAN_AGENT_ITEM = `${STAT_AGENT_LIST}/%d/`
-export const PLAN_MONTHLY = 'sales/monthly_plan'
-export const PLAN_MONTHLY_CREATE = `${PLAN_MONTHLY}/`
-export const PLAN_MONTHLY_LIST = `${PLAN_MONTHLY}/`
-export const PLAN_MONTHLY_ITEM = `${PLAN_MONTHLY}/%d/`
-export const PLAN_AGENT_MONTHLY = 'stats/agents/statistics/'
-export const PLAN_AGENT_LIST = 'market/agents_plans/'
-export const PLAN_AGENTS = 'market/agent_plans/'
-export const PLAN_AGENTS_ITEM = 'market/agent_plans/%d/'
-export const PLAN_AGENTS_ITEM_STATS = `${ACTIVITY}/sum/`
-export const PLAN_COMBINATION = `${PLAN}/combination/`
-export const PLAN_MONTHLY_PRODUCT_TYPE = 'sales/monthly_plan/crete_plan'
-export const PLAN_MONTHLY_PRODUCT_TYPE_CREATE = `${PLAN_MONTHLY_PRODUCT_TYPE}/`
 
 export const POSITION = 'main/position'
 export const POSITION_COURSE_CREATE = 'finance/currency_rate/'
@@ -510,8 +437,6 @@ export const POSITION_CREATE = `/${POSITION}/`
 export const POSITION_LIST = `/${POSITION}/`
 export const POSITION_DELETE = `/${POSITION}/%d/`
 export const POSITION_ITEM = `/${POSITION}/%d/`
-export const POSITION_PRIMARY = 'currency_primary'
-export const POSITION_RATE = `/${POSITION}/%d/permissions/`
 export const POSITION_PERMISSION = 'main/group/gcrud'
 
 export const STAT_PRODUCT_MOVE_LIST = 'stats/stock/products/'
@@ -524,7 +449,6 @@ export const STAT_DEBTORS_ITEM = 'sales/order/'
 export const STAT_DEBTORS_GET_DOCUMENT = '/stats/debtors/export'
 
 export const STAT_REPORT_LIST = 'stats/general/'
-export const STAT_REPORT_ITEM = 'sales/order/'
 export const STAT_REPORT_GET_DOCUMENT = '/stats/general/excel/'
 
 export const DIVISION = 'main/division'
@@ -537,8 +461,6 @@ export const RETURN = 'sales/order_return'
 export const RETURN_PRINT = `${RETURN}/print/`
 export const RETURN_LIST = `${RETURN}/`
 export const RETURN_ITEM = `${RETURN}/%d/`
-export const RETURN_UPDATE = `${RETURN}/%d/`
-export const RETURN_DELETE = `${RETURN}/%d/`
 export const RETURN_CANCEL = `${RETURN}/%d/cancel/`
 export const RETURN_CREATE_PRODUCTS = 'sales/product_sales'
 export const RETURN_CREATE_PRODUCTS_LIST = `${RETURN_CREATE_PRODUCTS}/`
@@ -551,7 +473,6 @@ export const JOIN_CLIENTS = 'sales/merge_clients/'
 export const ACCESS = 'main/access'
 export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
-export const ACCESS_UPDATE = `${ACCESS}/%d/`
 
 export const TELEGRAM = 'telegram'
 export const TELEGRAM_CREATE = `/${TELEGRAM}/market_worker/`
@@ -669,4 +590,10 @@ export const HR_CALENDAR_LIST = `/${HR_APPLICATION}/calendar`
 
 export const HR_ORDER_SERVICE = `${ORDER}/service`
 export const HR_ORDER_SERVICE_LIST = `/${HR_ORDER_SERVICE}/`
+
+export const ARTICLES = 'main/jobs'
+export const ARTICLES_CREATE = `/${ARTICLES}/`
+export const ARTICLES_LIST = `/${ARTICLES}/`
+export const ARTICLES_ITEM = `/${ARTICLES}/%d/`
+export const ARTICLES_DELETE = `/${ARTICLES}/%d/`
 

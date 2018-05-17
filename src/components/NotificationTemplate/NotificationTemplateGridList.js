@@ -11,7 +11,6 @@ import Container from '../Container'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../Settings/SettingsSideMenu'
-import BindAgentDialog from '../../components/Zones/ZoneBindAgentDialog'
 import ConfirmDialog from '../ConfirmDialog'
 import t from '../../helpers/translate'
 
@@ -250,12 +249,7 @@ const NotificationGridList = enhance((props) => {
                     />
                 </div>
             </div>
-            <BindAgentDialog
-                open={notificationUser.open > ZERO}
-                onClose={notificationUser.handleCloseAddUser}
-                onSubmit={notificationUser.handleSubmitAddUser}
-                notify={true}
-            />
+
             <ConfirmDialog
                 open={userConfirm.open > ZERO}
                 onClose={userConfirm.handleCloseConfirmUser}

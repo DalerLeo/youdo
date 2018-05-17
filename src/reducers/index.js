@@ -304,20 +304,6 @@ const rootReducer = combineReducers({
         product: createThunkReducer(actionTypes.PRICE_PRODUCT_LIST),
         priceList: createThunkReducer(actionTypes.PRICE_PRICE_LIST)
     }),
-    zone: combineReducers({
-        create: createThunkReducer(actionTypes.ZONE_CREATE),
-        list: createThunkReducer(actionTypes.ZONE_LIST),
-        update: createThunkReducer(actionTypes.ZONE_UPDATE),
-        item: createThunkReducer(actionTypes.ZONE_ITEM),
-        statistics: createThunkReducer(actionTypes.ZONE_STAT),
-        bindAgent: createThunkReducer(actionTypes.ZONE_BIND_AGENT)
-    }),
-    tracking: combineReducers({
-        list: createThunkReducer(actionTypes.TRACKING_LIST),
-        item: createThunkReducer(actionTypes.TRACKING_ITEM),
-        location: createThunkReducer(actionTypes.LOCATION_LIST),
-        markets: createThunkReducer(actionTypes.MARKETS_LOCATION)
-    }),
     remainder: combineReducers({
         create: createThunkReducer(actionTypes.REMAINDER_CREATE),
         list: createThunkReducer(actionTypes.REMAINDER_LIST),
@@ -478,20 +464,6 @@ const rootReducer = combineReducers({
         previewList: createThunkReducer(actionTypes.RETURN_PREVIEW),
         addProducts: createThunkReducer(actionTypes.RETURN_PRODUCT_ADD)
     }),
-    plan: combineReducers({
-        agentPlansItem: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM),
-        createPlan: createThunkReducer(actionTypes.PLAN_CREATE_SUBMIT),
-        updatePlan: createThunkReducer(actionTypes.PLAN_UPDATE_SUBMIT),
-        monthlyPlan: createThunkReducer(actionTypes.PLAN_MONTHLY_CREATE),
-        monthlyPlanItem: createThunkReducer(actionTypes.PLAN_MONTHLY_ITEM),
-        agentsList: createThunkReducer(actionTypes.PLAN_AGENT_LIST),
-        agentPlan: createThunkReducer(actionTypes.PLAN_AGENT_MONTHLY),
-        agentsPlan: createThunkReducer(actionTypes.PLAN_AGENTS),
-        agentStats: createThunkReducer(actionTypes.PLAN_AGENTS_ITEM_STATS),
-        productType: createThunkReducer(actionTypes.PRODUCT_TYPE_LIST),
-        update: createThunkReducer(actionTypes.PLAN_UPDATE),
-        combination: createThunkReducer(actionTypes.PLAN_COMBINATION)
-    }),
     join: combineReducers({
         joinMarkets: createThunkReducer(actionTypes.JOIN_MARKETS),
         joinClients: createThunkReducer(actionTypes.JOIN_CLIENTS)
@@ -566,6 +538,13 @@ const rootReducer = combineReducers({
         feedbackList: createThunkReducer(actionTypes.HR_FEEDBACK_LIST)
     }),
     // HR!
+
+    articles: combineReducers({
+        create: createThunkReducer(actionTypes.ARTICLES_CREATE),
+        list: createThunkReducer(actionTypes.ARTICLES_LIST),
+        update: createThunkReducer(actionTypes.ARTICLES_UPDATE),
+        item: createThunkReducer(actionTypes.ARTICLES_ITEM)
+    }),
 
     snackbar: snackbarReducer(),
     error: errorReducer(),

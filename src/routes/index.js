@@ -21,7 +21,6 @@ import {CurrencyList} from '../containers/Currency'
 import {PositionList} from '../containers/Position'
 import {BrandList} from '../containers/Brand'
 import {MeasurementList} from '../containers/Measurement'
-import {ZonesList} from '../containers/Zones'
 import {ExpensiveCategoryList} from '../containers/ExpensiveCategory'
 import {IncomeCategoryList} from '../containers/IncomeCategory'
 import {PostList} from '../containers/Post'
@@ -43,7 +42,6 @@ import {PendingPaymentsList} from '../containers/PendingPayments'
 import {EquipmentList} from '../containers/Equipment'
 import {ShiftList} from '../containers/Shift'
 import {ClientTransactionList} from '../containers/ClientTransaction'
-import {Tracking} from '../containers/Tracking'
 import {MarketTypeList} from '../containers/MarketType'
 import {PricesList} from '../containers/Prices'
 import {PriceList} from '../containers/Price'
@@ -77,7 +75,6 @@ import {
     StockTransferHistoryList,
     StockOutHistoryList
 } from '../containers/StockReceive'
-import {PlanList} from '../containers/Plan'
 import {ActivityList} from '../containers/Activity'
 import {DivisionList} from '../containers/Division'
 import {JoinList} from '../containers/Join'
@@ -96,6 +93,9 @@ import {
     TasksList,
     LongList
 } from '../containers/HR'
+import {
+    ArticlesList
+} from '../containers/Administration'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -448,24 +448,6 @@ export default {
                 component: userIsAuth(StatCashbox)
             }]
         },
-        // ZONES
-        {
-            path: ROUTES.ZONES_LIST_URL,
-            component: userIsAdminChain(ZonesList),
-            childRoutes: [{
-                path: ROUTES.ZONES_ITEM_URL,
-                component: userIsAuth(ZonesList)
-            }]
-        },
-        // TRACKING
-        {
-            path: ROUTES.TRACKING_LIST_URL,
-            component: userIsAdminChain(Tracking),
-            childRoutes: [{
-                path: ROUTES.TRACKING_ITEM_URL,
-                component: userIsAuth(Tracking)
-            }]
-        },
         // MARKET TYPE
         {
             path: ROUTES.MARKET_TYPE_LIST_URL,
@@ -761,17 +743,6 @@ export default {
                 }
             ]
         },
-        // Plan
-        {
-            path: ROUTES.PLAN_LIST_URL,
-            component: userIsAdminChain(PlanList),
-            childRoutes: [
-                {
-                    path: ROUTES.PLAN_ITEM_URL,
-                    component: userIsAuth(PlanList)
-                }
-            ]
-        },
         // Statistics/remainder
         {
             path: ROUTES.STATISTICS_REMAINDER_URL,
@@ -987,6 +958,17 @@ export default {
                 {
                     path: ROUTES.HR_LONG_LIST_ITEM_URL,
                     component: userIsAuth(LongList)
+                }
+            ]
+        },
+        // Administration - Articles
+        {
+            path: ROUTES.ARTICLES_LIST_URL,
+            component: userIsAdminChain(ArticlesList),
+            childRoutes: [
+                {
+                    path: ROUTES.ARTICLES_ITEM_URL,
+                    component: userIsAuth(ArticlesList)
                 }
             ]
         },
