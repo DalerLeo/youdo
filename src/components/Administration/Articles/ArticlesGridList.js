@@ -31,7 +31,7 @@ const listHeader = [
         sorting: false,
         name: 'name',
         xs: 6,
-        title: t('Наименование')
+        title: t('Заголовок')
     },
     {
         sorting: true,
@@ -129,12 +129,12 @@ const ArticlesGridList = enhance((props) => {
 
     const articlesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const createdDate = dateFormat(_.get(item, 'createdDate'), 'DD:MM:YYYY')
+        const title = _.get(item, 'title')
+        const createdDate = dateFormat(_.get(item, 'createdAt'))
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
-                <Col xs={6}>{name}</Col>
+                <Col xs={6}>{title}</Col>
                 <Col xs={3}>{createdDate}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>

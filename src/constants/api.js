@@ -4,10 +4,11 @@ export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = process.env.API_PROTOCOL ? process.env.API_PROTOCOL : 'http'
 
-export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
+// Export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'user'
-export const SIGN_IN = `/${USER}/auth/`
+export const SIGN_IN = 'api-auth/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 
@@ -591,7 +592,7 @@ export const HR_CALENDAR_LIST = `/${HR_APPLICATION}/calendar`
 export const HR_ORDER_SERVICE = `${ORDER}/service`
 export const HR_ORDER_SERVICE_LIST = `/${HR_ORDER_SERVICE}/`
 
-export const ARTICLES = 'main/jobs'
+export const ARTICLES = 'blog/posts'
 export const ARTICLES_CREATE = `/${ARTICLES}/`
 export const ARTICLES_LIST = `/${ARTICLES}/`
 export const ARTICLES_ITEM = `/${ARTICLES}/%d/`

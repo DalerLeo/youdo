@@ -188,7 +188,8 @@ const ArticlesList = enhance((props) => {
                 return {}
             }
             return {
-                name: _.get(detail, 'name')
+                title: _.get(detail, 'title'),
+                text: _.get(detail, 'text')
             }
         })(),
         updateLoading: detailLoading || updateLoading,

@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import {Field, reduxForm} from 'redux-form'
-import {TextField} from '../../ReduxForm'
+import {ImageUploadField, TextField} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
@@ -25,7 +25,7 @@ const enhance = compose(
             left: '0',
             alignItems: 'center',
             zIndex: '999',
-            textAlign: 'center',
+            justifyContent: 'center',
             display: ({loading}) => loading ? 'flex' : 'none'
         },
         popUp: {
@@ -117,9 +117,19 @@ const enhance = compose(
                 height: '45px !important'
             }
         },
+        textFieldArea: {
+            top: '-20px !important',
+            lineHeight: '20px !important',
+            fontSize: '13px !important'
+        },
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
+        },
+        imageField: {
+            '& .imageDropZone': {
+                margin: '0 auto 10px 0'
+            }
         }
     }),
     reduxForm({
@@ -146,7 +156,7 @@ const ArticlesCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? t('Изменить должность') : t('Добавить должность')}</span>
+                <span>{isUpdate ? t('Изменить статью') : t('Добавить статью')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -158,13 +168,26 @@ const ArticlesCreateDialog = enhance((props) => {
                     </div>
                     <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
                         <div className={classes.field}>
+                            <div className={classes.imageField}>
+                                <Field
+                                    name="image"
+                                    component={ImageUploadField}
+                                    fullWidth={true}/>
+                            </div>
                             <Field
-                                name="name"
+                                name="title"
                                 component={TextField}
                                 className={classes.inputFieldCustom}
-                                label={t('Наименование')}
-                                fullWidth={true}
-                            />
+                                label={t('Заголовок')}
+                                fullWidth={true}/>
+                            <Field
+                                name="text"
+                                component={TextField}
+                                className={classes.textFieldArea}
+                                label={t('Текст статьи')}
+                                fullWidth
+                                multiLine
+                                rows={1}/>
                         </div>
                     </div>
                     <div className={classes.bottomButton}>

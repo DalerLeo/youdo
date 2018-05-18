@@ -4,7 +4,8 @@ import {compose, withState, withPropsOnChange} from 'recompose'
 import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
-import {signInAction, authConfirmAction} from '../../actions/signIn'
+// | import {signInAction, authConfirmAction} from '../../actions/signIn'
+import {signInAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
 import {setApi} from '../../helpers/storage'
@@ -44,13 +45,17 @@ const SignIn = enhance((props) => {
     const onSubmit = () => {
         return dispatch(signInAction(formValues))
             .then(() => {
-                const rememberUser = _.get(formValues, 'rememberMe') || false
-                return dispatch(authConfirmAction(rememberUser))
+                // | const rememberUser = _.get(formValues, 'rememberMe') || false
+                updateSignInLoading(false)
+                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+                hashHistory.push(redirectUrl)
+
+                /* | return dispatch(authConfirmAction(rememberUser))
                     .then(() => {
                         updateSignInLoading(false)
                         const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.HR_RESUME_LIST_URL
                         hashHistory.push(redirectUrl)
-                    })
+                    }) */
             })
     }
 

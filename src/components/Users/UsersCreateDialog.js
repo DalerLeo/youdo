@@ -15,7 +15,7 @@ import {
     TextField,
     ImageUploadField,
     CheckBox,
-    SphereSearchField,
+    PositionSearchField,
     PostSearchField
 } from '../ReduxForm'
 import {connect} from 'react-redux'
@@ -335,7 +335,7 @@ const UsersCreateDialog = enhance((props) => {
                                             fullWidth={true}/>
                                         <Field
                                             name="position"
-                                            component={SphereSearchField}
+                                            component={PositionSearchField}
                                             label={t('Права доступа')}
                                             fullWidth={true}/>
                                     </Col>

@@ -284,9 +284,11 @@ export const getNeedMenu = (userPermissions) => {
 }
 
 export const getMenus = (userPermissions, isAdmin) => {
-    if (isAdmin) {
+    return MenuItems
+
+    /* .if (isAdmin) {
         return MenuItems
     }
-    return getNeedMenu(userPermissions)
+    return getNeedMenu(userPermissions) */
 }
 

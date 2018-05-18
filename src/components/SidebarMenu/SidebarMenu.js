@@ -113,7 +113,8 @@ const enhance = compose(
         }
     })
 )
-
+/* eslint no-inline-comments: 0 */
+/* eslint no-unused-vars: 0 */
 const NOT_FOUND = -1
 const SideBarMenu = enhance((props) => {
     const {
@@ -206,14 +207,14 @@ const SideBarMenu = enhance((props) => {
                         <div>{null}</div>
                     </Link>
                 </div>
-                <div className={classes.notifications}>
+                {/* <div className={classes.notifications}>
                     <CustomBadge
                         dispatch={dispatch}
                         classBadge={classes.badge}
                         handleOpen={handleOpenNotificationBar}
                         rippleColor={rippleColor}
                         style={style.style}/>
-                </div>
+                </div> */}
                 {items}
                 {!_.isEmpty(afterLine) &&
                 <div className={classes.bottom}>

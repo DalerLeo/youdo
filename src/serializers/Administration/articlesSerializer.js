@@ -2,10 +2,12 @@ import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
-    const name = _.get(data, ['name'])
+    const title = _.get(data, ['title'])
+    const text = _.get(data, ['text'])
 
     return {
-        name
+        title,
+        text
     }
 }
 
