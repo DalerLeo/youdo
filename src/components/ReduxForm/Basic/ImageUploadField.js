@@ -7,7 +7,7 @@ import * as PATH from '../../../constants/api'
 import Dropzone from 'react-dropzone'
 import axios from '../../../helpers/axios'
 import Loader from '../../Loader'
-import ImageImage from 'material-ui/svg-icons/image/image'
+import ImageIcon from 'material-ui/svg-icons/image/image'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
@@ -30,6 +30,7 @@ const enhance = compose(
                     display: 'block'
                 },
                 '& p': {
+                    fontSize: '12px',
                     textAlign: 'center'
                 }
             }
@@ -44,8 +45,17 @@ const enhance = compose(
     withState('fileUploadErrors', 'setFileUploadErrors', null)
 )
 
-const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors,
-    fileUploadErrors, input, meta: {error}}) => {
+const ImageUploadField = ({...props}) => {
+    const {
+        classes,
+        setFileUploadLoading,
+        fileUploadLoading,
+        setFileUploadErrors,
+        fileUploadErrors,
+        input,
+        meta: {error}
+    } = props
+
     const inputFile = _.get(input, ['value', 'file'])
     const onDrop = (files) => {
         const formData = new FormData()
@@ -57,7 +67,8 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
                 setFileUploadLoading(false)
                 setFileUploadErrors(null)
                 input.onChange(response.data.id)
-            }).catch((newError) => {
+            })
+            .catch((newError) => {
                 const errorData = _.get(newError, ['response', 'data'])
                 setFileUploadErrors(errorData.file[firstElement])
                 setFileUploadLoading(false)
@@ -68,7 +79,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
     const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
         const zero = 0
         if (fileUploadLoading) {
-            return (<Loader size={0.75}/>)
+            return (<Loader size={0.5}/>)
         }
 
         if (fileUploadErrors !== null) {
@@ -87,7 +98,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
             }
             return (
                 <p>
-                    <ImageImage style={{
+                    <ImageIcon style={{
                         color: '#b9b9b9',
                         width: '50px',
                         height: '50px',

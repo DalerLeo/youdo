@@ -545,6 +545,12 @@ const rootReducer = combineReducers({
         update: createThunkReducer(actionTypes.ARTICLES_UPDATE),
         item: createThunkReducer(actionTypes.ARTICLES_ITEM)
     }),
+    companies: combineReducers({
+        create: createThunkReducer(actionTypes.COMPANIES_CREATE),
+        list: createThunkReducer(actionTypes.COMPANIES_LIST),
+        update: createThunkReducer(actionTypes.COMPANIES_UPDATE),
+        item: createThunkReducer(actionTypes.COMPANIES_ITEM)
+    }),
 
     snackbar: snackbarReducer(),
     error: errorReducer(),

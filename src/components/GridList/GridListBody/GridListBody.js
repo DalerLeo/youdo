@@ -9,6 +9,7 @@ import NotFound from '../../Images/not-found.png'
 import Paper from 'material-ui/Paper'
 import Loader from '../../Loader'
 import t from '../../../helpers/translate'
+import classNames from 'classnames'
 
 const enhance = compose(
     injectSheet({
@@ -94,15 +95,19 @@ const enhance = compose(
             bottom: '0'
         },
         detail: {
-            margin: '20px -15px !important',
+            margin: '20px -15px',
             background: '#fff',
             display: 'flex',
-            borderBottom: '1px dotted #eee',
             alignItems: 'center',
             position: 'relative',
-            minHeight: '100px',
             transition: 'all 400ms ease-out !important',
             zIndex: '11'
+        },
+        detailNoTransform: {
+            boxShadow: 'none !important',
+            margin: '0',
+            marginTop: '-1px',
+            transition: 'none !important'
         },
         emptyQuery: {
             background: 'url(' + NotFound + ') no-repeat center center',
@@ -148,6 +153,7 @@ const GridListBody = enhance((props) => {
         list,
         onChecked,
         detail,
+        detailTransform,
         activeCheckboxes,
         flexibleRow,
         listShadow,
@@ -169,7 +175,9 @@ const GridListBody = enhance((props) => {
 
         if (id === detailId) {
             return (
-                <Paper zDepth={2} className={classes.detail} key={index}>
+                <Paper zDepth={2} className={classNames(classes.detail, {
+                    [classes.detailNoTransform]: !detailTransform
+                })} key={index}>
                     {detail}
                 </Paper>
             )
@@ -178,7 +186,12 @@ const GridListBody = enhance((props) => {
         return (
             <Paper
                 zDepth={1}
-                className={(flexibleRow ? classes.flexibleItem : hoverableList ? classes.hoverItem : classes.item) + ' ' + (isChecked ? classes.active : '')}
+                className={classNames({
+                    [classes.flexibleItem]: flexibleRow,
+                    [classes.hoverItem]: hoverableList,
+                    [classes.item]: !hoverableList && !flexibleRow,
+                    [classes.active]: isChecked
+                })}
                 key={index}
                 style={!listShadow ? {boxShadow: 'none'} : {boxShadow: 'rgba(0, 0, 0, 0.12) 0px 3px 6px, rgba(0, 0, 0, 0.12) 0px 3px 4px'}}>
                 <div className={classes.checkbox}>

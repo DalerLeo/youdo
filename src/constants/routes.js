@@ -410,3 +410,8 @@ export const ARTICLES = 'articles'
 export const ARTICLES_LIST_URL = `/${ARTICLES}`
 export const ARTICLES_ITEM_URL = `${ARTICLES_LIST_URL}/:articleId`
 export const ARTICLES_ITEM_PATH = `${ARTICLES}/%d`
+
+export const COMPANIES = 'companies'
+export const COMPANIES_LIST_URL = `/${COMPANIES}`
+export const COMPANIES_ITEM_URL = `${COMPANIES_LIST_URL}/:companyId`
+export const COMPANIES_ITEM_PATH = `${COMPANIES}/%d`

@@ -5,14 +5,15 @@ import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
-import {Field, reduxForm} from 'redux-form'
-import {ImageUploadField, TextField} from '../../ReduxForm'
+import {Field, FieldArray, reduxForm} from 'redux-form'
+import {ImageUploadField, TextField, CheckBox} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
 import formValidate from '../../../helpers/formValidate'
+import CompanyContactsField from './CompanyContactsField'
 
-export const ARTICLES_CREATE_DIALOG_OPEN = 'openCreateDialog'
+export const COMPANIES_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const enhance = compose(
     injectSheet({
@@ -56,9 +57,6 @@ const enhance = compose(
             zIndex: '999'
         },
         inContent: {
-            display: 'flex',
-            minHeight: '184px',
-            overflow: 'unset',
             padding: '0 30px 20px',
             color: '#333'
         },
@@ -68,8 +66,28 @@ const enhance = compose(
         form: {
             position: 'relative'
         },
+        subTitle: {
+            fontWeight: '600',
+            marginBottom: '10px'
+        },
         field: {
             width: '100%'
+        },
+        flexField: {
+            display: 'flex'
+        },
+        imageField: {
+            marginLeft: '15px',
+            minWidth: '150px',
+            width: '150px',
+            '& > div': {
+                height: '100%'
+            },
+            '& .imageDropZone': {
+                marginTop: '0',
+                height: '100%',
+                width: '100%'
+            }
         },
         bottomButton: {
             bottom: '0',
@@ -123,6 +141,7 @@ const enhance = compose(
         textFieldArea: {
             top: '-20px !important',
             lineHeight: '20px !important',
+            marginBottom: '-20px',
             fontSize: '13px !important',
             '& textarea': {
                 overflow: 'hidden'
@@ -131,20 +150,15 @@ const enhance = compose(
         actionButton: {
             fontSize: '13px !important',
             margin: '0 !important'
-        },
-        imageField: {
-            '& .imageDropZone': {
-                margin: '0 auto 10px 0'
-            }
         }
     }),
     reduxForm({
-        form: 'ArticlesCreateForm',
+        form: 'CompaniesCreateForm',
         enableReinitialize: true
     })
 )
 
-const ArticlesCreateDialog = enhance((props) => {
+const CompaniesCreateDialog = enhance((props) => {
     const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
     const formNames = ['title', 'text']
     const onSubmit = handleSubmit(() => props.onSubmit()
@@ -162,7 +176,7 @@ const ArticlesCreateDialog = enhance((props) => {
             bodyStyle={{minHeight: 'auto'}}
             bodyClassName={classes.popUp}>
             <div className={classes.titleContent}>
-                <span>{isUpdate ? t('Изменить статью') : t('Добавить статью')}</span>
+                <span>{isUpdate ? t('Изменение компании') : t('Добавление компании')}</span>
                 <IconButton onTouchTap={onClose}>
                     <CloseIcon color="#666666"/>
                 </IconButton>
@@ -173,28 +187,43 @@ const ArticlesCreateDialog = enhance((props) => {
                         <Loader size={0.75}/>
                     </div>
                     <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
-                        <div className={classes.field}>
+                        <div className={classes.subTitle}>{t('Основная информация')}</div>
+                        <div className={classes.flexField}>
+                            <div className={classes.field}>
+                                <Field
+                                    name="kind"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Форма организации')}
+                                    fullWidth/>
+                                <Field
+                                    name="name"
+                                    component={TextField}
+                                    className={classes.inputFieldCustom}
+                                    label={t('Название')}
+                                    fullWidth/>
+                                <Field
+                                    name="description"
+                                    component={TextField}
+                                    className={classes.textFieldArea}
+                                    label={t('Информация о компании')}
+                                    fullWidth
+                                    multiLine
+                                    rows={1}/>
+                            </div>
                             <div className={classes.imageField}>
                                 <Field
                                     name="image"
-                                    component={ImageUploadField}
-                                    fullWidth={true}/>
+                                    component={ImageUploadField}/>
                             </div>
-                            <Field
-                                name="title"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label={t('Заголовок')}
-                                fullWidth={true}/>
-                            <Field
-                                name="text"
-                                component={TextField}
-                                className={classes.textFieldArea}
-                                label={t('Текст статьи')}
-                                fullWidth
-                                multiLine
-                                rows={1}/>
                         </div>
+                        <Field
+                            name="hrAgency"
+                            component={CheckBox}
+                            label={t('Кадровое агентсво')}/>
+                        <FieldArray
+                            name="contacts"
+                            component={CompanyContactsField}/>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton
@@ -211,7 +240,7 @@ const ArticlesCreateDialog = enhance((props) => {
     )
 })
 
-ArticlesCreateDialog.propTypes = {
+CompaniesCreateDialog.propTypes = {
     isUpdate: PropTypes.bool,
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -219,8 +248,8 @@ ArticlesCreateDialog.propTypes = {
     loading: PropTypes.bool.isRequired
 }
 
-ArticlesCreateDialog.defaultProps = {
+CompaniesCreateDialog.defaultProps = {
     isUpdate: false
 }
 
-export default ArticlesCreateDialog
+export default CompaniesCreateDialog

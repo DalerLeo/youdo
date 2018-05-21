@@ -7,8 +7,8 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import * as ROUTES from '../../../constants/routes'
 import GridList from '../../GridList'
 import Container from '../../Container'
-import ArticlesCreateDialog from './ArticlesCreateDialog'
-import ArticlesDetails from './ArticlesDetails'
+import CompaniesCreateDialog from './CompaniesCreateDialog'
+import CompaniesDetails from './CompaniesDetails'
 import ConfirmDialog from '../../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
@@ -25,28 +25,34 @@ import sprintf from 'sprintf'
 
 const listHeader = [
     {
-        sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
         sorting: false,
         name: 'name',
-        xs: 6,
-        title: t('Заголовок')
+        xs: 3,
+        title: t('Название')
     },
     {
         sorting: true,
         xs: 3,
-        name: 'created_date',
-        title: t('Дата создания')
+        name: 'sphere',
+        title: t('Сфера деятельности')
     },
     {
-        sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
+        sorting: true,
+        xs: 2,
+        name: 'language',
+        title: t('Язык профиля')
+    },
+    {
+        sorting: true,
+        xs: 2,
+        name: 'balance',
+        title: t('Баланс')
+    },
+    {
+        sorting: true,
+        xs: 2,
+        name: 'created_at',
+        title: t('Дата регистрации')
     }
 ]
 
@@ -118,7 +124,7 @@ const iconStyle = {
     }
 }
 
-const ArticlesGridList = enhance((props) => {
+const CompaniesGridList = enhance((props) => {
     const {
         filter,
         createDialog,
@@ -156,8 +162,8 @@ const ArticlesGridList = enhance((props) => {
         )
     }
 
-    const articlesDetail = (
-        <ArticlesDetails
+    const companiesDetail = (
+        <CompaniesDetails
             filter={filter}
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
@@ -165,29 +171,32 @@ const ArticlesGridList = enhance((props) => {
             actionButtons={actionButtons}/>
     )
 
-    const articlesList = _.map(_.get(listData, 'data'), (item) => {
+    const companiesList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
-        const title = _.get(item, 'title')
+        const name = _.get(item, 'name')
+        const sphere = _.get(item, 'sphere')
+        const language = _.get(item, 'language')
+        const balance = _.get(item, 'balance')
+        const kind = _.toUpper(_.get(item, 'kind'))
         const createdDate = dateFormat(_.get(item, 'createdAt'))
         return (
             <Row key={id} className={classes.listRow}>
-                <Col xs={2}>{id}</Col>
+                <Col xs={3}>{kind} {name}</Col>
                 <Link className={classes.link} to={{
-                    pathname: sprintf(ROUTES.ARTICLES_ITEM_PATH, id),
+                    pathname: sprintf(ROUTES.COMPANIES_ITEM_PATH, id),
                     query: filter.getParams()
                 }}/>
-                <Col xs={6}>{title}</Col>
-                <Col xs={3}>{createdDate}</Col>
-                <Col xs={1} style={{textAlign: 'right'}}>
-                    <div className={classes.iconBtn}>{actionButtons(id)}</div>
-                </Col>
+                <Col xs={3}>{sphere}</Col>
+                <Col xs={2}>{language}</Col>
+                <Col xs={2}>{balance}</Col>
+                <Col xs={2}>{createdDate}</Col>
             </Row>
         )
     })
 
     const list = {
         header: listHeader,
-        list: articlesList,
+        list: companiesList,
         loading: _.get(listData, 'listLoading')
     }
 
@@ -197,7 +206,7 @@ const ArticlesGridList = enhance((props) => {
                 backgroundColor={COLOR_WHITE}
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: LINK_COLOR, fontSize: '13px'}}
                 className={classes.addButton}
-                label={t('добавить статью')}
+                label={t('добавить команию')}
                 onTouchTap={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color={LINK_COLOR}/>}>
             </FlatButton>
@@ -206,12 +215,12 @@ const ArticlesGridList = enhance((props) => {
     return (
         <Container>
             <div className={classes.wrapper}>
-                <SideMenu currentUrl={ROUTES.ARTICLES_LIST_URL}/>
+                <SideMenu currentUrl={ROUTES.COMPANIES_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
                         list={list}
-                        detail={articlesDetail}
+                        detail={companiesDetail}
                         addButton={addButton}
                         listShadow={false}
                         detailTransform={false}
@@ -219,14 +228,14 @@ const ArticlesGridList = enhance((props) => {
                 </div>
             </div>
 
-            <ArticlesCreateDialog
+            <CompaniesCreateDialog
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
             />
 
-            <ArticlesCreateDialog
+            <CompaniesCreateDialog
                 isUpdate={true}
                 initialValues={updateDialog.initialValues}
                 open={updateDialog.openUpdateDialog}
@@ -247,7 +256,7 @@ const ArticlesGridList = enhance((props) => {
     )
 })
 
-ArticlesGridList.propTypes = {
+CompaniesGridList.propTypes = {
     filter: PropTypes.object.isRequired,
     listData: PropTypes.object,
     detailData: PropTypes.object,
@@ -274,4 +283,4 @@ ArticlesGridList.propTypes = {
     }).isRequired
 }
 
-export default ArticlesGridList
+export default CompaniesGridList

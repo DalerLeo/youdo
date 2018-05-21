@@ -43,6 +43,7 @@ const GridList = enhance((props) => {
         list,
         customData,
         detail,
+        detailTransform,
         filter,
         filterDialog,
         addButton,
@@ -79,6 +80,7 @@ const GridList = enhance((props) => {
                 filter={filter}
                 list={listItems}
                 detail={detail}
+                detailTransform={detailTransform}
                 listLoading={listLoading}
                 transparentLoading={transparentLoading}
                 flexibleRow={flexibleRow}
@@ -160,7 +162,8 @@ GridList.defaultProps = {
     transparentLoading: false,
     hoverableList: true,
     actionsDialog: null,
-    extraButtons: null
+    extraButtons: null,
+    detailTransform: true
 }
 
 export default GridList

@@ -94,7 +94,8 @@ import {
     LongList
 } from '../containers/HR'
 import {
-    ArticlesList
+    ArticlesList,
+    CompaniesList
 } from '../containers/Administration'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
@@ -969,6 +970,17 @@ export default {
                 {
                     path: ROUTES.ARTICLES_ITEM_URL,
                     component: userIsAuth(ArticlesList)
+                }
+            ]
+        },
+        // Administration - Articles
+        {
+            path: ROUTES.COMPANIES_LIST_URL,
+            component: userIsAdminChain(CompaniesList),
+            childRoutes: [
+                {
+                    path: ROUTES.COMPANIES_ITEM_URL,
+                    component: userIsAuth(CompaniesList)
                 }
             ]
         },

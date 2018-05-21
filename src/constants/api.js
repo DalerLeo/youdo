@@ -598,3 +598,9 @@ export const ARTICLES_LIST = `/${ARTICLES}/`
 export const ARTICLES_ITEM = `/${ARTICLES}/%d/`
 export const ARTICLES_DELETE = `/${ARTICLES}/%d/`
 
+export const COMPANIES = 'companies/company'
+export const COMPANIES_CREATE = `/${COMPANIES}/`
+export const COMPANIES_LIST = `/${COMPANIES}/`
+export const COMPANIES_ITEM = `/${COMPANIES}/%d/`
+export const COMPANIES_DELETE = `/${COMPANIES}/%d/`
+
