@@ -29,7 +29,6 @@ import {RESUME_FILTER_KEY, RESUME_FILTER_OPEN} from '../../components/HR/Resume'
 import {HR_WORK_SCHEDULE} from '../../constants/backendConstants'
 import numberWithoutSpaces from '../../helpers/numberWithoutSpaces'
 import numberFormat from '../../helpers/numberFormat'
-import {langArrayFormat, langQueryFormat} from '../../helpers/joinSplitLanguages'
 
 const enhance = compose(
     connect((state, props) => {
@@ -108,10 +107,8 @@ const enhance = compose(
             const sex = _.get(filterForm, ['sex', 'value']) || null
             const education = _.get(filterForm, ['education']) || null
             const levelPc = _.get(filterForm, ['levelPc', 'value']) || null
-            const languages = _.get(filterForm, ['languages']) || null
             const experience = _.get(filterForm, ['experience']) || null
             const skills = _.get(filterForm, ['skills']) || null
-            const langToUrl = langQueryFormat(languages)
 
             filter.filterBy({
                 [RESUME_FILTER_OPEN]: false,
@@ -123,7 +120,6 @@ const enhance = compose(
                 [RESUME_FILTER_KEY.SEX]: sex,
                 [RESUME_FILTER_KEY.EDUCATION]: joinArray(education),
                 [RESUME_FILTER_KEY.LEVEL_PC]: levelPc,
-                [RESUME_FILTER_KEY.LANGUAGES]: _.join(langToUrl, '|'),
                 [RESUME_FILTER_KEY.EXPERIENCE]: experience && numberWithoutSpaces(experience),
                 [RESUME_FILTER_KEY.SKILLS]: joinArray(skills)
             })
@@ -240,10 +236,8 @@ const ResumeList = enhance((props) => {
     const sex = filter.getParam(RESUME_FILTER_KEY.SEX)
     const education = filter.getParam(RESUME_FILTER_KEY.EDUCATION)
     const levelPc = filter.getParam(RESUME_FILTER_KEY.LEVEL_PC)
-    const languages = filter.getParam(RESUME_FILTER_KEY.LANGUAGES)
     const experience = filter.getParam(RESUME_FILTER_KEY.EXPERIENCE)
     const skills = filter.getParam(RESUME_FILTER_KEY.SKILLS)
-    const langToForm = langArrayFormat(languages)
 
     const filterDialog = {
         initialValues: {
@@ -265,7 +259,6 @@ const ResumeList = enhance((props) => {
             levelPc: {
                 value: levelPc
             },
-            languages: langToForm,
             experience: experience && numberFormat(experience),
             skills: skills && splitToArray(skills)
         },

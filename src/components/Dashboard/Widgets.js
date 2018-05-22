@@ -1,18 +1,13 @@
 import _ from 'lodash'
 import React from 'react'
 import injectSheet from 'react-jss'
-import {compose, withState, withHandlers} from 'recompose'
+import {compose, withState} from 'recompose'
 import {reduxForm} from 'redux-form'
 import WidgetIcon from 'material-ui/svg-icons/image/tune'
 import Drawer from 'material-ui/Drawer'
 import MUICheckbox from 'material-ui/Checkbox'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
-import {
-    widgetsListFetchAction,
-    widgetsActivateAction,
-    widgetsDeactivateAction
-} from '../../actions/dashboard'
 
 export const WIDGETS_FORM_KEY = {
     SALES: 'sales',
@@ -84,18 +79,7 @@ const enhance = compose(
         form: 'DashboardWidgetsForm',
         enableReinitialize: true
     }),
-    withState('openDrawer', 'setOpenDrawer', false),
-    withHandlers({
-        handleChangeCheck: props => (id, value) => {
-            const {dispatch} = props
-            return (value
-                ? dispatch(widgetsActivateAction(id))
-                : dispatch(widgetsDeactivateAction(id)))
-                .then(() => {
-                    dispatch(widgetsListFetchAction())
-                })
-        }
-    })
+    withState('openDrawer', 'setOpenDrawer', false)
 )
 
 const Widgets = enhance((props) => {

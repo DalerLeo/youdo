@@ -7,7 +7,7 @@ export const createSerializer = (data) => {
     const hrAgency = _.get(data, ['hrAgency'])
 
     return {
-        kind: 1,
+        kind: 'ooo',
         name,
         user: 1,
         description,

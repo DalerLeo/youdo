@@ -26,13 +26,7 @@ import {
     userGroupListFetchAction,
     clearPosition
 } from '../../actions/users'
-import {
-    priceListSettingGetAllAction
-} from '../../actions/priceListSetting'
-import {stockListFetchAction} from '../../actions/stock'
 import {openSnackbarAction} from '../../actions/snackbar'
-import {currencyListFetchAction} from '../../actions/currency'
-import {divisionListFetchAction} from '../../actions/division'
 import t from '../../helpers/translate'
 
 const enhance = compose(
@@ -106,12 +100,8 @@ const enhance = compose(
         const nextUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN]))
         return (prevCreateDialog !== nextCreateDialog || prevUpdateDialog !== nextUpdateDialog) &&
             (nextCreateDialog === true || nextUpdateDialog === true) && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filterExp}) => {
+    }, ({dispatch}) => {
         dispatch(userGroupListFetchAction())
-        dispatch(stockListFetchAction(filterExp))
-        dispatch(priceListSettingGetAllAction(filterExp))
-        dispatch(currencyListFetchAction(filterExp))
-        dispatch(divisionListFetchAction(filterExp))
     }),
 
     withHandlers({

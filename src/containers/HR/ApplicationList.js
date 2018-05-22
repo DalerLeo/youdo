@@ -24,7 +24,6 @@ import {
     confirmMeetingTime,
     confirmCompleteApplication
 } from '../../actions/HR/application'
-import {getReportList} from '../../actions/HR/longList'
 import {openSnackbarAction} from '../../actions/snackbar'
 import t from '../../helpers/translate'
 import {
@@ -36,7 +35,6 @@ import {
     APPLICATION_MEETING_DIALOG_OPEN,
     APPLICATION_MEETING_DIALOG_UPDATE
 } from '../../components/HR/Application'
-import {PRICE_FILTER_KEY} from '../../components/Price'
 import numberFormat from '../../helpers/numberFormat'
 import moment from 'moment'
 import {ZERO} from '../../constants/backendConstants'
@@ -141,22 +139,6 @@ const enhance = compose(
         const openUpdate = toBoolean(_.get(query, APPLICATION_UPDATE_DIALOG_OPEN))
         if (openCreate || openUpdate) {
             dispatch(privilegeListFetchAction())
-        }
-    }),
-
-    // OPEN MEETING DIALOG - GET REPORT RESUMES
-    withPropsOnChange((props, nextProps) => {
-        const prevOpen = toBoolean(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
-        const nextOpen = toBoolean(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_OPEN]))
-        const prevUpdate = _.toInteger(_.get(props, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
-        const nextUpdate = _.toInteger(_.get(nextProps, ['location', 'query', APPLICATION_MEETING_DIALOG_UPDATE]))
-        return (nextOpen !== prevOpen && nextOpen === true) || (prevUpdate !== nextUpdate && nextUpdate > ZERO)
-    }, ({filter, dispatch, location: {query}, params}) => {
-        const application = _.toInteger(_.get(params, 'applicationId'))
-        const openDialog = toBoolean(_.get(query, [APPLICATION_MEETING_DIALOG_OPEN]))
-        const updateDialog = _.toInteger(_.get(query, [APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
-        if (openDialog || updateDialog) {
-            dispatch(getReportList(filter, application, 'report'))
         }
     }),
 
@@ -476,20 +458,8 @@ const ApplicationList = enhance((props) => {
     const openUpdateMeetingDialog = _.toInteger(_.get(location, ['query', APPLICATION_MEETING_DIALOG_UPDATE])) > ZERO
     const detailId = _.toInteger(_.get(params, 'applicationId'))
 
-    const typeParent = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_PARENT]))
-    const typeChild = _.toNumber(_.get(location, ['query', PRICE_FILTER_KEY.TYPE_CHILD]))
-    const measurement = _.get(location, ['query', PRICE_FILTER_KEY.MEASUREMENT])
-    const withoutNetCost = toBoolean(_.get(location, ['query', PRICE_FILTER_KEY.WITHOUT_NET_COST]))
-
     const filterDialog = {
-        initialValues: {
-            typeParent: {value: typeParent},
-            typeChild: {value: typeChild},
-            measurement: measurement && _.map(_.split(measurement, '-'), (item) => {
-                return _.toNumber(item)
-            }),
-            withoutNetCost: withoutNetCost
-        },
+        initialValues: {},
         filterLoading: false,
         openFilterDialog,
         handleOpenFilterDialog: props.handleOpenFilterDialog,

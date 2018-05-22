@@ -2,7 +2,6 @@ import _ from 'lodash'
 import React from 'react'
 import {
     compose,
-    withPropsOnChange,
     withHandlers,
     withState,
     lifecycle
@@ -13,22 +12,6 @@ import {WIDGETS_FORM_KEY} from '../../components/Dashboard/Widgets'
 import {connect} from 'react-redux'
 import filterHelper from '../../helpers/filter'
 import moment from 'moment'
-import {
-    statSalesDataFetchAction,
-    statSalesReturnDataFetchAction,
-    statAgentDataFetchAction,
-    statFinanceIncomeFetchAction,
-    statFinanceExpenseFetchAction,
-    widgetsListFetchAction,
-    changePasswordFetchAction
-} from '../../actions/dashboard'
-import {
-    courseCreateAction,
-    currencyListFetchAction
-} from '../../actions/currency'
-import {reset} from 'redux-form'
-import {openSnackbarAction} from '../../actions/snackbar'
-import t from '../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -82,89 +65,14 @@ const enhance = compose(
 
     withState('loading', 'setLoading', false),
     withState('openEditPass', 'setOpenEditPass', false),
-    withPropsOnChange((props, nextProps) => {
-        const except = {
-            agents: null,
-            currency: null,
-            finance: null,
-            orders: null,
-            sales: null,
-            page: null,
-            beginDate: null,
-            endDate: null
-        }
-        return props.widgetsList && props.filter.filterRequest(except) !== nextProps.filter.filterRequest(except)
-    }, ({dispatch}) => {
-        dispatch(widgetsListFetchAction())
-    }),
-
-    withPropsOnChange((props, nextProps) => {
-        return (props.filter.filterRequest() !== nextProps.filter.filterRequest()) ||
-            (props.widgetsLoading !== nextProps.widgetsLoading && nextProps.widgetsLoading === false)
-    }, ({dispatch, filter, setLoading, widgetsList}) => {
-        const widgetsKeynames = _.map(_.filter(_.get(widgetsList, 'results'), 'isActive'), item => _.get(item, 'keyName'))
-        const activeSales = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.SALES)
-        const activeOrders = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.ORDERS)
-        const activeAgents = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.AGENTS)
-        const activeFinance = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.FINANCE)
-        const activeCurrency = _.includes(widgetsKeynames, WIDGETS_FORM_KEY.CURRENCY)
-        return (activeCurrency
-            ? dispatch(currencyListFetchAction(filter))
-            : Promise.resolve())
-            .then(() => {
-                return (activeSales
-                    ? dispatch(statSalesDataFetchAction(filter))
-                    : Promise.resolve())
-                    .then(() => {
-                        return (activeOrders
-                            ? dispatch(statSalesReturnDataFetchAction(filter))
-                                .then(() => {
-                                    dispatch(statSalesDataFetchAction(filter))
-                                })
-                            : Promise.resolve())
-                            .then(() => {
-                                return (activeAgents
-                                    ? dispatch(statAgentDataFetchAction(filter))
-                                    : Promise.resolve())
-                                    .then(() => {
-                                        return (activeFinance
-                                            ? dispatch(statFinanceIncomeFetchAction(filter))
-                                                .then(() => {
-                                                    dispatch(statFinanceExpenseFetchAction(filter))
-                                                })
-                                            : Promise.resolve())
-                                            .then(() => {
-                                                setLoading(false)
-                                            })
-                                    })
-                            })
-                    })
-            })
-    }),
 
     withHandlers({
-        handleUpdateRate: props => (currency) => {
-            const {dispatch, currencyForm, filter} = props
-            const rate = _.get(currencyForm, ['values', 'rate'])
-            return rate
-                ? dispatch(courseCreateAction(_.get(currencyForm, ['values']), currency))
-                    .then(() => {
-                        return dispatch(openSnackbarAction({message: t('Курс обновлен')}))
-                    })
-                    .then(() => {
-                        dispatch(currencyListFetchAction(filter))
-                        dispatch(reset('DashboardCurrencyForm'))
-                    })
-                : Promise.resolve()
+        handleUpdateRate: () => () => {
+            return Promise.resolve()
         },
 
         handleChangePassword: props => () => {
-            const {dispatch, passwordForm, setOpenEditPass} = props
-            return dispatch(changePasswordFetchAction(_.get(passwordForm, ['values'])))
-                .then(() => {
-                    setOpenEditPass(false)
-                    return dispatch(openSnackbarAction({message: 'Пароль успешно изменен'}))
-                })
+            return null
         }
     }),
 

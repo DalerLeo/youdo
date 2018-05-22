@@ -11,7 +11,7 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
 import formValidate from '../../../helpers/formValidate'
-import CompanyContactsField from './CompanyContactsField'
+import CompanyUsersField from './CompanyUsersField'
 
 export const COMPANIES_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -84,7 +84,7 @@ const enhance = compose(
                 height: '100%'
             },
             '& .imageDropZone': {
-                marginTop: '0',
+                marginTop: '-6px',
                 height: '100%',
                 width: '100%'
             }
@@ -222,8 +222,8 @@ const CompaniesCreateDialog = enhance((props) => {
                             component={CheckBox}
                             label={t('Кадровое агентсво')}/>
                         <FieldArray
-                            name="contacts"
-                            component={CompanyContactsField}/>
+                            name="users"
+                            component={CompanyUsersField}/>
                     </div>
                     <div className={classes.bottomButton}>
                         <FlatButton

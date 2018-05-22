@@ -186,7 +186,9 @@ const CompaniesList = enhance((props) => {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
                 return {
-                    contacts: [{}]
+                    users: [{
+                        user2: '9'
+                    }]
                 }
             }
             return {

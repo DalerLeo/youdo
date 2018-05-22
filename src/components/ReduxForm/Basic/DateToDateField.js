@@ -131,8 +131,10 @@ class DateToDateField extends React.Component {
         const startDate = dateFormat(_.get(input, ['value', 'fromDate']))
         const endDate = dateFormat(_.get(input, ['value', 'toDate']))
         const dateLabel = error || (!startDate)
-            ? '' : startDate === endDate
-                ? startDate : startDate + ' - ' + endDate
+            ? ''
+            : startDate === endDate
+                ? startDate
+                : `${startDate} - ${endDate}`
         return (
 
             <div>
