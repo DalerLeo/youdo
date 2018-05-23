@@ -52,14 +52,13 @@ const enhance = compose(
 const CompaniesDetails = enhance((props) => {
     const {
         filter,
-        key,
         data,
         loading,
         classes,
         actionButtons
     } = props
 
-    const detailId = key
+    const detailId = _.get(data, 'id')
     const kind = _.toUpper(_.get(data, 'kind'))
     const name = _.get(data, 'name')
 

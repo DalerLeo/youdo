@@ -22,6 +22,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {COLOR_WHITE, LINK_COLOR} from '../../../constants/styleConstants'
 import sprintf from 'sprintf'
+import numberFormat from '../../../helpers/numberFormat'
 
 const listHeader = [
     {
@@ -175,8 +176,8 @@ const CompaniesGridList = enhance((props) => {
         const id = _.get(item, 'id')
         const name = _.get(item, 'name')
         const sphere = _.get(item, 'sphere')
-        const language = _.get(item, 'language')
-        const balance = _.get(item, 'balance')
+        const language = _.get(item, 'profileLanguage')
+        const balance = numberFormat(_.get(item, 'balance'))
         const kind = _.toUpper(_.get(item, 'kind'))
         const createdDate = dateFormat(_.get(item, 'createdAt'))
         return (

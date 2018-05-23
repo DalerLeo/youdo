@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import {Field, FieldArray, reduxForm} from 'redux-form'
-import {ImageUploadField, TextField, CheckBox} from '../../ReduxForm'
+import {ImageUploadField, TextField, CheckBox, SphereSearchField} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
@@ -217,6 +217,13 @@ const CompaniesCreateDialog = enhance((props) => {
                                     component={ImageUploadField}/>
                             </div>
                         </div>
+                        <Field
+                            name="activityField"
+                            component={SphereSearchField}
+                            className={classes.inputFieldCustom}
+                            label={t('Сфера деятельности')}
+                            params={{only_parent: true}}
+                            fullWidth/>
                         <Field
                             name="hrAgency"
                             component={CheckBox}

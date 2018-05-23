@@ -57,6 +57,24 @@ export const POSITIONS_LIST = `/${POSITIONS}/`
 export const POSITIONS_ITEM = `/${POSITIONS}/%d/`
 export const POSITIONS_DELETE = `/${POSITIONS}/%d/`
 
+export const SKILLS = 'main/skills'
+export const SKILLS_CREATE = `/${SKILLS}/`
+export const SKILLS_LIST = `/${SKILLS}/`
+export const SKILLS_ITEM = `/${SKILLS}/%d/`
+export const SKILLS_DELETE = `/${SKILLS}/%d/`
+
+export const LANGUAGES = 'main/languages'
+export const LANGUAGES_CREATE = `/${LANGUAGES}/`
+export const LANGUAGES_LIST = `/${LANGUAGES}/`
+export const LANGUAGES_ITEM = `/${LANGUAGES}/%d/`
+export const LANGUAGES_DELETE = `/${LANGUAGES}/%d/`
+
+export const REGIONS = 'main/regions'
+export const REGIONS_CREATE = `/${REGIONS}/`
+export const REGIONS_LIST = `/${REGIONS}/`
+export const REGIONS_ITEM = `/${REGIONS}/%d/`
+export const REGIONS_DELETE = `/${REGIONS}/%d/`
+
 /*
 *
 */

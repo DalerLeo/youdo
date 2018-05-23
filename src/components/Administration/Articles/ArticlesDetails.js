@@ -52,14 +52,13 @@ const enhance = compose(
 const ArticlesDetails = enhance((props) => {
     const {
         filter,
-        key,
         data,
         loading,
         classes,
         actionButtons
     } = props
 
-    const detailId = key
+    const detailId = _.get(data, 'id')
 
     if (loading) {
         return (

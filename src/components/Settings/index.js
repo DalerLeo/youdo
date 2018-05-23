@@ -1,3 +1,3 @@
-import SettingsSideMenu from './SettingsSideMenu'
+import {SkillsGridList} from './Skills'
 
-export {SettingsSideMenu}
+export {SkillsGridList}

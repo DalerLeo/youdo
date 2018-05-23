@@ -5,18 +5,17 @@ import App from '../containers/App'
 import {MainList} from '../containers/Main'
 import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
-import {UsersList} from '../containers/Users'
 import {ClientList} from '../containers/Client'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
 import {
-    ApplicationList,
-    ResumeList
-} from '../containers/HR'
-import {
     ArticlesList,
-    CompaniesList
+    CompaniesList,
+    UsersList
 } from '../containers/Administration'
+import {
+    SkillsList
+} from '../containers/Settings'
 
 const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
@@ -37,17 +36,6 @@ export default {
             path: ROUTES.ACCESS_DENIED_URL,
             component: userIsAuth(AccessList),
             childRoutes: []
-        },
-        // Users
-        {
-            path: ROUTES.USERS_LIST_URL,
-            component: userIsAdminChain(UsersList),
-            childRoutes: [
-                {
-                    path: ROUTES.USERS_ITEM_URL,
-                    component: userIsAuth(UsersList)
-                }
-            ]
         },
         // Client
         {
@@ -71,29 +59,21 @@ export default {
                 }
             ]
         },
-        // HR Application
+
+        /* ADMINISTRATION */
+
+        // Users
         {
-            path: ROUTES.HR_APPLICATION_LIST_URL,
-            component: userIsAdminChain(ApplicationList),
+            path: ROUTES.USERS_LIST_URL,
+            component: userIsAdminChain(UsersList),
             childRoutes: [
                 {
-                    path: ROUTES.HR_APPLICATION_ITEM_URL,
-                    component: userIsAuth(ApplicationList)
+                    path: ROUTES.USERS_ITEM_URL,
+                    component: userIsAuth(UsersList)
                 }
             ]
         },
-        // HR Resume
-        {
-            path: ROUTES.HR_RESUME_LIST_URL,
-            component: userIsAdminChain(ResumeList),
-            childRoutes: [
-                {
-                    path: ROUTES.HR_RESUME_ITEM_URL,
-                    component: userIsAuth(ResumeList)
-                }
-            ]
-        },
-        // Administration - Articles
+        // Articles
         {
             path: ROUTES.ARTICLES_LIST_URL,
             component: userIsAdminChain(ArticlesList),
@@ -104,7 +84,7 @@ export default {
                 }
             ]
         },
-        // Administration - Articles
+        // Companies
         {
             path: ROUTES.COMPANIES_LIST_URL,
             component: userIsAdminChain(CompaniesList),
@@ -115,6 +95,21 @@ export default {
                 }
             ]
         },
+
+        /* SETTINGS */
+
+        // Skills
+        {
+            path: ROUTES.SKILLS_LIST_URL,
+            component: userIsAdminChain(SkillsList),
+            childRoutes: [
+                {
+                    path: ROUTES.SKILLS_ITEM_URL,
+                    component: userIsAuth(SkillsList)
+                }
+            ]
+        },
+
         {
             path: '*',
             component: NotFound

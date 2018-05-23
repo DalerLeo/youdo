@@ -5,10 +5,10 @@ import {reset} from 'redux-form'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import Layout from '../../components/Layout'
-import * as ROUTER from '../../constants/routes'
-import filterHelper from '../../helpers/filter'
-import toBoolean from '../../helpers/toBoolean'
+import Layout from '../../../components/Layout/index'
+import * as ROUTER from '../../../constants/routes'
+import filterHelper from '../../../helpers/filter'
+import toBoolean from '../../../helpers/toBoolean'
 import {
     USERS_CREATE_DIALOG_OPEN,
     USERS_UPDATE_DIALOG_OPEN,
@@ -16,18 +16,16 @@ import {
     USERS_FILTER_KEY,
     USERS_FILTER_OPEN,
     UsersGridList
-} from '../../components/Users'
+} from '../../../components/Administration/Users/index'
 import {
     usersCreateAction,
     usersUpdateAction,
     usersListFetchAction,
     usersDeleteAction,
-    usersItemFetchAction,
-    userGroupListFetchAction,
-    clearPosition
-} from '../../actions/users'
-import {openSnackbarAction} from '../../actions/snackbar'
-import t from '../../helpers/translate'
+    usersItemFetchAction
+} from '../../../actions/Administration/users'
+import {openSnackbarAction} from '../../../actions/snackbar'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     connect((state, props) => {
@@ -38,21 +36,10 @@ const enhance = compose(
         const createLoading = _.get(state, ['users', 'create', 'loading'])
         const updateLoading = _.get(state, ['users', 'update', 'loading'])
         const list = _.get(state, ['users', 'list', 'data'])
-        const groupList = _.get(state, ['users', 'groupList', 'data'])
-        const groupListLoading = _.get(state, ['users', 'groupList', 'loading'])
-        const stockList = _.get(state, ['stock', 'list', 'data'])
-        const stockListLoading = _.get(state, ['stock', 'list', 'loading'])
-        const priceList = _.get(state, ['priceListSetting', 'list', 'data'])
-        const priceListLoading = _.get(state, ['users', 'priceList', 'loading'])
-        const currencyList = _.get(state, ['currency', 'list', 'data'])
-        const currencyListLoading = _.get(state, ['currency', 'list', 'loading'])
-        const divisionList = _.get(state, ['division', 'list', 'data'])
-        const divisionListLoading = _.get(state, ['division', 'list', 'loading'])
         const listLoading = _.get(state, ['users', 'list', 'loading'])
         const filterForm = _.get(state, ['form', 'UsersFilterForm'])
         const createForm = _.get(state, ['form', 'UsersCreateForm'])
         const filter = filterHelper(list, pathname, query)
-        const filterExp = filterHelper()
 
         return {
             list,
@@ -63,18 +50,7 @@ const enhance = compose(
             updateLoading,
             filter,
             filterForm,
-            createForm,
-            groupList,
-            groupListLoading,
-            stockList,
-            stockListLoading,
-            priceList,
-            priceListLoading,
-            currencyList,
-            currencyListLoading,
-            divisionList,
-            divisionListLoading,
-            filterExp
+            createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
@@ -93,22 +69,7 @@ const enhance = compose(
         }
     }),
 
-    withPropsOnChange((props, nextProps) => {
-        const prevCreateDialog = toBoolean(_.get(props, ['location', 'query', USERS_CREATE_DIALOG_OPEN]))
-        const nextCreateDialog = toBoolean(_.get(nextProps, ['location', 'query', USERS_CREATE_DIALOG_OPEN]))
-        const prevUpdateDialog = toBoolean(_.get(props, ['location', 'query', USERS_UPDATE_DIALOG_OPEN]))
-        const nextUpdateDialog = toBoolean(_.get(nextProps, ['location', 'query', USERS_UPDATE_DIALOG_OPEN]))
-        return (prevCreateDialog !== nextCreateDialog || prevUpdateDialog !== nextUpdateDialog) &&
-            (nextCreateDialog === true || nextUpdateDialog === true) && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch}) => {
-        dispatch(userGroupListFetchAction())
-    }),
-
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
@@ -176,7 +137,6 @@ const enhance = compose(
 
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
-            dispatch(clearPosition())
             hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: true})})
             dispatch(reset('UsersCreateForm'))
         },
@@ -242,17 +202,7 @@ const UsersList = enhance((props) => {
         updateLoading,
         filter,
         layout,
-        params,
-        groupList,
-        groupListLoading,
-        stockList,
-        stockListLoading,
-        priceList,
-        priceListLoading,
-        currencyList,
-        currencyListLoading,
-        divisionList,
-        divisionListLoading
+        params
     } = props
 
     const openFilterDialog = toBoolean(_.get(location, ['query', USERS_FILTER_OPEN]))
@@ -263,74 +213,18 @@ const UsersList = enhance((props) => {
     const manufacture = _.toInteger(filter.getParam(USERS_FILTER_KEY.MANUFACTURE))
     const group = _.toInteger(filter.getParam(USERS_FILTER_KEY.GROUP))
     const detailId = _.toInteger(_.get(params, 'usersId'))
-    const showError = toBoolean(_.get(location, ['query', 'passErr']))
 
     const actionsDialog = {
         handleActionEdit: props.handleActionEdit,
         handleActionDelete: props.handleOpenDeleteDialog
     }
 
-    const errorData = {
-        errorText: t('Введены неправильные значения'),
-        show: showError
-    }
-
-    const isSelectedGroups = _.map(_.get(groupList, 'results'), (obj) => {
-        const userSelectedGroups = _.find(_.get(detail, 'groups'), {'id': obj.id})
-        const userSelectedGrId = _.get(userSelectedGroups, 'id')
-        if (!openCreateDialog && userSelectedGrId === obj.id) {
-            return {id: obj.id, selected: true}
-        }
-        return {id: obj.id, selected: false}
-    })
-    const isSelectedStocks = _.map(_.get(stockList, 'results'), (obj) => {
-        const userSelectedStock = _.find(_.get(detail, 'stocks'), {'id': obj.id})
-        if (!openCreateDialog && _.get(userSelectedStock, 'id') === obj.id) {
-            return {id: obj.id, selected: true}
-        }
-        return {id: obj.id, selected: false}
-    })
-
-    const isSelectedPriceLists = _.map(_.get(priceList, 'results'), (obj) => {
-        const userSelectedMarkets = _.find(_.get(detail, 'priceLists'), {'id': obj.id})
-        if (!openCreateDialog && _.get(userSelectedMarkets, 'id') === obj.id) {
-            return {id: obj.id, selected: true}
-        }
-        return {id: obj.id, selected: false}
-    })
-
-    const isSelectedCurrencies = _.map(_.get(currencyList, 'results'), (obj) => {
-        const userSelectedCurrencies = _.find(_.get(detail, 'currencies'), {'id': obj.id})
-        if (!openCreateDialog && _.get(userSelectedCurrencies, 'id') === obj.id) {
-            return {id: obj.id, selected: true}
-        }
-        return {id: obj.id, selected: false}
-    })
-
-    const isSelectedDivisions = _.map(_.get(divisionList, 'results'), (obj) => {
-        const userSelectedDivisions = _.find(_.get(detail, 'divisions'), {'id': obj.id})
-        if (!openCreateDialog && _.get(userSelectedDivisions, 'id') === obj.id) {
-            return {id: obj.id, selected: true}
-        }
-        return {id: obj.id, selected: false}
-    })
-
     const createDialog = {
-        initialValues: (() => {
-            return {
-                groups: isSelectedGroups,
-                stocks: isSelectedStocks,
-                types: isSelectedPriceLists,
-                currencies: isSelectedCurrencies,
-                divisions: isSelectedDivisions
-            }
-        })(),
         createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
-        handleSubmitCreateDialog: props.handleSubmitCreateDialog,
-        errorData
+        handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
     const confirmDialog = {
         confirmLoading: detailLoading,
@@ -342,42 +236,21 @@ const UsersList = enhance((props) => {
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
-                return {
-                    groups: isSelectedGroups,
-                    stocks: isSelectedStocks,
-                    types: isSelectedPriceLists,
-                    currencies: isSelectedCurrencies,
-                    divisions: isSelectedDivisions,
-                    isActive: true
-                }
+                return {}
             }
             return {
-                username: _.get(detail, 'username'),
                 firstName: _.get(detail, 'firstName'),
-                secondName: _.get(detail, 'secondName'),
-                job: {
-                    value: _.get(detail, ['job', 'id'])
-                },
-                phoneNumber: _.get(detail, 'phoneNumber'),
-                groups: isSelectedGroups,
-                radioStock: _.get(_.find(_.get(detail, 'stocks')), 'id'),
-                stocks: isSelectedStocks,
-                types: isSelectedPriceLists,
-                currencies: isSelectedCurrencies,
-                divisions: isSelectedDivisions,
-                region: _.get(detail, 'region'),
-                typeUser: _.get(detail, 'typeUser'),
-                image: _.get(detail, 'image'),
+                lastName: _.get(detail, 'lastName'),
+                username: _.get(detail, 'username'),
                 isActive: _.get(detail, 'isActive'),
-                position: {value: _.get(detail, ['position', 'id'])}
+                isStaff: _.get(detail, 'isStaff')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
         openUpdateDialog,
         handleOpenUpdateDialog: props.handleOpenUpdateDialog,
         handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog,
-        errorData
+        handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
     }
     const filterDialog = {
         initialValues: {
@@ -406,29 +279,6 @@ const UsersList = enhance((props) => {
         detailLoading
     }
 
-    const groupListData = {
-        data: _.get(groupList, 'results'),
-        groupListLoading
-    }
-    const stockListData = {
-        data: _.get(stockList, 'results'),
-        stockListLoading
-    }
-    const marketTypeData = {
-        data: _.get(priceList, 'results'),
-        priceListLoading
-    }
-
-    const currencyData = {
-        data: _.get(currencyList, 'results'),
-        currencyListLoading
-    }
-
-    const divisionData = {
-        data: _.get(divisionList, 'results'),
-        divisionListLoading
-    }
-
     return (
         <Layout {...layout}>
             <UsersGridList
@@ -440,11 +290,6 @@ const UsersList = enhance((props) => {
                 updateDialog={updateDialog}
                 actionsDialog={actionsDialog}
                 filterDialog={filterDialog}
-                groupListData={groupListData}
-                stockListData={stockListData}
-                marketTypeData={marketTypeData}
-                currencyData={currencyData}
-                divisionData={divisionData}
             />
         </Layout>
     )

@@ -12,7 +12,7 @@ const enhance = compose(
         leftPanel: {
             backgroundColor: '#f2f5f8',
             flexBasis: '225px',
-            maxWidth: '225px',
+            minWidth: '225px',
             position: 'relative'
         },
         wrapper: {

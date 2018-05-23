@@ -1,27 +1,27 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import {connect} from 'react-redux'
 import {reset} from 'redux-form'
-import {hashHistory} from 'react-router'
-import Layout from '../../../components/Layout'
 import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {connect} from 'react-redux'
+import {hashHistory} from 'react-router'
+import Layout from '../../../components/Layout/index'
 import * as ROUTER from '../../../constants/routes'
 import filterHelper from '../../../helpers/filter'
 import toBoolean from '../../../helpers/toBoolean'
 import {
-    COMPANIES_CREATE_DIALOG_OPEN,
-    COMPANIES_UPDATE_DIALOG_OPEN,
-    COMPANIES_DELETE_DIALOG_OPEN,
-    CompaniesGridList
-} from '../../../components/Administration/Companies'
+    SKILLS_CREATE_DIALOG_OPEN,
+    SKILLS_UPDATE_DIALOG_OPEN,
+    SKILLS_DELETE_DIALOG_OPEN,
+    SkillsGridList
+} from '../../../components/Settings/Skills'
 import {
-    companiesCreateAction,
-    companiesUpdateAction,
-    companiesListFetchAction,
-    companiesDeleteAction,
-    companiesItemFetchAction
-} from '../../../actions/Administration/companies'
+    skillsCreateAction,
+    skillsUpdateAction,
+    skillsListFetchAction,
+    skillsDeleteAction,
+    skillsItemFetchAction
+} from '../../../actions/Settings/skills'
 import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
@@ -29,13 +29,14 @@ const enhance = compose(
     connect((state, props) => {
         const query = _.get(props, ['location', 'query'])
         const pathname = _.get(props, ['location', 'pathname'])
-        const detail = _.get(state, ['companies', 'item', 'data'])
-        const detailLoading = _.get(state, ['companies', 'item', 'loading'])
-        const createLoading = _.get(state, ['companies', 'create', 'loading'])
-        const updateLoading = _.get(state, ['companies', 'update', 'loading'])
-        const list = _.get(state, ['companies', 'list', 'data'])
-        const listLoading = _.get(state, ['companies', 'list', 'loading'])
-        const createForm = _.get(state, ['form', 'CompaniesCreateForm'])
+        const detail = _.get(state, ['skills', 'item', 'data'])
+        const detailLoading = _.get(state, ['skills', 'item', 'loading'])
+        const createLoading = _.get(state, ['skills', 'create', 'loading'])
+        const updateLoading = _.get(state, ['skills', 'update', 'loading'])
+        const list = _.get(state, ['skills', 'list', 'data'])
+        const listLoading = _.get(state, ['skills', 'list', 'loading'])
+        const filterForm = _.get(state, ['form', 'SkillsFilterForm'])
+        const createForm = _.get(state, ['form', 'SkillsCreateForm'])
         const filter = filterHelper(list, pathname, query)
 
         return {
@@ -46,46 +47,45 @@ const enhance = compose(
             createLoading,
             updateLoading,
             filter,
+            filterForm,
             createForm
         }
     }),
     withPropsOnChange((props, nextProps) => {
         return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
     }, ({dispatch, filter}) => {
-        dispatch(companiesListFetchAction(filter))
+        dispatch(skillsListFetchAction(filter))
     }),
 
     withPropsOnChange((props, nextProps) => {
-        const companyId = _.get(nextProps, ['params', 'companyId'])
-        return companyId && _.get(props, ['params', 'companyId']) !== companyId
+        const skillsId = _.get(nextProps, ['params', 'skillsId'])
+        return skillsId && _.get(props, ['params', 'skillsId']) !== skillsId
     }, ({dispatch, params}) => {
-        const companyId = _.toInteger(_.get(params, 'companyId'))
-        companyId && dispatch(companiesItemFetchAction(companyId))
+        const skillsId = _.toInteger(_.get(params, 'skillsId'))
+        if (skillsId) {
+            dispatch(skillsItemFetchAction(skillsId))
+        }
     }),
 
     withHandlers({
-        handleActionEdit: props => () => {
-            return null
-        },
-
         handleOpenConfirmDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.COMPANIES_ITEM_PATH, id),
-                query: filter.getParams({[COMPANIES_DELETE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.SKILLS_ITEM_PATH, id),
+                query: filter.getParams({[SKILLS_DELETE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseConfirmDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[COMPANIES_DELETE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SKILLS_DELETE_DIALOG_OPEN]: false})})
         },
         handleSendConfirmDialog: props => () => {
             const {dispatch, detail, filter, location: {pathname}} = props
-            dispatch(companiesDeleteAction(detail.id))
+            dispatch(skillsDeleteAction(detail.id))
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[COMPANIES_DELETE_DIALOG_OPEN]: false})})
-                    dispatch(companiesListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[SKILLS_DELETE_DIALOG_OPEN]: false})})
+                    dispatch(skillsListFetchAction(filter))
                     return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
                 })
                 .catch(() => {
@@ -93,60 +93,76 @@ const enhance = compose(
                 })
         },
 
+        handleOpenDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({
+                pathname,
+                query: filter.getParams({openDeleteDialog: 'yes'})
+            })
+        },
+
+        handleCloseDeleteDialog: props => () => {
+            const {location: {pathname}, filter} = props
+            hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
+        },
+
         handleOpenCreateDialog: props => () => {
             const {dispatch, location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[COMPANIES_CREATE_DIALOG_OPEN]: true})})
-            dispatch(reset('CompaniesCreateForm'))
+            hashHistory.push({pathname, query: filter.getParams({[SKILLS_CREATE_DIALOG_OPEN]: true})})
+            dispatch(reset('SkillsCreateForm'))
         },
 
         handleCloseCreateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[COMPANIES_CREATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SKILLS_CREATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitCreateDialog: props => () => {
             const {dispatch, createForm, filter, location: {pathname}} = props
 
-            return dispatch(companiesCreateAction(_.get(createForm, ['values'])))
+            return dispatch(skillsCreateAction(_.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    hashHistory.push({pathname, query: filter.getParams({[COMPANIES_CREATE_DIALOG_OPEN]: false})})
-                    dispatch(companiesListFetchAction(filter))
+                    hashHistory.push({pathname, query: filter.getParams({[SKILLS_CREATE_DIALOG_OPEN]: false})})
+                    dispatch(skillsListFetchAction(filter))
                 })
         },
 
         handleOpenUpdateDialog: props => (id) => {
             const {filter} = props
             hashHistory.push({
-                pathname: sprintf(ROUTER.COMPANIES_ITEM_PATH, id),
-                query: filter.getParams({[COMPANIES_UPDATE_DIALOG_OPEN]: true})
+                pathname: sprintf(ROUTER.SKILLS_ITEM_PATH, id),
+                query: filter.getParams({[SKILLS_UPDATE_DIALOG_OPEN]: true})
             })
         },
 
         handleCloseUpdateDialog: props => () => {
             const {location: {pathname}, filter} = props
-            hashHistory.push({pathname, query: filter.getParams({[COMPANIES_UPDATE_DIALOG_OPEN]: false})})
+            hashHistory.push({pathname, query: filter.getParams({[SKILLS_UPDATE_DIALOG_OPEN]: false})})
         },
 
         handleSubmitUpdateDialog: props => () => {
-            const {dispatch, createForm, filter} = props
-            const companyId = _.toInteger(_.get(props, ['params', 'companyId']))
-
-            return dispatch(companiesUpdateAction(companyId, _.get(createForm, ['values'])))
+            const {dispatch, createForm, filter, location: {pathname}} = props
+            const skillsId = _.toInteger(_.get(props, ['params', 'skillsId']))
+            return dispatch(skillsUpdateAction(skillsId, _.get(createForm, ['values'])))
                 .then(() => {
                     return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
                 })
                 .then(() => {
-                    hashHistory.push(filter.createURL({[COMPANIES_UPDATE_DIALOG_OPEN]: false}))
-                    dispatch(companiesListFetchAction(filter))
+                    hashHistory.push({
+                        pathname,
+                        query: filter.getParams({[SKILLS_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
+                    })
+                    dispatch(skillsListFetchAction(filter))
+                    dispatch(skillsItemFetchAction(skillsId))
                 })
         }
     })
 )
 
-const CompaniesList = enhance((props) => {
+const SkillsList = enhance((props) => {
     const {
         location,
         list,
@@ -160,20 +176,21 @@ const CompaniesList = enhance((props) => {
         params
     } = props
 
-    const openCreateDialog = toBoolean(_.get(location, ['query', COMPANIES_CREATE_DIALOG_OPEN]))
-    const openUpdateDialog = toBoolean(_.get(location, ['query', COMPANIES_UPDATE_DIALOG_OPEN]))
-    const openConfirmDialog = toBoolean(_.get(location, ['query', COMPANIES_DELETE_DIALOG_OPEN]))
-
-    const detailId = _.toInteger(_.get(params, 'companyId'))
+    const openCreateDialog = toBoolean(_.get(location, ['query', SKILLS_CREATE_DIALOG_OPEN]))
+    const openUpdateDialog = toBoolean(_.get(location, ['query', SKILLS_UPDATE_DIALOG_OPEN]))
+    const openConfirmDialog = toBoolean(_.get(location, ['query', SKILLS_DELETE_DIALOG_OPEN]))
+    const detailId = _.toInteger(_.get(params, 'skillsId'))
 
     const createDialog = {
+        initialValues: (() => {
+            return {}
+        })(),
         createLoading,
         openCreateDialog,
         handleOpenCreateDialog: props.handleOpenCreateDialog,
         handleCloseCreateDialog: props.handleCloseCreateDialog,
         handleSubmitCreateDialog: props.handleSubmitCreateDialog
     }
-
     const confirmDialog = {
         confirmLoading: detailLoading,
         openConfirmDialog: openConfirmDialog,
@@ -181,17 +198,13 @@ const CompaniesList = enhance((props) => {
         handleCloseConfirmDialog: props.handleCloseConfirmDialog,
         handleSendConfirmDialog: props.handleSendConfirmDialog
     }
-
     const updateDialog = {
         initialValues: (() => {
             if (!detail || openCreateDialog) {
-                return {
-                    users: [{}]
-                }
+                return {}
             }
             return {
-                title: _.get(detail, 'title'),
-                text: _.get(detail, 'text')
+                name: _.get(detail, 'name')
             }
         })(),
         updateLoading: detailLoading || updateLoading,
@@ -205,7 +218,6 @@ const CompaniesList = enhance((props) => {
         data: _.get(list, 'results'),
         listLoading
     }
-
     const detailData = {
         id: detailId,
         data: detail,
@@ -214,7 +226,7 @@ const CompaniesList = enhance((props) => {
 
     return (
         <Layout {...layout}>
-            <CompaniesGridList
+            <SkillsGridList
                 filter={filter}
                 listData={listData}
                 detailData={detailData}
@@ -226,4 +238,4 @@ const CompaniesList = enhance((props) => {
     )
 })
 
-export default CompaniesList
+export default SkillsList

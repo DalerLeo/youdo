@@ -1,9 +1,9 @@
-import SideMenu from './SideMenu'
 import {ArticlesGridList} from './Articles'
 import {CompaniesGridList} from './Companies'
+import {UsersGridList} from './Users'
 
 export {
-    SideMenu,
     ArticlesGridList,
-    CompaniesGridList
+    CompaniesGridList,
+    UsersGridList
 }

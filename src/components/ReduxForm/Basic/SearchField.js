@@ -21,7 +21,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
             })
         })
         .then((data) => {
-            !_.isEmpty(data) && dispatch({dataSource: data})
+            dispatch({dataSource: data})
             dispatch({loading: false})
         })
 }

@@ -3,23 +3,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
-import * as ROUTES from '../../constants/routes'
-import GridList from '../GridList'
-import Container from '../Container'
-import UsersFilterForm from './UsersFilterForm'
+import * as ROUTES from '../../../constants/routes'
+import GridList from '../../GridList/index'
+import Container from '../../Container/index'
 import UsersCreateDialog from './UsersCreateDialog'
-import ConfirmDialog from '../ConfirmDialog'
-import SettingSideMenu from '../Settings/SettingsSideMenu'
-import ToolTip from '../ToolTip'
-import toBoolean from '../../helpers/toBoolean'
-import t from '../../helpers/translate'
+import ConfirmDialog from '../../ConfirmDialog/index'
+import SideMenu from '../SideMenu'
+import ToolTip from '../../ToolTip/index'
+import toBoolean from '../../../helpers/toBoolean'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
@@ -40,22 +38,17 @@ const enhance = compose(
             alignItems: 'center',
             marginLeft: '-18px'
         },
-        leftPanel: {
-            backgroundColor: '#f2f5f8',
-            flexBasis: '250px',
-            maxWidth: '250px'
-
-        },
         rightPanel: {
             background: '#fff',
-            flexBasis: 'calc(100% - 225px)',
-            maxWidth: 'calc(100% - 225px)',
+            flexBasis: '100%',
+            width: '100%',
             paddingTop: '10px',
             overflowY: 'auto',
             overflowX: 'hidden'
         },
         iconBtn: {
             display: 'flex',
+            justifyContent: 'flex-end',
             opacity: '0',
             transition: 'all 200ms ease-out'
         },
@@ -83,7 +76,7 @@ const iconStyle = {
     },
     button: {
         width: 30,
-        height: 25,
+        height: 30,
         padding: 0
     }
 }
@@ -93,16 +86,9 @@ const UsersGridList = enhance((props) => {
         filter,
         createDialog,
         updateDialog,
-        filterDialog,
-        actionsDialog,
         confirmDialog,
-        groupListData,
-        stockListData,
-        marketTypeData,
         listData,
         detailData,
-        currencyData,
-        divisionData,
         classes
     } = props
     const listHeader = [
@@ -115,8 +101,8 @@ const UsersGridList = enhance((props) => {
         {
             sorting: false,
             name: 'username',
-            title: t('Сотрудник'),
-            xs: 2
+            title: t('Пользователь'),
+            xs: 4
         },
         {
             sorting: false,
@@ -126,62 +112,32 @@ const UsersGridList = enhance((props) => {
         },
         {
             sorting: false,
-            name: 'typeUser',
+            name: 'permissions',
             title: t('Права доступа'),
             xs: 2
         },
         {
             sorting: false,
-            name: 'phoneNumber',
-            title: t('Телефон'),
-            xs: 2
-        },
-        {
-            sorting: false,
-            name: 'job',
-            title: t('Должность'),
-            xs: 1
-        },
-        {
-            sorting: false,
             name: 'status',
             title: t('Статус'),
-            xs: 1
+            xs: 2
         }
     ]
-    const actions = (
-        <div>
-            <IconButton onTouchTap={actionsDialog.handleActionEdit}>
-                <ModEditorIcon />
-            </IconButton>
 
-            <IconButton onTouchTap={actionsDialog.handleActionDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </div>
-    )
-
-    const usersDetail = (
-        <span>a</span>
-    )
     const usersList = _.map(_.get(listData, 'data'), (item) => {
         const id = _.get(item, 'id')
         const isActive = toBoolean(_.get(item, 'isActive'))
         const username = isActive ? _.get(item, 'username') : t('Не указано')
         const firstName = _.get(item, 'firstName')
-        const secondName = _.get(item, 'secondName')
-        const phoneNumber = _.get(item, 'phoneNumber') || '-'
-        const job = _.get(item, ['job', 'name']) || t('Не указана')
-        const position = _.get(item, ['position', 'name']) || t('Не выбрано')
+        const lastName = _.get(item, 'lastName')
+        const permissions = _.get(item, ['userPermissions'])
         return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={1}>{id}</Col>
-                <Col xs={2}>{firstName} {secondName}</Col>
+                <Col xs={4}>{`${firstName} ${lastName}`}</Col>
                 <Col xs={2} title={username}>{username}</Col>
-                <Col xs={2}>{position}</Col>
-                <Col xs={2}>{phoneNumber}</Col>
-                <Col xs={1}>{job}</Col>
-                <Col xs={1}>{isActive ? t('Активный') : t('Неактивный')}</Col>
+                <Col xs={2}>{permissions}</Col>
+                <Col xs={2}>{isActive ? t('Активный') : t('Неактивный')}</Col>
                 <Col xs={1} style={{textAlign: 'right'}}>
                     <div className={classes.iconBtn}>
                         <ToolTip position="bottom" text={t('Изменить')}>
@@ -229,28 +185,19 @@ const UsersGridList = enhance((props) => {
         </div>
     )
 
-    const usersFilterDialog = (
-        <UsersFilterForm
-            initialValues={filterDialog.initialValues}
-            filter={filter}
-            filterDialog={filterDialog}
-            addButton={addButton}
-        />
-    )
-
     const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
-    const currentName = _.get(currentDetail, 'firstName') + ' ' + _.get(currentDetail, 'secondName')
+    const currentName = `${_.get(currentDetail, 'firstName')} ${_.get(currentDetail, 'lastName')}`
     return (
         <Container>
             <div className={classes.wrapper}>
-                <SettingSideMenu currentUrl={ROUTES.USERS_LIST_URL} usersFilterDialog={usersFilterDialog}/>
+                <SideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
                 <div className={classes.rightPanel}>
                     <GridList
                         filter={filter}
                         list={list}
                         listShadow={false}
-                        detail={usersDetail}
-                        actionsDialog={actions}
+                        detail={<span/>}
+                        actionsDialog={<span/>}
                         addButton={addButton}
                     />
                 </div>
@@ -259,17 +206,11 @@ const UsersGridList = enhance((props) => {
             {createDialog.openCreateDialog &&
             <UsersCreateDialog
                 detailData={_.get(detailData, 'data')}
-                initialValues={createDialog.initialValues}
                 open={createDialog.openCreateDialog}
                 loading={createDialog.createLoading}
                 onClose={createDialog.handleCloseCreateDialog}
                 onSubmit={createDialog.handleSubmitCreateDialog}
                 errorData={createDialog.errorData}
-                groupListData={groupListData}
-                stockListData={stockListData}
-                marketTypeData={marketTypeData}
-                currencyData={currencyData}
-                divisionData={divisionData}
             />}
 
             {updateDialog.openUpdateDialog &&
@@ -281,11 +222,6 @@ const UsersGridList = enhance((props) => {
                 loading={updateDialog.updateLoading}
                 onClose={updateDialog.handleCloseUpdateDialog}
                 onSubmit={updateDialog.handleSubmitUpdateDialog}
-                groupListData={groupListData}
-                stockListData={stockListData}
-                marketTypeData={marketTypeData}
-                currencyData={currencyData}
-                divisionData={divisionData}
                 errorData={updateDialog.errorData}
             />}
 
@@ -325,10 +261,6 @@ UsersGridList.propTypes = {
         handleOpenUpdateDialog: PropTypes.func.isRequired,
         handleCloseUpdateDialog: PropTypes.func.isRequired,
         handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    actionsDialog: PropTypes.shape({
-        handleActionEdit: PropTypes.func.isRequired,
-        handleActionDelete: PropTypes.func.isRequired
     }).isRequired,
     filterDialog: PropTypes.shape({
         initialValues: PropTypes.object,

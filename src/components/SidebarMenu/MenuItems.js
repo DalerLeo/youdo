@@ -4,6 +4,7 @@ import * as ROUTES from '../../constants/routes'
 import t from '../../helpers/translate'
 
 import Administration from 'material-ui/svg-icons/action/dashboard'
+import Settings from 'material-ui/svg-icons/action/settings'
 
 /* .import React from 'react'
 import * as ROUTES from '../../constants/routes'
@@ -38,6 +39,7 @@ const STATS_OVERALL = t('Общее')
 const DEFAULT_PAGE_SIZE = getPageSize()
 const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE} */
 const NOT_FOUND = -1
+
 export const MenuItems = [
 
     /* {
@@ -232,7 +234,18 @@ export const MenuItems = [
         url: ROUTES.ARTICLES_LIST_URL,
         childs: [
             {section: 'Основные', name: t('Статьи'), url: ROUTES.ARTICLES_LIST_URL, permission: ''},
-            {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''}
+            {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''},
+            {section: 'Пользователи', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''}
+        ]
+    },
+    {
+        name: t('Настройки'),
+        icon: (<Settings/>),
+        section: 'Settings',
+        url: ROUTES.SKILLS_LIST_URL,
+        bottom: true,
+        childs: [
+            {section: 'Основные', name: t('Навыки'), url: ROUTES.SKILLS_LIST_URL, permission: ''}
         ]
     }
 ]

@@ -6,7 +6,7 @@ import {compose, withPropsOnChange, withReducer} from 'recompose'
 import {AutoComplete, Input, Icon} from 'antd'
 
 const DELAY_FOR_TYPE_ATTACK = 300
-const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
+const fetchList = ({state, dispatch, getOptions, getText, getValue}) => {
     dispatch({loading: true})
     getOptions(state.text)
         .then((data) => {
@@ -18,7 +18,7 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
             })
         })
         .then((data) => {
-            !_.isEmpty(data) && dispatch({dataSource: data})
+            dispatch({dataSource: data})
             dispatch({loading: false})
         })
 }
@@ -61,15 +61,19 @@ const enhance = compose(
 
     withReducer('state', 'dispatch', (state, action) => {
         return {...state, ...action}
-    }, {dataSource: [], text: '', loading: false, open: false}),
+    }, {
+        dataSource: [],
+        text: '',
+        loading: false,
+        open: false
+    }),
 
     withPropsOnChange((props, nextProps) => {
-        const value = _.get(props, ['input', 'value', 'value'])
-        const valueNext = _.get(nextProps, ['input', 'value', 'value'])
-        const withDetails = _.get(nextProps, ['withDetails'])
-        return value !== valueNext && withDetails
+        const value = _.get(props, ['input', 'value'])
+        const valueNext = _.get(nextProps, ['input', 'value'])
+        return value !== valueNext
     }, (props) => {
-        const value = _.get(props, ['input', 'value', 'value'])
+        const value = _.toInteger(_.get(props, ['input', 'value']))
         const withDetails = _.get(props, ['withDetails'])
         withDetails && value && props.getItem(value)
     }),

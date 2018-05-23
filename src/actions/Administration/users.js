@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import axios from '../helpers/axios'
-import * as API from '../constants/api'
-import * as actionTypes from '../constants/actionTypes'
-import * as serializers from '../serializers/Users/usersSerializer'
+import axios from '../../helpers/axios'
+import * as API from '../../constants/api'
+import * as actionTypes from '../../constants/actionTypes'
+import * as serializers from '../../serializers/Administration/usersSerializer'
 
 export const usersCreateAction = (formValues) => {
     const requestData = serializers.createSerializer(formValues)
@@ -87,27 +87,5 @@ export const usersItemFetchAction = (id) => {
     return {
         type: actionTypes.USERS_ITEM,
         payload
-    }
-}
-
-export const userGroupListFetchAction = () => {
-    const payload = axios()
-        .get(API.USERS_GROUP, {params: {pageSize: 50}})
-        .then((response) => {
-            return _.get(response, 'data')
-        })
-        .catch((error) => {
-            return Promise.reject(_.get(error, ['response', 'data']))
-        })
-
-    return {
-        type: actionTypes.USERS_GROUP,
-        payload
-    }
-}
-export const clearPosition = () => {
-    return {
-        type: actionTypes.POSITION_ITEM,
-        payload: Promise.resolve({})
     }
 }
