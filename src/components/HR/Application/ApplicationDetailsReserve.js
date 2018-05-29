@@ -17,116 +17,116 @@ import {PADDING_STANDART, BORDER_STYLE} from '../../../constants/styleConstants'
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
-      loader: {
-        width: '100%',
-        background: '#fff',
-        height: '100px',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      },
-      wrapper: {
-        color: '#333 !important',
-        width: '100%',
-        display: 'flex',
-        flexWrap: 'wrap',
-        '& a': {
-          color: colorBlue
+        loader: {
+            width: '100%',
+            background: '#fff',
+            height: '100px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        },
+        wrapper: {
+            color: '#333 !important',
+            width: '100%',
+            display: 'flex',
+            flexWrap: 'wrap',
+            '& a': {
+                color: colorBlue
+            }
+        },
+        title: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            height: '65px',
+            padding: '0 30px',
+            borderBottom: '1px #efefef solid',
+            position: 'relative'
+        },
+        container: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%'
+        },
+        applicationInfo: {
+            borderBottom: BORDER_STYLE,
+            padding: PADDING_STANDART,
+            width: '100%'
+        },
+        block: {
+            borderLeft: BORDER_STYLE,
+            padding: PADDING_STANDART,
+            width: '35%',
+            '&:first-child': {
+                border: 'none',
+                width: '30%'
+            }
+        },
+        info: {
+            '& > div': {
+                marginBottom: '10px',
+                '&:last-child': {
+                    margin: '0'
+                }
+            }
+        },
+        flexBetween: {
+            display: 'flex',
+            justifyContent: 'space-between'
+        },
+        skill: {
+            backgroundColor: '#4db6ac',
+            borderRadius: '2px',
+            padding: '3px 8px',
+            margin: '0 3px',
+            fontWeight: '600',
+            display: 'inline-block',
+            color: '#fff'
+        },
+        titleLabel: {
+            fontSize: '18px',
+            color: '#333',
+            fontWeight: '600',
+            cursor: 'pointer'
+        },
+        titleButtons: {
+            display: 'flex',
+            justifyContent: 'flex-end'
+        },
+        bodyTitle: {
+            fontWeight: '600',
+            marginBottom: '10px'
+        },
+        closeDetail: {
+            position: 'absolute',
+            left: '0',
+            top: '0',
+            right: '0',
+            bottom: '0',
+            cursor: 'pointer',
+            zIndex: '1'
         }
-      },
-      title: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-        height: '65px',
-        padding: '0 30px',
-        borderBottom: '1px #efefef solid',
-        position: 'relative'
-      },
-      container: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        width: '100%'
-      },
-      applicationInfo: {
-        borderBottom: BORDER_STYLE,
-        padding: PADDING_STANDART,
-        width: '100%'
-      },
-      block: {
-        borderLeft: BORDER_STYLE,
-        padding: PADDING_STANDART,
-        width: '35%',
-        '&:first-child': {
-          border: 'none',
-          width: '30%'
-        }
-      },
-      info: {
-        '& > div': {
-          marginBottom: '10px',
-          '&:last-child': {
-            margin: '0'
-          }
-        }
-      },
-      flexBetween: {
-        display: 'flex',
-        justifyContent: 'space-between'
-      },
-      skill: {
-        backgroundColor: '#4db6ac',
-        borderRadius: '2px',
-        padding: '3px 8px',
-        margin: '0 3px',
-        fontWeight: '600',
-        display: 'inline-block',
-        color: '#fff'
-      },
-      titleLabel: {
-        fontSize: '18px',
-        color: '#333',
-        fontWeight: '600',
-        cursor: 'pointer'
-      },
-      titleButtons: {
-        display: 'flex',
-        justifyContent: 'flex-end'
-      },
-      bodyTitle: {
-        fontWeight: '600',
-        marginBottom: '10px'
-      },
-      closeDetail: {
-        position: 'absolute',
-        left: '0',
-        top: '0',
-        right: '0',
-        bottom: '0',
-        cursor: 'pointer',
-        zIndex: '1'
-      }
     }),
     withState('openDetails', 'setOpenDetails', false)
 )
 
 const iconStyle = {
-  icon: {
-    color: '#666',
-    width: 20,
-    height: 20
-  },
-  button: {
-    width: 48,
-    height: 48,
-    padding: 0
-  }
+    icon: {
+        color: '#666',
+        width: 20,
+        height: 20
+    },
+    button: {
+        width: 48,
+        height: 48,
+        padding: 0
+    }
 }
 withState('openDetails', 'setOpenDetails', false)
 
 const ApplicationDetails = enhance((props) => {
-  const {classes,
+    const {classes,
         loading,
         data,
         confirmDialog,
@@ -134,46 +134,46 @@ const ApplicationDetails = enhance((props) => {
         handleCloseDetail
     } = props
 
-  const applicationId = _.get(data, 'id')
-  const ageMin = _.get(data, 'ageMin')
-  const ageMax = _.get(data, 'ageMax')
-  const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
-  const client = _.get(data, ['client', 'name'])
-  const createdDate = dateFormat(_.get(data, 'createdDate'))
-  const deadline = dateFormat(_.get(data, 'deadline'), true)
-  const education = _.get(data, 'education')
-  const experience = _.get(data, 'experience')
-  const levelPc = _.get(data, 'levelPc')
-  const workSchedule = _.get(data, 'mode')
-  const planningDate = dateFormat(_.get(data, 'planningDate'))
-  const position = _.get(data, 'position')
-  const privileges = _.get(data, 'privileges')
-  const realSalaryMin = numberFormat(_.get(data, 'realSalaryMin'))
-  const realSalaryMax = numberFormat(_.get(data, 'realSalaryMax'))
-  const recruiter = _.get(data, ['recruiter'])
+    const applicationId = _.get(data, 'id')
+    const ageMin = _.get(data, 'ageMin')
+    const ageMax = _.get(data, 'ageMax')
+    const businessTrip = _.get(data, 'businessTrip') ? t('Да') : t('Нет')
+    const client = _.get(data, ['client', 'name'])
+    const createdDate = dateFormat(_.get(data, 'createdDate'))
+    const deadline = dateFormat(_.get(data, 'deadline'), true)
+    const education = _.get(data, 'education')
+    const experience = _.get(data, 'experience')
+    const levelPc = _.get(data, 'levelPc')
+    const workSchedule = _.get(data, 'mode')
+    const planningDate = dateFormat(_.get(data, 'planningDate'))
+    const position = _.get(data, 'position')
+    const privileges = _.get(data, 'privileges')
+    const realSalaryMin = numberFormat(_.get(data, 'realSalaryMin'))
+    const realSalaryMax = numberFormat(_.get(data, 'realSalaryMax'))
+    const recruiter = _.get(data, ['recruiter'])
         ? _.get(data, ['recruiter', 'firstName']) + ' ' + _.get(data, ['recruiter', 'secondName'])
         : t('Не назначен')
-  const responsibility = _.get(data, 'responsibility')
-  const sex = _.get(data, 'sex')
-  const skills = _.get(data, 'skills')
-  const status = _.get(data, 'status')
-  const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
-  const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
+    const responsibility = _.get(data, 'responsibility')
+    const sex = _.get(data, 'sex')
+    const skills = _.get(data, 'skills')
+    const status = _.get(data, 'status')
+    const trialSalaryMin = numberFormat(_.get(data, 'trialSalaryMin'))
+    const trialSalaryMax = numberFormat(_.get(data, 'trialSalaryMax'))
 
-  if (loading) {
-    return (
+    if (loading) {
+        return (
             <div className={classes.loader}>
                 <LinearProgress/>
             </div>
-    )
-  }
+        )
+    }
 
-  return (
+    return (
         <div className={classes.wrapper} key={_.get(data, 'id')}>
             <div className={classes.title}>
                 <div className={classes.titleLabel}>{t('Заявка')} №{applicationId}</div>
                 <div className={classes.closeDetail}
-                     onClick={handleCloseDetail}>
+                    onClick={handleCloseDetail}>
                 </div>
                 <div className={classes.titleButtons}>
                     <ToolTip position="bottom" text={t('Изменить')}>
@@ -239,28 +239,28 @@ const ApplicationDetails = enhance((props) => {
                         <div>{t('Знание языков')}: <strong>{}</strong></div>
                         <div>{t('Минимальный опыт работы по специальности')}: <strong>{experience}</strong></div>
                         <div>{t('Профессиональные навыки')}: <strong>{_.map(skills, (item) => {
-                          const id = _.get(item, 'id')
-                          const name = _.get(item, 'name')
-                          return (
+                            const id = _.get(item, 'id')
+                            const name = _.get(item, 'name')
+                            return (
                                 <span key={id} className={classes.skill}>{name}</span>
-                          )
+                            )
                         })}</strong></div>
                     </div>
                 </div>
             </div>
         </div>
-  )
+    )
 })
 
 ApplicationDetails.propTypes = {
-  data: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired,
-  confirmDialog: PropTypes.shape({
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
-  }).isRequired
+    data: PropTypes.object.isRequired,
+    loading: PropTypes.bool.isRequired,
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ApplicationDetails

@@ -95,7 +95,7 @@ export const HR_RESUME_LONG = 'long'
 export const HR_RESUME_NOTE = 'note'
 
 export const USERS_STATUS = [
-  {value: 'active', name: t('Активный')},
-  {value: 'fired', name: t('Уволен')},
-  {value: 'on_vacation', name: t('Отпуск')}
+    {value: 'active', name: t('Активный')},
+    {value: 'fired', name: t('Уволен')},
+    {value: 'on_vacation', name: t('Отпуск')}
 ]

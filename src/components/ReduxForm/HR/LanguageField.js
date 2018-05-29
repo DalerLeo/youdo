@@ -12,106 +12,106 @@ import ToolTip from '../../ToolTip'
 
 const enhance = compose(
     injectSheet({
-      salaryWrapper: {
-        position: 'relative',
-        paddingBottom: '36px'
-      },
-      usersLoader: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100%'
-      },
-      inputFieldCustom: {
-        fontSize: '13px !important',
-        height: '45px !important',
-        marginTop: '7px',
-        '& div': {
-          fontSize: '13px !important'
+        salaryWrapper: {
+            position: 'relative',
+            paddingBottom: '36px'
         },
-        '& label': {
-          top: '20px !important',
-          lineHeight: '5px !important'
+        usersLoader: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%'
         },
-        '& input': {
-          marginTop: '0 !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        subTitle: {
+            padding: '10px 0 5px'
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                marginRight: '10px'
+            }
+        },
+        detail: {
+            display: 'flex',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            '& > div:first-child': {
+                width: 'calc(100% - 40px)'
+            }
+        },
+        checkbox: {
+            marginLeft: '10px',
+            '& > div': {
+                width: 'auto !important'
+            }
+        },
+        addAnother: {
+            width: '100%',
+            margin: '10px 0',
+            position: 'absolute',
+            bottom: '0',
+            zIndex: '5',
+            '& a': {
+                fontWeight: '600'
+            }
         }
-      },
-      subTitle: {
-        padding: '10px 0 5px'
-      },
-      flex: {
-        display: 'flex',
-        alignItems: 'center',
-        '& > div': {
-          marginRight: '10px'
-        }
-      },
-      detail: {
-        display: 'flex',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        justifyContent: 'space-between',
-        '& > div:first-child': {
-          width: 'calc(100% - 40px)'
-        }
-      },
-      checkbox: {
-        marginLeft: '10px',
-        '& > div': {
-          width: 'auto !important'
-        }
-      },
-      addAnother: {
-        width: '100%',
-        margin: '10px 0',
-        position: 'absolute',
-        bottom: '0',
-        zIndex: '5',
-        '& a': {
-          fontWeight: '600'
-        }
-      }
     }),
     lifecycle({
-      componentWillReceiveProps (nextProps) {
-        const props = this.props
-        if ((props.invalid !== nextProps.invalid)) {
-          nextProps.updateSkillsError(nextProps.invalid && nextProps.skillsError)
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updateSkillsError(nextProps.invalid && nextProps.skillsError)
+            }
         }
-      }
     })
 )
 
 const iconStyle = {
-  icon: {
-    color: '#666',
-    width: 22,
-    height: 22
-  },
-  button: {
-    width: 40,
-    height: 40,
-    padding: 9
-  }
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 40,
+        height: 40,
+        padding: 9
+    }
 }
 
 const LanguageField = enhance((props) => {
-  const {
+    const {
         fields,
         classes,
         required
     } = props
 
-  const handleTouchTap = (index, addAnother) => {
-    if (addAnother) {
-      return fields.push({})
+    const handleTouchTap = (index, addAnother) => {
+        if (addAnother) {
+            return fields.push({})
+        }
+        return fields.remove(index)
     }
-    return fields.remove(index)
-  }
 
-  const details = fields.map((detail, index) => {
-    return (
+    const details = fields.map((detail, index) => {
+        return (
             <div key={index} className={classes.detail}>
                 <div>
                     <div className={classes.flex}>
@@ -143,10 +143,10 @@ const LanguageField = enhance((props) => {
                     <ContentRemove/>
                 </IconButton>
             </div>
-    )
-  })
+        )
+    })
 
-  return (
+    return (
         <div className={classes.salaryWrapper}>
             <div className={classes.subTitle}>{t('Знание языков')}</div>
             {details}
@@ -154,7 +154,7 @@ const LanguageField = enhance((props) => {
                 <a onClick={() => handleTouchTap(null, true)}>{t('Добавить язык')}</a>
             </div>
         </div>
-  )
+    )
 })
 
 export default LanguageField

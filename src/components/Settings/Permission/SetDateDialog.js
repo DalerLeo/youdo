@@ -20,62 +20,62 @@ import formValidate from '../../../helpers/formValidate'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
-      buttonSub: {
-        textAlign: 'right',
-        marginTop: '10px',
-        '& span': {
-          color: '#129fdd !important'
-        }
-      },
-      timePick: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        '& > div': {
-          flexBasis: '49%'
-        }
-      },
-      inputFieldShift: {
-        fontSize: '13px !important',
-        marginRight: '20px',
-        height: '50px !important',
-        '& input': {
-          top: '-10px'
+        buttonSub: {
+            textAlign: 'right',
+            marginTop: '10px',
+            '& span': {
+                color: '#129fdd !important'
+            }
         },
-        '& label': {
-          top: '20px !important'
-        }
-      },
-      inputFieldTime: {
-        fontSize: '13px !important',
-        height: '50px !important',
-        '& input': {
-          top: '-10px'
+        timePick: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            '& > div': {
+                flexBasis: '49%'
+            }
         },
-        '& label': {
-          top: '20px !important'
+        inputFieldShift: {
+            fontSize: '13px !important',
+            marginRight: '20px',
+            height: '50px !important',
+            '& input': {
+                top: '-10px'
+            },
+            '& label': {
+                top: '20px !important'
+            }
+        },
+        inputFieldTime: {
+            fontSize: '13px !important',
+            height: '50px !important',
+            '& input': {
+                top: '-10px'
+            },
+            '& label': {
+                top: '20px !important'
+            }
         }
-      }
     })),
     reduxForm({
-      form: 'SetDateDialogForm',
-      enableReinitialize: true
+        form: 'SetDateDialogForm',
+        enableReinitialize: true
     }),
     connect((state) => {
-      const status = _.get(state, ['form', 'SetDateDialogForm', 'values', 'status', 'value'])
-      return {
-        status
-      }
+        const status = _.get(state, ['form', 'SetDateDialogForm', 'values', 'status', 'value'])
+        return {
+            status
+        }
     })
 )
 
 const SetDateDialog = enhance((props) => {
-  const {open, loading, dispatch, handleSubmit, onClose, classes, status} = props
-  const formNames = ['status', 'fromTime', 'toTime']
-  const onSubmit = handleSubmit(() => props.onSubmit()
+    const {open, loading, dispatch, handleSubmit, onClose, classes, status} = props
+    const formNames = ['status', 'fromTime', 'toTime']
+    const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-          formValidate(formNames, dispatch, error)
+            formValidate(formNames, dispatch, error)
         }))
-  return (
+    return (
         <Dialog
             modal={true}
             open={open}
@@ -92,7 +92,7 @@ const SetDateDialog = enhance((props) => {
             </div>
             <div className={classes.bodyContent}>
                 <form onSubmit={onSubmit}>
-                        <div className={classes.inContent} style={{minHeight: '150px'}}>
+                    <div className={classes.inContent} style={{minHeight: '150px'}}>
                         <div className={classes.field} style={{paddingTop: '15px'}}>
                             <Field
                                 name="status"
@@ -133,13 +133,13 @@ const SetDateDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-  )
+    )
 })
 
 SetDateDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 export default SetDateDialog

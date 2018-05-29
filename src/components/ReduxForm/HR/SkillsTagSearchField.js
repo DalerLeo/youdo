@@ -5,8 +5,8 @@ import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 import getIdsOption from '../../../helpers/getIdsOption'
 
 const SkillsTagSearchField = (props) => {
-  const {params, pageSize} = props
-  return (
+    const {params, pageSize} = props
+    return (
         <CreatableMultiSelectFIeld
             getValue={CreatableMultiSelectFIeld.defaultGetValue('name')}
             getText={CreatableMultiSelectFIeld.defaultGetText('name')}
@@ -16,7 +16,7 @@ const SkillsTagSearchField = (props) => {
             withDetails={true}
             {...props}
         />
-  )
+    )
 }
 
 export default SkillsTagSearchField

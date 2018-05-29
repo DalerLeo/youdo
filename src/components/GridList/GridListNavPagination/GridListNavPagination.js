@@ -12,53 +12,53 @@ import * as storageHelper from '../../../helpers/storage'
 
 const enhance = compose(
     injectSheet({
-      wrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        color: '#5d6474'
-      },
-      customWrapper: {
-        extend: 'wrapper',
-        position: 'absolute',
-        right: '30px',
-        top: '-52px',
-        height: '52px'
-      },
-
-      count: {
-        marginRight: '15px',
-        height: '50px !important',
-        '& > div': {
-          fontSize: '13px !important',
-          marginTop: '0 !important',
-          height: '100% !important'
-        }
-      },
-
-      nav: {
-        display: 'flex',
-        alignItems: 'center'
-      },
-      gridPagination: {
-        '& button': {
-          padding: '0 !important',
-          width: 'inherit !important',
-          height: 'inherit !important',
-          top: '2px'
+        wrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            color: '#5d6474'
         },
-        '& button:first-child': {
-          padding: '0 5px 0 10px !important'
+        customWrapper: {
+            extend: 'wrapper',
+            position: 'absolute',
+            right: '30px',
+            top: '-52px',
+            height: '52px'
+        },
+
+        count: {
+            marginRight: '15px',
+            height: '50px !important',
+            '& > div': {
+                fontSize: '13px !important',
+                marginTop: '0 !important',
+                height: '100% !important'
+            }
+        },
+
+        nav: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        gridPagination: {
+            '& button': {
+                padding: '0 !important',
+                width: 'inherit !important',
+                height: 'inherit !important',
+                top: '2px'
+            },
+            '& button:first-child': {
+                padding: '0 5px 0 10px !important'
+            }
         }
-      }
     }),
     withHandlers({
-      onChange: props => (event, index, value) => {
-        const {filter} = props
-        event.preventDefault()
-        hashHistory.push(filter.createURL({[filter.getKey('pageSize')]: value, [filter.getKey('page')]: 1}))
-        storageHelper.setPageSize(value)
-      }
+        onChange: props => (event, index, value) => {
+            const {filter} = props
+            event.preventDefault()
+            hashHistory.push(filter.createURL({[filter.getKey('pageSize')]: value, [filter.getKey('page')]: 1}))
+            storageHelper.setPageSize(value)
+        }
     })
 )
 
@@ -77,12 +77,12 @@ const enhance = compose(
  </div>
 */
 const GridListNavPagination = enhance(({classes, onChange, filter, customPagination}) => {
-  const prev = filter.prevPage()
-  const next = filter.nextPage()
-  const firstPage = 1
-  const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
-  const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
-  return (
+    const prev = filter.prevPage()
+    const next = filter.nextPage()
+    const firstPage = 1
+    const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
+    const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
+    return (
         <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.nav}>
                 <div>{startPage} - {startEnd} из {filter.getCounts()}</div>
@@ -105,14 +105,14 @@ const GridListNavPagination = enhance(({classes, onChange, filter, customPaginat
                 </div>
             </div>
         </div>
-  )
+    )
 })
 
 GridListNavPagination.propTypes = {
-  filter: PropTypes.object.isRequired
+    filter: PropTypes.object.isRequired
 }
 GridListNavPagination.defaultProps = {
-  customPagination: false
+    customPagination: false
 }
 
 export default GridListNavPagination

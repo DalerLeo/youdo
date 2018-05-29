@@ -13,25 +13,25 @@ const enhance = compose(
 )
 
 const ResumeCreateExpectations = enhance((props) => {
-  const {
+    const {
         classes,
         nextButton
     } = props
 
-  return (
+    return (
         <div>
             <h4>{t('Профессиональные ожидания')}</h4>
             <div>
                 <div className={classes.subTitle}>{t('График работы')}</div>
                 <div className={classes.flex + ' ' + classes.halfChild}>
                     {_.map(HR_WORK_SCHEDULE, (item, index) => {
-                      return (
+                        return (
                             <Field
                                 key={item.id}
                                 name={'modes[' + index + '][selected]'}
                                 label={item.name}
                                 component={CheckBox}/>
-                      )
+                        )
                     })}
                 </div>
             </div>
@@ -72,7 +72,7 @@ const ResumeCreateExpectations = enhance((props) => {
             </div>
             {nextButton}
         </div>
-  )
+    )
 })
 
 export default ResumeCreateExpectations

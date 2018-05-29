@@ -2,7 +2,7 @@ import React from 'react'
 import SvgIcon from 'material-ui/SvgIcon'
 
 const PersonWarn = (props) => {
-  return (
+    return (
         <SvgIcon {...props} fill="#000000" height="24" viewBox="-487 489 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
             <g>
                 <circle cx="-473.3" cy="497" r="4"/>
@@ -12,7 +12,7 @@ const PersonWarn = (props) => {
             </g>
         </SvgIcon>
 
-  )
+    )
 }
 
 export default PersonWarn

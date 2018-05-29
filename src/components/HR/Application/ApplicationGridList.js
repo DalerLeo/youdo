@@ -44,112 +44,112 @@ import {getAppStatusIcon, getAppStatusName} from '../../../helpers/hrcHelpers'
 import {APPLICATION_MEETING_DIALOG_UPDATE} from './index'
 
 const listHeader = [
-  {
-    sorting: true,
-    name: 'client',
-    xs: 2,
-    title: t('Клиент')
-  },
-  {
-    sorting: true,
-    name: 'position',
-    xs: 3,
-    title: t('Вакантная должность')
-  },
-  {
-    sorting: true,
-    xs: 2,
-    name: 'recruiter',
-    title: t('Рекрутер')
-  },
-  {
-    sorting: true,
-    xs: 2,
-    name: 'createdDate',
-    title: t('Дата создания')
-  },
-  {
-    sorting: true,
-    xs: 2,
-    name: 'deadline',
-    title: t('Дэдлайн')
-  },
-  {
-    sorting: true,
-    alignRight: true,
-    xs: 1,
-    name: 'status',
-    title: t('Статус')
-  }
+    {
+        sorting: true,
+        name: 'client',
+        xs: 2,
+        title: t('Клиент')
+    },
+    {
+        sorting: true,
+        name: 'position',
+        xs: 3,
+        title: t('Вакантная должность')
+    },
+    {
+        sorting: true,
+        xs: 2,
+        name: 'recruiter',
+        title: t('Рекрутер')
+    },
+    {
+        sorting: true,
+        xs: 2,
+        name: 'createdDate',
+        title: t('Дата создания')
+    },
+    {
+        sorting: true,
+        xs: 2,
+        name: 'deadline',
+        title: t('Дэдлайн')
+    },
+    {
+        sorting: true,
+        alignRight: true,
+        xs: 1,
+        name: 'status',
+        title: t('Статус')
+    }
 ]
 
 const enhance = compose(
     injectSheet({
-      header: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        height: '60px',
-        '& h2': {
-          fontWeight: '600',
-          fontSize: '18px'
+        header: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '60px',
+            '& h2': {
+                fontWeight: '600',
+                fontSize: '18px'
+            }
+        },
+        listRow: {
+            position: 'relative',
+            '& > a': {
+                display: 'flex',
+                alignItems: 'center',
+                position: 'absolute',
+                top: '0',
+                left: '-30px',
+                right: '-30px',
+                bottom: '0',
+                padding: '0 30px',
+                '& > div:first-child': {
+                    paddingLeft: '0'
+                },
+                '& > div:last-child': {
+                    paddingRight: '0'
+                }
+            }
+        },
+        buttons: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            textAlign: 'right'
+        },
+        statusButton: {
+            position: 'absolute',
+            top: '116px',
+            right: '2px',
+            zIndex: '2'
+        },
+        notification: {
+            position: 'relative'
+        },
+        badge: {
+            background: '#ff5c5c',
+            borderRadius: '50%',
+            border: '2px #fff solid',
+            boxSizing: 'content-box',
+            color: COLOR_WHITE,
+            display: 'flex',
+            fontSize: '10px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'absolute',
+            top: '-10px',
+            right: '-15px',
+            height: '18px',
+            width: '18px'
         }
-      },
-      listRow: {
-        position: 'relative',
-        '& > a': {
-          display: 'flex',
-          alignItems: 'center',
-          position: 'absolute',
-          top: '0',
-          left: '-30px',
-          right: '-30px',
-          bottom: '0',
-          padding: '0 30px',
-          '& > div:first-child': {
-            paddingLeft: '0'
-          },
-          '& > div:last-child': {
-            paddingRight: '0'
-          }
-        }
-      },
-      buttons: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        textAlign: 'right'
-      },
-      statusButton: {
-        position: 'absolute',
-        top: '116px',
-        right: '2px',
-        zIndex: '2'
-      },
-      notification: {
-        position: 'relative'
-      },
-      badge: {
-        background: '#ff5c5c',
-        borderRadius: '50%',
-        border: '2px #fff solid',
-        boxSizing: 'content-box',
-        color: COLOR_WHITE,
-        display: 'flex',
-        fontSize: '10px',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'absolute',
-        top: '-10px',
-        right: '-15px',
-        height: '18px',
-        width: '18px'
-      }
     })
 )
 
 const ApplicationGridList = enhance((props) => {
-  const {
+    const {
         filter,
         filterDialog,
         createDialog,
@@ -170,11 +170,11 @@ const ApplicationGridList = enhance((props) => {
         confirmData
     } = props
 
-  const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
-  const statusIsCanceled = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_CANCELED
-  const updatingResumeId = _.toInteger(_.get(filter.getParams(), APPLICATION_MEETING_DIALOG_UPDATE))
+    const statusIsNull = _.isNil(_.get(filter.getParams(), 'status'))
+    const statusIsCanceled = _.get(filter.getParams(), 'status') && _.get(filter.getParams(), 'status') === APPLICATION_CANCELED
+    const updatingResumeId = _.toInteger(_.get(filter.getParams(), APPLICATION_MEETING_DIALOG_UPDATE))
 
-  const applicationfilterDialog = (
+    const applicationfilterDialog = (
         <ApplicationFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
@@ -182,7 +182,7 @@ const ApplicationGridList = enhance((props) => {
         />
     )
 
-  const applicationDetail = (
+    const applicationDetail = (
         <ApplicationDetail
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
@@ -200,36 +200,36 @@ const ApplicationGridList = enhance((props) => {
         />
     )
 
-  const iconStyle = {
-    icon: {
-      color: '#666',
-      width: 20,
-      height: 20
-    },
-    button: {
-      width: 30,
-      height: 30,
-      padding: 5
+    const iconStyle = {
+        icon: {
+            color: '#666',
+            width: 20,
+            height: 20
+        },
+        button: {
+            width: 30,
+            height: 30,
+            padding: 5
+        }
     }
-  }
 
-  const applicationList = _.map(_.get(listData, 'data'), (item) => {
-    const id = _.get(item, 'id')
-    const client = _.get(item, ['contact', 'client', 'name'])
-    const position = _.get(item, ['position', 'name'])
-    const recruiter = _.get(item, ['recruiter'])
+    const applicationList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const client = _.get(item, ['contact', 'client', 'name'])
+        const position = _.get(item, ['position', 'name'])
+        const recruiter = _.get(item, ['recruiter'])
             ? _.get(item, ['recruiter', 'firstName']) + ' ' + _.get(item, ['recruiter', 'secondName'])
             : t('Не назначен')
-    const createdDate = dateFormat(_.get(item, 'createdDate'))
-    const deadline = dateFormat(_.get(item, 'deadline'))
-    const status = _.get(item, 'status')
-    const doing = _.get(item, 'doing')
-    const notifCount = _.get(item, 'notifyCount')
-    return (
+        const createdDate = dateFormat(_.get(item, 'createdDate'))
+        const deadline = dateFormat(_.get(item, 'deadline'))
+        const status = _.get(item, 'status')
+        const doing = _.get(item, 'doing')
+        const notifCount = _.get(item, 'notifyCount')
+        return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
-                  pathname: sprintf(ROUTES.HR_APPLICATION_ITEM_PATH, id),
-                  query: filter.getParams()
+                    pathname: sprintf(ROUTES.HR_APPLICATION_ITEM_PATH, id),
+                    query: filter.getParams()
                 }}>
                     <Col xs={2}>{client}</Col>
                     <Col xs={3}>{position}</Col>
@@ -251,54 +251,54 @@ const ApplicationGridList = enhance((props) => {
                     </Col>
                 </Link>
             </Row>
-    )
-  })
+        )
+    })
 
-  const popoverStyle = {
-    menuItem: {
-      fontSize: '13px',
-      minHeight: '36px',
-      lineHeight: '36px'
-    },
-    innerDiv: {
-      padding: '0px 16px 0px 60px'
-    },
-    icon: {
-      margin: '7px',
-      width: '22px',
-      height: '22px'
+    const popoverStyle = {
+        menuItem: {
+            fontSize: '13px',
+            minHeight: '36px',
+            lineHeight: '36px'
+        },
+        innerDiv: {
+            padding: '0px 16px 0px 60px'
+        },
+        icon: {
+            margin: '7px',
+            width: '22px',
+            height: '22px'
+        }
     }
-  }
 
-  const badgeStyle = {
-    wrapper: {
-      padding: 0
-    },
-    iconStyle: (condition) => {
-      return {color: condition ? COLOR_GREEN : COLOR_BLUE_GREY}
+    const badgeStyle = {
+        wrapper: {
+            padding: 0
+        },
+        iconStyle: (condition) => {
+            return {color: condition ? COLOR_GREEN : COLOR_BLUE_GREY}
+        }
     }
-  }
 
-  const list = {
-    header: listHeader,
-    list: applicationList,
-    loading: _.get(listData, 'listLoading')
-  }
-
-  const filterByStatus = (status) => {
-    return hashHistory.push(filter.createURL({status: status}))
-  }
-  const getIconByStatus = (style) => {
-    if (filter.getParam('status') === APPLICATION_ASSIGNED) {
-      return <InProcess color={COLOR_YELLOW} style={style}/>
+    const list = {
+        header: listHeader,
+        list: applicationList,
+        loading: _.get(listData, 'listLoading')
     }
-    if (filter.getParam('status') === APPLICATION_COMPLETED) {
-      return <Completed color={COLOR_GREEN} style={style}/>
-    }
-    return <DropDownIcon color={COLOR_WHITE} style={{verticalAlign: 'unset', transform: 'rotate(90deg)'}}/>
-  }
 
-  const extraButtons = (
+    const filterByStatus = (status) => {
+        return hashHistory.push(filter.createURL({status: status}))
+    }
+    const getIconByStatus = (style) => {
+        if (filter.getParam('status') === APPLICATION_ASSIGNED) {
+            return <InProcess color={COLOR_YELLOW} style={style}/>
+        }
+        if (filter.getParam('status') === APPLICATION_COMPLETED) {
+            return <Completed color={COLOR_GREEN} style={style}/>
+        }
+        return <DropDownIcon color={COLOR_WHITE} style={{verticalAlign: 'unset', transform: 'rotate(90deg)'}}/>
+    }
+
+    const extraButtons = (
         <div className={classes.statusButton}>
             <IconMenu
                 className={classes.popover}
@@ -311,10 +311,10 @@ const ApplicationGridList = enhance((props) => {
                         disableTouchRipple
                         labelPosition="before"
                         labelStyle={{
-                          color: COLOR_WHITE,
-                          textTransform: 'none',
-                          verticalAlign: 'baseline',
-                          fontWeight: '600'
+                            color: COLOR_WHITE,
+                            textTransform: 'none',
+                            verticalAlign: 'baseline',
+                            fontWeight: '600'
                         }}
                         icon={getIconByStatus({verticalAlign: 'unset'})}
                     />
@@ -353,7 +353,7 @@ const ApplicationGridList = enhance((props) => {
         </div>
     )
 
-  return (
+    return (
         <Container>
             <div className={classes.header}>
                 {extraButtons}
@@ -424,33 +424,33 @@ const ApplicationGridList = enhance((props) => {
                 resume={updatingResumeId}
                 reportData={reportData}/>
         </Container>
-  )
+    )
 })
 
 ApplicationGridList.propTypes = {
-  filter: PropTypes.object.isRequired,
-  listData: PropTypes.object,
-  detailData: PropTypes.object,
-  createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
-  }).isRequired,
-  confirmDialog: PropTypes.shape({
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
-  }).isRequired,
-  updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
-  }).isRequired
+    filter: PropTypes.object.isRequired,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    confirmDialog: PropTypes.shape({
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default ApplicationGridList

@@ -4,19 +4,19 @@ import SearchField from './Basic/SearchField'
 import * as storageHelper from '../../helpers/storage'
 
 const UserCurrenciesSearchField = (props) => {
-  const userData = JSON.parse(storageHelper.getUserData())
-  const currencies = _.get(userData, 'currencies')
+    const userData = JSON.parse(storageHelper.getUserData())
+    const currencies = _.get(userData, 'currencies')
 
-  const getOptions = () => {
-    return Promise.resolve(currencies)
-  }
+    const getOptions = () => {
+        return Promise.resolve(currencies)
+    }
 
-  const getItem = (id) => {
-    return Promise.resolve(
+    const getItem = (id) => {
+        return Promise.resolve(
             _.find(currencies, (o) => { return o.id === _.toInteger(id) })
         )
-  }
-  return (
+    }
+    return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -25,7 +25,7 @@ const UserCurrenciesSearchField = (props) => {
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
-  )
+    )
 }
 
 export default UserCurrenciesSearchField

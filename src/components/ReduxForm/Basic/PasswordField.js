@@ -2,12 +2,12 @@ import React from 'react'
 import MUIPasswordField from 'material-ui/PasswordField'
 
 const errorStyle = {
-  textAlign: 'left',
-  bottom: '5px'
+    textAlign: 'left',
+    bottom: '5px'
 }
 
 const PasswordField = ({input, label, meta: {error}, ...defaultProps}) => {
-  return (
+    return (
         <MUIPasswordField
             errorText={error}
             errorStyle={errorStyle}
@@ -15,7 +15,7 @@ const PasswordField = ({input, label, meta: {error}, ...defaultProps}) => {
             {...input}
             {...defaultProps}
         />
-  )
+    )
 }
 
 export default PasswordField

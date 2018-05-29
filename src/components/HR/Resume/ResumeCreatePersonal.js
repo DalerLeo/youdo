@@ -14,64 +14,64 @@ import CountrySearchField from '../../ReduxForm/HR/CountrySearchField'
 import CitySearchField from '../../ReduxForm/HR/CitySearchField'
 
 const validate = values => {
-  const formNames = [
-    'fullName',
-    'dateOfBirth',
-    'sex',
-    'familyStatus',
-    'address',
-    'phone',
-    'email',
-    'country',
-    'city',
-    'sphere',
-    'position'
-  ]
-  const errors = {}
-  const getError = (field) => {
-    if (!_.get(values, field)) {
-      errors[field] = t('Обязательное поле')
+    const formNames = [
+        'fullName',
+        'dateOfBirth',
+        'sex',
+        'familyStatus',
+        'address',
+        'phone',
+        'email',
+        'country',
+        'city',
+        'sphere',
+        'position'
+    ]
+    const errors = {}
+    const getError = (field) => {
+        if (!_.get(values, field)) {
+            errors[field] = t('Обязательное поле')
+        }
     }
-  }
-  _.map(formNames, (item) => getError(item))
-  return errors
+    _.map(formNames, (item) => getError(item))
+    return errors
 }
 
 const enhance = compose(
     injectSheet({}),
     connect((state) => {
-      const country = _.get(state, ['form', 'ResumePersonalForm', 'values', 'country', 'value'])
-      const sphere = _.get(state, ['form', 'ResumePersonalForm', 'values', 'sphere', 'value'])
-      return {
-        country,
-        sphere
-      }
+        const country = _.get(state, ['form', 'ResumePersonalForm', 'values', 'country', 'value'])
+        const sphere = _.get(state, ['form', 'ResumePersonalForm', 'values', 'sphere', 'value'])
+        return {
+            country,
+            sphere
+        }
     }),
     reduxForm({
-      form: 'ResumePersonalForm',
-      destroyOnUnmount: false,
-      enableReinitialize: true,
-      validate
+        form: 'ResumePersonalForm',
+        destroyOnUnmount: false,
+        enableReinitialize: true,
+        validate
     }),
     lifecycle({
-      componentWillReceiveProps (nextProps) {
-        const props = this.props
-        if ((props.invalid !== nextProps.invalid)) {
-          nextProps.updatePersonalError(nextProps.invalid)
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updatePersonalError(nextProps.invalid)
+            }
         }
-      }
     })
 )
 
 const ResumeCreatePersonal = enhance((props) => {
-  const {
+    const {
         classes,
         country,
         sphere,
         nextButton
     } = props
 
-  return (
+    return (
         <div>
             <h4>{t('Личные данные')}</h4>
             <Field
@@ -149,7 +149,7 @@ const ResumeCreatePersonal = enhance((props) => {
                 fullWidth={true}/>}
             {nextButton}
         </div>
-  )
+    )
 })
 
 export default ResumeCreatePersonal

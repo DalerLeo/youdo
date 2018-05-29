@@ -11,46 +11,46 @@ import {BORDER_STYLE} from '../../../constants/styleConstants'
 const enhance = compose(
     injectSheet({
         // DETAILS
-      loader: {
-        display: 'flex',
-        alignItems: 'center',
-        height: '100px',
-        position: 'relative',
-        width: '100%'
-      },
-      details: {
-        boxShadow: '0 0 6px rgba(0, 0, 0, 0.15)',
-        width: '100%'
-      },
-      detailTitle: {
-        alignItems: 'center',
-        borderBottom: BORDER_STYLE,
-        display: 'flex',
-        fontSize: '16px',
-        fontWeight: '600',
-        height: '65px',
-        justifyContent: 'space-between',
-        padding: '0 30px',
-        position: 'relative'
-      },
-      closeDetail: {
-        cursor: 'pointer',
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
-        zIndex: '1'
-      },
-      detailContent: {
-        lineHeight: '1.5',
-        padding: '20px 30px 30px'
-      }
+        loader: {
+            display: 'flex',
+            alignItems: 'center',
+            height: '100px',
+            position: 'relative',
+            width: '100%'
+        },
+        details: {
+            boxShadow: '0 0 6px rgba(0, 0, 0, 0.15)',
+            width: '100%'
+        },
+        detailTitle: {
+            alignItems: 'center',
+            borderBottom: BORDER_STYLE,
+            display: 'flex',
+            fontSize: '16px',
+            fontWeight: '600',
+            height: '65px',
+            justifyContent: 'space-between',
+            padding: '0 30px',
+            position: 'relative'
+        },
+        closeDetail: {
+            cursor: 'pointer',
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            zIndex: '1'
+        },
+        detailContent: {
+            lineHeight: '1.5',
+            padding: '20px 30px 30px'
+        }
     })
 )
 
 const ArticlesDetails = enhance((props) => {
-  const {
+    const {
         filter,
         data,
         loading,
@@ -58,25 +58,25 @@ const ArticlesDetails = enhance((props) => {
         actionButtons
     } = props
 
-  const detailId = _.get(data, 'id')
+    const detailId = _.get(data, 'id')
 
-  if (loading) {
-    return (
+    if (loading) {
+        return (
             <div className={classes.loader}>
                 <LinearProgress/>
             </div>
-    )
-  }
+        )
+    }
 
-  return (
+    return (
         <div
             key={detailId}
             className={classes.details}>
             <div className={classes.content}>
                 <div className={classes.detailTitle}>
                     <Link to={{
-                      pathname: ROUTES.ARTICLES_LIST_URL,
-                      query: filter.getParams()
+                        pathname: ROUTES.ARTICLES_LIST_URL,
+                        query: filter.getParams()
                     }} className={classes.closeDetail}/>
                     <span>{_.get(data, 'title')}</span>
                     {actionButtons(detailId)}
@@ -86,12 +86,12 @@ const ArticlesDetails = enhance((props) => {
                 </div>
             </div>
         </div>
-  )
+    )
 })
 
 ArticlesDetails.propTypes = {
-  loading: PropTypes.bool,
-  data: PropTypes.object
+    loading: PropTypes.bool,
+    data: PropTypes.object
 }
 
 export default ArticlesDetails

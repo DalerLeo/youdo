@@ -13,79 +13,79 @@ import {
 
 const enhance = compose(
     injectSheet({
-      wrapper: {
-        marginTop: '20px'
-      },
-      inputFieldCustom: {
-        fontSize: '13px !important',
-        height: '45px !important',
-        marginTop: '7px',
-        '& div': {
-          fontSize: '13px !important'
+        wrapper: {
+            marginTop: '20px'
         },
-        '& label': {
-          top: '20px !important',
-          lineHeight: '5px !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
         },
-        '& input': {
-          marginTop: '0 !important'
+        subTitle: {
+            fontWeight: '600'
+        },
+        flex: {
+            display: 'flex',
+            alignItems: 'center',
+            '& > div': {
+                marginRight: '10px'
+            }
+        },
+        detail: {
+            borderBottom: BORDER_STYLE,
+            margin: '0 -30px',
+            padding: '10px 30px',
+            '&:last-child': {
+                borderBottom: 'none'
+            }
+        },
+        remove: {
+            marginTop: '10px'
+        },
+        addAnother: {
+            width: '100%',
+            marginTop: '5px'
         }
-      },
-      subTitle: {
-        fontWeight: '600'
-      },
-      flex: {
-        display: 'flex',
-        alignItems: 'center',
-        '& > div': {
-          marginRight: '10px'
-        }
-      },
-      detail: {
-        borderBottom: BORDER_STYLE,
-        margin: '0 -30px',
-        padding: '10px 30px',
-        '&:last-child': {
-          borderBottom: 'none'
-        }
-      },
-      remove: {
-        marginTop: '10px'
-      },
-      addAnother: {
-        width: '100%',
-        marginTop: '5px'
-      }
     })
 )
 
 const buttonStyle = {
-  remove: {
-    color: COLOR_RED,
-    fontWeight: '600',
-    textTransform: 'none',
-    verticalAlign: 'baseline'
-  },
-  label: {
-    color: LINK_COLOR,
-    fontWeight: '600',
-    textTransform: 'none',
-    verticalAlign: 'baseline'
-  }
+    remove: {
+        color: COLOR_RED,
+        fontWeight: '600',
+        textTransform: 'none',
+        verticalAlign: 'baseline'
+    },
+    label: {
+        color: LINK_COLOR,
+        fontWeight: '600',
+        textTransform: 'none',
+        verticalAlign: 'baseline'
+    }
 }
 
 const CompanyUsersField = enhance((props) => {
-  const {fields, classes} = props
+    const {fields, classes} = props
 
-  const handleTouchTap = (index, addAnother) => {
-    if (addAnother) {
-      return fields.push({})
+    const handleTouchTap = (index, addAnother) => {
+        if (addAnother) {
+            return fields.push({})
+        }
+        return fields.remove(index)
     }
-    return fields.remove(index)
-  }
 
-  const details = fields.map((detail, index) => {
-    return (
+    const details = fields.map((detail, index) => {
+        return (
             <div key={index} className={classes.detail}>
                 <Field
                     label={t('Пользователь')}
@@ -101,10 +101,10 @@ const CompanyUsersField = enhance((props) => {
                         onClick={() => handleTouchTap(index, false)}/>
                 </div>
             </div>
-    )
-  })
+        )
+    })
 
-  return (
+    return (
         <div className={classes.wrapper}>
             <div className={classes.subTitle}>{t('Пользователи')}</div>
             <div>{details}</div>
@@ -116,7 +116,7 @@ const CompanyUsersField = enhance((props) => {
                     onClick={() => handleTouchTap(null, true)}/>
             </div>
         </div>
-  )
+    )
 })
 
 export default CompanyUsersField

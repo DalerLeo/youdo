@@ -1,10 +1,9 @@
 {
-  "presets": ["react", "es2015", "stage-0"],
-  "plugins": ["transform-decorators-legacy"],
-
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  "presets": ["react", "env"],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-runtime",
+    "transform-class-properties",
+    "react-hot-loader/babel"
+  ]
 }

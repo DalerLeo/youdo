@@ -17,16 +17,16 @@ const Items = [
 ]
 
 const getOptions = (search) => {
-  return Promise.resolve(Items)
+    return Promise.resolve(Items)
 }
 
 const getItem = (id) => {
-  return Promise.resolve(
+    return Promise.resolve(
         _.find(Items, (o) => { return o.id === _.toInteger(id) }))
 }
 
 const PermissionTimeSearchField = (props) => {
-  return (
+    return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -35,7 +35,7 @@ const PermissionTimeSearchField = (props) => {
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
-  )
+    )
 }
 
 export default PermissionTimeSearchField

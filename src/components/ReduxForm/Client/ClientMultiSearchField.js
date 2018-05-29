@@ -6,8 +6,8 @@ import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 import getIdsOption from '../../../helpers/getIdsOption'
 
 const ClientMultiSearchField = connect()((props) => {
-  const {params, pageSize} = props
-  return (
+    const {params, pageSize} = props
+    return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
@@ -16,7 +16,7 @@ const ClientMultiSearchField = connect()((props) => {
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />
-  )
+    )
 })
 
 export default ClientMultiSearchField

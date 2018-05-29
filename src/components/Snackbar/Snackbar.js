@@ -7,20 +7,20 @@ import {closeSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
     connect((state) => {
-      const open = _.get(state, ['snackbar', 'open'])
-      const message = _.get(state, ['snackbar', 'message'])
-      const autoHideDuration = _.get(state, ['snackbar', 'autoHideDuration'])
+        const open = _.get(state, ['snackbar', 'open'])
+        const message = _.get(state, ['snackbar', 'message'])
+        const autoHideDuration = _.get(state, ['snackbar', 'autoHideDuration'])
 
-      return {
-        open,
-        message,
-        autoHideDuration
-      }
+        return {
+            open,
+            message,
+            autoHideDuration
+        }
     })
 )
 
 const Snackbar = ({dispatch, open, message, autoHideDuration, ...defaultProps}) => {
-  return (
+    return (
         <MUISnackbar
             open={open}
             message={message}
@@ -28,7 +28,7 @@ const Snackbar = ({dispatch, open, message, autoHideDuration, ...defaultProps}) 
             onRequestClose={() => dispatch(closeSnackbarAction())}
             {...defaultProps}
         />
-  )
+    )
 }
 
 export default enhance(Snackbar)

@@ -3,12 +3,12 @@ import toCamelCase from './toCamelCase'
 import caughtCancel from './caughtCancel'
 
 const getIdsOption = (ids, path) => {
-  return axios().get(`${path}?ids=${ids || ''}`)
+    return axios().get(`${path}?ids=${ids || ''}`)
         .then(({data}) => {
-          return Promise.resolve(toCamelCase(data.results))
+            return Promise.resolve(toCamelCase(data.results))
         })
         .catch((error) => {
-          caughtCancel(error)
+            caughtCancel(error)
         })
 }
 

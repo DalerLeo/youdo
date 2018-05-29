@@ -20,100 +20,100 @@ import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 
 const listHeader = [
-  {
-    sorting: true,
-    name: 'id',
-    xs: 2,
-    title: 'Id'
-  },
-  {
-    sorting: false,
-    name: 'name',
-    xs: 6,
-    title: t('Наименование')
-  },
-  {
-    sorting: true,
-    xs: 3,
-    name: 'created_date',
-    title: t('Дата создания')
-  },
-  {
-    sorting: false,
-    xs: 1,
-    name: 'actions',
-    title: ''
-  }
+    {
+        sorting: true,
+        name: 'id',
+        xs: 2,
+        title: 'Id'
+    },
+    {
+        sorting: false,
+        name: 'name',
+        xs: 6,
+        title: t('Наименование')
+    },
+    {
+        sorting: true,
+        xs: 3,
+        name: 'created_date',
+        title: t('Дата создания')
+    },
+    {
+        sorting: false,
+        xs: 1,
+        name: 'actions',
+        title: ''
+    }
 ]
 
 const enhance = compose(
     injectSheet({
-      addButton: {
-        '& svg': {
-          width: '14px !important',
-          height: '14px !important'
+        addButton: {
+            '& svg': {
+                width: '14px !important',
+                height: '14px !important'
+            }
+        },
+        wrapper: {
+            display: 'flex',
+            margin: '0 -28px',
+            height: 'calc(100% + 28px)'
+        },
+        addButtonWrapper: {
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            marginLeft: '-18px'
+        },
+        rightPanel: {
+            background: '#fff',
+            flexBasis: 'calc(100% - 225px)',
+            maxWidth: 'calc(100% - 225px)',
+            paddingTop: '10px',
+            overflowY: 'auto',
+            overflowX: 'hidden'
+        },
+        verticalButton: {
+            border: '2px #dfdfdf solid !important',
+            borderRadius: '50%',
+            opacity: '0',
+            '& > div': {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }
+        },
+        listRow: {
+            margin: '0 -30px !important',
+            width: 'auto !important',
+            padding: '0 30px',
+            '&:hover > div:last-child > div ': {
+                opacity: '1'
+            }
+        },
+        iconBtn: {
+            display: 'flex',
+            opacity: '0',
+            transition: 'all 200ms ease-out'
         }
-      },
-      wrapper: {
-        display: 'flex',
-        margin: '0 -28px',
-        height: 'calc(100% + 28px)'
-      },
-      addButtonWrapper: {
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        marginLeft: '-18px'
-      },
-      rightPanel: {
-        background: '#fff',
-        flexBasis: 'calc(100% - 225px)',
-        maxWidth: 'calc(100% - 225px)',
-        paddingTop: '10px',
-        overflowY: 'auto',
-        overflowX: 'hidden'
-      },
-      verticalButton: {
-        border: '2px #dfdfdf solid !important',
-        borderRadius: '50%',
-        opacity: '0',
-        '& > div': {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }
-      },
-      listRow: {
-        margin: '0 -30px !important',
-        width: 'auto !important',
-        padding: '0 30px',
-        '&:hover > div:last-child > div ': {
-          opacity: '1'
-        }
-      },
-      iconBtn: {
-        display: 'flex',
-        opacity: '0',
-        transition: 'all 200ms ease-out'
-      }
     })
 )
 
 const iconStyle = {
-  icon: {
-    color: '#666',
-    width: 22,
-    height: 22
-  },
-  button: {
-    width: 30,
-    height: 25,
-    padding: 0
-  }
+    icon: {
+        color: '#666',
+        width: 22,
+        height: 22
+    },
+    button: {
+        width: 30,
+        height: 25,
+        padding: 0
+    }
 }
 
 const PostGridList = enhance((props) => {
-  const {
+    const {
         filter,
         createDialog,
         updateDialog,
@@ -123,15 +123,15 @@ const PostGridList = enhance((props) => {
         classes
     } = props
 
-  const postDetail = (
+    const postDetail = (
         <span>a</span>
     )
 
-  const postList = _.map(_.get(listData, 'data'), (item) => {
-    const id = _.get(item, 'id')
-    const name = _.get(item, 'name')
-    const createdDate = dateFormat(_.get(item, 'createdDate'), 'DD:MM:YYYY')
-    return (
+    const postList = _.map(_.get(listData, 'data'), (item) => {
+        const id = _.get(item, 'id')
+        const name = _.get(item, 'name')
+        const createdDate = dateFormat(_.get(item, 'createdDate'), 'DD:MM:YYYY')
+        return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Col xs={6}>{name}</Col>
@@ -161,16 +161,16 @@ const PostGridList = enhance((props) => {
                     </div>
                 </Col>
             </Row>
-    )
-  })
+        )
+    })
 
-  const list = {
-    header: listHeader,
-    list: postList,
-    loading: _.get(listData, 'listLoading')
-  }
+    const list = {
+        header: listHeader,
+        list: postList,
+        loading: _.get(listData, 'listLoading')
+    }
 
-  const addButton = (
+    const addButton = (
         <div className={classes.addButtonWrapper}>
             <FlatButton
                 backgroundColor="#fff"
@@ -182,7 +182,7 @@ const PostGridList = enhance((props) => {
             </FlatButton>
         </div>
     )
-  return (
+    return (
         <Container>
             <div className={classes.wrapper}>
                 <SettingSideMenu currentUrl={ROUTES.POST_LIST_URL}/>
@@ -222,34 +222,34 @@ const PostGridList = enhance((props) => {
                 open={confirmDialog.openConfirmDialog}
             />}
         </Container>
-  )
+    )
 })
 
 PostGridList.propTypes = {
-  filter: PropTypes.object.isRequired,
-  listData: PropTypes.object,
-  detailData: PropTypes.object,
-  createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
-  }).isRequired,
-  confirmDialog: PropTypes.shape({
-    confirmLoading: PropTypes.bool.isRequired,
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
-  }).isRequired,
-  updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
-  }).isRequired
+    filter: PropTypes.object.isRequired,
+    listData: PropTypes.object,
+    detailData: PropTypes.object,
+    createDialog: PropTypes.shape({
+        createLoading: PropTypes.bool.isRequired,
+        openCreateDialog: PropTypes.bool.isRequired,
+        handleOpenCreateDialog: PropTypes.func.isRequired,
+        handleCloseCreateDialog: PropTypes.func.isRequired,
+        handleSubmitCreateDialog: PropTypes.func.isRequired
+    }).isRequired,
+    confirmDialog: PropTypes.shape({
+        confirmLoading: PropTypes.bool.isRequired,
+        openConfirmDialog: PropTypes.bool.isRequired,
+        handleOpenConfirmDialog: PropTypes.func.isRequired,
+        handleCloseConfirmDialog: PropTypes.func.isRequired,
+        handleSendConfirmDialog: PropTypes.func.isRequired
+    }).isRequired,
+    updateDialog: PropTypes.shape({
+        updateLoading: PropTypes.bool.isRequired,
+        openUpdateDialog: PropTypes.bool.isRequired,
+        handleOpenUpdateDialog: PropTypes.func.isRequired,
+        handleCloseUpdateDialog: PropTypes.func.isRequired,
+        handleSubmitUpdateDialog: PropTypes.func.isRequired
+    }).isRequired
 }
 
 export default PostGridList

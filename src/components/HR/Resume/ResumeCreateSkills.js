@@ -11,46 +11,46 @@ import DriverLicenceCheck from '../../ReduxForm/HR/Resume/DriverLicenceCheck'
 import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 
 const validate = values => {
-  const formNames = [
-    'levelPc'
-  ]
-  const errors = {}
-  const getError = (field) => {
-    if (!_.get(values, field)) {
-      errors[field] = t('Обязательное поле')
+    const formNames = [
+        'levelPc'
+    ]
+    const errors = {}
+    const getError = (field) => {
+        if (!_.get(values, field)) {
+            errors[field] = t('Обязательное поле')
+        }
     }
-  }
-  _.map(formNames, (item) => getError(item))
-  return errors
+    _.map(formNames, (item) => getError(item))
+    return errors
 }
 
 const enhance = compose(
     injectSheet({}),
     reduxForm({
-      form: 'ResumeSkillsForm',
-      destroyOnUnmount: false,
-      enableReinitialize: true,
-      validate
+        form: 'ResumeSkillsForm',
+        destroyOnUnmount: false,
+        enableReinitialize: true,
+        validate
     }),
     lifecycle({
-      componentWillReceiveProps (nextProps) {
-        const props = this.props
-        if ((props.invalid !== nextProps.invalid)) {
-          nextProps.updateSkillsError(nextProps.invalid)
+        componentWillReceiveProps (nextProps) {
+            const props = this.props
+            if ((props.invalid !== nextProps.invalid)) {
+                nextProps.updateSkillsError(nextProps.invalid)
+            }
         }
-      }
     })
 )
 
 const ResumeCreateSkills = enhance((props) => {
-  const {
+    const {
         classes,
         nextButton,
         skillsError,
         updateSkillsError
     } = props
 
-  return (
+    return (
         <div>
             <h4>{t('Навыки и умения')}</h4>
             <Field
@@ -83,7 +83,7 @@ const ResumeCreateSkills = enhance((props) => {
                 fullWidth={true}/>
             {nextButton}
         </div>
-  )
+    )
 })
 
 export default ResumeCreateSkills

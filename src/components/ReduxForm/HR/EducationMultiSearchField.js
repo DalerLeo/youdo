@@ -4,11 +4,11 @@ import {HR_EDUCATION} from '../../../constants/backendConstants'
 
 const Items = HR_EDUCATION
 const getOptions = () => {
-  return Promise.resolve(Items)
+    return Promise.resolve(Items)
 }
 
 const EducationMultiSearchField = (props) => {
-  return (
+    return (
         <MultiSelectField
             getValue={MultiSelectField.defaultGetValue('id')}
             getText={MultiSelectField.defaultGetText('name')}
@@ -17,7 +17,7 @@ const EducationMultiSearchField = (props) => {
             getItemText={MultiSelectField.defaultGetText('name')}
             {...props}
         />
-  )
+    )
 }
 
 export default EducationMultiSearchField

@@ -9,13 +9,13 @@ import getConfig from './getConfig'
 import checkPermission from './checkPermission'
 
 export default {
-  toCamelCase,
-  toBoolean,
-  excludeObjKey,
-  filter,
-  createThunkReducer,
-  getConfig,
-  createReducer,
-  axios,
-  checkPermission
+    toCamelCase,
+    toBoolean,
+    excludeObjKey,
+    filter,
+    createThunkReducer,
+    getConfig,
+    createReducer,
+    axios,
+    checkPermission
 }

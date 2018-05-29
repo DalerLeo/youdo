@@ -16,105 +16,105 @@ export const SKILLS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const enhance = compose(
     injectSheet({
-      popUp: {
-        color: '#333 !important',
-        overflowY: 'unset !important',
-        overflowX: 'unset !important',
-        fontSize: '13px !important',
-        position: 'relative',
-        padding: '0 !important',
-        height: '100%',
-        maxHeight: 'none !important',
-        marginBottom: '64px'
-      },
-      titleContent: {
-        background: '#fff',
-        color: '#333',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid #efefef',
-        padding: '0 10px 0 30px',
-        height: '60px',
-        zIndex: '999'
-      },
-      inputFieldCustom: {
-        fontSize: '13px !important',
-        height: '45px !important',
-        marginTop: '7px',
-        '& div': {
-          fontSize: '13px !important'
+        popUp: {
+            color: '#333 !important',
+            overflowY: 'unset !important',
+            overflowX: 'unset !important',
+            fontSize: '13px !important',
+            position: 'relative',
+            padding: '0 !important',
+            height: '100%',
+            maxHeight: 'none !important',
+            marginBottom: '64px'
         },
-        '& label': {
-          top: '20px !important',
-          lineHeight: '5px !important'
+        titleContent: {
+            background: '#fff',
+            color: '#333',
+            fontWeight: 'bold',
+            textTransform: 'uppercase',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid #efefef',
+            padding: '0 10px 0 30px',
+            height: '60px',
+            zIndex: '999'
         },
-        '& input': {
-          marginTop: '0 !important'
+        inputFieldCustom: {
+            fontSize: '13px !important',
+            height: '45px !important',
+            marginTop: '7px',
+            '& div': {
+                fontSize: '13px !important'
+            },
+            '& label': {
+                top: '20px !important',
+                lineHeight: '5px !important'
+            },
+            '& input': {
+                marginTop: '0 !important'
+            }
+        },
+        bodyContent: {
+            width: '100%'
+        },
+        form: {
+            position: 'relative'
+        },
+        field: {
+            width: '100%'
+        },
+        loader: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            top: '0',
+            left: '0',
+            alignItems: 'center',
+            zIndex: '999',
+            justifyContent: 'center',
+            display: ({loading}) => loading ? 'flex' : 'none'
+        },
+        dialogAddUser: {
+            overflowY: 'auto !important'
+        },
+        inContent: {
+            padding: '10px 30px'
+        },
+        bottomButton: {
+            bottom: '0',
+            left: '0',
+            right: '0',
+            padding: '10px',
+            zIndex: '999',
+            borderTop: '1px solid #efefef',
+            background: '#fff',
+            textAlign: 'right',
+            '& span': {
+                fontSize: '13px !important',
+                fontWeight: '600 !important',
+                color: '#129fdd',
+                verticalAlign: 'inherit !important'
+            }
+        },
+        actionButton: {
+            fontSize: '13px !important',
+            margin: '0 !important'
+        },
+        subTitle: {
+            fontStyle: 'italic',
+            margin: '15px 0 10px'
         }
-      },
-      bodyContent: {
-        width: '100%'
-      },
-      form: {
-        position: 'relative'
-      },
-      field: {
-        width: '100%'
-      },
-      loader: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        background: '#fff',
-        top: '0',
-        left: '0',
-        alignItems: 'center',
-        zIndex: '999',
-        justifyContent: 'center',
-        display: ({loading}) => loading ? 'flex' : 'none'
-      },
-      dialogAddUser: {
-        overflowY: 'auto !important'
-      },
-      inContent: {
-        padding: '10px 30px'
-      },
-      bottomButton: {
-        bottom: '0',
-        left: '0',
-        right: '0',
-        padding: '10px',
-        zIndex: '999',
-        borderTop: '1px solid #efefef',
-        background: '#fff',
-        textAlign: 'right',
-        '& span': {
-          fontSize: '13px !important',
-          fontWeight: '600 !important',
-          color: '#129fdd',
-          verticalAlign: 'inherit !important'
-        }
-      },
-      actionButton: {
-        fontSize: '13px !important',
-        margin: '0 !important'
-      },
-      subTitle: {
-        fontStyle: 'italic',
-        margin: '15px 0 10px'
-      }
     }),
     reduxForm({
-      form: 'SkillsCreateForm',
-      enableReinitialize: true
+        form: 'SkillsCreateForm',
+        enableReinitialize: true
     })
 )
 
 const SkillsCreateDialog = enhance((props) => {
-  const {
+    const {
         open,
         loading,
         dispatch,
@@ -124,19 +124,19 @@ const SkillsCreateDialog = enhance((props) => {
         isUpdate
     } = props
 
-  const formNames = [
-    'firstName',
-    'lastName',
-    'phoneNumber',
-    'image',
-    'username',
-    'password'
-  ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
+    const formNames = [
+        'firstName',
+        'lastName',
+        'phoneNumber',
+        'image',
+        'username',
+        'password'
+    ]
+    const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-          formValidate(formNames, dispatch, error)
+            formValidate(formNames, dispatch, error)
         }))
-  return (
+    return (
         <Dialog
             modal={true}
             open={open}
@@ -175,15 +175,15 @@ const SkillsCreateDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-  )
+    )
 })
 
 SkillsCreateDialog.propTyeps = {
-  isUpdate: PropTypes.bool,
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+    isUpdate: PropTypes.bool,
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 }
 
 export default SkillsCreateDialog

@@ -9,54 +9,54 @@ import ArrowRightIcon from '../GridList/GridListNavPagination/ArrowRightIcon'
 
 const enhance = compose(
     injectSheet({
-      wrapper: {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
-        color: '#5d6474'
-      },
-      customWrapper: {
-        extend: 'wrapper',
-        position: 'absolute',
-        right: '30px',
-        top: '-52px',
-        height: '52px'
-      },
-
-      count: {
-        marginRight: '15px',
-        height: '54px !important',
-        '& > div': {
-          fontSize: '13px !important',
-          marginTop: '3px !important'
-        }
-      },
-
-      nav: {
-        display: 'flex',
-        alignItems: 'center'
-      },
-      gridPagination: {
-        '& button': {
-          padding: '0 !important',
-          width: 'inherit !important',
-          height: 'inherit !important',
-          top: '2px'
+        wrapper: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            color: '#5d6474'
         },
-        '& button:first-child': {
-          padding: '0 5px 0 10px !important'
+        customWrapper: {
+            extend: 'wrapper',
+            position: 'absolute',
+            right: '30px',
+            top: '-52px',
+            height: '52px'
+        },
+
+        count: {
+            marginRight: '15px',
+            height: '54px !important',
+            '& > div': {
+                fontSize: '13px !important',
+                marginTop: '3px !important'
+            }
+        },
+
+        nav: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        gridPagination: {
+            '& button': {
+                padding: '0 !important',
+                width: 'inherit !important',
+                height: 'inherit !important',
+                top: '2px'
+            },
+            '& button:first-child': {
+                padding: '0 5px 0 10px !important'
+            }
         }
-      }
     })
 )
 const Pagination = enhance(({classes, filter, customPagination}) => {
-  const prev = filter.prevPage()
-  const next = filter.nextPage()
-  const firstPage = 1
-  const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
-  const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
+    const prev = filter.prevPage()
+    const next = filter.nextPage()
+    const firstPage = 1
+    const startPage = (filter.getPageRange() * (filter.getCurrentPage() - firstPage)) + firstPage
+    const startEnd = filter.getCounts() < (filter.getPageRange() * filter.getCurrentPage()) ? filter.getCounts() : filter.getPageRange() * filter.getCurrentPage()
 
-  return (
+    return (
         <div className={customPagination ? classes.customWrapper : classes.wrapper}>
             <div className={classes.nav}>
                 <div>{startPage} - {startEnd} из {filter.getCounts()}</div>
@@ -79,14 +79,14 @@ const Pagination = enhance(({classes, filter, customPagination}) => {
                 </div>
             </div>
         </div>
-  )
+    )
 })
 
 Pagination.propTypes = {
-  filter: PropTypes.object.isRequired
+    filter: PropTypes.object.isRequired
 }
 Pagination.defaultProps = {
-  customPagination: false
+    customPagination: false
 }
 
 export default Pagination

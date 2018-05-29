@@ -7,24 +7,24 @@ import {compose, withState} from 'recompose'
 
 const enhance = compose(
     injectSheet({
-      wrapper: {
-        position: 'relative'
-      },
-      tooltip: {
-        zIndex: '999999 !important',
-        '&.place-left': {
-          '&:after': {
-            right: '-5px !important'
-          }
+        wrapper: {
+            position: 'relative'
+        },
+        tooltip: {
+            zIndex: '999999 !important',
+            '&.place-left': {
+                '&:after': {
+                    right: '-5px !important'
+                }
+            }
         }
-      }
     }),
     withState('visible', 'setVisible', false)
 )
 
 const CustomToolTip = enhance(({classes, text, children, position}) => {
-  const uniqId = _.uniqueId('tooltip_')
-  return (
+    const uniqId = _.uniqueId('tooltip_')
+    return (
         <div>
             <div data-tip data-for={uniqId}>
                 {children}
@@ -38,12 +38,12 @@ const CustomToolTip = enhance(({classes, text, children, position}) => {
                 {text}
             </ReactToolTip>
         </div>
-  )
+    )
 })
 
 CustomToolTip.propTypes = {
-  position: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
+    position: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
 }
 
 export default CustomToolTip

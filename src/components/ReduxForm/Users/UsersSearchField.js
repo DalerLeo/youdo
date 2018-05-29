@@ -8,21 +8,21 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
-  return axios().get(sprintf(PATH.USERS_ITEM, id))
+    return axios().get(sprintf(PATH.USERS_ITEM, id))
         .then(({data}) => {
-          return Promise.resolve(toCamelCase(data))
+            return Promise.resolve(toCamelCase(data))
         })
 }
 
 const UsersSearchField = (props) => {
-  const {params, pageSize} = props
-  const getText = (value) => {
-    const firstName = _.get(value, 'firstName')
-    const lastName = _.get(value, 'lastName')
-    return `${firstName} ${lastName}`
-  }
+    const {params, pageSize} = props
+    const getText = (value) => {
+        const firstName = _.get(value, 'firstName')
+        const lastName = _.get(value, 'lastName')
+        return `${firstName} ${lastName}`
+    }
 
-  return (
+    return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={getText}
@@ -31,7 +31,7 @@ const UsersSearchField = (props) => {
             getItemText={getText}
             {...props}
         />
-  )
+    )
 }
 
 export default UsersSearchField

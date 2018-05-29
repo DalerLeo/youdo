@@ -22,120 +22,119 @@ const x = new Date()
 const TODAY = x.getDate()
 const ONE = 1
 const range = {
-  'Сегодня': {
-    startDate: (now) => {
-      return now
+    'Сегодня': {
+        startDate: (now) => {
+            return now
+        },
+        endDate: (now) => {
+            return now
+        }
     },
-    endDate: (now) => {
-      return now
-    }
-  },
 
-  'Вчера': {
-    startDate: (now) => {
-      return now.add(MINUS_ONE, 'days')
+    'Вчера': {
+        startDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        },
+        endDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        }
     },
-    endDate: (now) => {
-      return now.add(MINUS_ONE, 'days')
-    }
-  },
 
-  'Последние 7 дней': {
-    startDate: (now) => {
-      return now.add(MINUS_SEVEN, 'days')
+    'Последние 7 дней': {
+        startDate: (now) => {
+            return now.add(MINUS_SEVEN, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
     },
-    endDate: (now) => {
-      return now
-    }
-  },
 
-  'Текущий месяц': {
-    startDate: (now) => {
-      return now.add((TODAY * MINUS_ONE) + ONE, 'days')
-    },
-    endDate: (now) => {
-      return now
+    'Текущий месяц': {
+        startDate: (now) => {
+            return now.add((TODAY * MINUS_ONE) + ONE, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
     }
-  }
 }
 
 const rangeEn = {
-  'Today': {
-    startDate: (now) => {
-      return now
+    'Today': {
+        startDate: (now) => {
+            return now
+        },
+        endDate: (now) => {
+            return now
+        }
     },
-    endDate: (now) => {
-      return now
-    }
-  },
 
-  'Yesterday': {
-    startDate: (now) => {
-      return now.add(MINUS_ONE, 'days')
+    'Yesterday': {
+        startDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        },
+        endDate: (now) => {
+            return now.add(MINUS_ONE, 'days')
+        }
     },
-    endDate: (now) => {
-      return now.add(MINUS_ONE, 'days')
-    }
-  },
 
-  'Last 7 days': {
-    startDate: (now) => {
-      return now.add(MINUS_SEVEN, 'days')
+    'Last 7 days': {
+        startDate: (now) => {
+            return now.add(MINUS_SEVEN, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
     },
-    endDate: (now) => {
-      return now
-    }
-  },
 
-  'Current month': {
-    startDate: (now) => {
-      return now.add((TODAY * MINUS_ONE) + ONE, 'days')
-    },
-    endDate: (now) => {
-      return now
+    'Current month': {
+        startDate: (now) => {
+            return now.add((TODAY * MINUS_ONE) + ONE, 'days')
+        },
+        endDate: (now) => {
+            return now
+        }
     }
-  }
 }
 
 class DateToDateField extends React.Component {
-
-  constructor (props) {
-    super(props)
-    this.state = {
-      starting: false
+    constructor (props) {
+        super(props)
+        this.state = {
+            starting: false
+        }
+        this.handleOnRequestClose = this.handleOnRequestClose.bind(this)
     }
-    this.handleOnRequestClose = this.handleOnRequestClose.bind(this)
-  }
 
-  handleOnTouchTap = (event) => {
-    event.preventDefault()
+    handleOnTouchTap = (event) => {
+        event.preventDefault()
 
-    this.setState({
-      anchorEl: event.currentTarget,
-      open: !this.props.open
-    })
-  }
+        this.setState({
+            anchorEl: event.currentTarget,
+            open: !this.props.open
+        })
+    }
 
-  handleOnRequestClose = () => {
-    this.setState({
-      open: false
-    })
-  }
-  render () {
-    const {label, classes, input, meta: {error}} = this.props
-    const lang = getLanguage() === 'uz' ? 'ru' : getLanguage()
-    const {
+    handleOnRequestClose = () => {
+        this.setState({
+            open: false
+        })
+    }
+    render () {
+        const {label, classes, input, meta: {error}} = this.props
+        const lang = getLanguage() === 'uz' ? 'ru' : getLanguage()
+        const {
             open,
             anchorEl
         } = this.state
-    const startDate = dateFormat(_.get(input, ['value', 'fromDate']))
-    const endDate = dateFormat(_.get(input, ['value', 'toDate']))
-    const dateLabel = error || (!startDate)
+        const startDate = dateFormat(_.get(input, ['value', 'fromDate']))
+        const endDate = dateFormat(_.get(input, ['value', 'toDate']))
+        const dateLabel = error || (!startDate)
             ? ''
             : startDate === endDate
                 ? startDate
                 : `${startDate} - ${endDate}`
-    return (
+        return (
 
             <div>
                 <div className={classes.button}>
@@ -172,139 +171,139 @@ class DateToDateField extends React.Component {
                             lang={lang}
                             ranges={ lang === 'en' ? rangeEn : range }
                             onChange={ (which) => {
-                              input.onChange({fromDate: which.startDate, toDate: which.endDate})
+                                input.onChange({fromDate: which.startDate, toDate: which.endDate})
                             }}
                             theme={{
-                              Calendar: {width: 300},
-                              PredefinedRangesItemActive: {
-                                background: '#98a1b7',
-                                color: '#fff'
-                              },
-                              PredefinedRanges: {marginLeft: 10, marginTop: 10},
-                              DateRange: {
-                                background: '#ffffff'
-                              },
-                              MonthAndYear: {
-                                background: '#5d6474',
-                                color: '#fff'
-                              },
-                              MonthButton: {
-                                background: '#fff'
-                              },
-                              MonthArrowPrev: {
-                                borderRightColor: '#5d6474'
-                              },
-                              MonthArrowNext: {
-                                borderLeftColor: '#5d6474'
-                              },
-                              Weekday: {
-                                background: '#fff',
-                                color: '#5d6474'
-                              },
-                              Day: {
-                                transition: 'transform .1s ease, box-shadow .1s ease, background .1s ease'
-                              },
-                              DaySelected: {
-                                background: '#5d6474'
-                              },
-                              DayActive: {
-                                background: '#8e44ad',
-                                boxShadow: 'none'
-                              },
-                              DayInRange: {
-                                background: '#7e8698',
-                                color: '#fff'
-                              },
-                              DayHover: {
-                                background: '#98a1b7',
-                                color: '#fff'
-                              }
+                                Calendar: {width: 300},
+                                PredefinedRangesItemActive: {
+                                    background: '#98a1b7',
+                                    color: '#fff'
+                                },
+                                PredefinedRanges: {marginLeft: 10, marginTop: 10},
+                                DateRange: {
+                                    background: '#ffffff'
+                                },
+                                MonthAndYear: {
+                                    background: '#5d6474',
+                                    color: '#fff'
+                                },
+                                MonthButton: {
+                                    background: '#fff'
+                                },
+                                MonthArrowPrev: {
+                                    borderRightColor: '#5d6474'
+                                },
+                                MonthArrowNext: {
+                                    borderLeftColor: '#5d6474'
+                                },
+                                Weekday: {
+                                    background: '#fff',
+                                    color: '#5d6474'
+                                },
+                                Day: {
+                                    transition: 'transform .1s ease, box-shadow .1s ease, background .1s ease'
+                                },
+                                DaySelected: {
+                                    background: '#5d6474'
+                                },
+                                DayActive: {
+                                    background: '#8e44ad',
+                                    boxShadow: 'none'
+                                },
+                                DayInRange: {
+                                    background: '#7e8698',
+                                    color: '#fff'
+                                },
+                                DayHover: {
+                                    background: '#98a1b7',
+                                    color: '#fff'
+                                }
                             }}
                         />
                     </Popover>
                 </div>
             </div>
-    )
-  }
+        )
+    }
 }
 
 DateToDateField.defaultProps = {
-  format: 'DD.MM.YYYY'
+    format: 'DD.MM.YYYY'
 }
 
 DateToDateField.propTypes = {
-  format: PropTypes.string
+    format: PropTypes.string
 }
 
 export default injectSheet({
-  button: {
-    '& button': {
-      width: '100%'
+    button: {
+        '& button': {
+            width: '100%'
+        }
+    },
+    inputDateCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        width: '100% !important',
+        '& div': {
+            fontSize: '13px !important'
+        },
+        '& label': {
+            top: '20px !important',
+            lineHeight: '5px !important'
+        },
+        '& input': {
+            marginTop: '0 !important'
+        },
+        '& div:first-child': {
+            height: '45px !important'
+        },
+        '& div:first-child div:first-child': {
+            transform: 'translate(0px, 0px) !important'
+        }
+    },
+    clear: {
+        position: 'absolute',
+        bottom: '0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        borderRadius: '3px',
+        margin: '10px',
+        width: '140px',
+        '& > div': {
+            width: '100%'
+        },
+        '& button': {
+            margin: '0 5px!important',
+            width: '100%',
+            background: '#5d6474 !important',
+            minWidth: 'unset !important',
+            lineHeight: '0 !important',
+            height: '26px !important',
+            '& svg': {
+                width: '18px !important',
+                height: '18px !important'
+            },
+            '& span': {
+                textTransform: 'none !important',
+                color: '#fff !important'
+            }
+        }
+    },
+    submit: {
+        position: 'absolute',
+        bottom: '0',
+        backgroundColor: '#5d6474',
+        borderRadius: '3px',
+        margin: '10px',
+        width: '140px',
+        '& button': {
+            width: '100%',
+            '& span': {
+                textTransform: 'none !important',
+                color: '#fff !important'
+            }
+        }
     }
-  },
-  inputDateCustom: {
-    fontSize: '13px !important',
-    height: '45px !important',
-    marginTop: '7px',
-    width: '100% !important',
-    '& div': {
-      fontSize: '13px !important'
-    },
-    '& label': {
-      top: '20px !important',
-      lineHeight: '5px !important'
-    },
-    '& input': {
-      marginTop: '0 !important'
-    },
-    '& div:first-child': {
-      height: '45px !important'
-    },
-    '& div:first-child div:first-child': {
-      transform: 'translate(0px, 0px) !important'
-    }
-  },
-  clear: {
-    position: 'absolute',
-    bottom: '0',
-    display: 'flex',
-    justifyContent: 'space-between',
-    borderRadius: '3px',
-    margin: '10px',
-    width: '140px',
-    '& > div': {
-      width: '100%'
-    },
-    '& button': {
-      margin: '0 5px!important',
-      width: '100%',
-      background: '#5d6474 !important',
-      minWidth: 'unset !important',
-      lineHeight: '0 !important',
-      height: '26px !important',
-      '& svg': {
-        width: '18px !important',
-        height: '18px !important'
-      },
-      '& span': {
-        textTransform: 'none !important',
-        color: '#fff !important'
-      }
-    }
-  },
-  submit: {
-    position: 'absolute',
-    bottom: '0',
-    backgroundColor: '#5d6474',
-    borderRadius: '3px',
-    margin: '10px',
-    width: '140px',
-    '& button': {
-      width: '100%',
-      '& span': {
-        textTransform: 'none !important',
-        color: '#fff !important'
-      }
-    }
-  }
 })(DateToDateField)

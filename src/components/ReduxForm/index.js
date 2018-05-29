@@ -17,21 +17,21 @@ import RoleSearchField from './Role/RoleSearchField'
 import normalizePhone from './normalizers/normalizePhone'
 
 export {
-  ClientContactsField,
-  DateField,
-  TimeField,
-  CheckBox,
-  TextField,
-  DateToDateField,
-  SearchField,
-  ImageUploadField,
-  PermissionTimeSearchField,
-  Pagination,
-  UsersSearchField,
-  SphereSearchField,
-  PositionsSearchField,
-  UserStatusRadioButton,
-  RoleSearchField,
-  normalizePhone
+    ClientContactsField,
+    DateField,
+    TimeField,
+    CheckBox,
+    TextField,
+    DateToDateField,
+    SearchField,
+    ImageUploadField,
+    PermissionTimeSearchField,
+    Pagination,
+    UsersSearchField,
+    SphereSearchField,
+    PositionsSearchField,
+    UserStatusRadioButton,
+    RoleSearchField,
+    normalizePhone
 
 }

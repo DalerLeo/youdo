@@ -12,41 +12,41 @@ import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
-      wrapper: {
-        position: 'relative',
-        width: '100%',
-        '& .imageDropZone': {
-          border: '2px #efefef dashed',
-          cursor: 'pointer',
-          width: '200px',
-          height: '200px',
-          display: 'flex',
-          margin: '20px 0 0 auto',
-          justifyContent: 'space-around',
-          alignItems: 'center',
-          overflow: 'hidden',
-          '& img': {
+        wrapper: {
+            position: 'relative',
             width: '100%',
-            display: 'block'
-          },
-          '& p': {
-            fontSize: '12px',
-            textAlign: 'center'
-          }
+            '& .imageDropZone': {
+                border: '2px #efefef dashed',
+                cursor: 'pointer',
+                width: '200px',
+                height: '200px',
+                display: 'flex',
+                margin: '20px 0 0 auto',
+                justifyContent: 'space-around',
+                alignItems: 'center',
+                overflow: 'hidden',
+                '& img': {
+                    width: '100%',
+                    display: 'block'
+                },
+                '& p': {
+                    fontSize: '12px',
+                    textAlign: 'center'
+                }
+            }
+        },
+        error: {
+            textAlign: 'center',
+            fontWeight: '600',
+            color: '#f44336'
         }
-      },
-      error: {
-        textAlign: 'center',
-        fontWeight: '600',
-        color: '#f44336'
-      }
     }),
     withState('fileUploadLoading', 'setFileUploadLoading', false),
     withState('fileUploadErrors', 'setFileUploadErrors', null)
 )
 
 const ImageUploadField = ({...props}) => {
-  const {
+    const {
         classes,
         setFileUploadLoading,
         fileUploadLoading,
@@ -56,63 +56,63 @@ const ImageUploadField = ({...props}) => {
         meta: {error}
     } = props
 
-  const inputFile = _.get(input, ['value', 'file'])
-  const onDrop = (files) => {
-    const formData = new FormData()
-    const firstElement = 0
-    setFileUploadLoading(true)
-    formData.append('file', files[firstElement])
-    return axios().post(PATH.FILE_UPLOAD, formData)
+    const inputFile = _.get(input, ['value', 'file'])
+    const onDrop = (files) => {
+        const formData = new FormData()
+        const firstElement = 0
+        setFileUploadLoading(true)
+        formData.append('file', files[firstElement])
+        return axios().post(PATH.FILE_UPLOAD, formData)
             .then((response) => {
-              setFileUploadLoading(false)
-              setFileUploadErrors(null)
-              input.onChange(response.data.id)
+                setFileUploadLoading(false)
+                setFileUploadErrors(null)
+                input.onChange(response.data.id)
             })
             .catch((newError) => {
-              const errorData = _.get(newError, ['response', 'data'])
-              setFileUploadErrors(errorData.file[firstElement])
-              setFileUploadLoading(false)
-              input.onChange(null)
+                const errorData = _.get(newError, ['response', 'data'])
+                setFileUploadErrors(errorData.file[firstElement])
+                setFileUploadLoading(false)
+                input.onChange(null)
             })
-  }
-
-  const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
-    const zero = 0
-    if (fileUploadLoading) {
-      return (<Loader size={0.5}/>)
     }
 
-    if (fileUploadErrors !== null) {
-      return (<div className={classes.error}>{t('Ошибка')}: {fileUploadErrors}</div>)
-    }
+    const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
+        const zero = 0
+        if (fileUploadLoading) {
+            return (<Loader size={0.5}/>)
+        }
 
-    if (error) {
-      return (<div className={classes.error}>{t('Ошибка')}: {error}</div>)
-    }
+        if (fileUploadErrors !== null) {
+            return (<div className={classes.error}>{t('Ошибка')}: {fileUploadErrors}</div>)
+        }
 
-    if (acceptedFiles.length === zero) {
-      if (inputFile) {
-        return (
+        if (error) {
+            return (<div className={classes.error}>{t('Ошибка')}: {error}</div>)
+        }
+
+        if (acceptedFiles.length === zero) {
+            if (inputFile) {
+                return (
                     <img src={inputFile} />
-        )
-      }
-      return (
+                )
+            }
+            return (
                 <p>
                     <ImageIcon style={{
-                      color: '#b9b9b9',
-                      width: '50px',
-                      height: '50px',
-                      display: 'block',
-                      margin: 'auto'
+                        color: '#b9b9b9',
+                        width: '50px',
+                        height: '50px',
+                        display: 'block',
+                        margin: 'auto'
                     }}/>
                     {t('Добавьте фото')}
                 </p>)
+        }
+        const url = acceptedFiles[zero].preview
+        return (<img src={url}/>)
     }
-    const url = acceptedFiles[zero].preview
-    return (<img src={url}/>)
-  }
 
-  return (
+    return (
         <div className={classes.wrapper}>
             <Dropzone
                 onDrop={onDrop}
@@ -121,7 +121,7 @@ const ImageUploadField = ({...props}) => {
                 {dropZoneView}
             </Dropzone>
         </div>
-  )
+    )
 }
 
 export default enhance(ImageUploadField)

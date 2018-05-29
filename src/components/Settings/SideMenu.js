@@ -9,69 +9,69 @@ import {getMenus} from '../SidebarMenu/MenuItems'
 
 const enhance = compose(
     injectSheet({
-      leftPanel: {
-        backgroundColor: '#f2f5f8',
-        flexBasis: '225px',
-        minWidth: '225px',
-        position: 'relative'
-      },
-      wrapper: {
-        padding: '30px 30px 20px',
-        height: '100%',
-        overflowY: 'auto',
-        '&::-webkit-scrollbar': {
-          width: '0'
+        leftPanel: {
+            backgroundColor: '#f2f5f8',
+            flexBasis: '225px',
+            minWidth: '225px',
+            position: 'relative'
         },
-        '&:hover': {
-          '&::-webkit-scrollbar': {
-            width: '4px !important'
-          }
+        wrapper: {
+            padding: '30px 30px 20px',
+            height: '100%',
+            overflowY: 'auto',
+            '&::-webkit-scrollbar': {
+                width: '0'
+            },
+            '&:hover': {
+                '&::-webkit-scrollbar': {
+                    width: '4px !important'
+                }
+            },
+            '& ul': {
+                fontWeight: 'bold',
+                marginBottom: '20px'
+            },
+            '& li': {
+                paddingLeft: '20px',
+                paddingTop: '10px',
+                fontWeight: '400',
+                '&:last-child': {
+                    paddingBottom: '10px'
+                }
+            }
         },
-        '& ul': {
-          fontWeight: 'bold',
-          marginBottom: '20px'
+        active: {
+            color: '#12aaeb'
         },
-        '& li': {
-          paddingLeft: '20px',
-          paddingTop: '10px',
-          fontWeight: '400',
-          '&:last-child': {
-            paddingBottom: '10px'
-          }
+        simple: {
+            color: '#333'
         }
-      },
-      active: {
-        color: '#12aaeb'
-      },
-      simple: {
-        color: '#333'
-      }
     }),
     connect((state) => {
-      const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
-        return _.get(item, 'codename')
-      })
-      const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
-      return {
-        permissions,
-        isAdmin
-      }
+        const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+            return _.get(item, 'codename')
+        })
+        const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
+        return {
+            permissions,
+            isAdmin
+        }
     })
 )
 
 const SettingsSideMenu = enhance((props) => {
-  const {classes, currentUrl, permissions, isAdmin} = props
-  const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Settings'})
-  const sortedMenu = _.groupBy(MenuItems.childs, 'section')
-  return (
+    const {classes, currentUrl, permissions, isAdmin} = props
+    const MenuItems = _.find(getMenus(permissions, isAdmin), {'section': 'Settings'})
+    const sortedMenu = _.groupBy(MenuItems.childs, 'section')
+    return (
         <div className={classes.leftPanel}>
             <div className={classes.wrapper}>
                 {_.map(sortedMenu, (item, index) => {
-                  return (
+                    return (
                         <ul key={index}>
                             {index}
                             {_.map(item, (object, i) => {
-                              return (
+                                return (
                                     <li key={i}>
                                         <Link to={object.url}>
                                             <span className={object.url === currentUrl ? classes.active : classes.simple}>
@@ -79,18 +79,18 @@ const SettingsSideMenu = enhance((props) => {
                                             </span>
                                         </Link>
                                     </li>
-                              )
+                                )
                             })}
                         </ul>
-                  )
+                    )
                 })}
             </div>
         </div>
-  )
+    )
 })
 
 SettingsSideMenu.propTypes = {
-  currentUrl: PropTypes.string.isRequired
+    currentUrl: PropTypes.string.isRequired
 }
 
 export default SettingsSideMenu

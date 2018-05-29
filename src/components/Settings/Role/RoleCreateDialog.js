@@ -18,44 +18,44 @@ import formValidate from '../../../helpers/formValidate'
 export const ROLE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
-      dialog: {
-        overflowY: 'auto'
-      },
-      load: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        background: '#fff',
-        alignItems: 'center',
-        zIndex: '999',
-        display: 'flex',
-        justifyContent: 'center'
-      },
-      perms: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        '& > div': {
-          flexBasis: '50%',
-          maxWidth: '50%',
-          '&:nth-child(even)': {
-            textAlign: 'right'
-          }
+        dialog: {
+            overflowY: 'auto'
+        },
+        load: {
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            background: '#fff',
+            alignItems: 'center',
+            zIndex: '999',
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        perms: {
+            display: 'flex',
+            flexWrap: 'wrap',
+            '& > div': {
+                flexBasis: '50%',
+                maxWidth: '50%',
+                '&:nth-child(even)': {
+                    textAlign: 'right'
+                }
+            }
         }
-      }
     })),
     reduxForm({
-      form: 'RoleCreateForm',
-      enableReinitialize: true
+        form: 'RoleCreateForm',
+        enableReinitialize: true
     })
 )
 const RoleCreateDialog = enhance((props) => {
-  const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate, data, dataLoading} = props
-  const formNames = ['name', 'groups']
-  const onSubmit = handleSubmit(() => props.onSubmit()
+    const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate, data, dataLoading} = props
+    const formNames = ['name', 'groups']
+    const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-          formValidate(formNames, dispatch, error)
+            formValidate(formNames, dispatch, error)
         }))
-  return (
+    return (
         <Dialog
             modal={true}
             open={open}
@@ -86,16 +86,16 @@ const RoleCreateDialog = enhance((props) => {
                             />
                             <div className={classes.perms}>
                                 {_.map(data, (item) => {
-                                  const name = userGroupFormat(_.get(item, 'name'))
-                                  const id = _.get(item, 'id')
-                                  return (
-                                    <div key={id}>
-                                        <Field
-                                            name={'perms[' + id + ']'}
-                                            label={name}
-                                            component={CheckBox}/>
-                                    </div>
-                                  )
+                                    const name = userGroupFormat(_.get(item, 'name'))
+                                    const id = _.get(item, 'id')
+                                    return (
+                                        <div key={id}>
+                                            <Field
+                                                name={'perms[' + id + ']'}
+                                                label={name}
+                                                component={CheckBox}/>
+                                        </div>
+                                    )
                                 })}
                             </div>
                         </div>
@@ -112,16 +112,16 @@ const RoleCreateDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-  )
+    )
 })
 RoleCreateDialog.propTypes = {
-  isUpdate: PropTypes.bool,
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+    isUpdate: PropTypes.bool,
+    open: PropTypes.bool.isRequired,
+    onClose: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired
 }
 RoleCreateDialog.defaultProps = {
-  isUpdate: false
+    isUpdate: false
 }
 export default RoleCreateDialog
