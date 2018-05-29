@@ -90,6 +90,12 @@ const rootReducer = combineReducers({
     update: createThunkReducer(actionTypes.COMPANIES_UPDATE),
     item: createThunkReducer(actionTypes.COMPANIES_ITEM)
   }),
+  post: combineReducers({
+    create: createThunkReducer(actionTypes.POST_CREATE),
+    list: createThunkReducer(actionTypes.POST_LIST),
+    update: createThunkReducer(actionTypes.POST_UPDATE),
+    item: createThunkReducer(actionTypes.POST_ITEM)
+  }),
   skills: combineReducers({
     create: createThunkReducer(actionTypes.SKILLS_CREATE),
     list: createThunkReducer(actionTypes.SKILLS_LIST),

@@ -4,7 +4,7 @@ import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout/index'
-import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
+import {compose, withPropsOnChange, withState, withHandlers, pure} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
 import filterHelper from '../../../helpers/filter'
 import toBoolean from '../../../helpers/toBoolean'
@@ -173,7 +173,8 @@ const enhance = compose(
         const {filter} = props
         hashHistory.push({pathname: sprintf(ROUTER.ROLE_ITEM_PATH, _.toNumber(id)), query: filter.getParams()})
       }
-    })
+    }),
+  pure
 )
 
 const RoleList = enhance((props) => {

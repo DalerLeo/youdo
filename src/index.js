@@ -9,7 +9,6 @@ import {syncHistoryWithStore} from 'react-router-redux'
 import injectTapEventPlugin from 'react-tap-event-plugin'
 import routes from './routes'
 import createStore from './store/createStore'
-import 'antd/dist/antd.css'
 import './styles'
 
 const store = createStore()

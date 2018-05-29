@@ -19,7 +19,6 @@
     "useragent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0"
   },
   "dependencies": {
-    "antd": "^3.5.3",
     "axios": "^0.15.3",
     "classnames": "^2.2.5",
     "intl": "^1.2.5",
@@ -35,7 +34,6 @@
     "react-flexbox-grid": "^1.0.2",
     "react-google-maps": "^7.0.0",
     "react-highcharts": "^12.0.0",
-    "react-hot-loader": "^4.2.0",
     "react-infinite-scroller": "^1.0.14",
     "react-input-mask": "^1.2.2",
     "react-jss": "^5.4.0",
@@ -55,8 +53,7 @@
     "redux-promise-middleware": "^4.2.0",
     "redux-thunk": "^2.1.0",
     "rxjs": "^5.3.0",
-    "sprintf": "^0.1.5",
-    "webpack-hot-middleware": "^2.22.2"
+    "sprintf": "^0.1.5"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -91,7 +88,7 @@
     "webpack-dev-server": "2.11.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --progress --inline --hot",
+    "start": "webpack-dev-server --progress --inline",
     "build": "webpack",
     "test": "mocha --timeout 15000 test/AuthSpec.js",
     "lint": "eslint src/"

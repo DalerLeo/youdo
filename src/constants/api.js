@@ -134,7 +134,7 @@ export const ROLE_PRIMARY = 'currency_primary'
 export const ROLE_RATE = `/${ROLE}/%d/permissions/`
 export const ROLE_PERMISSION = 'main/permissions/'
 
-export const POST = 'main/jobs'
+export const POST = 'main/position'
 export const POST_CREATE = `/${POST}/`
 export const POST_LIST = `/${POST}/`
 export const POST_ITEM = `/${POST}/%d/`

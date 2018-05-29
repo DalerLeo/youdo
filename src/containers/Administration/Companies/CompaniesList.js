@@ -1,13 +1,15 @@
 import React from 'react'
 import _ from 'lodash'
+import fp from 'lodash/fp'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withHandlers, mapPropsStream, pure} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
 import filterHelper from '../../../helpers/filter'
+import {compareFilterByProps} from '../../../helpers/get'
 import toBoolean from '../../../helpers/toBoolean'
 import {
     COMPANIES_CREATE_DIALOG_OPEN,
@@ -25,44 +27,55 @@ import {
 import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
+const mapStateToProps = (state, props) => {
+  const query = _.get(props, ['location', 'query'])
+  const pathname = _.get(props, ['location', 'pathname'])
+  const detail = _.get(state, ['companies', 'item', 'data'])
+  const detailLoading = _.get(state, ['companies', 'item', 'loading'])
+  const createLoading = _.get(state, ['companies', 'create', 'loading'])
+  const updateLoading = _.get(state, ['companies', 'update', 'loading'])
+  const list = _.get(state, ['companies', 'list', 'data'])
+  const listLoading = _.get(state, ['companies', 'list', 'loading'])
+  const createForm = _.get(state, ['form', 'CompaniesCreateForm'])
+  const filter = filterHelper(list, pathname, query)
+
+  return {
+    list,
+    listLoading,
+    detail,
+    detailLoading,
+    createLoading,
+    updateLoading,
+    filter,
+    createForm
+  }
+}
+
+const mapDispatchToProps = {
+  companiesCreateAction,
+  companiesUpdateAction,
+  companiesListFetchAction,
+  companiesDeleteAction,
+  companiesItemFetchAction
+}
 const enhance = compose(
-    connect((state, props) => {
-      const query = _.get(props, ['location', 'query'])
-      const pathname = _.get(props, ['location', 'pathname'])
-      const detail = _.get(state, ['companies', 'item', 'data'])
-      const detailLoading = _.get(state, ['companies', 'item', 'loading'])
-      const createLoading = _.get(state, ['companies', 'create', 'loading'])
-      const updateLoading = _.get(state, ['companies', 'update', 'loading'])
-      const list = _.get(state, ['companies', 'list', 'data'])
-      const listLoading = _.get(state, ['companies', 'list', 'loading'])
-      const createForm = _.get(state, ['form', 'CompaniesCreateForm'])
-      const filter = filterHelper(list, pathname, query)
+    connect(mapStateToProps, mapDispatchToProps),
 
-      return {
-        list,
-        listLoading,
-        detail,
-        detailLoading,
-        createLoading,
-        updateLoading,
-        filter,
-        createForm
-      }
-    }),
-    withPropsOnChange((props, nextProps) => {
-      return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-    }, ({dispatch, filter}) => {
-      dispatch(companiesListFetchAction(filter))
-    }),
+  mapPropsStream((props$) => {
+    props$
+      .distinctUntilChanged(compareFilterByProps)
+      .subscribe(({filter, ...props}) => props.companiesListFetchAction(filter))
 
-    withPropsOnChange((props, nextProps) => {
-      const companyId = _.get(nextProps, ['params', 'companyId'])
-      return companyId && _.get(props, ['params', 'companyId']) !== companyId
-    }, ({dispatch, params}) => {
-      const companyId = _.toInteger(_.get(params, 'companyId'))
-      companyId && dispatch(companiesItemFetchAction(companyId))
-    }),
+    props$
+      .filter(fp.get('params.companyId'))
+      .distinctUntilChanged(null, ('params.companyId'))
+      .subscribe(props => {
+        const companyId = fp.flow(fp.get('params.companyId'), fp.toInteger)
+        props.companiesItemFetchAction(companyId(props))
+      })
 
+    return props$
+  }),
     withHandlers({
       handleActionEdit: props => () => {
         return null
@@ -82,7 +95,7 @@ const enhance = compose(
       },
       handleSendConfirmDialog: props => () => {
         const {dispatch, detail, filter, location: {pathname}} = props
-        dispatch(companiesDeleteAction(detail.id))
+        props.companiesDeleteAction(detail.id)
                 .then(() => {
                   hashHistory.push({pathname, query: filter.getParams({[COMPANIES_DELETE_DIALOG_OPEN]: false})})
                   dispatch(companiesListFetchAction(filter))
@@ -143,7 +156,8 @@ const enhance = compose(
                   dispatch(companiesListFetchAction(filter))
                 })
       }
-    })
+    }),
+  pure
 )
 
 const CompaniesList = enhance((props) => {

@@ -17,24 +17,22 @@ import formValidate from '../../../helpers/formValidate'
 export const POST_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
 const enhance = compose(
-    injectSheet(_.merge(MainStyles, {
-      loader: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        background: '#fff',
-        top: '0',
-        left: '0',
-        alignItems: 'center',
-        zIndex: '999',
-        textAlign: 'center',
-        display: ({loading}) => loading ? 'flex' : 'none'
-      }
-    })),
-    reduxForm({
-      form: 'PostCreateForm',
-      enableReinitialize: true
-    })
+  injectSheet(_.merge(MainStyles, {
+    loading: {
+      width: '100%',
+      height: '100px',
+      background: '#fff',
+      alignItems: 'center',
+      zIndex: '999',
+      justifyContent: 'center',
+      textAlign: 'center',
+      display: 'flex'
+    }
+  })),
+  reduxForm({
+    form: 'PostCreateForm',
+    enableReinitialize: true
+  })
 )
 
 const PostCreateDialog = enhance((props) => {
@@ -60,33 +58,36 @@ const PostCreateDialog = enhance((props) => {
                     <CloseIcon color="#666666"/>
                 </IconButton>
             </div>
-            <div className={classes.bodyContent}>
-                <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
-                    <div className={classes.loader}>
-                        <Loader size={0.75}/>
-                    </div>
-                    <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
-                        <div className={classes.field}>
-                            <Field
-                                name="name"
-                                component={TextField}
-                                className={classes.inputFieldCustom}
-                                label={t('Наименование')}
-                                fullWidth={true}
-                            />
-                        </div>
-                    </div>
-                    <div className={classes.bottomButton}>
-                        <FlatButton
-                            label={t('Сохранить')}
-                            className={classes.actionButton}
-                            labelStyle={{fontSize: '13px'}}
-                            primary={true}
-                            type="submit"
-                        />
-                    </div>
-                </form>
-            </div>
+          {loading
+          ? <div className={classes.loading}>
+                <Loader size={0.75}/>
+              </div>
+          : <div className={classes.bodyContent}>
+              <form onSubmit={onSubmit} className={classes.form} style={{minHeight: 'auto'}}>
+
+                <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
+                  <div className={classes.field}>
+                    <Field
+                      name="name"
+                      component={TextField}
+                      className={classes.inputFieldCustom}
+                      label={t('Наименование')}
+                      fullWidth={true}
+                    />
+                  </div>
+                </div>
+                <div className={classes.bottomButton}>
+                  <FlatButton
+                    label={t('Сохранить')}
+                    className={classes.actionButton}
+                    labelStyle={{fontSize: '13px'}}
+                    primary={true}
+                    type="submit"
+                  />
+                </div>
+              </form>
+            </div>}
+
         </Dialog>
   )
 })

@@ -16,7 +16,7 @@ import {
     POST_UPDATE_DIALOG_OPEN,
     POST_DELETE_DIALOG_OPEN,
     PostGridList
-} from '../../../components/Settings/Post/index'
+} from '../../../components/Settings/Post'
 import {
     postCreateAction,
     postUpdateAction,
@@ -71,7 +71,7 @@ const enhance = compose(
           .filter(fp.get('params.postId'))
           .distinctUntilChanged(null, fp.get('params.postId'))
           .subscribe(props => {
-            const postId = fp.get('params.postId', props)
+            const postId = fp.flow(fp.get('params.postId'), fp.toInteger)(props)
             props.postItemFetchAction(postId)
           })
 
