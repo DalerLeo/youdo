@@ -21,81 +21,81 @@ import t from '../../../helpers/translate'
 import {getBackendNames, getExperienceText, getResumeStatus} from '../../../helpers/hrcHelpers'
 
 const listHeader = [
-    {
-        sorting: true,
-        xs: 3,
-        name: 'fullName',
-        title: t('Ф.И.О.')
-    },
-    {
-        sorting: true,
-        name: 'skills',
-        xs: 4,
-        title: t('Навыки')
-    },
-    {
-        sorting: true,
-        name: 'experience',
-        xs: 2,
-        title: t('Опыт работы')
-    },
-    {
-        sorting: true,
-        xs: 2,
-        name: 'createdDate',
-        title: t('Дата добавления')
-    },
-    {
-        sorting: true,
-        alignRight: true,
-        xs: 1,
-        name: 'status',
-        title: t('Статус')
-    }
+  {
+    sorting: true,
+    xs: 3,
+    name: 'fullName',
+    title: t('Ф.И.О.')
+  },
+  {
+    sorting: true,
+    name: 'skills',
+    xs: 4,
+    title: t('Навыки')
+  },
+  {
+    sorting: true,
+    name: 'experience',
+    xs: 2,
+    title: t('Опыт работы')
+  },
+  {
+    sorting: true,
+    xs: 2,
+    name: 'createdDate',
+    title: t('Дата добавления')
+  },
+  {
+    sorting: true,
+    alignRight: true,
+    xs: 1,
+    name: 'status',
+    title: t('Статус')
+  }
 ]
 
 const enhance = compose(
     injectSheet({
-        header: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: '60px',
-            '& h2': {
-                fontWeight: '600',
-                fontSize: '18px'
-            }
-        },
-        listRow: {
-            position: 'relative',
-            '& > a': {
-                display: 'flex',
-                alignItems: 'center',
-                position: 'absolute',
-                top: '0',
-                left: '-30px',
-                right: '-30px',
-                bottom: '0',
-                padding: '0 30px',
-                '& > div:first-child': {
-                    paddingLeft: '0'
-                },
-                '& > div:last-child': {
-                    paddingRight: '0'
-                }
-            }
-        },
-        buttons: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            textAlign: 'right'
+      header: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: '60px',
+        '& h2': {
+          fontWeight: '600',
+          fontSize: '18px'
         }
+      },
+      listRow: {
+        position: 'relative',
+        '& > a': {
+          display: 'flex',
+          alignItems: 'center',
+          position: 'absolute',
+          top: '0',
+          left: '-30px',
+          right: '-30px',
+          bottom: '0',
+          padding: '0 30px',
+          '& > div:first-child': {
+            paddingLeft: '0'
+          },
+          '& > div:last-child': {
+            paddingRight: '0'
+          }
+        }
+      },
+      buttons: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        textAlign: 'right'
+      }
     })
 )
 
 const ResumeGridList = enhance((props) => {
-    const {
+  const {
         filter,
         filterDialog,
         createDialog,
@@ -111,7 +111,7 @@ const ResumeGridList = enhance((props) => {
         dispatch
     } = props
 
-    const resumefilterDialog = (
+  const resumefilterDialog = (
         <ResumeFilterForm
             initialValues={filterDialog.initialValues}
             filter={filter}
@@ -119,7 +119,7 @@ const ResumeGridList = enhance((props) => {
         />
     )
 
-    const resumeDetail = (
+  const resumeDetail = (
         <ResumeDetail
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
@@ -130,18 +130,18 @@ const ResumeGridList = enhance((props) => {
             dispatch={dispatch}/>
     )
 
-    const resumeList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const status = _.get(item, 'status')
-        const skills = _.map(_.get(item, ['skills']), (obj) => _.get(obj, 'name'))
-        const experience = getExperienceText(_.get(item, ['totalExp']))
-        const fullName = _.get(item, ['fullName'])
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
-        return (
+  const resumeList = _.map(_.get(listData, 'data'), (item) => {
+    const id = _.get(item, 'id')
+    const status = _.get(item, 'status')
+    const skills = _.map(_.get(item, ['skills']), (obj) => _.get(obj, 'name'))
+    const experience = getExperienceText(_.get(item, ['totalExp']))
+    const fullName = _.get(item, ['fullName'])
+    const createdDate = dateFormat(_.get(item, 'createdDate'))
+    return (
             <Row key={id} className={classes.listRow} style={{alignItems: 'center'}}>
                 <Link to={{
-                    pathname: sprintf(ROUTES.HR_RESUME_ITEM_PATH, id),
-                    query: filter.getParams()
+                  pathname: sprintf(ROUTES.HR_RESUME_ITEM_PATH, id),
+                  query: filter.getParams()
                 }}>
                     <Col xs={3}>{fullName}</Col>
                     <Col xs={4}>{_.join(skills, ', ') || t('Не указаны')}</Col>
@@ -152,16 +152,16 @@ const ResumeGridList = enhance((props) => {
                     </Col>
                 </Link>
             </Row>
-        )
-    })
+    )
+  })
 
-    const list = {
-        header: listHeader,
-        list: resumeList,
-        loading: _.get(listData, 'listLoading')
-    }
+  const list = {
+    header: listHeader,
+    list: resumeList,
+    loading: _.get(listData, 'listLoading')
+  }
 
-    return (
+  return (
         <Container>
             <div className={classes.header}>
                 <h2>{t('Анкеты')}</h2>
@@ -216,33 +216,33 @@ const ResumeGridList = enhance((props) => {
                 open={confirmDialog.openConfirmDialog}
             />}
         </Container>
-    )
+  )
 })
 
 ResumeGridList.propTypes = {
-    filter: PropTypes.object.isRequired,
-    listData: PropTypes.object,
-    detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+  filter: PropTypes.object.isRequired,
+  listData: PropTypes.object,
+  detailData: PropTypes.object,
+  createDialog: PropTypes.shape({
+    createLoading: PropTypes.bool.isRequired,
+    openCreateDialog: PropTypes.bool.isRequired,
+    handleOpenCreateDialog: PropTypes.func.isRequired,
+    handleCloseCreateDialog: PropTypes.func.isRequired,
+    handleSubmitCreateDialog: PropTypes.func.isRequired
+  }).isRequired,
+  confirmDialog: PropTypes.shape({
+    openConfirmDialog: PropTypes.bool.isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
+    handleCloseConfirmDialog: PropTypes.func.isRequired,
+    handleSendConfirmDialog: PropTypes.func.isRequired
+  }).isRequired,
+  updateDialog: PropTypes.shape({
+    updateLoading: PropTypes.bool.isRequired,
+    openUpdateDialog: PropTypes.bool.isRequired,
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleCloseUpdateDialog: PropTypes.func.isRequired,
+    handleSubmitUpdateDialog: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default ResumeGridList

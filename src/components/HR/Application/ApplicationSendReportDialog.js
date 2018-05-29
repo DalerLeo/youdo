@@ -14,110 +14,110 @@ import {BORDER_STYLE} from '../../../constants/styleConstants'
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            overflowY: 'auto'
-        },
-        popUp: {
-            color: '#333 !important',
-            overflowY: 'unset !important',
-            overflowX: 'unset !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
-            height: '100%',
-            maxHeight: 'none !important',
-            marginBottom: '64px'
-        },
-        titleContent: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: BORDER_STYLE,
-            padding: '0 10px 0 30px',
-            height: '60px',
-            zIndex: '999'
-        },
-        inContent: {
-            padding: '20px 30px',
-            color: '#333'
-        },
-        form: {
-            position: 'relative'
-        },
-        bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '10px',
-            zIndex: '999',
-            borderTop: '1px solid #efefef',
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: '#129fdd',
-                verticalAlign: 'inherit !important'
-            }
-        },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& > div:first-child': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        textFieldArea: {
-            top: '-5px !important',
-            lineHeight: '20px !important',
-            fontSize: '13px !important'
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
-        },
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
+      dialog: {
+        overflowY: 'auto'
+      },
+      popUp: {
+        color: '#333 !important',
+        overflowY: 'unset !important',
+        overflowX: 'unset !important',
+        fontSize: '13px !important',
+        position: 'relative',
+        padding: '0 !important',
+        height: '100%',
+        maxHeight: 'none !important',
+        marginBottom: '64px'
+      },
+      titleContent: {
+        background: '#fff',
+        color: '#333',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: BORDER_STYLE,
+        padding: '0 10px 0 30px',
+        height: '60px',
+        zIndex: '999'
+      },
+      inContent: {
+        padding: '20px 30px',
+        color: '#333'
+      },
+      form: {
+        position: 'relative'
+      },
+      bottomButton: {
+        bottom: '0',
+        left: '0',
+        right: '0',
+        padding: '10px',
+        zIndex: '999',
+        borderTop: '1px solid #efefef',
+        background: '#fff',
+        textAlign: 'right',
+        '& span': {
+          fontSize: '13px !important',
+          fontWeight: '600 !important',
+          color: '#129fdd',
+          verticalAlign: 'inherit !important'
         }
+      },
+      inputFieldCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& > div:first-child': {
+          fontSize: '13px !important'
+        },
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
+        },
+        '& input': {
+          marginTop: '0 !important'
+        }
+      },
+      textFieldArea: {
+        top: '-5px !important',
+        lineHeight: '20px !important',
+        fontSize: '13px !important'
+      },
+      actionButton: {
+        fontSize: '13px !important',
+        margin: '0 !important'
+      },
+      loader: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: '#fff',
+        top: '0',
+        left: '0',
+        alignItems: 'center',
+        zIndex: '999',
+        textAlign: 'center',
+        display: ({loading}) => loading ? 'flex' : 'none'
+      }
     }),
     reduxForm({
-        form: 'ApplicationSendReportForm',
-        enableReinitialize: true
+      form: 'ApplicationSendReportForm',
+      enableReinitialize: true
     }),
     withState('currentFocused', 'updateFocus', null)
 )
 
 const ApplicationSendReportDialog = enhance((props) => {
-    const {
+  const {
         open,
         loading,
         handleSubmit,
         onClose,
         classes
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit())
-    return (
+  const onSubmit = handleSubmit(() => props.onSubmit())
+  return (
         <Dialog
             modal={true}
             open={open}
@@ -165,14 +165,14 @@ const ApplicationSendReportDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-    )
+  )
 })
 
 ApplicationSendReportDialog.propTyeps = {
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 export default ApplicationSendReportDialog

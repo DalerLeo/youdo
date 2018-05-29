@@ -8,40 +8,40 @@ import t from '../../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
-        wrapper: {
-            marginTop: '5px'
+      wrapper: {
+        marginTop: '5px'
+      },
+      title: {
+        fontWeight: '600',
+        paddingBottom: '10px'
+      },
+      radioButton: {
+        '& svg': {
+          width: '20px !important',
+          height: '20px !important'
         },
-        title: {
-            fontWeight: '600',
-            paddingBottom: '10px'
-        },
-        radioButton: {
-            '& svg': {
-                width: '20px !important',
-                height: '20px !important'
-            },
-            '& label': {
-                top: '-2px',
-                marginLeft: '-7px'
-            }
+        '& label': {
+          top: '-2px',
+          marginLeft: '-7px'
         }
+      }
     }),
     connect((state) => {
-        const contacts = _.get(state, ['client', 'contacts', 'data'])
-        const contactsLoading = _.get(state, ['client', 'contacts', 'loading'])
-        return {
-            contacts,
-            contactsLoading
-        }
+      const contacts = _.get(state, ['client', 'contacts', 'data'])
+      const contactsLoading = _.get(state, ['client', 'contacts', 'loading'])
+      return {
+        contacts,
+        contactsLoading
+      }
     })
 )
 
 const ClientContactsField = enhance((props) => {
-    const {classes, contacts, contactsLoading, input, meta: {error}, extraText} = props
-    if (!contacts && !contactsLoading) {
-        return null
-    }
-    return (
+  const {classes, contacts, contactsLoading, input, meta: {error}, extraText} = props
+  if (!contacts && !contactsLoading) {
+    return null
+  }
+  return (
         <div className={classes.wrapper}>
             {extraText && <div className={classes.title}>{extraText}</div>}
             {contactsLoading && <div>{t('Загрузка')}...</div>}
@@ -53,9 +53,9 @@ const ClientContactsField = enhance((props) => {
                 onChange={input.onChange}
                 defaultSelected={input.value} >
                 {_.map(contacts, (item) => {
-                    const id = _.get(item, 'id')
-                    const value = _.get(item, 'name') + ' ' + _.get(item, 'telephone') + ' ' + _.get(item, 'email')
-                    return (
+                  const id = _.get(item, 'id')
+                  const value = _.get(item, 'name') + ' ' + _.get(item, 'telephone') + ' ' + _.get(item, 'email')
+                  return (
                         <RadioButton
                             key={id}
                             value={id}
@@ -63,11 +63,11 @@ const ClientContactsField = enhance((props) => {
                             iconStyle={{width: 20, height: 20}}
                             disableTouchRipple={true}
                         />
-                    )
+                  )
                 })}
             </RadioButtonGroup>}
         </div>
-    )
+  )
 })
 
 export default ClientContactsField

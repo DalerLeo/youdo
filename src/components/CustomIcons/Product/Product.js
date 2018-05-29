@@ -2,7 +2,7 @@ import React from 'react'
 import SvgIcon from 'material-ui/SvgIcon'
 
 const Product = (props) => {
-    return (
+  return (
         <SvgIcon {...props} fill="#000000" height="24" viewBox="244 244 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
             <g>
                 <path d="M247,250.3l1.9,0.8l8.7-4.1c0.1,0,0.1-0.1,0.1-0.2s0-0.1-0.1-0.2l-1.5-0.7c0,0-0.1,0-0.1,0l-8.9,3.9 c-0.1,0-0.1,0.1-0.1,0.2S247,250.2,247,250.3z"/>
@@ -12,7 +12,7 @@ const Product = (props) => {
             </g>
         </SvgIcon>
 
-    )
+  )
 }
 
 export default Product

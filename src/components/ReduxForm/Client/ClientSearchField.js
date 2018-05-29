@@ -10,29 +10,29 @@ import {connect} from 'react-redux'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const setItemAction = (data, loading) => {
-    return {
-        type: actionTypes.CLIENT_CONTACTS,
-        data: data,
-        loading: loading
-    }
+  return {
+    type: actionTypes.CLIENT_CONTACTS,
+    data: data,
+    loading: loading
+  }
 }
 
 const getItem = (id, dispatch) => {
-    dispatch(setItemAction(null, true))
+  dispatch(setItemAction(null, true))
 
-    return axios().get(sprintf(PATH.CLIENT_ITEM, id))
+  return axios().get(sprintf(PATH.CLIENT_ITEM, id))
         .then(({data}) => {
-            dispatch(setItemAction(_.get(data, 'contacts'), false))
-            return Promise.resolve(toCamelCase(data))
+          dispatch(setItemAction(_.get(data, 'contacts'), false))
+          return Promise.resolve(toCamelCase(data))
         })
 }
 
 const ClientSearchField = connect()((props) => {
-    const {dispatch, params, pageSize} = props
-    const test = (id) => {
-        return getItem(id, dispatch)
-    }
-    return (
+  const {dispatch, params, pageSize} = props
+  const test = (id) => {
+    return getItem(id, dispatch)
+  }
+  return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -41,7 +41,7 @@ const ClientSearchField = connect()((props) => {
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
-    )
+  )
 })
 
 export default ClientSearchField

@@ -41,195 +41,195 @@ const boxShadow = 'rgba(0, 0, 0, 0.12) 0px 1px 6px 0px, rgba(0, 0, 0, 0.12) 0px 
 
 const enhance = compose(
     injectSheet({
-        loader: {
-            width: '100%',
-            background: '#fff',
-            height: '100px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        },
-        wrapper: {
-            color: '#333 !important',
-            width: '100%'
-        },
-        title: {
-            display: 'flex',
-            alignItems: 'center',
-            '& span': {
-                backgroundColor: '#bec6c9',
-                padding: '8px 10px',
-                color: COLOR_WHITE,
-                marginRight: '10px',
-                fontWeight: '600'
-            }
-        },
-        block: {
-            borderLeft: BORDER_STYLE,
-            padding: PADDING_STANDART,
-            '&:first-child': {
-                borderLeft: 'none'
-            }
-        },
-        badge: {
-            padding: '7px 5px 4px 0 !important',
-            '& span': {
-                backgroundColor: '#ef5350 !important',
-                fontSize: '11px !important',
-                width: '18px !important',
-                height: '18px !important'
-            }
-        },
-        cardWrapper: {
-            borderLeft: 'solid 2px #bec6c9',
-            display: 'flex',
-            flexDirection: 'column-reverse',
-            marginLeft: '20px'
-        },
-        reverse: {
-            display: 'flex',
-            flexDirection: 'column-reverse'
-        },
-        cardItem: {
-            cursor: 'pointer',
-            display: 'flex',
-            marginLeft: '-9px',
-            paddingTop: '15px',
-            '& > span': {
-                borderRadius: '50%',
-                width: '17px',
-                height: '16px',
-                backgroundColor: '#7abd7d',
-                marginTop: '10px'
-            },
-            '& > div': {
-                backgroundColor: '#fff',
-                boxShadow,
-                borderRadius: '2px',
-                marginLeft: '20px',
-                minHeight: '35px',
-                maxHeight: '100px',
-                transition: 'max-height 1s, min-height 1s',
-                padding: '10px'
-            },
-            '& i': {
-                fontSize: '11px',
-                color: '#999'
-            }
-        },
-        cardContent: {
-
-        },
-        actionBtn: {
-            backgroundColor: '#fff',
-            boxShadow,
-            padding: '15px 20px',
-            marginTop: '15px',
-            marginLeft: '-22px'
-        },
-        buttons: {
-            display: 'flex',
-            '& > button': {
-                marginLeft: '5px !important',
-                '&:first-child': {
-                    marginLeft: '0 !important'
-                }
-            }
-        },
-        download: {
-            display: 'flex',
-            alignItems: 'center',
-            '& > a': {
-                fontSize: '12px',
-                display: 'flex',
-                fontWeight: '600',
-                alignItems: 'center',
-                marginLeft: '5px'
-            }
-        },
-        meetingWrapper: {
-            extend: 'actionBtn',
-            padding: '0',
-            '& header': {
-                borderBottom: BORDER_STYLE,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                position: 'relative',
-                padding: '15px',
-                '& svg': {
-                    height: '20px !important',
-                    width: '20px !important'
-                }
-            }
-        },
-        meetings: {
-            padding: '5px 0'
-        },
-        meeting: {
-            alignItems: 'center',
-            padding: '10px 15px',
-            position: 'relative',
-            '& svg': {
-                marginLeft: '10px',
-                height: '16px !important',
-                width: '16px !important'
-            }
-        },
-        status: {
-
-        },
-        popover: {
-            position: 'absolute !important',
-            height: '20px',
-            right: '25px',
-            '& svg': {
-                margin: '0 !important',
-                height: '20px !important',
-                width: '20px !important'
-            }
-        },
-        completeDialog: {
-            marginTop: '15px',
-            '& h2': {
-                fontSize: '13px'
-            },
-            '& > div': {
-                margin: '0'
-            }
-        },
-        completeWrapper: {
-            background: COLOR_WHITE,
-            boxShadow,
-            padding: '15px',
-            position: 'relative'
-        },
-        closeComplete: {
-            cursor: 'pointer',
-            position: 'absolute',
-            top: '7px',
-            right: '10px',
-            height: '30px',
-            width: '30px',
-            padding: '5px',
-            '& > svg': {
-                height: '20px !important',
-                width: '20px !important'
-            }
-        },
-        candidates: {
-            borderTop: BORDER_STYLE,
-            borderBottom: BORDER_STYLE,
-            margin: '20px 0'
-        },
-        candidate: {
-            alignItems: 'center',
-            padding: '10px 0'
+      loader: {
+        width: '100%',
+        background: '#fff',
+        height: '100px',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      wrapper: {
+        color: '#333 !important',
+        width: '100%'
+      },
+      title: {
+        display: 'flex',
+        alignItems: 'center',
+        '& span': {
+          backgroundColor: '#bec6c9',
+          padding: '8px 10px',
+          color: COLOR_WHITE,
+          marginRight: '10px',
+          fontWeight: '600'
         }
+      },
+      block: {
+        borderLeft: BORDER_STYLE,
+        padding: PADDING_STANDART,
+        '&:first-child': {
+          borderLeft: 'none'
+        }
+      },
+      badge: {
+        padding: '7px 5px 4px 0 !important',
+        '& span': {
+          backgroundColor: '#ef5350 !important',
+          fontSize: '11px !important',
+          width: '18px !important',
+          height: '18px !important'
+        }
+      },
+      cardWrapper: {
+        borderLeft: 'solid 2px #bec6c9',
+        display: 'flex',
+        flexDirection: 'column-reverse',
+        marginLeft: '20px'
+      },
+      reverse: {
+        display: 'flex',
+        flexDirection: 'column-reverse'
+      },
+      cardItem: {
+        cursor: 'pointer',
+        display: 'flex',
+        marginLeft: '-9px',
+        paddingTop: '15px',
+        '& > span': {
+          borderRadius: '50%',
+          width: '17px',
+          height: '16px',
+          backgroundColor: '#7abd7d',
+          marginTop: '10px'
+        },
+        '& > div': {
+          backgroundColor: '#fff',
+          boxShadow,
+          borderRadius: '2px',
+          marginLeft: '20px',
+          minHeight: '35px',
+          maxHeight: '100px',
+          transition: 'max-height 1s, min-height 1s',
+          padding: '10px'
+        },
+        '& i': {
+          fontSize: '11px',
+          color: '#999'
+        }
+      },
+      cardContent: {
+
+      },
+      actionBtn: {
+        backgroundColor: '#fff',
+        boxShadow,
+        padding: '15px 20px',
+        marginTop: '15px',
+        marginLeft: '-22px'
+      },
+      buttons: {
+        display: 'flex',
+        '& > button': {
+          marginLeft: '5px !important',
+          '&:first-child': {
+            marginLeft: '0 !important'
+          }
+        }
+      },
+      download: {
+        display: 'flex',
+        alignItems: 'center',
+        '& > a': {
+          fontSize: '12px',
+          display: 'flex',
+          fontWeight: '600',
+          alignItems: 'center',
+          marginLeft: '5px'
+        }
+      },
+      meetingWrapper: {
+        extend: 'actionBtn',
+        padding: '0',
+        '& header': {
+          borderBottom: BORDER_STYLE,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'relative',
+          padding: '15px',
+          '& svg': {
+            height: '20px !important',
+            width: '20px !important'
+          }
+        }
+      },
+      meetings: {
+        padding: '5px 0'
+      },
+      meeting: {
+        alignItems: 'center',
+        padding: '10px 15px',
+        position: 'relative',
+        '& svg': {
+          marginLeft: '10px',
+          height: '16px !important',
+          width: '16px !important'
+        }
+      },
+      status: {
+
+      },
+      popover: {
+        position: 'absolute !important',
+        height: '20px',
+        right: '25px',
+        '& svg': {
+          margin: '0 !important',
+          height: '20px !important',
+          width: '20px !important'
+        }
+      },
+      completeDialog: {
+        marginTop: '15px',
+        '& h2': {
+          fontSize: '13px'
+        },
+        '& > div': {
+          margin: '0'
+        }
+      },
+      completeWrapper: {
+        background: COLOR_WHITE,
+        boxShadow,
+        padding: '15px',
+        position: 'relative'
+      },
+      closeComplete: {
+        cursor: 'pointer',
+        position: 'absolute',
+        top: '7px',
+        right: '10px',
+        height: '30px',
+        width: '30px',
+        padding: '5px',
+        '& > svg': {
+          height: '20px !important',
+          width: '20px !important'
+        }
+      },
+      candidates: {
+        borderTop: BORDER_STYLE,
+        borderBottom: BORDER_STYLE,
+        margin: '20px 0'
+      },
+      candidate: {
+        alignItems: 'center',
+        padding: '10px 0'
+      }
     }),
     reduxForm({
-        form: 'ApplicationProgressForm',
-        enableReinitialize: true
+      form: 'ApplicationProgressForm',
+      enableReinitialize: true
     }),
     withState('openLogs', 'setOpenLogs', false),
     withState('openCompleteDialog', 'setOpenCompleteDialog', false),
@@ -241,63 +241,63 @@ const enhance = compose(
 )
 
 const downIcon = {
-    height: '15px',
-    width: '15px',
-    color: LINK_COLOR,
-    fill: 'currentColor'
+  height: '15px',
+  width: '15px',
+  color: LINK_COLOR,
+  fill: 'currentColor'
 }
 const doneIcon = {
-    width: '16px',
-    height: '15px'
+  width: '16px',
+  height: '15px'
 }
 
 const actButton = {
-    label: {
-        fontSize: '13px',
-        color: COLOR_WHITE,
-        textTransform: 'none',
-        padding: '5px'
-    }
+  label: {
+    fontSize: '13px',
+    color: COLOR_WHITE,
+    textTransform: 'none',
+    padding: '5px'
+  }
 }
 
 const flatButtonStyle = {
-    width: '50%',
-    lineHeight: 'unset',
-    height: 'unset',
-    minHeight: '30px'
+  width: '50%',
+  lineHeight: 'unset',
+  height: 'unset',
+  minHeight: '30px'
 }
 
 const popoverStyle = {
-    menuItem: {
-        fontSize: '13px',
-        minHeight: '36px',
-        lineHeight: '36px'
-    },
-    innerDiv: {
-        padding: '0px 30px'
-    },
-    icon: {
-        margin: '7px',
-        width: '22px',
-        height: '22px'
-    }
+  menuItem: {
+    fontSize: '13px',
+    minHeight: '36px',
+    lineHeight: '36px'
+  },
+  innerDiv: {
+    padding: '0px 30px'
+  },
+  icon: {
+    margin: '7px',
+    width: '22px',
+    height: '22px'
+  }
 }
 
 const buttonStyle = {
-    button: {
-        padding: 0,
-        height: 20,
-        width: 20
-    },
-    icon: {
-        color: COLOR_GREY,
-        height: 20,
-        width: 20
-    }
+  button: {
+    padding: 0,
+    height: 20,
+    width: 20
+  },
+  icon: {
+    color: COLOR_GREY,
+    height: 20,
+    width: 20
+  }
 }
 
 const ApplicationDetailProgress = enhance((props) => {
-    const {
+  const {
         email,
         status,
         isRecruiter,
@@ -321,26 +321,26 @@ const ApplicationDetailProgress = enhance((props) => {
         setOpenConfirmCompleteDialog
     } = props
 
-    const logsList = _.get(logsData, 'list')
-    const lastLogId = _.get(_.last(logsList), 'id')
-    const lastLogAction = _.get(_.last(logsList), 'action')
-    const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
-    const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false) &&
+  const logsList = _.get(logsData, 'list')
+  const lastLogId = _.get(_.last(logsList), 'id')
+  const lastLogAction = _.get(_.last(logsList), 'action')
+  const hasMeetings = !_.isEmpty(_.get(meetingData, 'list'))
+  const isApprovedMeetings = !_.includes(_.map(_.get(meetingData, 'list'), item => _.get(item, 'isApprove')), false) &&
         !_.isEmpty(_.get(meetingData, 'list'))
 
-    const getCardContainer = (content, key) => {
-        return (
+  const getCardContainer = (content, key) => {
+    return (
             <div key={key} className={classes.cardItem}>
                 <span><Done color={COLOR_WHITE} style={doneIcon}/></span>
                 <div className={classNames(classes.cardContent)}>
                     {content}
                 </div>
             </div>
-        )
-    }
-    const getActionContainer = (content, buttons, key) => {
-        const isSingle = _.get(buttons, 'single')
-        return (
+    )
+  }
+  const getActionContainer = (content, buttons, key) => {
+    const isSingle = _.get(buttons, 'single')
+    return (
             <div key={key} className={classes.actionBtn}>
                 {!_.isEmpty(content) &&
                 <div style={{marginBottom: 10}}>{content}</div>}
@@ -378,69 +378,69 @@ const ApplicationDetailProgress = enhance((props) => {
                         />
                     </div>}
             </div>
-        )
-    }
+    )
+  }
 
-    const getActionContent = (action, logId) => {
-        switch (action) {
-            case 'update': return (
+  const getActionContent = (action, logId) => {
+    switch (action) {
+      case 'update': return (
                 <div key={logId} className={classes.reverse}>
                     {getCardContainer('В заявку внесены изменения')}
                     {getCardContainer(isRecruiter ? 'Формирование отчета' : 'Ожидание отчета')}
                 </div>
-            )
-            case 'report_sent_to_manager': return lastLogId === logId && !isRecruiter
+      )
+      case 'report_sent_to_manager': return lastLogId === logId && !isRecruiter
                 ? getActionContainer(
                     <div className={classes.download}>
                         <span>Отчет сформирован</span>
                         <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
                     </div>,
-                    {
-                        left: {
-                            text: 'Отправить клиенту',
-                            action: () => setOpenConfirmSendToClientDialog(true)
-                        },
-                        right: {
-                            text: 'Отклонить',
-                            action: () => handleChangeApplicationAction('rejected_by_manager')
-                        }
-                    }, logId)
+                  {
+                    left: {
+                      text: 'Отправить клиенту',
+                      action: () => setOpenConfirmSendToClientDialog(true)
+                    },
+                    right: {
+                      text: 'Отклонить',
+                      action: () => handleChangeApplicationAction('rejected_by_manager')
+                    }
+                  }, logId)
                 : getCardContainer((
                     <div className={classes.download}>
                         <span>Отчет сформирован</span>
                         <a onClick={() => getDocument(reportUri)}>(<DownLoadIcon style={downIcon}/>скачать)</a>
                     </div>
                 ), logId)
-            case 'sent_to_client': return (
+      case 'sent_to_client': return (
                 <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отправлен клиенту')}
                     {lastLogId === logId && !isRecruiter
                         ? getActionContainer('Ожидание ответа от клиента по отчету', {
-                            left: {
-                                text: 'Отчет одобрен',
-                                action: () => handleChangeApplicationAction('approval')
-                            },
-                            right: {
-                                text: 'Отчет отклонен',
-                                action: () => handleChangeApplicationAction('rejected_by_client')
-                            }
+                          left: {
+                            text: 'Отчет одобрен',
+                            action: () => handleChangeApplicationAction('approval')
+                          },
+                          right: {
+                            text: 'Отчет отклонен',
+                            action: () => handleChangeApplicationAction('rejected_by_client')
+                          }
                         })
                         : null}
                 </div>
-            )
-            case 'rejected_by_manager': return (
+      )
+      case 'rejected_by_manager': return (
                 <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отклонен менеджером')}
                     {getCardContainer('Ожидание отчета')}
                 </div>
-            )
-            case 'rejected_by_client': return (
+      )
+      case 'rejected_by_client': return (
                 <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет отклонен клиентом')}
                     {getCardContainer('Ожидание отчета')}
                 </div>
-            )
-            case 'approval': return (
+      )
+      case 'approval': return (
                 <div key={logId} className={classes.reverse}>
                     {getCardContainer('Отчет одобрен клиентом')}
                     {hasMeetings
@@ -459,17 +459,17 @@ const ApplicationDetailProgress = enhance((props) => {
                                 </div>
                                 : <div className={classes.meetings}>
                                     {_.map(_.get(meetingData, 'list'), (item, index) => {
-                                        const meetingId = _.get(item, 'id')
-                                        const resumeId = _.get(item, ['resume', 'id'])
-                                        const fullName = _.get(item, ['resume', 'fullName'])
-                                        const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
-                                        const brokenMeetingTime = meetingWasPostponed
+                                      const meetingId = _.get(item, 'id')
+                                      const resumeId = _.get(item, ['resume', 'id'])
+                                      const fullName = _.get(item, ['resume', 'fullName'])
+                                      const meetingWasPostponed = !_.isNil(_.get(item, ['brokenMeetingTime']))
+                                      const brokenMeetingTime = meetingWasPostponed
                                             ? moment(_.get(item, ['brokenMeetingTime'])).format('DD MMM | HH:mm') : null
-                                        const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
-                                        const isApprove = _.get(item, ['isApprove'])
-                                        const random = _.random(Number('100'), true)
+                                      const meetingTime = moment(_.get(item, ['meetingTime'])).format('DD MMM | HH:mm')
+                                      const isApprove = _.get(item, ['isApprove'])
+                                      const random = _.random(Number('100'), true)
 
-                                        return (
+                                      return (
                                             <Row key={`${meetingId}_${resumeId}_${index}_${random}`} className={classes.meeting}>
                                                 <Col xs={6}>{fullName}</Col>
                                                 <div>{meetingTime}</div>
@@ -500,7 +500,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                                             innerDivStyle={popoverStyle.innerDiv}
                                                             primaryText={t('Изменить')}
                                                             onClick={() => {
-                                                                updateMeetingDialog.handleOpen(resumeId, meetingId)
+                                                              updateMeetingDialog.handleOpen(resumeId, meetingId)
                                                             }}/>
                                                         {!isApprove &&
                                                         <MenuItem
@@ -508,40 +508,40 @@ const ApplicationDetailProgress = enhance((props) => {
                                                             innerDivStyle={popoverStyle.innerDiv}
                                                             primaryText={t('Подтвердить время')}
                                                             onClick={() => {
-                                                                setOpenConfirmMeetingDialog({
-                                                                    resumeId,
-                                                                    meetingId,
-                                                                    fullName,
-                                                                    meetingTime: _.get(item, ['meetingTime'])
-                                                                })
+                                                              setOpenConfirmMeetingDialog({
+                                                                resumeId,
+                                                                meetingId,
+                                                                fullName,
+                                                                meetingTime: _.get(item, ['meetingTime'])
+                                                              })
                                                             }}/>}
                                                     </IconMenu>}
                                             </Row>
-                                        )
+                                      )
                                     })}
                                 </div>}
                         </div>
                         : isRecruiter
                             ? getCardContainer('Согласовать время для собеседования с клиентом')
                             : getActionContainer('Собеседование с клиентом', {
-                                single: {
-                                    text: 'Указать кандидатов для собеседования',
-                                    action: () => meetingDialog.handleOpen()
-                                }
+                              single: {
+                                text: 'Указать кандидатов для собеседования',
+                                action: () => meetingDialog.handleOpen()
+                              }
                             })}
                 </div>
-            )
-            default: return null
-        }
+      )
+      default: return null
     }
+  }
 
-    if (_.get(logsData, 'loading')) {
-        return <div className={classes.loader}>
+  if (_.get(logsData, 'loading')) {
+    return <div className={classes.loader}>
             <Loader size={0.75}/>
         </div>
-    }
+  }
 
-    return (
+  return (
         <div className={classes.wrapper}>
             <div className={classes.title}>
                 <span>{t('Прогресс')}</span>
@@ -560,9 +560,9 @@ const ApplicationDetailProgress = enhance((props) => {
                         </div>
                         <form className={classes.candidates}>
                             {_.map(_.filter(meetingData.list, 'isApprove'), (item) => {
-                                const resume = _.get(item, ['resume', 'id'])
-                                const fullName = _.get(item, ['resume', 'fullName'])
-                                return (
+                              const resume = _.get(item, ['resume', 'id'])
+                              const fullName = _.get(item, ['resume', 'fullName'])
+                              return (
                                     <Row key={resume} className={classes.candidate}>
                                         <Col xs={2}>
                                             <Field
@@ -572,7 +572,7 @@ const ApplicationDetailProgress = enhance((props) => {
                                         </Col>
                                         <Col xs={10}>{fullName}</Col>
                                     </Row>
-                                )
+                              )
                             })}
                         </form>
                         <FlatButton
@@ -587,18 +587,18 @@ const ApplicationDetailProgress = enhance((props) => {
                         />
                     </div>
                     : getActionContainer('', {
-                        single: {
-                            text: 'Завершить',
-                            action: () => { setOpenCompleteDialog(true) }
-                        }
+                      single: {
+                        text: 'Завершить',
+                        action: () => { setOpenCompleteDialog(true) }
+                      }
                     })}
             </div>}
             <div className={classes.cardWrapper}>
                 {getCardContainer('Ожидание отчета')}
                 {_.map(logsList, (item) => {
-                    const id = _.get(item, 'id')
-                    const action = _.get(item, 'action')
-                    return getActionContent(action, id)
+                  const id = _.get(item, 'id')
+                  const action = _.get(item, 'action')
+                  return getActionContent(action, id)
                 })}
             </div>
 
@@ -607,9 +607,9 @@ const ApplicationDetailProgress = enhance((props) => {
                 open={_.isObject(openConfirmMeetingDialog)}
                 onClose={() => { setOpenConfirmMeetingDialog(false) }}
                 onSubmit={() => {
-                    return updateMeetingDialog.handleConfirm(openConfirmMeetingDialog)
+                  return updateMeetingDialog.handleConfirm(openConfirmMeetingDialog)
                         .then(() => {
-                            return setOpenConfirmMeetingDialog(false)
+                          return setOpenConfirmMeetingDialog(false)
                         })
                 }}
                 message={'Подтвердить время для ' + openConfirmMeetingDialog.fullName + '?'}/>
@@ -620,9 +620,9 @@ const ApplicationDetailProgress = enhance((props) => {
                 open={openConfirmCompleteDialog}
                 onClose={() => { setOpenConfirmCompleteDialog(false) }}
                 onSubmit={() => {
-                    return confirmData.handleComplete()
+                  return confirmData.handleComplete()
                         .then(() => {
-                            return setOpenConfirmCompleteDialog(false)
+                          return setOpenConfirmCompleteDialog(false)
                         })
                 }}/>
 
@@ -630,23 +630,23 @@ const ApplicationDetailProgress = enhance((props) => {
                 open={openConfirmSendToClientDialog}
                 onClose={() => { setOpenConfirmSendToClientDialog(false) }}
                 onSubmit={() => {
-                    return handleChangeApplicationAction('sent_to_client')
+                  return handleChangeApplicationAction('sent_to_client')
                         .then(() => {
-                            return setOpenConfirmSendToClientDialog(false)
+                          return setOpenConfirmSendToClientDialog(false)
                         })
                 }}
                 initialValues={{email}}
             />
         </div>
-    )
+  )
 })
 
 ApplicationDetailProgress.propTypes = {
-    logsData: PropTypes.object.isRequired
+  logsData: PropTypes.object.isRequired
 }
 
 ApplicationDetailProgress.defaultProps = {
-    isRecruiter: false
+  isRecruiter: false
 }
 
 export default ApplicationDetailProgress

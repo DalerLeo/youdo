@@ -24,102 +24,102 @@ import {COLOR_WHITE, LINK_COLOR} from '../../../constants/styleConstants'
 import sprintf from 'sprintf'
 
 const listHeader = [
-    {
-        sorting: true,
-        name: 'id',
-        xs: 2,
-        title: 'Id'
-    },
-    {
-        sorting: false,
-        name: 'name',
-        xs: 6,
-        title: t('Заголовок')
-    },
-    {
-        sorting: true,
-        xs: 3,
-        name: 'created_date',
-        title: t('Дата создания')
-    },
-    {
-        sorting: false,
-        xs: 1,
-        name: 'actions',
-        title: ''
-    }
+  {
+    sorting: true,
+    name: 'id',
+    xs: 2,
+    title: 'Id'
+  },
+  {
+    sorting: false,
+    name: 'name',
+    xs: 6,
+    title: t('Заголовок')
+  },
+  {
+    sorting: true,
+    xs: 3,
+    name: 'created_date',
+    title: t('Дата создания')
+  },
+  {
+    sorting: false,
+    xs: 1,
+    name: 'actions',
+    title: ''
+  }
 ]
 
 const enhance = compose(
     injectSheet({
-        addButton: {
-            '& svg': {
-                width: '14px !important',
-                height: '14px !important'
-            }
-        },
-        wrapper: {
-            display: 'flex',
-            margin: '0 -28px',
-            height: 'calc(100% + 28px)'
-        },
-        addButtonWrapper: {
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            marginLeft: '-18px'
-        },
-        rightPanel: {
-            background: COLOR_WHITE,
-            width: '100%',
-            paddingTop: '10px',
-            overflowY: 'auto',
-            overflowX: 'hidden'
-        },
-        listRow: {
-            margin: '0 -30px !important',
-            width: 'auto !important',
-            padding: '0 30px',
-            position: 'relative',
-            '&:hover > div:last-child > div ': {
-                opacity: '1'
-            }
-        },
-        link: {
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            bottom: '0',
-            zIndex: '1'
-        },
-        iconBtn: {
-            opacity: '0',
-            transition: 'all 200ms ease-out'
-        },
-        actionButtons: {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            zIndex: '2'
+      addButton: {
+        '& svg': {
+          width: '14px !important',
+          height: '14px !important'
         }
+      },
+      wrapper: {
+        display: 'flex',
+        margin: '0 -28px',
+        height: 'calc(100% + 28px)'
+      },
+      addButtonWrapper: {
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        marginLeft: '-18px'
+      },
+      rightPanel: {
+        background: COLOR_WHITE,
+        width: '100%',
+        paddingTop: '10px',
+        overflowY: 'auto',
+        overflowX: 'hidden'
+      },
+      listRow: {
+        margin: '0 -30px !important',
+        width: 'auto !important',
+        padding: '0 30px',
+        position: 'relative',
+        '&:hover > div:last-child > div ': {
+          opacity: '1'
+        }
+      },
+      link: {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        zIndex: '1'
+      },
+      iconBtn: {
+        opacity: '0',
+        transition: 'all 200ms ease-out'
+      },
+      actionButtons: {
+        display: 'flex',
+        justifyContent: 'flex-end',
+        zIndex: '2'
+      }
     })
 )
 
 const iconStyle = {
-    icon: {
-        color: '#666',
-        width: 22,
-        height: 22
-    },
-    button: {
-        width: 30,
-        height: 25,
-        padding: 0
-    }
+  icon: {
+    color: '#666',
+    width: 22,
+    height: 22
+  },
+  button: {
+    width: 30,
+    height: 25,
+    padding: 0
+  }
 }
 
 const ArticlesGridList = enhance((props) => {
-    const {
+  const {
         filter,
         createDialog,
         updateDialog,
@@ -129,8 +129,8 @@ const ArticlesGridList = enhance((props) => {
         classes
     } = props
 
-    const actionButtons = (id) => {
-        return (
+  const actionButtons = (id) => {
+    return (
             <div className={classes.actionButtons}>
                 <ToolTip position="bottom" text={t('Изменить')}>
                     <IconButton
@@ -153,10 +153,10 @@ const ArticlesGridList = enhance((props) => {
                     </IconButton>
                 </ToolTip>
             </div>
-        )
-    }
+    )
+  }
 
-    const articlesDetail = (
+  const articlesDetail = (
         <ArticlesDetails
             filter={filter}
             key={_.get(detailData, 'id')}
@@ -165,16 +165,16 @@ const ArticlesGridList = enhance((props) => {
             actionButtons={actionButtons}/>
     )
 
-    const articlesList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const title = _.get(item, 'title')
-        const createdDate = dateFormat(_.get(item, 'createdAt'))
-        return (
+  const articlesList = _.map(_.get(listData, 'data'), (item) => {
+    const id = _.get(item, 'id')
+    const title = _.get(item, 'title')
+    const createdDate = dateFormat(_.get(item, 'createdAt'))
+    return (
             <Row key={id} className={classes.listRow}>
                 <Col xs={2}>{id}</Col>
                 <Link className={classes.link} to={{
-                    pathname: sprintf(ROUTES.ARTICLES_ITEM_PATH, id),
-                    query: filter.getParams()
+                  pathname: sprintf(ROUTES.ARTICLES_ITEM_PATH, id),
+                  query: filter.getParams()
                 }}/>
                 <Col xs={6}>{title}</Col>
                 <Col xs={3}>{createdDate}</Col>
@@ -182,16 +182,16 @@ const ArticlesGridList = enhance((props) => {
                     <div className={classes.iconBtn}>{actionButtons(id)}</div>
                 </Col>
             </Row>
-        )
-    })
+    )
+  })
 
-    const list = {
-        header: listHeader,
-        list: articlesList,
-        loading: _.get(listData, 'listLoading')
-    }
+  const list = {
+    header: listHeader,
+    list: articlesList,
+    loading: _.get(listData, 'listLoading')
+  }
 
-    const addButton = (
+  const addButton = (
         <div className={classes.addButtonWrapper}>
             <FlatButton
                 backgroundColor={COLOR_WHITE}
@@ -203,7 +203,7 @@ const ArticlesGridList = enhance((props) => {
             </FlatButton>
         </div>
     )
-    return (
+  return (
         <Container>
             <div className={classes.wrapper}>
                 <SideMenu currentUrl={ROUTES.ARTICLES_LIST_URL}/>
@@ -244,34 +244,34 @@ const ArticlesGridList = enhance((props) => {
                 open={confirmDialog.openConfirmDialog}
             />}
         </Container>
-    )
+  )
 })
 
 ArticlesGridList.propTypes = {
-    filter: PropTypes.object.isRequired,
-    listData: PropTypes.object,
-    detailData: PropTypes.object,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        confirmLoading: PropTypes.bool.isRequired,
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+  filter: PropTypes.object.isRequired,
+  listData: PropTypes.object,
+  detailData: PropTypes.object,
+  createDialog: PropTypes.shape({
+    createLoading: PropTypes.bool.isRequired,
+    openCreateDialog: PropTypes.bool.isRequired,
+    handleOpenCreateDialog: PropTypes.func.isRequired,
+    handleCloseCreateDialog: PropTypes.func.isRequired,
+    handleSubmitCreateDialog: PropTypes.func.isRequired
+  }).isRequired,
+  confirmDialog: PropTypes.shape({
+    confirmLoading: PropTypes.bool.isRequired,
+    openConfirmDialog: PropTypes.bool.isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
+    handleCloseConfirmDialog: PropTypes.func.isRequired,
+    handleSendConfirmDialog: PropTypes.func.isRequired
+  }).isRequired,
+  updateDialog: PropTypes.shape({
+    updateLoading: PropTypes.bool.isRequired,
+    openUpdateDialog: PropTypes.bool.isRequired,
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleCloseUpdateDialog: PropTypes.func.isRequired,
+    handleSubmitUpdateDialog: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default ArticlesGridList

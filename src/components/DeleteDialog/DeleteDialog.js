@@ -11,53 +11,53 @@ export const DELETE_DIALOG_OPEN = 'openDeleteDialog'
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            '& div:last-child': {
-                textAlign: 'left !important',
-                '& button': {
-                    marginLeft: '50px !important',
-                    marginBottom: '5px !important',
-                    color: '#12aaeb !important'
-                }
-            }
-        },
-
-        body: {
-            maxHeight: '600px !important',
-            padding: '0 0 0 15px !important',
-            overflow: 'hidden !important'
-        },
-
-        title: {
-            width: '220px',
-            margin: '0 auto',
-            padding: '10px 0',
-            textAlign: 'center',
-            background: '#12aaeb',
-            color: '#fff',
-            position: 'relative'
-        },
-
-        form: {
-            display: 'flex'
-        },
-
-        map: {
-            height: '600px',
-            paddingRight: '0'
+      dialog: {
+        '& div:last-child': {
+          textAlign: 'left !important',
+          '& button': {
+            marginLeft: '50px !important',
+            marginBottom: '5px !important',
+            color: '#12aaeb !important'
+          }
         }
+      },
+
+      body: {
+        maxHeight: '600px !important',
+        padding: '0 0 0 15px !important',
+        overflow: 'hidden !important'
+      },
+
+      title: {
+        width: '220px',
+        margin: '0 auto',
+        padding: '10px 0',
+        textAlign: 'center',
+        background: '#12aaeb',
+        color: '#fff',
+        position: 'relative'
+      },
+
+      form: {
+        display: 'flex'
+      },
+
+      map: {
+        height: '600px',
+        paddingRight: '0'
+      }
     }),
     reduxForm({
-        form: 'ShopCreateForm'
+      form: 'ShopCreateForm'
     })
 )
 
 const DeleteDialog = enhance((props) => {
-    const {open, onClose, classes, filter} = props
+  const {open, onClose, classes, filter} = props
 
-    const selects = filter.getSelects()
+  const selects = filter.getSelects()
 
-    return (
+  return (
         <Dialog
             modal={true}
             open={open}
@@ -86,16 +86,16 @@ const DeleteDialog = enhance((props) => {
                         </div>
                     </div>
         </Dialog>
-    )
+  )
 })
 
 DeleteDialog.propTyeps = {
-    filter: PropTypes.object.isRequired,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired,
-    loading: PropTypes.bool.isRequired
+  filter: PropTypes.object.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 export default DeleteDialog

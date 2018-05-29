@@ -12,76 +12,76 @@ import t from '../../helpers/translate'
 
 const enhance = compose(
     injectSheet({
-        loader: {
-            width: '120px',
-            height: '120px',
-            margin: '0 auto',
-            padding: '15px',
-            alignItems: 'center',
-            justifyContent: 'center',
-            display: 'flex'
-        },
+      loader: {
+        width: '120px',
+        height: '120px',
+        margin: '0 auto',
+        padding: '15px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        display: 'flex'
+      },
 
-        wrapper: {
-            width: '320px',
-            margin: '0 auto',
-            padding: '25px 45px'
-        },
+      wrapper: {
+        width: '320px',
+        margin: '0 auto',
+        padding: '25px 45px'
+      },
 
-        title: {
-            paddingTop: '5px',
-            paddingBottom: '22px',
-            fontSize: '14px',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            textAlign: 'center',
-            color: '#5d6474',
-            position: 'relative',
-            '&:after': {
-                content: '""',
-                backgroundImage: 'url(' + Dot + ')',
-                position: 'absolute',
-                bottom: '0',
-                height: '2px',
-                left: '0',
-                right: '0'
-            }
-        },
-
-        loginForm: {
-            fontSize: '13px !important'
-        },
-
-        rememberMe: {
-            marginBottom: '20px !important',
-            marginTop: '20px !important'
-        },
-
-        error: {
-            color: 'red',
-            fontSize: '12px',
-            marginTop: '12px'
+      title: {
+        paddingTop: '5px',
+        paddingBottom: '22px',
+        fontSize: '14px',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        textAlign: 'center',
+        color: '#5d6474',
+        position: 'relative',
+        '&:after': {
+          content: '""',
+          backgroundImage: 'url(' + Dot + ')',
+          position: 'absolute',
+          bottom: '0',
+          height: '2px',
+          left: '0',
+          right: '0'
         }
+      },
+
+      loginForm: {
+        fontSize: '13px !important'
+      },
+
+      rememberMe: {
+        marginBottom: '20px !important',
+        marginTop: '20px !important'
+      },
+
+      error: {
+        color: 'red',
+        fontSize: '12px',
+        marginTop: '12px'
+      }
     }),
 
     reduxForm({
-        form: 'SignInForm'
+      form: 'SignInForm'
     })
 )
 
 const SignInForm = enhance((props) => {
-    const {classes, handleSubmit, loading, error} = props
-    const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
+  const {classes, handleSubmit, loading, error} = props
+  const onSubmit = handleSubmit(() => props.onSubmit().catch(validate))
 
-    if (loading) {
-        return (
+  if (loading) {
+    return (
             <Paper className={classes.loader} zDepth={2}>
                 <Loader size={0.75}/>
             </Paper>
-        )
-    }
+    )
+  }
 
-    return (
+  return (
         <Paper className={classes.wrapper} zDepth={2}>
             <form onSubmit={onSubmit}>
                 <div>
@@ -102,8 +102,8 @@ const SignInForm = enhance((props) => {
                         rippleColor={'#fff'}
                         label={t('Войти')}
                         labelStyle={{
-                            color: '#fff',
-                            verticalAlign: 'baseline'
+                          color: '#fff',
+                          verticalAlign: 'baseline'
                         }}
                         primary={true}
                         fullWidth={true}
@@ -111,7 +111,7 @@ const SignInForm = enhance((props) => {
                 </div>
             </form>
         </Paper>
-    )
+  )
 })
 
 export default SignInForm

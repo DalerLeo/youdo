@@ -1,16 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {Provider} from 'react-redux'
 import Rx from 'rxjs'
 import rxjsconfig from 'recompose/rxjsObservableConfig'
 import {setObservableConfig} from 'recompose'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import {Router, hashHistory} from 'react-router'
+// Import App from '../src/containers/App/App'
+import {hashHistory} from 'react-router'
 import {syncHistoryWithStore} from 'react-router-redux'
 import injectTapEventPlugin from 'react-tap-event-plugin'
-import createStore from './store/createStore'
 import routes from './routes'
+import createStore from './store/createStore'
 import 'antd/dist/antd.css'
 import './styles'
 
@@ -21,71 +19,31 @@ injectTapEventPlugin()
 
 setObservableConfig({
     // Converts a plain ES observable to an RxJS 5 observable
-    fromESObservable: Rx.Observable.from
+  fromESObservable: Rx.Observable.from
 })
 setObservableConfig(rxjsconfig)
 
-const primaryColor = '#5d6474'
-const secondaryColor = '#12aaeb'
+const MOUNT_NODE = document.getElementById('wrapper')
 
-const muiTheme = getMuiTheme({
-    fontFamily: 'Open Sans, sans-serif',
-    fontSize: '13px',
-    palette: {
-        primary1Color: secondaryColor,
-        primary2Color: primaryColor,
-        primary3Color: primaryColor,
-        accent1Color: primaryColor,
-        accent2Color: '#fff',
-        accent3Color: '#fff',
-        textColor: '#333'
-    },
-    appBar: {
-        height: 50,
-        textColor: 'white'
-    },
-    checkbox: {
-        checkedColor: primaryColor
-    },
-    chip: {
-        fontSize: 13
-    },
-    flatButton: {
-        fontSize: 13,
-        fontWeight: 400
-    },
-    datePicker: {
-        color: secondaryColor,
-        selectColor: secondaryColor
-    },
-    radioButton: {
-        checkedColor: primaryColor
-    },
-    raisedButton: {
-        fontSize: 13,
-        fontWeight: 400,
-        primaryColor: primaryColor
-    },
-    timePicker: {
-        headerColor: '#2d3037'
-    },
-    textField: {
-        focusColor: primaryColor
-    },
-    tabs: {
-        backgroundColor: '#fff',
-        selectedTextColor: secondaryColor,
-        textColor: '#333'
-    }
-})
+const render = () => {
+  const App = require('../src/containers/App/App').default
+  ReactDOM.render(
+    <App
+      store={store}
+      history={history}
+      routes={routes}
+    />,
+    MOUNT_NODE
+  )
+}
 
-ReactDOM.render(
-    <Provider store={store}>
-        <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
-            <div style={{width: '100%', height: '100%'}}>
-                <Router history={history} routes={routes} />
-            </div>
-        </MuiThemeProvider>
-    </Provider>,
-    document.getElementById('wrapper')
-)
+if (module.hot) {
+  module.hot.accept(['../src/containers/App/App'], () => {
+    setImmediate(() => {
+      ReactDOM.unmountComponentAtNode(MOUNT_NODE)
+      render()
+    })
+  })
+}
+
+render()

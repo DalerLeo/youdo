@@ -40,259 +40,259 @@ export const APPLICATION_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            overflowY: 'auto'
-        },
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            justifyContent: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
-        },
-        customLoader: {
-            background: '#fff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px 0'
-        },
-        recruiter: {
-            padding: '15px 30px',
-            fontWeight: '600',
-            '& > div:first-child': {
-                display: 'flex',
-                alignItems: 'center',
-                '& div': {
-                    display: 'flex',
-                    alignItems: 'center'
-                }
-            }
-        },
-        deadline: {
-            marginTop: '10px'
-        },
-        popUp: {
-            color: '#333 !important',
-            overflowY: 'unset !important',
-            overflowX: 'unset !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
-            height: '100%',
-            maxHeight: 'none !important',
-            marginBottom: '64px'
-        },
-        titleContent: {
-            background: '#fff',
-            color: COLOR_DEFAULT,
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: BORDER_STYLE,
-            padding: '0 10px',
-            height: '60px',
-            zIndex: '999'
-        },
-        addRecruiter: {
-            fontWeight: 'normal',
-            textTransform: 'none'
-        },
-        usersWrapper: {
-            minWidth: '200px',
-            maxHeight: 'calc(50vh + 100px)'
-        },
-        user: {
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'pointer',
-            padding: '12px 30px 12px 15px',
-            transition: 'all 300ms ease',
-            '&:hover': {
-                background: '#f2f5f8'
-            }
-        },
-        avatar: {
-            background: '#ccc',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            overflow: 'hidden',
-            width: '26px',
-            height: '26px',
-            borderRadius: '50%',
-            marginRight: '10px',
-            '& svg': {
-                color: '#fff !important',
-                width: '18px !important',
-                height: '18px !important'
-            },
-            '& img': {
-                width: '100%'
-            }
-        },
-        sidePaddings: {
-            padding: '10px 30px 15px'
-        },
-        inContent: {
-            borderTop: BORDER_STYLE,
-            extend: 'sidePaddings',
-            '&:first-child': {
-                border: 'none'
-            }
-        },
-        block: {
-            '& h4': {
-                fontWeight: '600',
-                fontSize: '13px',
-                padding: '10px 0'
-            }
-        },
-        salaryField: {
-            display: 'flex',
-            alignItems: 'baseline',
-            '& > div': {
-                marginLeft: '10px',
-                width: '100px !important'
-            }
-        },
-        skills: {
-            display: 'flex'
-        },
-        privileges: {
-            marginTop: '10px',
-            '& > div:first-child': {
-                fontWeight: '600',
-                marginBottom: '5px'
-            }
-        },
-        chip: {
-            background: '#efefef !important',
-            margin: '0 5px 5px 0 !important',
-            '& svg': {
-                width: '20px !important'
-            }
-        },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& > div:first-child': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        textFieldArea: {
-            top: '-20px !important',
-            lineHeight: '20px !important',
-            fontSize: '13px !important',
-            marginBottom: '-22px'
-        },
-        inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& > div:first-child': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            },
-            '& div:first-child': {
-                height: '45px !important'
-            }
-        },
-        bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '10px',
-            zIndex: '999',
-            borderTop: BORDER_STYLE,
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: '#129fdd',
-                verticalAlign: 'inherit !important'
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
-        },
-        flex: {
-            display: 'flex'
-        },
-        alignBaseline: {
-            alignItems: 'baseline'
-        },
-        alignCenter: {
-            alignItems: 'center'
-        },
-        flexBetween: {
-            extend: 'flex',
-            justifyContent: 'space-between'
-        },
-        halfChild: {
-            flexWrap: 'wrap',
-            '& > div': {
-                width: '49% !important'
-            }
-        },
-        thirdChild: {
-            flexWrap: 'wrap',
-            '& > div': {
-                width: '32% !important'
-            }
-        },
-        required: {
+      dialog: {
+        overflowY: 'auto'
+      },
+      loader: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: '#fff',
+        top: '0',
+        left: '0',
+        alignItems: 'center',
+        zIndex: '999',
+        justifyContent: 'center',
+        display: ({loading}) => loading ? 'flex' : 'none'
+      },
+      customLoader: {
+        background: '#fff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px 0'
+      },
+      recruiter: {
+        padding: '15px 30px',
+        fontWeight: '600',
+        '& > div:first-child': {
+          display: 'flex',
+          alignItems: 'center',
+          '& div': {
             display: 'flex',
             alignItems: 'center'
-        },
-        customCheckbox: {
-            margin: '0 10px 0 15px',
-            '& div': {
-                margin: '0 !important'
-            }
+          }
         }
+      },
+      deadline: {
+        marginTop: '10px'
+      },
+      popUp: {
+        color: '#333 !important',
+        overflowY: 'unset !important',
+        overflowX: 'unset !important',
+        fontSize: '13px !important',
+        position: 'relative',
+        padding: '0 !important',
+        height: '100%',
+        maxHeight: 'none !important',
+        marginBottom: '64px'
+      },
+      titleContent: {
+        background: '#fff',
+        color: COLOR_DEFAULT,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: BORDER_STYLE,
+        padding: '0 10px',
+        height: '60px',
+        zIndex: '999'
+      },
+      addRecruiter: {
+        fontWeight: 'normal',
+        textTransform: 'none'
+      },
+      usersWrapper: {
+        minWidth: '200px',
+        maxHeight: 'calc(50vh + 100px)'
+      },
+      user: {
+        display: 'flex',
+        alignItems: 'center',
+        cursor: 'pointer',
+        padding: '12px 30px 12px 15px',
+        transition: 'all 300ms ease',
+        '&:hover': {
+          background: '#f2f5f8'
+        }
+      },
+      avatar: {
+        background: '#ccc',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        width: '26px',
+        height: '26px',
+        borderRadius: '50%',
+        marginRight: '10px',
+        '& svg': {
+          color: '#fff !important',
+          width: '18px !important',
+          height: '18px !important'
+        },
+        '& img': {
+          width: '100%'
+        }
+      },
+      sidePaddings: {
+        padding: '10px 30px 15px'
+      },
+      inContent: {
+        borderTop: BORDER_STYLE,
+        extend: 'sidePaddings',
+        '&:first-child': {
+          border: 'none'
+        }
+      },
+      block: {
+        '& h4': {
+          fontWeight: '600',
+          fontSize: '13px',
+          padding: '10px 0'
+        }
+      },
+      salaryField: {
+        display: 'flex',
+        alignItems: 'baseline',
+        '& > div': {
+          marginLeft: '10px',
+          width: '100px !important'
+        }
+      },
+      skills: {
+        display: 'flex'
+      },
+      privileges: {
+        marginTop: '10px',
+        '& > div:first-child': {
+          fontWeight: '600',
+          marginBottom: '5px'
+        }
+      },
+      chip: {
+        background: '#efefef !important',
+        margin: '0 5px 5px 0 !important',
+        '& svg': {
+          width: '20px !important'
+        }
+      },
+      inputFieldCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& > div:first-child': {
+          fontSize: '13px !important'
+        },
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
+        },
+        '& input': {
+          marginTop: '0 !important'
+        }
+      },
+      textFieldArea: {
+        top: '-20px !important',
+        lineHeight: '20px !important',
+        fontSize: '13px !important',
+        marginBottom: '-22px'
+      },
+      inputDateCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& > div:first-child': {
+          fontSize: '13px !important'
+        },
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
+        },
+        '& input': {
+          marginTop: '0 !important'
+        },
+        '& div:first-child': {
+          height: '45px !important'
+        }
+      },
+      bottomButton: {
+        bottom: '0',
+        left: '0',
+        right: '0',
+        padding: '10px',
+        zIndex: '999',
+        borderTop: BORDER_STYLE,
+        background: '#fff',
+        textAlign: 'right',
+        '& span': {
+          fontSize: '13px !important',
+          fontWeight: '600 !important',
+          color: '#129fdd',
+          verticalAlign: 'inherit !important'
+        }
+      },
+      actionButton: {
+        fontSize: '13px !important',
+        margin: '0 !important'
+      },
+      flex: {
+        display: 'flex'
+      },
+      alignBaseline: {
+        alignItems: 'baseline'
+      },
+      alignCenter: {
+        alignItems: 'center'
+      },
+      flexBetween: {
+        extend: 'flex',
+        justifyContent: 'space-between'
+      },
+      halfChild: {
+        flexWrap: 'wrap',
+        '& > div': {
+          width: '49% !important'
+        }
+      },
+      thirdChild: {
+        flexWrap: 'wrap',
+        '& > div': {
+          width: '32% !important'
+        }
+      },
+      required: {
+        display: 'flex',
+        alignItems: 'center'
+      },
+      customCheckbox: {
+        margin: '0 10px 0 15px',
+        '& div': {
+          margin: '0 !important'
+        }
+      }
     }),
     reduxForm({
-        form: 'ApplicationCreateForm',
-        enableReinitialize: true
+      form: 'ApplicationCreateForm',
+      enableReinitialize: true
     }),
     withState('anchorEl', 'setAnchorEl', null),
     withState('chosenRecruiter', 'chooseRecruiter', false),
     connect((state) => {
-        const recruiter = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'recruiter']) || false
-        const sphere = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'sphere', 'value'])
-        return {
-            recruiter,
-            sphere
-        }
+      const recruiter = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'recruiter']) || false
+      const sphere = _.get(state, ['form', 'ApplicationCreateForm', 'values', 'sphere', 'value'])
+      return {
+        recruiter,
+        sphere
+      }
     })
 )
 
 const ApplicationCreateDialog = enhance((props) => {
-    const {
+  const {
         dispatch,
         open,
         handleSubmit,
@@ -309,16 +309,16 @@ const ApplicationCreateDialog = enhance((props) => {
         chooseRecruiter,
         sphere
     } = props
-    const formNames = []
-    const onSubmit = handleSubmit(() => props.onSubmit()
+  const formNames = []
+  const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-            formValidate(formNames, dispatch, error)
+          formValidate(formNames, dispatch, error)
         }))
-    const chosenRecruiterName = _.get(recruiter, 'firstName') + ' ' + _.get(recruiter, 'secondName')
-    const chosenRecruiterPhoto = _.get(recruiter, ['photo', 'file'])
+  const chosenRecruiterName = _.get(recruiter, 'firstName') + ' ' + _.get(recruiter, 'secondName')
+  const chosenRecruiterPhoto = _.get(recruiter, ['photo', 'file'])
 
-    const requiredCheckbox = (field, name) => {
-        return (
+  const requiredCheckbox = (field, name) => {
+    return (
             <div className={classes.required}>
                 {field}
                 <ToolTip position={'left'} text={t('Обязательное требование')}>
@@ -329,10 +329,10 @@ const ApplicationCreateDialog = enhance((props) => {
                     </div>
                 </ToolTip>
             </div>
-        )
-    }
+    )
+  }
 
-    return (
+  return (
         <Dialog
             modal={true}
             open={open}
@@ -346,8 +346,8 @@ const ApplicationCreateDialog = enhance((props) => {
                     <ToolTip text={recruiter ? t('Изменить рекрутера') : t('Назначить рекрутера')} position={'right'}>
                         <IconButton
                             onTouchTap={(event) => {
-                                setAnchorEl(event.currentTarget)
-                                setOpenRecruiterList(true)
+                              setAnchorEl(event.currentTarget)
+                              setOpenRecruiterList(true)
                             }}>
                             <AddPerson color="#666666"/>
                         </IconButton>
@@ -371,24 +371,24 @@ const ApplicationCreateDialog = enhance((props) => {
                             <Loader size={0.6}/>
                         </div>
                         : _.map(usersData.list, (item) => {
-                            const firstName = _.get(item, 'firstName')
-                            const secondName = _.get(item, 'secondName')
-                            const appCount = _.get(item, 'applicationCount')
-                            const appCountDoing = _.get(item, 'applicationDoingCount')
-                            const name = firstName + ' ' + secondName
-                            const file = _.get(item, ['photo', 'file'])
-                            const photo = _.get(item, 'photo') ? <img src={file} alt=""/> : <PersonIcon/>
-                            const id = _.get(item, 'id')
-                            return (
+                          const firstName = _.get(item, 'firstName')
+                          const secondName = _.get(item, 'secondName')
+                          const appCount = _.get(item, 'applicationCount')
+                          const appCountDoing = _.get(item, 'applicationDoingCount')
+                          const name = firstName + ' ' + secondName
+                          const file = _.get(item, ['photo', 'file'])
+                          const photo = _.get(item, 'photo') ? <img src={file} alt=""/> : <PersonIcon/>
+                          const id = _.get(item, 'id')
+                          return (
                                 <div
                                     key={id}
                                     className={classes.user}
                                     onClick={() => {
-                                        chooseRecruiter(item)
-                                        dispatch(change('ApplicationCreateForm', 'recruiter', item))
-                                        setOpenRecruiterList(false)
+                                      chooseRecruiter(item)
+                                      dispatch(change('ApplicationCreateForm', 'recruiter', item))
+                                      setOpenRecruiterList(false)
                                     }}><div className={classes.avatar}>{photo}</div>{name} &nbsp;&nbsp; {appCountDoing + ' / ' + appCount}</div>
-                            )
+                          )
                         })}
                 </div>
             </Popover>
@@ -427,8 +427,8 @@ const ApplicationCreateDialog = enhance((props) => {
                                     label={t('Наименование')}
                                     fullWidth={true}/>
                                 <Link style={{marginLeft: '5px', whiteSpace: 'nowrap'}} target={'_blank'} to={{
-                                    pathname: ROUTES.CLIENT_LIST_URL,
-                                    query: {openCreateDialog: true}
+                                  pathname: ROUTES.CLIENT_LIST_URL,
+                                  query: {openCreateDialog: true}
                                 }}>{t('добавить клиента')}</Link>
                             </div>
                             <Field
@@ -505,16 +505,16 @@ const ApplicationCreateDialog = enhance((props) => {
                                 {privilegeData.loading && <Loader size={0.6}/>}
                                 <div className={classes.flex + ' ' + classes.halfChild}>
                                     {_.map(privilegeData.list, (item, index) => {
-                                        const id = _.get(item, 'id')
-                                        const label = _.get(item, 'name')
-                                        return (
+                                      const id = _.get(item, 'id')
+                                      const label = _.get(item, 'name')
+                                      return (
                                             <Field
                                                 key={id}
                                                 name={'privileges[' + index + '][selected]'}
                                                 label={label}
                                                 component={CheckBox}
                                             />
-                                        )
+                                      )
                                     })}
                                 </div>
                             </div>
@@ -620,19 +620,19 @@ const ApplicationCreateDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-    )
+  )
 })
 
 ApplicationCreateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+  isUpdate: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 ApplicationCreateDialog.defaultProps = {
-    isUpdate: false
+  isUpdate: false
 }
 
 export default ApplicationCreateDialog

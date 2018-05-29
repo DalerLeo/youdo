@@ -1,5 +1,7 @@
 import SkillsList from './Skills'
+import PostList from './Post'
 
 export {
-    SkillsList
+    SkillsList,
+    PostList
 }

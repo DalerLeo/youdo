@@ -9,42 +9,42 @@ import IconButton from 'material-ui/IconButton'
 
 const enhance = compose(
     injectSheet({
-        search: {
-            position: 'relative',
-            display: 'flex',
-            maxWidth: '300px',
-            margin: '0 auto',
+      search: {
+        position: 'relative',
+        display: 'flex',
+        maxWidth: '300px',
+        margin: '0 auto',
 
-            '& > div': {
-                paddingRight: '35px'
-            }
-        },
-        searchField: {
-            fontSize: '13px !important'
-        },
-        filterEmptySearch: {
-            extend: 'search',
-            margin: '0 0 0 10px'
-        },
-
-        searchButton: {
-            position: 'absolute !important',
-            right: '-10px'
+        '& > div': {
+          paddingRight: '35px'
         }
+      },
+      searchField: {
+        fontSize: '13px !important'
+      },
+      filterEmptySearch: {
+        extend: 'search',
+        margin: '0 0 0 10px'
+      },
+
+      searchButton: {
+        position: 'absolute !important',
+        right: '-10px'
+      }
     }),
     withState('search', 'setSearch', ({filter}) => filter.getParam('search')),
     withHandlers({
-        onSubmit: props => (event) => {
-            const {search, filter} = props
-            event.preventDefault()
+      onSubmit: props => (event) => {
+        const {search, filter} = props
+        event.preventDefault()
 
-            hashHistory.push(filter.createURL({search}))
-        }
+        hashHistory.push(filter.createURL({search}))
+      }
     })
 )
 
 const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit, filterIsEmpty}) => {
-    return (
+  return (
         <form onSubmit={onSubmit}>
             <div className={filterIsEmpty ? classes.filterEmptySearch : classes.search}>
                 <TextField
@@ -62,12 +62,12 @@ const GridListNavSearch = enhance(({classes, search, setSearch, onSubmit, filter
                 </IconButton>
             </div>
         </form>
-    )
+  )
 })
 
 GridListNavSearch.propTypes = {
-    filter: PropTypes.object.isRequired,
-    filterIsEmpty: PropTypes.bool.isRequired
+  filter: PropTypes.object.isRequired,
+  filterIsEmpty: PropTypes.bool.isRequired
 }
 
 export default GridListNavSearch

@@ -4,11 +4,11 @@ import TimePicker from 'material-ui/TimePicker'
 import t from '../../../helpers/translate'
 
 const errorStyle = {
-    textAlign: 'left'
+  textAlign: 'left'
 }
 
 const TimeField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
-    return (
+  return (
         <div className={classes.wrapper}>
             <div>
                 <TimePicker
@@ -24,7 +24,7 @@ const TimeField = ({classes, input, label, meta: {error}, ...defaultProps}) => {
             </div>
             {error && <span>{error}</span>}
         </div>
-    )
+  )
 }
 
 export default injectSheet({

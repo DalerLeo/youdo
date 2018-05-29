@@ -22,120 +22,120 @@ import t from '../../helpers/translate'
 const colorBlue = '#12aaeb !important'
 const enhance = compose(
     injectSheet({
-        addButtonWrapper: {
-            position: 'absolute',
-            top: '10px',
-            right: '0',
-            marginBottom: '0px'
-        },
-        actionBtn: {
-            height: '48px'
-        },
-        wrapper: {
-            color: '#333 !important',
-            width: '100%',
-            display: 'flex',
-            flexWrap: 'wrap',
-            '& a': {
-                color: colorBlue
-            }
-        },
-        title: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
-            height: '65px',
-            padding: '0 30px',
-            borderBottom: '1px #efefef solid'
-        },
-        container: {
-            display: 'flex',
-            width: '100%'
-        },
-        sides: {
-            flexBasis: '27%'
-        },
-        leftSide: {
-            extend: 'sides',
-            borderRight: '1px #efefef solid',
-            padding: '20px 30px'
-        },
-        rightSide: {
-            extend: 'sides',
-            borderLeft: '1px #efefef solid',
-            padding: '20px 30px'
-        },
-        body: {
-            flexBasis: '66%',
-            padding: '20px 30px',
-            '& .dottedList': {
-                padding: '10px 0',
-                '&:after': {
-                    left: '0.5rem',
-                    right: '0.5rem'
-                },
-                '&:first-child': {
-                    padding: '0 0 10px'
-                },
-                '&:last-child': {
-                    padding: '10px 0 0',
-                    '&:after': {
-                        display: 'none'
-                    }
-                }
-            }
-        },
-        titleLabel: {
-            fontSize: '18px',
-            color: '#333',
-            fontWeight: '700'
-        },
-        titleButtons: {
-            display: 'flex',
-            justifyContent: 'flex-end'
-        },
-        bodytitle: {
-            fontWeight: '600',
-            marginBottom: '10px'
-        },
-        listRow: {
-            position: 'relative',
-            '& > a': {
-                display: 'flex',
-                alignItems: 'center',
-                position: 'absolute',
-                top: '0',
-                left: '-30px',
-                right: '-30px',
-                bottom: '0',
-                padding: '0 30px',
-                '& > div': {
-                    '&:first-child': {
-                        paddingLeft: '0'
-                    },
-                    '&:last-child': {
-                        paddingRight: '0'
-                    }
-                }
-            }
-        },
-        blacklistRow: {
-            extend: 'listRow',
-            background: '#eceff1',
-            margin: '0 -30px !important',
-            width: 'auto !important',
-            padding: '0 30px',
-            '& > a': {
-                borderLeft: '3px #ff4747 solid',
-                left: '0',
-                right: '0'
-            }
+      addButtonWrapper: {
+        position: 'absolute',
+        top: '10px',
+        right: '0',
+        marginBottom: '0px'
+      },
+      actionBtn: {
+        height: '48px'
+      },
+      wrapper: {
+        color: '#333 !important',
+        width: '100%',
+        display: 'flex',
+        flexWrap: 'wrap',
+        '& a': {
+          color: colorBlue
         }
+      },
+      title: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        height: '65px',
+        padding: '0 30px',
+        borderBottom: '1px #efefef solid'
+      },
+      container: {
+        display: 'flex',
+        width: '100%'
+      },
+      sides: {
+        flexBasis: '27%'
+      },
+      leftSide: {
+        extend: 'sides',
+        borderRight: '1px #efefef solid',
+        padding: '20px 30px'
+      },
+      rightSide: {
+        extend: 'sides',
+        borderLeft: '1px #efefef solid',
+        padding: '20px 30px'
+      },
+      body: {
+        flexBasis: '66%',
+        padding: '20px 30px',
+        '& .dottedList': {
+          padding: '10px 0',
+          '&:after': {
+            left: '0.5rem',
+            right: '0.5rem'
+          },
+          '&:first-child': {
+            padding: '0 0 10px'
+          },
+          '&:last-child': {
+            padding: '10px 0 0',
+            '&:after': {
+              display: 'none'
+            }
+          }
+        }
+      },
+      titleLabel: {
+        fontSize: '18px',
+        color: '#333',
+        fontWeight: '700'
+      },
+      titleButtons: {
+        display: 'flex',
+        justifyContent: 'flex-end'
+      },
+      bodytitle: {
+        fontWeight: '600',
+        marginBottom: '10px'
+      },
+      listRow: {
+        position: 'relative',
+        '& > a': {
+          display: 'flex',
+          alignItems: 'center',
+          position: 'absolute',
+          top: '0',
+          left: '-30px',
+          right: '-30px',
+          bottom: '0',
+          padding: '0 30px',
+          '& > div': {
+            '&:first-child': {
+              paddingLeft: '0'
+            },
+            '&:last-child': {
+              paddingRight: '0'
+            }
+          }
+        }
+      },
+      blacklistRow: {
+        extend: 'listRow',
+        background: '#eceff1',
+        margin: '0 -30px !important',
+        width: 'auto !important',
+        padding: '0 30px',
+        '& > a': {
+          borderLeft: '3px #ff4747 solid',
+          left: '0',
+          right: '0'
+        }
+      }
     })
 )
 const ClientGridList = enhance((props) => {
-    const {
+  const {
         filter,
         filterDialog,
         createDialog,
@@ -145,34 +145,34 @@ const ClientGridList = enhance((props) => {
         detailData,
         classes
     } = props
-    const listHeader = [
-        {
-            sorting: true,
-            name: 'id',
-            xs: 1,
-            title: 'Id'
-        },
-        {
-            sorting: false,
-            name: 'name',
-            xs: 5,
-            title: t('Наименование')
-        },
-        {
-            sorting: true,
-            xs: 4,
-            name: 'address',
-            title: t('Адрес')
-        },
-        {
-            sorting: false,
-            xs: 2,
-            name: 'createdDate',
-            title: t('Дата добавления')
-        }
-    ]
+  const listHeader = [
+    {
+      sorting: true,
+      name: 'id',
+      xs: 1,
+      title: 'Id'
+    },
+    {
+      sorting: false,
+      name: 'name',
+      xs: 5,
+      title: t('Наименование')
+    },
+    {
+      sorting: true,
+      xs: 4,
+      name: 'address',
+      title: t('Адрес')
+    },
+    {
+      sorting: false,
+      xs: 2,
+      name: 'createdDate',
+      title: t('Дата добавления')
+    }
+  ]
 
-    const clientFilterDialog = (
+  const clientFilterDialog = (
         <ClientFilterDialog
             initialValues={filterDialog.initialValues}
             filter={filter}
@@ -180,7 +180,7 @@ const ClientGridList = enhance((props) => {
         />
     )
 
-    const clientDetail = (
+  const clientDetail = (
         <ClientDetails
             key={_.get(detailData, 'id')}
             data={_.get(detailData, 'data') || {}}
@@ -191,33 +191,33 @@ const ClientGridList = enhance((props) => {
         />
     )
 
-    const clientList = _.map(_.get(listData, 'data'), (item) => {
-        const id = _.get(item, 'id')
-        const name = _.get(item, 'name')
-        const address = _.get(item, 'address')
-        const inBlacklist = _.get(item, 'inBlacklist')
-        const createdDate = dateFormat(_.get(item, 'createdDate'))
-        return (
+  const clientList = _.map(_.get(listData, 'data'), (item) => {
+    const id = _.get(item, 'id')
+    const name = _.get(item, 'name')
+    const address = _.get(item, 'address')
+    const inBlacklist = _.get(item, 'inBlacklist')
+    const createdDate = dateFormat(_.get(item, 'createdDate'))
+    return (
             <Row key={id} className={inBlacklist ? classes.blacklistRow : classes.listRow}>
                 <Col xs={1}>{id}</Col>
                 <Col xs={5}>{name}</Col>
                 <Link to={{
-                    pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
-                    query: filter.getParams()
+                  pathname: sprintf(ROUTES.CLIENT_ITEM_PATH, id),
+                  query: filter.getParams()
                 }}/>
                 <Col xs={4}>{address}</Col>
                 <Col xs={2}>{createdDate}</Col>
             </Row>
-        )
-    })
+    )
+  })
 
-    const list = {
-        header: listHeader,
-        list: clientList,
-        loading: _.get(listData, 'listLoading')
-    }
+  const list = {
+    header: listHeader,
+    list: clientList,
+    loading: _.get(listData, 'listLoading')
+  }
 
-    return (
+  return (
         <Container>
             <SubMenu url={ROUTES.CLIENT_LIST_URL}/>
             <div className={classes.addButtonWrapper}>
@@ -263,34 +263,34 @@ const ClientGridList = enhance((props) => {
                 open={confirmDialog.openConfirmDialog}
             />}
         </Container>
-    )
+  )
 })
 
 ClientGridList.propTypes = {
-    filter: PropTypes.object.isRequired,
-    listData: PropTypes.object,
-    detailData: PropTypes.object,
-    tabData: PropTypes.object.isRequired,
-    createDialog: PropTypes.shape({
-        createLoading: PropTypes.bool.isRequired,
-        openCreateDialog: PropTypes.bool.isRequired,
-        handleOpenCreateDialog: PropTypes.func.isRequired,
-        handleCloseCreateDialog: PropTypes.func.isRequired,
-        handleSubmitCreateDialog: PropTypes.func.isRequired
-    }).isRequired,
-    confirmDialog: PropTypes.shape({
-        openConfirmDialog: PropTypes.bool.isRequired,
-        handleOpenConfirmDialog: PropTypes.func.isRequired,
-        handleCloseConfirmDialog: PropTypes.func.isRequired,
-        handleSendConfirmDialog: PropTypes.func.isRequired
-    }).isRequired,
-    updateDialog: PropTypes.shape({
-        updateLoading: PropTypes.bool.isRequired,
-        openUpdateDialog: PropTypes.bool.isRequired,
-        handleOpenUpdateDialog: PropTypes.func.isRequired,
-        handleCloseUpdateDialog: PropTypes.func.isRequired,
-        handleSubmitUpdateDialog: PropTypes.func.isRequired
-    }).isRequired
+  filter: PropTypes.object.isRequired,
+  listData: PropTypes.object,
+  detailData: PropTypes.object,
+  tabData: PropTypes.object.isRequired,
+  createDialog: PropTypes.shape({
+    createLoading: PropTypes.bool.isRequired,
+    openCreateDialog: PropTypes.bool.isRequired,
+    handleOpenCreateDialog: PropTypes.func.isRequired,
+    handleCloseCreateDialog: PropTypes.func.isRequired,
+    handleSubmitCreateDialog: PropTypes.func.isRequired
+  }).isRequired,
+  confirmDialog: PropTypes.shape({
+    openConfirmDialog: PropTypes.bool.isRequired,
+    handleOpenConfirmDialog: PropTypes.func.isRequired,
+    handleCloseConfirmDialog: PropTypes.func.isRequired,
+    handleSendConfirmDialog: PropTypes.func.isRequired
+  }).isRequired,
+  updateDialog: PropTypes.shape({
+    updateLoading: PropTypes.bool.isRequired,
+    openUpdateDialog: PropTypes.bool.isRequired,
+    handleOpenUpdateDialog: PropTypes.func.isRequired,
+    handleCloseUpdateDialog: PropTypes.func.isRequired,
+    handleSubmitUpdateDialog: PropTypes.func.isRequired
+  }).isRequired
 }
 
 export default ClientGridList

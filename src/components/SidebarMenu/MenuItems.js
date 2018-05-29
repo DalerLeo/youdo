@@ -227,78 +227,81 @@ export const MenuItems = [
             {section: SETTINGS_MISC, name: t('Уведомления'), url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
     } */
-    {
-        name: t('Управление сайтом'),
-        icon: (<Administration/>),
-        section: 'Administration',
-        url: ROUTES.ARTICLES_LIST_URL,
-        childs: [
+  {
+    name: t('Управление сайтом'),
+    icon: (<Administration/>),
+    section: 'Administration',
+    url: ROUTES.ARTICLES_LIST_URL,
+    childs: [
             {section: 'Основные', name: t('Статьи'), url: ROUTES.ARTICLES_LIST_URL, permission: ''},
-            {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''},
-            {section: 'Пользователи', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''}
-        ]
-    },
-    {
-        name: t('Настройки'),
-        icon: (<Settings/>),
-        section: 'Settings',
-        url: ROUTES.SKILLS_LIST_URL,
-        bottom: true,
-        childs: [
-            {section: 'Основные', name: t('Навыки'), url: ROUTES.SKILLS_LIST_URL, permission: ''}
-        ]
-    }
+            {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''}
+    ]
+  },
+  {
+    name: t('Настройки'),
+    icon: (<Settings/>),
+    section: 'Settings',
+    url: ROUTES.SKILLS_LIST_URL,
+    bottom: true,
+    childs: [
+            {section: 'Основные', name: t('Навыки'), url: ROUTES.SKILLS_LIST_URL, permission: ''},
+            {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''},
+            {section: 'Основные', name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: ''},
+            {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''}
+
+    ]
+  }
 ]
 
 export const getNeedMenu = (userPermissions) => {
-    const menus = []
-    _.map(userPermissions, (perm) => {
-        const parent = _
+  const menus = []
+  _.map(userPermissions, (perm) => {
+    const parent = _
             .chain(MenuItems)
             .find((obj) => {
-                const filteredChilds = _.filter(obj.childs, (child) => {
-                    return child.permission === perm
-                })
-                return (_.findIndex(filteredChilds, (ch) => {
-                    return ch.permission === perm
-                }) > NOT_FOUND)
+              const filteredChilds = _.filter(obj.childs, (child) => {
+                return child.permission === perm
+              })
+              return (_.findIndex(filteredChilds, (ch) => {
+                return ch.permission === perm
+              }) > NOT_FOUND)
             })
             .value()
-        let hasIn = false
-        _.map(menus, (menu) => {
-            _.map(menu.childs, (child) => {
-                if (child.permission === perm) {
-                    hasIn = true
-                }
-            })
-        })
-        const filteredChilds = _.filter(_.get(parent, 'childs'), (child) => {
-            return child.permission === perm
-        })
-        if (!hasIn) {
-            const newParent = {
-                name: _.get(parent, 'name'),
-                query: _.get(parent, 'query'),
-                icon: _.get(parent, 'icon'),
-                section: _.get(parent, 'section') || '',
-                dynamic: _.get(parent, 'dynamic'),
-                dynamicOnlyURL: _.get(parent, 'dynamicOnlyURL'),
-                bottom: _.get(parent, 'name') === 'Настройки',
-                childs: _.filter(_.get(parent, 'childs'), (ch) => {
-                    return _.includes(userPermissions, ch.permission)
-                }),
-                url: _.get(_.first(filteredChilds), 'url')
-            }
-            menus.push(newParent)
+    let hasIn = false
+    _.map(menus, (menu) => {
+      _.map(menu.childs, (child) => {
+        if (child.permission === perm) {
+          hasIn = true
         }
+      })
     })
-    return _.uniqBy(_.filter(menus, (o) => {
-        return _.get(o, 'url')
-    }), 'url')
+    const filteredChilds = _.filter(_.get(parent, 'childs'), (child) => {
+      return child.permission === perm
+    })
+    if (!hasIn) {
+      const newParent = {
+        name: _.get(parent, 'name'),
+        query: _.get(parent, 'query'),
+        icon: _.get(parent, 'icon'),
+        section: _.get(parent, 'section') || '',
+        dynamic: _.get(parent, 'dynamic'),
+        dynamicOnlyURL: _.get(parent, 'dynamicOnlyURL'),
+        bottom: _.get(parent, 'name') === 'Настройки',
+        childs: _.filter(_.get(parent, 'childs'), (ch) => {
+          return _.includes(userPermissions, ch.permission)
+        }),
+        url: _.get(_.first(filteredChilds), 'url')
+      }
+      menus.push(newParent)
+    }
+  })
+  return _.uniqBy(_.filter(menus, (o) => {
+    return _.get(o, 'url')
+  }), 'url')
 }
 
 export const getMenus = (userPermissions, isAdmin) => {
-    return MenuItems
+  return MenuItems
 
     /* .if (isAdmin) {
         return MenuItems

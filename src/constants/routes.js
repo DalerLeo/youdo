@@ -35,6 +35,16 @@ export const SKILLS_LIST_URL = `/${SKILLS}`
 export const SKILLS_ITEM_URL = `/${SKILLS}/:skillsId`
 export const SKILLS_ITEM_PATH = `/${SKILLS}/%d`
 
+export const ROLE = 'role'
+export const ROLE_LIST_URL = `/${ROLE}`
+export const ROLE_ITEM_URL = `${ROLE_LIST_URL}/:roleId`
+export const ROLE_ITEM_PATH = `${ROLE}/%d`
+
+export const POST = 'post'
+export const POST_LIST_URL = `/${POST}`
+export const POST_ITEM_URL = `${POST_LIST_URL}/:postId`
+export const POST_ITEM_PATH = `${POST}/%d`
+
 export const REGIONS = 'regions'
 export const REGIONS_LIST_URL = `/${SKILLS}`
 export const REGIONS_ITEM_URL = `/${SKILLS}/:regionsId`

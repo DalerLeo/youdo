@@ -12,43 +12,43 @@ import {setApi} from '../../helpers/storage'
 
 const enhance = compose(
     injectSheet({
-        container: {
-            height: '100%',
-            display: 'flex !important',
-            justifyContent: 'center',
-            flexDirection: 'column'
-        }
+      container: {
+        height: '100%',
+        display: 'flex !important',
+        justifyContent: 'center',
+        flexDirection: 'column'
+      }
     }),
     withState('signInLoading', 'updateSignInLoading', false),
     connect((state, props) => {
-        const loading = _.get(props, 'signInLoading')
-        return {
-            formValues: _.get(state, ['form', 'SignInForm', 'values']),
-            loading: _.get(state, ['signIn', 'loading']) || _.get(state, ['authConfirm', 'loading']) || loading
-        }
+      const loading = _.get(props, 'signInLoading')
+      return {
+        formValues: _.get(state, ['form', 'SignInForm', 'values']),
+        loading: _.get(state, ['signIn', 'loading']) || _.get(state, ['authConfirm', 'loading']) || loading
+      }
     }),
     withPropsOnChange((props, nextProps) => {
-        const prevApi = _.get(props, ['location', 'query', 'api_host'])
-        const nextApi = _.get(nextProps, ['location', 'query', 'api_host'])
-        return prevApi !== nextApi && nextApi
+      const prevApi = _.get(props, ['location', 'query', 'api_host'])
+      const nextApi = _.get(nextProps, ['location', 'query', 'api_host'])
+      return prevApi !== nextApi && nextApi
     }, ({location}) => {
-        const api = _.get(location, ['query', 'api_host'])
-        if (!_.isEmpty(api)) {
-            return setApi(api)
-        }
-        return null
+      const api = _.get(location, ['query', 'api_host'])
+      if (!_.isEmpty(api)) {
+        return setApi(api)
+      }
+      return null
     }),
 )
 
 const SignIn = enhance((props) => {
-    const {classes, dispatch, location, loading, formValues, updateSignInLoading} = props
-    const onSubmit = () => {
-        return dispatch(signInAction(formValues))
+  const {classes, dispatch, location, loading, formValues, updateSignInLoading} = props
+  const onSubmit = () => {
+    return dispatch(signInAction(formValues))
             .then(() => {
                 // | const rememberUser = _.get(formValues, 'rememberMe') || false
-                updateSignInLoading(false)
-                const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
-                hashHistory.push(redirectUrl)
+              updateSignInLoading(false)
+              const redirectUrl = _.get(location, ['query', 'redirect']) || ROUTES.DASHBOARD_URL
+              hashHistory.push(redirectUrl)
 
                 /* | return dispatch(authConfirmAction(rememberUser))
                     .then(() => {
@@ -57,13 +57,13 @@ const SignIn = enhance((props) => {
                         hashHistory.push(redirectUrl)
                     }) */
             })
-    }
+  }
 
-    return (
+  return (
         <div className={classes.container}>
             <SignInForm loading={loading} onSubmit={onSubmit}/>
         </div>
-    )
+  )
 })
 
 export default SignIn

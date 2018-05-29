@@ -8,16 +8,16 @@ import toCamelCase from '../../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.HR_POSITION_ITEM, id))
+  return axios().get(sprintf(PATH.HR_POSITION_ITEM, id))
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+          return Promise.resolve(toCamelCase(data))
         })
 }
 
 const PositionSearchField = (props) => {
-    const {params, pageSize} = props
+  const {params, pageSize} = props
 
-    return (
+  return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -27,7 +27,7 @@ const PositionSearchField = (props) => {
             parent={_.get(params, 'child')}
             {...props}
         />
-    )
+  )
 }
 
 export default PositionSearchField

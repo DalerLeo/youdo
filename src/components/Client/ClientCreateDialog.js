@@ -20,46 +20,46 @@ export const CLIENT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
 
 const enhance = compose(
     injectSheet(_.merge(MainStyles, {
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
-        },
-        textFieldArea: {
-            top: '-20px !important',
-            lineHeight: '20px !important',
-            fontSize: '13px !important',
-            marginBottom: '-22px'
-        },
-        contacts: {
-            background: '#f1f5f8',
-            color: '#333',
-            margin: '12px -30px 0',
-            padding: '20px 30px'
-        }
+      loader: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: '#fff',
+        top: '0',
+        left: '0',
+        alignItems: 'center',
+        zIndex: '999',
+        textAlign: 'center',
+        display: ({loading}) => loading ? 'flex' : 'none'
+      },
+      textFieldArea: {
+        top: '-20px !important',
+        lineHeight: '20px !important',
+        fontSize: '13px !important',
+        marginBottom: '-22px'
+      },
+      contacts: {
+        background: '#f1f5f8',
+        color: '#333',
+        margin: '12px -30px 0',
+        padding: '20px 30px'
+      }
     })),
     reduxForm({
-        form: 'ClientCreateForm',
-        enableReinitialize: true
+      form: 'ClientCreateForm',
+      enableReinitialize: true
     })
 )
 
 const ClientCreateDialog = enhance((props) => {
-    const {open, loading, handleSubmit, onClose, classes, isUpdate, dispatch} = props
-    const formNames = ['name', 'address', 'from', 'inBlackList']
-    const onSubmit = handleSubmit(() => props.onSubmit()
+  const {open, loading, handleSubmit, onClose, classes, isUpdate, dispatch} = props
+  const formNames = ['name', 'address', 'from', 'inBlackList']
+  const onSubmit = handleSubmit(() => props.onSubmit()
         .catch((error) => {
-            formValidate(formNames, dispatch, error)
+          formValidate(formNames, dispatch, error)
         }))
 
-    return (
+  return (
         <Dialog
             modal={true}
             open={open}
@@ -129,19 +129,19 @@ const ClientCreateDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-    )
+  )
 })
 
 ClientCreateDialog.propTypes = {
-    isUpdate: PropTypes.bool,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+  isUpdate: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 ClientCreateDialog.defaultProps = {
-    isUpdate: false
+  isUpdate: false
 }
 
 export default ClientCreateDialog

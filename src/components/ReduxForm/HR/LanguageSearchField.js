@@ -7,16 +7,16 @@ import toCamelCase from '../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.HR_LANGUAGE_ITEM, id))
+  return axios().get(sprintf(PATH.HR_LANGUAGE_ITEM, id))
         .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
+          return Promise.resolve(toCamelCase(data))
         })
 }
 
 const LanguageSearchField = (props) => {
-    const {params, pageSize} = props
+  const {params, pageSize} = props
 
-    return (
+  return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -25,7 +25,7 @@ const LanguageSearchField = (props) => {
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
-    )
+  )
 }
 
 export default LanguageSearchField

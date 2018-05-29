@@ -9,88 +9,88 @@ import {COLOR_RED, COLOR_WHITE} from '../../../../constants/styleConstants'
 
 const enhance = compose(
     injectSheet({
-        wrapper: {
-            margin: '0 -30px',
-            padding: '0 30px',
-            position: 'relative',
-            zIndex: '2'
+      wrapper: {
+        margin: '0 -30px',
+        padding: '0 30px',
+        position: 'relative',
+        zIndex: '2'
+      },
+      usersLoader: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
+      },
+      inputFieldCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& div': {
+          fontSize: '13px !important'
         },
-        usersLoader: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%'
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
         },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& div': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        textFieldArea: {
-            top: '-5px !important',
-            lineHeight: '20px !important',
-            fontSize: '13px !important'
-        },
-        subTitle: {
-            fontWeight: '600'
-        },
-        flex: {
-            display: 'flex',
-            '& > div': {
-                marginRight: '10px',
-                width: '100% !important'
-            }
-        },
-        detail: {
-            marginTop: '10px',
-            '&:first-child': {
-                marginTop: '0'
-            }
-        },
-        remove: {
-            color: COLOR_RED,
-            cursor: 'pointer',
-            fontWeight: '600',
-            textAlign: 'center',
-            margin: '10px 0'
+        '& input': {
+          marginTop: '0 !important'
         }
+      },
+      textFieldArea: {
+        top: '-5px !important',
+        lineHeight: '20px !important',
+        fontSize: '13px !important'
+      },
+      subTitle: {
+        fontWeight: '600'
+      },
+      flex: {
+        display: 'flex',
+        '& > div': {
+          marginRight: '10px',
+          width: '100% !important'
+        }
+      },
+      detail: {
+        marginTop: '10px',
+        '&:first-child': {
+          marginTop: '0'
+        }
+      },
+      remove: {
+        color: COLOR_RED,
+        cursor: 'pointer',
+        fontWeight: '600',
+        textAlign: 'center',
+        margin: '10px 0'
+      }
     })
 )
 
 const ResumeNewQuestionsField = enhance((props) => {
-    const {
+  const {
         fields,
         classes
     } = props
 
-    const handleTouchTap = (index, addAnother) => {
-        if (addAnother) {
-            return fields.push({})
-        }
-        return fields.remove(index)
+  const handleTouchTap = (index, addAnother) => {
+    if (addAnother) {
+      return fields.push({})
     }
+    return fields.remove(index)
+  }
 
-    const flatButtonStyle = {
-        label: {
-            color: COLOR_WHITE,
-            fontWeight: '600',
-            textTransform: 'none',
-            verticalAlign: 'baseline'
-        }
+  const flatButtonStyle = {
+    label: {
+      color: COLOR_WHITE,
+      fontWeight: '600',
+      textTransform: 'none',
+      verticalAlign: 'baseline'
     }
+  }
 
-    const details = fields.map((detail, index) => {
-        return (
+  const details = fields.map((detail, index) => {
+    return (
             <div key={index} className={classes.detail}>
                 <div>
                     <Field
@@ -112,10 +112,10 @@ const ResumeNewQuestionsField = enhance((props) => {
                 </div>
                 <div className={classes.remove} onClick={() => handleTouchTap(index, false)}>{t('Удалить')}</div>
             </div>
-        )
-    })
+    )
+  })
 
-    return (
+  return (
         <div className={classes.wrapper}>
             {details}
             <FlatButton
@@ -126,10 +126,10 @@ const ResumeNewQuestionsField = enhance((props) => {
                 hoverColor={'#607D8B'}
                 rippleColor={COLOR_WHITE}
                 onClick={() => {
-                    handleTouchTap(null, true)
+                  handleTouchTap(null, true)
                 }}/>
         </div>
-    )
+  )
 })
 
 export default ResumeNewQuestionsField

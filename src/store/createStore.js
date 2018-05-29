@@ -6,16 +6,16 @@ import {hashHistory} from 'react-router'
 import rootReducer from '../reducers'
 
 export default (initialState) => {
-    const middleware = [
-        promiseMiddleware(),
-        thunkMiddleware,
-        routerMiddleware(hashHistory)
-    ]
+  const middleware = [
+    promiseMiddleware(),
+    thunkMiddleware,
+    routerMiddleware(hashHistory)
+  ]
 
-    if (process.env.NODE_ENV === 'development') {
-        const createLogger = require('redux-logger')
-        middleware.push(createLogger())
-    }
+  if (process.env.NODE_ENV === 'development') {
+    const createLogger = require('redux-logger')
+    middleware.push(createLogger())
+  }
 
-    return createStore(rootReducer, initialState, applyMiddleware(...middleware))
+  return createStore(rootReducer, initialState, applyMiddleware(...middleware))
 }

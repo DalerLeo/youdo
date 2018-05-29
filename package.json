@@ -35,6 +35,7 @@
     "react-flexbox-grid": "^1.0.2",
     "react-google-maps": "^7.0.0",
     "react-highcharts": "^12.0.0",
+    "react-hot-loader": "^4.2.0",
     "react-infinite-scroller": "^1.0.14",
     "react-input-mask": "^1.2.2",
     "react-jss": "^5.4.0",
@@ -54,7 +55,8 @@
     "redux-promise-middleware": "^4.2.0",
     "redux-thunk": "^2.1.0",
     "rxjs": "^5.3.0",
-    "sprintf": "^0.1.5"
+    "sprintf": "^0.1.5",
+    "webpack-hot-middleware": "^2.22.2"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -76,6 +78,7 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-react": "^6.8.0",
     "eslint-plugin-standard": "^2.0.1",
+    "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.24.1",
     "mocha": "^3.2.0",
@@ -84,11 +87,11 @@
     "react-test-renderer": "^15.4.1",
     "style-loader": "^0.13.1",
     "watchify": "^3.8.0",
-    "webpack": "2.2.0",
-    "webpack-dev-server": "^1.16.2"
+    "webpack": "^2.7.0",
+    "webpack-dev-server": "2.11.2"
   },
   "scripts": {
-    "start": "webpack-dev-server --progress --inline",
+    "start": "webpack-dev-server --progress --inline --hot",
     "build": "webpack",
     "test": "mocha --timeout 15000 test/AuthSpec.js",
     "lint": "eslint src/"

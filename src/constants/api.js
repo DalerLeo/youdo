@@ -124,3 +124,19 @@ export const HR_CITY = 'hr/city'
 export const HR_CITY_LIST = `/${HR_CITY}/`
 export const HR_CITY_ITEM = `/${HR_CITY}/%d/`
 
+export const ROLE = 'main/group'
+export const ROLE_COURSE_CREATE = 'finance/currency_rate/'
+export const ROLE_CREATE = `/${ROLE}/`
+export const ROLE_LIST = `/${ROLE}/`
+export const ROLE_DELETE = `/${ROLE}/%d/`
+export const ROLE_ITEM = `/${ROLE}/%d/`
+export const ROLE_PRIMARY = 'currency_primary'
+export const ROLE_RATE = `/${ROLE}/%d/permissions/`
+export const ROLE_PERMISSION = 'main/permissions/'
+
+export const POST = 'main/jobs'
+export const POST_CREATE = `/${POST}/`
+export const POST_LIST = `/${POST}/`
+export const POST_ITEM = `/${POST}/%d/`
+export const POST_DELETE = `/${POST}/%d/`
+

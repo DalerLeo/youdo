@@ -19,198 +19,198 @@ import classNames from 'classnames'
 import {connect} from 'react-redux'
 
 const Input = ({input, ...defaultProps}) => {
-    const props = {}
-    _.map(defaultProps, (obj, index) => {
-        if (index !== 'meta' && index !== 'sheet') {
-            props[index] = obj
-        }
-    })
-    return (
+  const props = {}
+  _.map(defaultProps, (obj, index) => {
+    if (index !== 'meta' && index !== 'sheet') {
+      props[index] = obj
+    }
+  })
+  return (
         <InputMask mask="99/99/9999 99:99" {...props} {...input}/>
-    )
+  )
 }
 
 const enhance = compose(
     injectSheet({
-        dialog: {
-            overflowY: 'auto'
-        },
-        popUp: {
-            color: '#333 !important',
-            overflowY: 'unset !important',
-            overflowX: 'unset !important',
-            fontSize: '13px !important',
-            position: 'relative',
-            padding: '0 !important',
-            height: '100%',
-            maxHeight: 'none !important',
-            marginBottom: '64px'
-        },
-        titleContent: {
-            background: '#fff',
-            color: '#333',
-            fontWeight: 'bold',
-            textTransform: 'uppercase',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: BORDER_STYLE,
-            padding: '0 10px 0 30px',
-            height: '60px',
-            zIndex: '999'
-        },
-        inContent: {
-            padding: '20px 30px',
-            color: '#333'
-        },
-        text: {
-            marginBottom: '15px'
-        },
-        rowItem: {
-            padding: '5px 0',
-            minHeight: '48px',
-            '&:last-child:after': {
-                display: 'none'
-            }
-        },
-        rowItemFirst: {
-            fontWeight: '600',
-            '& > div:last-child': {
-                textAlign: 'right'
-            }
-        },
-        form: {
-            position: 'relative'
-        },
-        field: {
-            width: '100%'
-        },
-        bottomButton: {
-            bottom: '0',
-            left: '0',
-            right: '0',
-            padding: '10px',
-            zIndex: '999',
-            borderTop: '1px solid #efefef',
-            background: '#fff',
-            textAlign: 'right',
-            '& span': {
-                fontSize: '13px !important',
-                fontWeight: '600 !important',
-                color: '#129fdd',
-                verticalAlign: 'inherit !important'
-            }
-        },
-        inputMaskWrapper: {
-            position: 'relative',
-            textAlign: 'right',
-            marginLeft: 'auto',
-            width: '125px',
-            '&:after': {
-                background: COLOR_BLUE_GREY,
-                content: '""',
-                position: 'absolute',
-                left: '0',
-                right: '0',
-                bottom: '0',
-                height: '2px',
-                transform: 'scaleX(0)',
-                transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
-            }
-        },
-        focused: {
-            '&:after': {
-                transform: 'scaleX(1)'
-            }
-        },
-        inputFieldMask: {
-            border: 'none',
-            borderBottom: '1px #ccc solid',
-            fontFamily: 'inherit',
-            outline: 'none',
-            height: '35px',
-            lineHeight: '35px',
-            textAlign: 'right',
-            position: 'relative',
-            width: '100%',
-            '&:disabled': {
-                background: 'inherit',
-                borderBottom: '2px #ccc dotted',
-                cursor: 'not-allowed'
-            }
-        },
-        inputFieldCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& > div:first-child': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            }
-        },
-        inputDateCustom: {
-            fontSize: '13px !important',
-            height: '45px !important',
-            marginTop: '7px',
-            '& > div:first-child': {
-                fontSize: '13px !important'
-            },
-            '& label': {
-                top: '20px !important',
-                lineHeight: '5px !important'
-            },
-            '& input': {
-                marginTop: '0 !important'
-            },
-            '& div:first-child': {
-                height: '45px !important'
-            }
-        },
-        actionButton: {
-            fontSize: '13px !important',
-            margin: '0 !important'
-        },
-        loader: {
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            background: '#fff',
-            top: '0',
-            left: '0',
-            alignItems: 'center',
-            zIndex: '999',
-            textAlign: 'center',
-            display: ({loading}) => loading ? 'flex' : 'none'
-        },
-        listLoader: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '25px 0',
-            width: '100%'
+      dialog: {
+        overflowY: 'auto'
+      },
+      popUp: {
+        color: '#333 !important',
+        overflowY: 'unset !important',
+        overflowX: 'unset !important',
+        fontSize: '13px !important',
+        position: 'relative',
+        padding: '0 !important',
+        height: '100%',
+        maxHeight: 'none !important',
+        marginBottom: '64px'
+      },
+      titleContent: {
+        background: '#fff',
+        color: '#333',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: BORDER_STYLE,
+        padding: '0 10px 0 30px',
+        height: '60px',
+        zIndex: '999'
+      },
+      inContent: {
+        padding: '20px 30px',
+        color: '#333'
+      },
+      text: {
+        marginBottom: '15px'
+      },
+      rowItem: {
+        padding: '5px 0',
+        minHeight: '48px',
+        '&:last-child:after': {
+          display: 'none'
         }
+      },
+      rowItemFirst: {
+        fontWeight: '600',
+        '& > div:last-child': {
+          textAlign: 'right'
+        }
+      },
+      form: {
+        position: 'relative'
+      },
+      field: {
+        width: '100%'
+      },
+      bottomButton: {
+        bottom: '0',
+        left: '0',
+        right: '0',
+        padding: '10px',
+        zIndex: '999',
+        borderTop: '1px solid #efefef',
+        background: '#fff',
+        textAlign: 'right',
+        '& span': {
+          fontSize: '13px !important',
+          fontWeight: '600 !important',
+          color: '#129fdd',
+          verticalAlign: 'inherit !important'
+        }
+      },
+      inputMaskWrapper: {
+        position: 'relative',
+        textAlign: 'right',
+        marginLeft: 'auto',
+        width: '125px',
+        '&:after': {
+          background: COLOR_BLUE_GREY,
+          content: '""',
+          position: 'absolute',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          height: '2px',
+          transform: 'scaleX(0)',
+          transition: 'all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms'
+        }
+      },
+      focused: {
+        '&:after': {
+          transform: 'scaleX(1)'
+        }
+      },
+      inputFieldMask: {
+        border: 'none',
+        borderBottom: '1px #ccc solid',
+        fontFamily: 'inherit',
+        outline: 'none',
+        height: '35px',
+        lineHeight: '35px',
+        textAlign: 'right',
+        position: 'relative',
+        width: '100%',
+        '&:disabled': {
+          background: 'inherit',
+          borderBottom: '2px #ccc dotted',
+          cursor: 'not-allowed'
+        }
+      },
+      inputFieldCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& > div:first-child': {
+          fontSize: '13px !important'
+        },
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
+        },
+        '& input': {
+          marginTop: '0 !important'
+        }
+      },
+      inputDateCustom: {
+        fontSize: '13px !important',
+        height: '45px !important',
+        marginTop: '7px',
+        '& > div:first-child': {
+          fontSize: '13px !important'
+        },
+        '& label': {
+          top: '20px !important',
+          lineHeight: '5px !important'
+        },
+        '& input': {
+          marginTop: '0 !important'
+        },
+        '& div:first-child': {
+          height: '45px !important'
+        }
+      },
+      actionButton: {
+        fontSize: '13px !important',
+        margin: '0 !important'
+      },
+      loader: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        background: '#fff',
+        top: '0',
+        left: '0',
+        alignItems: 'center',
+        zIndex: '999',
+        textAlign: 'center',
+        display: ({loading}) => loading ? 'flex' : 'none'
+      },
+      listLoader: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '25px 0',
+        width: '100%'
+      }
     }),
     connect((state) => {
-        const fields = _.get(state, ['form', 'ApplicationMeetingForm', 'values', 'resumes'])
-        return {
-            fields
-        }
+      const fields = _.get(state, ['form', 'ApplicationMeetingForm', 'values', 'resumes'])
+      return {
+        fields
+      }
     }),
     reduxForm({
-        form: 'ApplicationMeetingForm',
-        enableReinitialize: true
+      form: 'ApplicationMeetingForm',
+      enableReinitialize: true
     }),
     withState('currentFocused', 'updateFocus', null)
 )
 
 const ApplicationMeetingDialog = enhance((props) => {
-    const {
+  const {
         open,
         loading,
         handleSubmit,
@@ -223,15 +223,15 @@ const ApplicationMeetingDialog = enhance((props) => {
         currentFocused,
         updateFocus
     } = props
-    const onSubmit = handleSubmit(() => props.onSubmit())
+  const onSubmit = handleSubmit(() => props.onSubmit())
 
-    const selectedResumes = _.filter(_.map(fields, (item, index) => {
-        const selected = _.get(item, 'selected')
-        return selected ? _.toInteger(index) : null
-    }), (item) => !_.isNull(item))
+  const selectedResumes = _.filter(_.map(fields, (item, index) => {
+    const selected = _.get(item, 'selected')
+    return selected ? _.toInteger(index) : null
+  }), (item) => !_.isNull(item))
 
-    const updatingResume = _.filter(reportData.list, {id: resume})
-    return (
+  const updatingResume = _.filter(reportData.list, {id: resume})
+  return (
         <Dialog
             modal={true}
             open={open}
@@ -265,10 +265,10 @@ const ApplicationMeetingDialog = enhance((props) => {
                                     <Col xs={isUpdate ? Number('6') : Number('4')}>{t('Дата и время')}</Col>
                                 </Row>
                                 {_.map(isUpdate ? updatingResume : _.get(reportData, 'list'), (item) => {
-                                    const id = _.get(item, 'id')
-                                    const fullName = _.get(item, 'fullName')
-                                    const checked = _.includes(selectedResumes, id)
-                                    return (
+                                  const id = _.get(item, 'id')
+                                  const fullName = _.get(item, 'fullName')
+                                  const checked = _.includes(selectedResumes, id)
+                                  return (
                                         <Row key={id} className={classNames('dottedList', classes.rowItem)}>
                                             {!isUpdate &&
                                             <Col xs={2}>
@@ -279,7 +279,7 @@ const ApplicationMeetingDialog = enhance((props) => {
                                             <Col xs={6}>{fullName}</Col>
                                             <Col xs={isUpdate ? Number('6') : Number('4')}>
                                                 <div className={classNames(classes.inputMaskWrapper, {
-                                                    [classes.focused]: currentFocused === id
+                                                  [classes.focused]: currentFocused === id
                                                 })}>
                                                     <Field
                                                         name={'resumes[' + id + '][datetime]'}
@@ -293,7 +293,7 @@ const ApplicationMeetingDialog = enhance((props) => {
                                                 </div>
                                             </Col>
                                         </Row>
-                                    )
+                                  )
                                 })}
                             </div>}
                     </div>
@@ -309,19 +309,19 @@ const ApplicationMeetingDialog = enhance((props) => {
                 </form>
             </div>
         </Dialog>
-    )
+  )
 })
 
 ApplicationMeetingDialog.propTyeps = {
-    isUpdate: PropTypes.bool,
-    open: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired
+  isUpdate: PropTypes.bool,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 ApplicationMeetingDialog.defaultProps = {
-    isUpdate: false
+  isUpdate: false
 }
 
 export default ApplicationMeetingDialog

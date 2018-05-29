@@ -1,5 +1,5 @@
 const caughtCancel = (error) => {
-    return error
+  return error
 }
 
 export default caughtCancel

@@ -3,6 +3,7 @@ const path = require('path')
 const packageJSON = require('./package.json')
 const _ = require('lodash')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'myjob.wienerdeming.com'
@@ -16,7 +17,7 @@ let webpackConfig = {
     devtool: NODE_ENV === 'development' ? 'cheap-module-source-map' : false,
     devServer: {
         contentBase: path.join(__dirname, 'dist'),
-        port: 3000
+        port: 4200
     },
     watchOptions: {
         aggregateTimeout: 300,
@@ -36,9 +37,9 @@ let webpackConfig = {
 
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.(eot|woff|woff2|svg|png|ttf)([\?]?.*)$/, loader: 'file-loader' },
-            { test: /\.js?$/, loader: 'babel-loader', include: path.join(__dirname, 'src')}
+          { test: /\.(eot|woff|woff2|svg|png|ttf)([\?]?.*)$/, loader: 'file-loader' },
+          { test: /\.js?$/, loader: 'babel-loader', include: path.join(__dirname, 'src')},
+          { test: /\.css$/, loader: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })}
         ]
     },
 
@@ -57,7 +58,8 @@ let webpackConfig = {
             title: packageJSON.name,
             template: path.join(__dirname, 'src/index.hbs'),
             favicon: './src/rhythm-logo.png',
-        })
+        }),
+        new ExtractTextPlugin({ filename: 'css/[name].css', disable: false, allChunks: true })
     ]
 }
 

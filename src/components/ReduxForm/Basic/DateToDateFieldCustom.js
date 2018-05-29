@@ -13,73 +13,73 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 const DELAY = 300
 
 class DateToDateField extends React.Component {
-    datePicker = null
+  datePicker = null
 
-    constructor (props) {
-        super(props)
-        this.state = {
-            starting: false
-        }
+  constructor (props) {
+    super(props)
+    this.state = {
+      starting: false
+    }
+  }
+
+  handleOnFocus = () => {
+    _.delay(() => this.datePicker.show(), DELAY)
+  }
+
+  handleOnAccept = (value) => {
+    const {input} = this.props
+    const fromDate = _.get(input, ['value', 'fromDate'])
+
+    if (!fromDate || !this.state.starting) {
+      input.onChange({fromDate: moment(value)})
+      this.setState({starting: true})
+      _.delay(() => this.datePicker.show(), DELAY)
+    } else {
+      input.onChange({
+        fromDate: _.get(input, ['value', 'fromDate']),
+        toDate: moment(value)
+      })
+      this.setState({starting: false})
+    }
+  }
+
+  textField = () => {
+    const {input, format} = this.props
+    const fromDate = _.get(input, ['value', 'fromDate'])
+    const toDate = _.get(input, ['value', 'toDate'])
+
+    if (fromDate && !toDate) {
+      return moment(fromDate).format(format)
     }
 
-    handleOnFocus = () => {
-        _.delay(() => this.datePicker.show(), DELAY)
+    if (fromDate && toDate) {
+      return moment(fromDate).format(format) + ' - ' + moment(toDate).format(format)
     }
 
-    handleOnAccept = (value) => {
-        const {input} = this.props
-        const fromDate = _.get(input, ['value', 'fromDate'])
+    return ''
+  }
 
-        if (!fromDate || !this.state.starting) {
-            input.onChange({fromDate: moment(value)})
-            this.setState({starting: true})
-            _.delay(() => this.datePicker.show(), DELAY)
-        } else {
-            input.onChange({
-                fromDate: _.get(input, ['value', 'fromDate']),
-                toDate: moment(value)
-            })
-            this.setState({starting: false})
-        }
+  getMinDate = () => {
+    const {input} = this.props
+    const fromDate = _.get(input, ['value', 'fromDate'])
+    const toDate = _.get(input, ['value', 'toDate'])
+
+    if (fromDate && !toDate) {
+      return fromDate.toDate()
     }
 
-    textField = () => {
-        const {input, format} = this.props
-        const fromDate = _.get(input, ['value', 'fromDate'])
-        const toDate = _.get(input, ['value', 'toDate'])
+    return undefined
+  }
 
-        if (fromDate && !toDate) {
-            return moment(fromDate).format(format)
-        }
+  render () {
+    const {label, classes, meta: {error}} = this.props
 
-        if (fromDate && toDate) {
-            return moment(fromDate).format(format) + ' - ' + moment(toDate).format(format)
-        }
-
-        return ''
-    }
-
-    getMinDate = () => {
-        const {input} = this.props
-        const fromDate = _.get(input, ['value', 'fromDate'])
-        const toDate = _.get(input, ['value', 'toDate'])
-
-        if (fromDate && !toDate) {
-            return fromDate.toDate()
-        }
-
-        return undefined
-    }
-
-    render () {
-        const {label, classes, meta: {error}} = this.props
-
-        return (
+    return (
             <div className={classes.wrapper}>
                 <div style={{position: 'relative'}}>
                     <DatePickerDialog
                         ref={(element) => {
-                            this.datePicker = element
+                          this.datePicker = element
                         }}
                         minDate={this.getMinDate()}
                         onAccept={this.handleOnAccept}
@@ -97,49 +97,49 @@ class DateToDateField extends React.Component {
                     />
                 </div>
             </div>
-        )
-    }
+    )
+  }
 }
 
 DateToDateField.defaultProps = {
-    format: 'DD.MM.YYYY'
+  format: 'DD.MM.YYYY'
 }
 
 DateToDateField.propTypes = {
-    format: PropTypes.string
+  format: PropTypes.string
 }
 
 export default injectSheet({
-    icon: {
-        position: 'absolute',
-        right: '0',
-        top: '19px',
-        '& svg': {
-            color: '#ccc !important',
-            height: '20px !important',
-            width: '20px !important'
-        }
-    },
-    inputDateCustom: {
-        fontSize: '13px !important',
-        height: '45px !important',
-        marginTop: '7px',
-        width: '100% !important',
-        '& div': {
-            fontSize: '13px !important'
-        },
-        '& label': {
-            top: '20px !important',
-            lineHeight: '5px !important'
-        },
-        '& input': {
-            marginTop: '0 !important'
-        },
-        '& div:first-child': {
-            height: '45px !important'
-        },
-        '& div:first-child div:first-child': {
-            transform: 'translate(0px, 0px) !important'
-        }
+  icon: {
+    position: 'absolute',
+    right: '0',
+    top: '19px',
+    '& svg': {
+      color: '#ccc !important',
+      height: '20px !important',
+      width: '20px !important'
     }
+  },
+  inputDateCustom: {
+    fontSize: '13px !important',
+    height: '45px !important',
+    marginTop: '7px',
+    width: '100% !important',
+    '& div': {
+      fontSize: '13px !important'
+    },
+    '& label': {
+      top: '20px !important',
+      lineHeight: '5px !important'
+    },
+    '& input': {
+      marginTop: '0 !important'
+    },
+    '& div:first-child': {
+      height: '45px !important'
+    },
+    '& div:first-child div:first-child': {
+      transform: 'translate(0px, 0px) !important'
+    }
+  }
 })(DateToDateField)

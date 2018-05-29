@@ -6,16 +6,16 @@ import {HR_LANG_LEVELS} from '../../../constants/backendConstants'
 const Items = HR_LANG_LEVELS
 
 const getOptions = () => {
-    return Promise.resolve(Items)
+  return Promise.resolve(Items)
 }
 
 const getItem = (id) => {
-    return Promise.resolve(
+  return Promise.resolve(
         _.find(Items, (o) => { return o.id === id }))
 }
 
 const LanguageLevelSearchField = (props) => {
-    return (
+  return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -24,7 +24,7 @@ const LanguageLevelSearchField = (props) => {
             getItemText={SearchField.defaultGetText('name')}
             {...props}
         />
-    )
+  )
 }
 
 export default LanguageLevelSearchField

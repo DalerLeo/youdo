@@ -16,43 +16,43 @@ let notificationCountInterval = null
 
 const enhance = compose(
     lifecycle({
-        componentDidMount () {
-            const dispatch = this.props.dispatch
-            dispatch(notificationCountFetchAction())
-            if (notificationCountInterval) {
-                clearInterval(notificationCountInterval)
-            }
-            notificationCountInterval = setInterval(() => {
-                dispatch(notificationCountFetchAction())
-            }, TIMER)
+      componentDidMount () {
+        const dispatch = this.props.dispatch
+        dispatch(notificationCountFetchAction())
+        if (notificationCountInterval) {
+          clearInterval(notificationCountInterval)
         }
+        notificationCountInterval = setInterval(() => {
+          dispatch(notificationCountFetchAction())
+        }, TIMER)
+      }
     }),
     connect((state) => {
-        const count = _.get(state, ['notifications', 'count', 'data', 'count']) || ZERO
-        return {
-            count
-        }
+      const count = _.get(state, ['notifications', 'count', 'data', 'count']) || ZERO
+      return {
+        count
+      }
     })
 )
 
 const CustomBadge = enhance((props) => {
-    const {classBadge, style, handleOpen, count, rippleColor} = props
-    if (count <= ZERO) {
-        return (
+  const {classBadge, style, handleOpen, count, rippleColor} = props
+  if (count <= ZERO) {
+    return (
             <ToolTip position="right" text={t('Уведомления')}>
                 <FlatButton
                     rippleColor={rippleColor}
                     hoverColor={rippleColor}
                     style={style}
                     onTouchTap={() => {
-                        handleOpen(true)
+                      handleOpen(true)
                     }}>
                     <Notification />
                 </FlatButton>
             </ToolTip>
-        )
-    }
-    return (
+    )
+  }
+  return (
         <Badge
             className={classBadge}
             badgeContent={count}
@@ -62,13 +62,13 @@ const CustomBadge = enhance((props) => {
                     rippleColor="#fff"
                     style={style}
                     onTouchTap={() => {
-                        handleOpen(true)
+                      handleOpen(true)
                     }}>
                     <Notification />
                 </FlatButton>
             </ToolTip>
         </Badge>
-    )
+  )
 })
 
 export default CustomBadge

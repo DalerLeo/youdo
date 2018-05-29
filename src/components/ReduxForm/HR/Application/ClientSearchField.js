@@ -13,35 +13,35 @@ import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
 const enhance = compose(
     connect(),
     mapPropsStream(props$ => {
-        return props$
+      return props$
     })
 )
 
 export const setItemAction = (data, loading) => {
-    return {
-        type: actionTypes.CLIENT_CONTACTS,
-        data: data,
-        loading: loading
-    }
+  return {
+    type: actionTypes.CLIENT_CONTACTS,
+    data: data,
+    loading: loading
+  }
 }
 
 const getItem = (id, dispatch) => {
-    dispatch(setItemAction(null, true))
+  dispatch(setItemAction(null, true))
 
-    return axios().get(sprintf(PATH.CLIENT_ITEM, id))
+  return axios().get(sprintf(PATH.CLIENT_ITEM, id))
         .then(({data}) => {
-            dispatch(setItemAction(_.get(data, 'contacts'), false))
-            return Promise.resolve(toCamelCase(data))
+          dispatch(setItemAction(_.get(data, 'contacts'), false))
+          return Promise.resolve(toCamelCase(data))
         })
 }
 
 const ClientSearchField = (props) => {
-    const {dispatch, params, pageSize, ...defaultProps} = props
-    const test = (id) => {
-        return getItem(id, dispatch)
-    }
+  const {dispatch, params, pageSize, ...defaultProps} = props
+  const test = (id) => {
+    return getItem(id, dispatch)
+  }
 
-    return (
+  return (
         <SearchField
             getValue={SearchField.defaultGetValue('id')}
             getText={SearchField.defaultGetText('name')}
@@ -51,7 +51,7 @@ const ClientSearchField = (props) => {
             withDetails={true}
             {...defaultProps}
         />
-    )
+  )
 }
 
 export default enhance(ClientSearchField)
