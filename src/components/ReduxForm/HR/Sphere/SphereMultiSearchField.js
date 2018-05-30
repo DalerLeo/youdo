@@ -6,17 +6,17 @@ import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
 import getIdsOption from '../../../../helpers/getIdsOption'
 
 const SphereMultiSearchField = connect()((props) => {
-    const {params, pageSize} = props
-    return (
-        <MultiSelectField
-            getValue={MultiSelectField.defaultGetValue('id')}
-            getText={MultiSelectField.defaultGetText('name')}
-            getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
-            getIdsOption={(ids) => getIdsOption(ids, PATH.HR_POSITION_LIST)}
-            getItemText={MultiSelectField.defaultGetText('name')}
-            {...props}
-        />
-    )
+  const {params, pageSize} = props
+  return (
+    <MultiSelectField
+      getValue={MultiSelectField.defaultGetValue('id')}
+      getText={MultiSelectField.defaultGetText('name')}
+      getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
+      getIdsOption={(ids) => getIdsOption(ids, PATH.HR_POSITION_LIST)}
+      getItemText={MultiSelectField.defaultGetText('name')}
+      {...props}
+    />
+  )
 })
 
 export default SphereMultiSearchField

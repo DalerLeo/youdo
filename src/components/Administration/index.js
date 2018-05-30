@@ -3,7 +3,7 @@ import {CompaniesGridList} from './Companies'
 import {UsersGridList} from './Users'
 
 export {
-    ArticlesGridList,
-    CompaniesGridList,
-    UsersGridList
+  ArticlesGridList,
+  CompaniesGridList,
+  UsersGridList
 }

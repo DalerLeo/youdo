@@ -3,7 +3,7 @@ import CompaniesList from './Companies'
 import UsersList from './Users'
 
 export {
-    ArticlesList,
-    CompaniesList,
-    UsersList
+  ArticlesList,
+  CompaniesList,
+  UsersList
 }

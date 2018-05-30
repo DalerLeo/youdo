@@ -9,75 +9,75 @@ const primaryColor = '#5d6474'
 const secondaryColor = '#12aaeb'
 
 const muiTheme = getMuiTheme({
-    fontFamily: 'Open Sans, sans-serif',
-    fontSize: '13px',
-    palette: {
-        primary1Color: secondaryColor,
-        primary2Color: primaryColor,
-        primary3Color: primaryColor,
-        accent1Color: primaryColor,
-        accent2Color: '#fff',
-        accent3Color: '#fff',
-        textColor: '#333'
-    },
-    appBar: {
-        height: 50,
-        textColor: 'white'
-    },
-    checkbox: {
-        checkedColor: primaryColor
-    },
-    chip: {
-        fontSize: 13
-    },
-    flatButton: {
-        fontSize: 13,
-        fontWeight: 400
-    },
-    datePicker: {
-        color: secondaryColor,
-        selectColor: secondaryColor
-    },
-    radioButton: {
-        checkedColor: primaryColor
-    },
-    raisedButton: {
-        fontSize: 13,
-        fontWeight: 400,
-        primaryColor: primaryColor
-    },
-    timePicker: {
-        headerColor: '#2d3037'
-    },
-    textField: {
-        focusColor: primaryColor
-    },
-    tabs: {
-        backgroundColor: '#fff',
-        selectedTextColor: secondaryColor,
-        textColor: '#333'
-    }
+  fontFamily: 'Open Sans, sans-serif',
+  fontSize: '13px',
+  palette: {
+    primary1Color: secondaryColor,
+    primary2Color: primaryColor,
+    primary3Color: primaryColor,
+    accent1Color: primaryColor,
+    accent2Color: '#fff',
+    accent3Color: '#fff',
+    textColor: '#333'
+  },
+  appBar: {
+    height: 50,
+    textColor: 'white'
+  },
+  checkbox: {
+    checkedColor: primaryColor
+  },
+  chip: {
+    fontSize: 13
+  },
+  flatButton: {
+    fontSize: 13,
+    fontWeight: 400
+  },
+  datePicker: {
+    color: secondaryColor,
+    selectColor: secondaryColor
+  },
+  radioButton: {
+    checkedColor: primaryColor
+  },
+  raisedButton: {
+    fontSize: 13,
+    fontWeight: 400,
+    primaryColor: primaryColor
+  },
+  timePicker: {
+    headerColor: '#2d3037'
+  },
+  textField: {
+    focusColor: primaryColor
+  },
+  tabs: {
+    backgroundColor: '#fff',
+    selectedTextColor: secondaryColor,
+    textColor: '#333'
+  }
 })
 
 const locale = 'ru'
 moment.locale(locale)
 
 class App extends React.Component {
-    shouldComponentUpdate () {
-        return false
-    }
+  shouldComponentUpdate () {
+    return false
+  }
 
-    render () {
-        return (
-            <Provider store={this.props.store}>
-                <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
-                    <div style={{width: '100%', height: '100%'}}>
-                        <Router history={this.props.history} routes={this.props.routes} />
-                    </div>
-                </MuiThemeProvider>
-            </Provider>
-        )
-    }
+  render () {
+    return (
+      <Provider store={this.props.store}>
+        <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
+          <div style={{width: '100%', height: '100%'}}>
+            <Router history={this.props.history} routes={this.props.routes} />
+          </div>
+        </MuiThemeProvider>
+      </Provider>
+    )
+  }
 }
 
 // Class App extends React.Component {

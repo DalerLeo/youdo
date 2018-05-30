@@ -6,29 +6,29 @@ import MUISnackbar from 'material-ui/Snackbar'
 import {closeSnackbarAction} from '../../actions/snackbar'
 
 const enhance = compose(
-    connect((state) => {
-        const open = _.get(state, ['snackbar', 'open'])
-        const message = _.get(state, ['snackbar', 'message'])
-        const autoHideDuration = _.get(state, ['snackbar', 'autoHideDuration'])
+  connect((state) => {
+    const open = _.get(state, ['snackbar', 'open'])
+    const message = _.get(state, ['snackbar', 'message'])
+    const autoHideDuration = _.get(state, ['snackbar', 'autoHideDuration'])
 
-        return {
-            open,
-            message,
-            autoHideDuration
-        }
-    })
+    return {
+      open,
+      message,
+      autoHideDuration
+    }
+  })
 )
 
 const Snackbar = ({dispatch, open, message, autoHideDuration, ...defaultProps}) => {
-    return (
-        <MUISnackbar
-            open={open}
-            message={message}
-            autoHideDuration={autoHideDuration}
-            onRequestClose={() => dispatch(closeSnackbarAction())}
-            {...defaultProps}
-        />
-    )
+  return (
+    <MUISnackbar
+      open={open}
+      message={message}
+      autoHideDuration={autoHideDuration}
+      onRequestClose={() => dispatch(closeSnackbarAction())}
+      {...defaultProps}
+    />
+  )
 }
 
 export default enhance(Snackbar)

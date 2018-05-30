@@ -8,26 +8,26 @@ import toCamelCase from '../../../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
 
 const getItem = (id) => {
-    return axios().get(sprintf(PATH.HR_POSITION_ITEM, id))
-        .then(({data}) => {
-            return Promise.resolve(toCamelCase(data))
-        })
+  return axios().get(sprintf(PATH.HR_POSITION_ITEM, id))
+    .then(({data}) => {
+      return Promise.resolve(toCamelCase(data))
+    })
 }
 
 const PositionSearchField = (props) => {
-    const {params, pageSize} = props
+  const {params, pageSize} = props
 
-    return (
-        <SearchField
-            getValue={SearchField.defaultGetValue('id')}
-            getText={SearchField.defaultGetText('name')}
-            getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
-            getItem={getItem}
-            getItemText={SearchField.defaultGetText('name')}
-            parent={_.get(params, 'child')}
-            {...props}
-        />
-    )
+  return (
+    <SearchField
+      getValue={SearchField.defaultGetValue('id')}
+      getText={SearchField.defaultGetText('name')}
+      getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
+      getItem={getItem}
+      getItemText={SearchField.defaultGetText('name')}
+      parent={_.get(params, 'child')}
+      {...props}
+    />
+  )
 }
 
 export default PositionSearchField

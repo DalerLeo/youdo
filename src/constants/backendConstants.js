@@ -42,48 +42,48 @@ export const APPLICATION_PENDING = 'pending'
 export const APPLICATION_REWORK = 'rework'
 
 export const HR_DRIVER_LICENSE = [
-    {id: 'A', name: 'A', active: false},
-    {id: 'B', name: 'B', active: false},
-    {id: 'C', name: 'C', active: false},
-    {id: 'D', name: 'D', active: false},
-    {id: 'BE', name: 'BE', active: false},
-    {id: 'CE', name: 'CE', active: false},
-    {id: 'DE', name: 'DE', active: false}
+  {id: 'A', name: 'A', active: false},
+  {id: 'B', name: 'B', active: false},
+  {id: 'C', name: 'C', active: false},
+  {id: 'D', name: 'D', active: false},
+  {id: 'BE', name: 'BE', active: false},
+  {id: 'CE', name: 'CE', active: false},
+  {id: 'DE', name: 'DE', active: false}
 ]
 
 export const HR_WORK_SCHEDULE = [
-    {id: 'full_time', name: t('Полный рабочий день')},
-    {id: 'shift_work', name: t('Сменный график')},
-    {id: 'remote', name: t('Удаленно')},
-    {id: 'part_time', name: t('Частичная занятость')}
+  {id: 'full_time', name: t('Полный рабочий день')},
+  {id: 'shift_work', name: t('Сменный график')},
+  {id: 'remote', name: t('Удаленно')},
+  {id: 'part_time', name: t('Частичная занятость')}
 ]
 
 export const HR_LEVEL_PC = [
-    {id: 'user', name: t('Пользователь')},
-    {id: 'confident_user', name: t('Уверенный пользователь')},
-    {id: 'advanced_user', name: t('Продвинутый пользователь')},
-    {id: 'professional_level', name: t('Профессиональный уровень')}
+  {id: 'user', name: t('Пользователь')},
+  {id: 'confident_user', name: t('Уверенный пользователь')},
+  {id: 'advanced_user', name: t('Продвинутый пользователь')},
+  {id: 'professional_level', name: t('Профессиональный уровень')}
 ]
 
 export const HR_GENDER = [
-    {id: 'no_matter', name: t('Не имеет значения')},
-    {id: 'male', name: t('Мужской')},
-    {id: 'female', name: t('Женский')}
+  {id: 'no_matter', name: t('Не имеет значения')},
+  {id: 'male', name: t('Мужской')},
+  {id: 'female', name: t('Женский')}
 ]
 
 export const HR_EDUCATION = [
-    {id: 'no_matter', name: t('Не имеет значения')},
-    {id: 'secondary', name: t('Среднее')},
-    {id: 'higher', name: t('Высшее')},
-    {id: 'master', name: t('Магистратура')},
-    {id: 'doctoral', name: t('Докторантура')}
+  {id: 'no_matter', name: t('Не имеет значения')},
+  {id: 'secondary', name: t('Среднее')},
+  {id: 'higher', name: t('Высшее')},
+  {id: 'master', name: t('Магистратура')},
+  {id: 'doctoral', name: t('Докторантура')}
 ]
 
 export const HR_LANG_LEVELS = [
-    {id: 'beginner', name: t('Начальный')},
-    {id: 'intermediate', name: t('Средний')},
-    {id: 'advanced', name: t('Продвинутый')},
-    {id: 'fluent', name: t('Свободное владение')}
+  {id: 'beginner', name: t('Начальный')},
+  {id: 'intermediate', name: t('Средний')},
+  {id: 'advanced', name: t('Продвинутый')},
+  {id: 'fluent', name: t('Свободное владение')}
 ]
 
 export const HR_RESUME_SHORT = 'short'
@@ -95,7 +95,7 @@ export const HR_RESUME_LONG = 'long'
 export const HR_RESUME_NOTE = 'note'
 
 export const USERS_STATUS = [
-    {value: 'active', name: t('Активный')},
-    {value: 'fired', name: t('Уволен')},
-    {value: 'on_vacation', name: t('Отпуск')}
+  {value: 'active', name: t('Активный')},
+  {value: 'fired', name: t('Уволен')},
+  {value: 'on_vacation', name: t('Отпуск')}
 ]
