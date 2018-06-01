@@ -1,5 +1,5 @@
 import {pure, createEventHandler, compose, mapPropsStream} from 'recompose'
-import changeUrl from '../../helpers/changeUrl'
+import {replaceUrl} from '../../helpers/changeUrl'
 import {reset} from 'redux-form'
 import {connect} from 'react-redux'
 import _ from 'lodash'
@@ -24,14 +24,14 @@ const createWrapper = (createAction, queryKey, formName) => {
       onOpenCreateDialog$
         .withLatestFrom(props$)
         .subscribe(([, {filter, location, ...props}, ...def]) => {
-          changeUrl(filter, location.pathname, {[queryKey]: true})
+          replaceUrl(filter, location.pathname, {[queryKey]: true})
           props.dispatch(reset(formName))
         })
 
       onCloseCreateDialog$
         .withLatestFrom(props$)
         .subscribe(([, {filter, location, ...props}]) => {
-          changeUrl(filter, location.pathname, {[queryKey]: false})
+          replaceUrl(filter, location.pathname, {[queryKey]: false})
         })
 
       onSubmitCreateDialog$
@@ -40,7 +40,7 @@ const createWrapper = (createAction, queryKey, formName) => {
           return props.createAction(_.get(createForm, ['values']))
             .then(() => props.openSnackbarAction({message: t('Успешно сохранено')}))
             .then(() => {
-              changeUrl(filter, location.pathname, {[queryKey]: false})
+              replaceUrl(filter, location.pathname, {[queryKey]: false})
               props.listFetchAction(filter)
             })
             .catch(error => {

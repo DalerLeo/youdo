@@ -198,7 +198,6 @@ const ApplicantList = enhance((props) => {
     handleActionDelete: props.handleOpenDeleteDialog
   }
 
-  console.warn(props)
   const createDialog = {
     createLoading,
     openCreateDialog,

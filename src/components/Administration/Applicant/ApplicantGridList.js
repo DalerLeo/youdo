@@ -13,10 +13,12 @@ import * as ROUTES from '../../../constants/routes'
 import GridList from '../../GridList/index'
 import Container from '../../Container/index'
 import ApplicantCreateDialog from './ApplicantCreateDialog'
+import ApplicationTabs from './ApplicantTabs'
 import ConfirmDialog from '../../ConfirmDialog/index'
 import SubMenu from '../../SubMenu'
 import ToolTip from '../../ToolTip/index'
 import t from '../../../helpers/translate'
+import dateFormat from '../../../helpers/dateFormat'
 import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 
 const enhance = compose(
@@ -41,8 +43,7 @@ const enhance = compose(
       flexBasis: '100%',
       width: '100%',
       overflowY: 'auto',
-      overflowX: 'hidden',
-      boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+      overflowX: 'hidden'
     },
     iconBtn: {
       display: 'flex',
@@ -129,21 +130,33 @@ const ApplicantGridList = enhance((props) => {
     }
   ]
 
-  const applicantList = _.map(_.get(listData, 'data'), (item) => {
+  const fakeData = [
+    {
+      firstName: 'firstName',
+      lastName: 'lastName',
+      resumeNum: '6',
+      modifiedAt: '2018-12-11',
+      createdAt: '2018-11-10',
+      balance: '1000'
+    }
+  ]
+  const applicantList = _.map(fakeData, (item, index) => {
     const id = _.get(item, 'id')
-    const status = fp.flow(findItem, fp.get('name'))
-    const username = _.get(item, 'email')
-    const phone = _.get(item, 'phoneNumber')
-    const firstName = _.get(item, 'firstNameRu') || _.get(item, 'firstNameEn')
-    const lastName = _.get(item, 'lastNameRu') || _.get(item, 'lastNameEn')
-    const permissions = _.get(item, ['groups', '0', 'name'])
+    //    Const status = fp.flow(findItem, fp.get('name'))
+    const firstName = _.get(item, 'firstName')
+    const lastName = _.get(item, 'lastName')
+    const resumeNum = _.get(item, 'resumeNum')
+    const modifiedDate = dateFormat(_.get(item, 'modifiedAt'))
+    const createdDate = dateFormat(_.get(item, 'createdAt'))
+    const balance = _.get(item, 'balance')
+    const name = firstName + ' ' + lastName
     return (
-      <Row key={id} className={classes.listRow}>
-        <Col xs={3}>{id}</Col>
-        <Col xs={2}>{`${firstName} ${lastName}`}</Col>
-        <Col xs={3}>{username}</Col>
-        <Col xs={2} style={{textAlign: 'right'}}>{phone}</Col>
-        <Col xs={2}>{permissions}
+      <Row key={index} className={classes.listRow}>
+        <Col xs={3}>{name}</Col>
+        <Col xs={2}>{resumeNum}</Col>
+        <Col xs={3}>{modifiedDate}</Col>
+        <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
+        <Col xs={2}>{balance}
           <div className={classes.iconBtn}>
             <ToolTip position="bottom" text={t('Изменить')}>
               <IconButton
@@ -187,16 +200,15 @@ const ApplicantGridList = enhance((props) => {
     <Container>
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.APPLICANT_LIST_URL}/>
-        <div className={classes.rightPanel}>
-          <GridList
-            filter={filter}
-            list={list}
-            listShadow={false}
-            detail={<span/>}
-            actionsDialog={<span/>}
-            addButton={addButton}
-          />
-        </div>
+        <ApplicationTabs/>
+        <GridList
+          filter={filter}
+          list={list}
+//          listShadow={false}
+          detail={<span/>}
+          actionsDialog={<span/>}
+          addButton={addButton}
+        />
       </div>
 
       {createDialog.openCreateDialog &&

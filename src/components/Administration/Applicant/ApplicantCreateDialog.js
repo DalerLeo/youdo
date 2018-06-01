@@ -210,9 +210,6 @@ const ApplicantCreateDialog = enhance((props) => {
     'status'
   ]
   const onSubmit = handleSubmit(() => props.onSubmit()
-    .then(data => {
-      console.warn(data)
-    })
     .catch((error) => {
       formValidate(formNames, dispatch, error)
     }))

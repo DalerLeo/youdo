@@ -1,14 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
-import * as ROUTER from '../../constants/routes'
-import Container from '../../components/Container'
-import SubMenu from '../../components/SubMenu'
+import * as ROUTER from '../../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose, withHandlers, withState} from 'recompose'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import * as TAB from '../../constants/stockReceiveTab'
-import t from '../../helpers/translate'
+import * as TAB from '../../../constants/ApplicantTab'
+import t from '../../../helpers/translate'
+import classNames from 'classnames'
 
 const enhance = compose(
   injectSheet({
@@ -21,7 +20,7 @@ const enhance = compose(
         '&:first-child': {
           boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
           borderRadius: '2px',
-          height: '52px',
+          height: '62px',
           alignItems: 'center'
         },
         '&:nth-child(2)': {
@@ -32,56 +31,65 @@ const enhance = compose(
           padding: '0'
         }
       },
-      '& button div div': {
+      '& button > div > div': {
         textTransform: 'initial',
-        height: '52px !important'
+        height: '62px !important',
+        color: '#333',
+        fontWeight: '600',
+        '& > div > div': {
+          textAlign: 'left',
+          fontSize: '12px',
+          fontWeight: '400'
+        }
       }
+    },
+    inActive: {
+      color: '#777'
     }
   }),
-  withState('tab', 'setTab', 'receive'),
+  withState('currentTab', 'setCurrentTab', 'pre'),
   withHandlers({
-    handleTabChange: props => (tab) => {
-      switch (tab) {
-        case 'stockReceive': hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {}})
-          break
-        case 'stockTransfer': hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_LIST_URL, query: {}})
-          break
-        case 'stockOutHistory': hashHistory.push({pathname: ROUTER.STOCK_OUT_HISTORY_LIST_URL, query: {}})
-          break
-        case 'stockTransferHistory': hashHistory.push({pathname: ROUTER.STOCK_TRANSFER_HISTORY_LIST_URL, query: {}})
-          break
-        case 'stockReceiveHistory': hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_HISTORY_LIST_URL, query: {}})
-          break
-        default: hashHistory.push({pathname: ROUTER.STOCK_RECEIVE_LIST_URL, query: {}})
-      }
+    handleTabChange: () => (tab) => {
+      hashHistory.replace({pathname: ROUTER.APPLICANT_LIST_URL, query: {tab: tab}})
     }
   })
 )
 
 const StockReceiveTabList = enhance((props) => {
-  const {classes, currentTab} = props
+  const {classes, currentTab, setCurrentTab, handleTabChange} = props
+  const activeTab = (tab) => currentTab === tab
 
-  const handleTabChange = props.handleTabChange
-  const tabList = (
+  return (
     <Tabs
       inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
       tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
       className={classes.tabs}
-      value={currentTab}
-      onChange={(value) => { handleTabChange(value) }}>
-      <Tab label={t('Приемка')} value={TAB.STOCK_RECEIVE_TAB_RECEIVE}/>
-      <Tab label={t('Передача')} value={TAB.STOCK_RECEIVE_TAB_TRANSFER}/>
-      <Tab label={t('Движение товаров')} value={TAB.STOCK_RECEIVE_TAB_OUT_HISTORY}/>
-      <Tab label={t('История Приемки')} value={TAB.STOCK_RECEIVE_TAB_HISTORY}/>
-      <Tab label={t('История Передачи')} value={TAB.STOCK_RECEIVE_TAB_TRANSFER_HISTORY}/>
+      onChange={(value) => {
+        setCurrentTab(value)
+        handleTabChange(value)
+      }}>
+      <Tab
+        label={
+          <div
+            className={classNames({[classes.inActive]: !activeTab(TAB.PRE_TAB)})}>
+            {t('Непромодерированные')} <br/> <div>Количество: 1234</div>
+          </div>}
+        value={TAB.PRE_TAB}/>
+      <Tab
+        label={
+          <div
+            className={classNames({[classes.inActive]: !activeTab(TAB.ACTIVE_TAB)})}>
+            {t('Активние')} <br/> <div>Количество: 234</div></div>}
+        value={TAB.ACTIVE_TAB}
+        style={{borderLeft: 'solid #efefef 1px', borderRight: 'solid #efefef 1px'}} />
+      <Tab
+        label={
+          <div
+            className={classNames({[classes.inActive]: !activeTab(TAB.BLOCKED_TAB)})}>
+            {t('Заблокированные')} <br/> <div>Количество: 123232</div>
+          </div>}
+        value={TAB.BLOCKED_TAB}/>
     </Tabs>
-  )
-
-  return (
-    <Container>
-      <SubMenu url={ROUTER.STOCK_RECEIVE_LIST_URL}/>
-      {tabList}
-    </Container>
   )
 })
 
