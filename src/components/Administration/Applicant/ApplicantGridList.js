@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import fp from 'lodash/fp'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -85,7 +84,6 @@ const iconStyle = {
     padding: 0
   }
 }
-const findItem = (item) => _.find(APPLICANT_STATUS, {value: _.get(item, 'status')})
 
 const ApplicantGridList = enhance((props) => {
   const {
@@ -204,7 +202,7 @@ const ApplicantGridList = enhance((props) => {
         <GridList
           filter={filter}
           list={list}
-//          listShadow={false}
+          //          ListShadow={false}
           detail={<span/>}
           actionsDialog={<span/>}
           addButton={addButton}

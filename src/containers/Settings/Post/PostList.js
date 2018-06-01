@@ -1,6 +1,5 @@
 import React from 'react'
 import _ from 'lodash'
-import fp from 'lodash/fp'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
@@ -103,7 +102,7 @@ const enhance = compose(
         })
         .catch(errore => {
           formValidate(['name'], dispatch, errore)
-          //throw new SubmissionError({_error: 'General Error', name: 'Error Name'})
+          // Throw new SubmissionError({_error: 'General Error', name: 'Error Name'})
         })
     },
 

@@ -204,9 +204,9 @@ const RoleGridList = enhance((props) => {
           <div className={classes.permission}>
             {_.isEmpty(groups)
               ? <span>Нет доступа</span>
-              : _.map(groups, (perm, index) => {
+              : _.map(groups, (perm, i) => {
                 return (
-                  <span key={index}>{userGroupFormat(_.get(perm, 'name'))}</span>
+                  <span key={i}>{userGroupFormat(_.get(perm, 'name'))}</span>
                 )
               })}
           </div>

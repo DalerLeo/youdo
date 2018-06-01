@@ -38,7 +38,10 @@ const enhance = compose(
 const PostCreateDialog = enhance((props) => {
   const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
   const formNames = ['name', 'beginTime', 'endTime']
-  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
+  const onSubmit = handleSubmit(() => props.onSubmit()
+    .catch((error) => {
+      formValidate(formNames, dispatch, error)
+    }))
 
   return (
     <Dialog
