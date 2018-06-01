@@ -1,109 +1,76 @@
 import React from 'react'
 import _ from 'lodash'
-import fp from 'lodash/fp'
 import sprintf from 'sprintf'
 import {reset} from 'redux-form'
-import {compose, withHandlers, pure, mapPropsStream} from 'recompose'
+import {compose, withHandlers, pure} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout/index'
 import * as ROUTER from '../../../constants/routes'
-import filterHelper from '../../../helpers/filter'
-import {compareFilterByProps} from '../../../helpers/get'
+import {listWrapper, detailWrapper, createWrapper} from '../../Wrappers'
+import changeUrl from '../../../helpers/changeUrl'
 import toBoolean from '../../../helpers/toBoolean'
 import {
-  USERS_CREATE_DIALOG_OPEN,
-  USERS_UPDATE_DIALOG_OPEN,
-  USERS_DELETE_DIALOG_OPEN,
-  USERS_FILTER_KEY,
-  USERS_FILTER_OPEN,
-  UsersGridList
-} from '../../../components/Administration/Users/index'
+  APPLICANT_CREATE_DIALOG_OPEN,
+  APPLICANT_UPDATE_DIALOG_OPEN,
+  APPLICANT_DELETE_DIALOG_OPEN,
+  APPLICANT_FILTER_KEY,
+  APPLICANT_FILTER_OPEN,
+  ApplicantGridList
+} from '../../../components/Administration/Applicant'
 import {
-  usersCreateAction,
-  usersUpdateAction,
-  usersListFetchAction,
-  usersDeleteAction,
-  usersItemFetchAction
-} from '../../../actions/Administration/users'
+  applicantCreateAction,
+  applicantUpdateAction,
+  applicantListFetchAction,
+  applicantDeleteAction,
+  applicantItemFetchAction
+} from '../../../actions/Administration/applicant'
 import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
 const mapDispatchToProps = {
-  usersCreateAction,
-  usersUpdateAction,
-  usersListFetchAction,
-  usersDeleteAction,
-  usersItemFetchAction,
+  applicantCreateAction,
+  applicantUpdateAction,
+  applicantDeleteAction,
   openSnackbarAction
 }
 
 const mapStateToProps = (state, props) => {
-  const query = _.get(props, ['location', 'query'])
-  const pathname = _.get(props, ['location', 'pathname'])
-  const detail = _.get(state, ['users', 'item', 'data'])
-  const detailLoading = _.get(state, ['users', 'item', 'loading'])
-  const createLoading = _.get(state, ['users', 'create', 'loading'])
-  const updateLoading = _.get(state, ['users', 'update', 'loading'])
-  const list = _.get(state, ['users', 'list', 'data'])
-  const listLoading = _.get(state, ['users', 'list', 'loading'])
-  const filterForm = _.get(state, ['form', 'UsersFilterForm'])
-  const createForm = _.get(state, ['form', 'UsersCreateForm'])
-  const filter = filterHelper(list, pathname, query)
-
+  const createLoading = _.get(state, ['applicant', 'create', 'loading'])
+  const updateLoading = _.get(state, ['applicant', 'update', 'loading'])
+  const filterForm = _.get(state, ['form', 'ApplicantFilterForm'])
   return {
-    list,
-    listLoading,
-    detail,
-    detailLoading,
     createLoading,
     updateLoading,
-    filter,
-    filterForm,
-    createForm
+    filterForm
   }
 }
 
 const enhance = compose(
+  listWrapper({listFetchAction: applicantListFetchAction, storeName: 'application'}),
+  detailWrapper({itemFetchAction: applicantItemFetchAction, storeName: 'application'}),
+  createWrapper(applicantCreateAction, APPLICANT_CREATE_DIALOG_OPEN, 'ApplicantCreateForm'),
   connect(mapStateToProps, mapDispatchToProps),
-  mapPropsStream((props$) => {
-    // GET LIST
-    props$
-      .distinctUntilChanged(compareFilterByProps)
-      .subscribe(({filter, ...props}) => props.usersListFetchAction(filter))
-
-    // GET DETAILS
-    props$
-      .filter(fp.flow(fp.get('location.query.openUpdateDialog'), toBoolean))
-      .filter(fp.get('params.usersId'))
-      .distinctUntilChanged(null, fp.get('params.usersId'))
-      .subscribe(props => {
-        const getUserId = fp.flow(fp.get('params.usersId'), fp.toInteger)
-        props.usersItemFetchAction(getUserId(props))
-      })
-
-    return props$
-  }),
 
   withHandlers({
     handleOpenConfirmDialog: props => (id) => {
       const {filter} = props
       hashHistory.push({
-        pathname: sprintf(ROUTER.USERS_ITEM_PATH, id),
-        query: filter.getParams({[USERS_DELETE_DIALOG_OPEN]: true})
+        pathname: sprintf(ROUTER.APPLICANT_ITEM_PATH, id),
+        query: filter.getParams({[APPLICANT_DELETE_DIALOG_OPEN]: true})
       })
     },
 
     handleCloseConfirmDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_DELETE_DIALOG_OPEN]: false})})
+      hashHistory.push({pathname, query: filter.getParams({[APPLICANT_DELETE_DIALOG_OPEN]: false})})
     },
     handleSendConfirmDialog: props => () => {
       const {detail, filter, location: {pathname}} = props
-      props.usersDeleteAction(detail.id)
+      props.applicantDeleteAction(detail.id)
         .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[USERS_DELETE_DIALOG_OPEN]: false})})
-          props.usersListFetchAction(filter)
+          hashHistory.push({pathname, query: filter.getParams({[APPLICANT_DELETE_DIALOG_OPEN]: false})})
+          props.listFetchAction(filter)
           return props.openSnackbarAction({message: t('Успешно удалено')})
         })
         .catch(() => props.openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
@@ -111,12 +78,12 @@ const enhance = compose(
 
     handleOpenFilterDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_FILTER_OPEN]: true})})
+      hashHistory.push({pathname, query: filter.getParams({[APPLICANT_FILTER_OPEN]: true})})
     },
 
     handleCloseFilterDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_FILTER_OPEN]: false})})
+      hashHistory.push({pathname, query: filter.getParams({[APPLICANT_FILTER_OPEN]: false})})
     },
 
     handleClearFilterDialog: props => () => {
@@ -130,9 +97,9 @@ const enhance = compose(
       const group = _.get(filterForm, ['values', 'group']) || null
 
       filter.filterBy({
-        [USERS_FILTER_OPEN]: false,
-        [USERS_FILTER_KEY.MANUFACTURE]: _.join(manufacture, '-'),
-        [USERS_FILTER_KEY.GROUP]: _.join(group, '-')
+        [APPLICANT_FILTER_OPEN]: false,
+        [APPLICANT_FILTER_KEY.MANUFACTURE]: _.join(manufacture, '-'),
+        [APPLICANT_FILTER_KEY.GROUP]: _.join(group, '-')
       })
     },
 
@@ -149,61 +116,62 @@ const enhance = compose(
       hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
     },
 
-    handleOpenCreateDialog: props => () => {
-      const {dispatch, location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: true})})
-      dispatch(reset('UsersCreateForm'))
+    handleOpenCreateDialog: ({filter, location, dispatch}) => () => {
+      const params = {[APPLICANT_CREATE_DIALOG_OPEN]: true}
+      changeUrl(filter, location.pathname, params)
+      dispatch(reset('ApplicantCreateForm'))
     },
 
-    handleCloseCreateDialog: props => () => {
-      const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: false})})
+    handleCloseCreateDialog: ({filter, location}) => () => {
+      const params = {[APPLICANT_CREATE_DIALOG_OPEN]: false}
+      changeUrl(filter, location.pathname, params)
     },
 
     handleSubmitCreateDialog: props => () => {
       const {createForm, filter, location: {pathname}} = props
 
       // Noinspection UnterminatedStatementJS
-      return props.usersCreateAction(_.get(createForm, ['values']))
+      return props.applicantCreateAction(_.get(createForm, ['values']))
         .then(() => props.openSnackbarAction({message: t('Успешно сохранено')}))
         .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[USERS_CREATE_DIALOG_OPEN]: false})})
-          props.usersListFetchAction(filter)
+          const params = {[APPLICANT_CREATE_DIALOG_OPEN]: false}
+          changeUrl(filter, pathname, params)
+          props.listFetchAction(filter)
         })
     },
 
     handleOpenUpdateDialog: props => (id) => {
       const {filter} = props
       hashHistory.push({
-        pathname: sprintf(ROUTER.USERS_ITEM_PATH, id),
-        query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: true})
+        pathname: sprintf(ROUTER.APPLICANT_ITEM_PATH, id),
+        query: filter.getParams({[APPLICANT_UPDATE_DIALOG_OPEN]: true})
       })
     },
 
     handleCloseUpdateDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: false})})
+      hashHistory.push({pathname, query: filter.getParams({[APPLICANT_UPDATE_DIALOG_OPEN]: false})})
     },
 
     handleSubmitUpdateDialog: props => () => {
       const {createForm, filter, location: {pathname}} = props
-      const usersId = _.toInteger(_.get(props, ['params', 'usersId']))
-      return props.usersUpdateAction(usersId, _.get(createForm, ['values']))
+      const applicantId = _.toInteger(_.get(props, ['params', 'applicantId']))
+      return props.applicantUpdateAction(applicantId, _.get(createForm, ['values']))
         .then(() => openSnackbarAction({message: t('Успешно сохранено')}))
         .then(() => {
           hashHistory.push({
             pathname,
-            query: filter.getParams({[USERS_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
+            query: filter.getParams({[APPLICANT_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
           })
-          props.usersListFetchAction(filter)
-          props.usersItemFetchAction(usersId)
+          props.listFetchAction(filter)
+          props.itemFetchAction(applicantId)
         })
     }
   }),
   pure
 )
 
-const UsersList = enhance((props) => {
+const ApplicantList = enhance((props) => {
   const {
     location,
     list,
@@ -216,27 +184,25 @@ const UsersList = enhance((props) => {
     layout,
     params
   } = props
+  const openFilterDialog = toBoolean(_.get(location, ['query', APPLICANT_FILTER_OPEN]))
+  const openCreateDialog = toBoolean(_.get(location, ['query', APPLICANT_CREATE_DIALOG_OPEN]))
+  const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICANT_UPDATE_DIALOG_OPEN]))
+  const openConfirmDialog = toBoolean(_.get(location, ['query', APPLICANT_DELETE_DIALOG_OPEN]))
 
-  const openFilterDialog = toBoolean(_.get(location, ['query', USERS_FILTER_OPEN]))
-  const openCreateDialog = toBoolean(_.get(location, ['query', USERS_CREATE_DIALOG_OPEN]))
-  const openUpdateDialog = toBoolean(_.get(location, ['query', USERS_UPDATE_DIALOG_OPEN]))
-  const openConfirmDialog = toBoolean(_.get(location, ['query', USERS_DELETE_DIALOG_OPEN]))
-
-  const manufacture = _.toInteger(filter.getParam(USERS_FILTER_KEY.MANUFACTURE))
-  const group = _.toInteger(filter.getParam(USERS_FILTER_KEY.GROUP))
-  const detailId = _.toInteger(_.get(params, 'usersId'))
+  const manufacture = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.MANUFACTURE))
+  const group = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.GROUP))
+  const detailId = _.toInteger(_.get(params, 'id'))
 
   const actionsDialog = {
     handleActionEdit: props.handleActionEdit,
     handleActionDelete: props.handleOpenDeleteDialog
   }
 
+  console.warn(props)
   const createDialog = {
     createLoading,
     openCreateDialog,
-    handleOpenCreateDialog: props.handleOpenCreateDialog,
-    handleCloseCreateDialog: props.handleCloseCreateDialog,
-    handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    ...props.createDialog
   }
   const confirmDialog = {
     confirmLoading: detailLoading,
@@ -248,21 +214,21 @@ const UsersList = enhance((props) => {
   const updateDialog = {
     initialValues: (() => {
       if (!detail || openCreateDialog) {
-        return {
-          phoneNumber: '+998'
-        }
+        return {}
       }
       return {
-        firstNameEn: _.get(detail, 'firstNameEn'),
-        lastNameEn: _.get(detail, 'lastNameEn'),
-        firstNameRu: _.get(detail, 'firstNameRu'),
-        lastNameRu: _.get(detail, 'lastNameRu'),
+        firstName: _.get(detail, 'firstName'),
+        lastName: _.get(detail, 'lastName'),
         email: _.get(detail, 'email'),
-        greetingEn: _.get(detail, 'greetingTextEn'),
-        greetingRu: _.get(detail, 'greetingTextRu'),
+        address: _.get(detail, 'address'),
+        countryCode: _.get(detail, 'countryCode'),
+        photo: _.get(detail, 'photo'),
         phoneNumber: _.get(detail, 'phoneNumber'),
         role: {value: _.get(detail, ['groups', '0', 'id'])},
-        position: {value: _.get(detail, ['position'])},
+        position: {value: _.get(detail, ['position', 'id'])},
+        sphere: {value: _.get(detail, ['sphere', 'id'])},
+        gender: {value: _.get(detail, ['gender', 'id'])},
+        martialStatus: {value: _.get(detail, ['martialStatus', 'id'])},
         status: _.get(detail, 'status')
       }
     })(),
@@ -301,7 +267,7 @@ const UsersList = enhance((props) => {
 
   return (
     <Layout {...layout}>
-      <UsersGridList
+      <ApplicantGridList
         filter={filter}
         listData={listData}
         detailData={detailData}
@@ -315,4 +281,4 @@ const UsersList = enhance((props) => {
   )
 })
 
-export default UsersList
+export default ApplicantList

@@ -21,10 +21,10 @@ import {
 } from '../../../constants/styleConstants'
 import {ZERO} from '../../../constants/backendConstants'
 import ToolTip from '../../ToolTip'
-import ExperiencesField from '../../ReduxForm/HR/Resume/ExperiencesField'
-import ExperienceForm from '../../ReduxForm/HR/Resume/ExperienceForm'
-import EducationForm from '../../ReduxForm/HR/Resume/EducationForm'
-import EducationsField from '../../ReduxForm/HR/Resume/EducationsField'
+import ExperiencesField from '../../ReduxForm/Resume/ExperiencesField'
+import ExperienceForm from '../../ReduxForm/Resume/ExperienceForm'
+import EducationForm from '../../ReduxForm/Resume/EducationForm'
+import EducationsField from '../../ReduxForm/Resume/EducationsField'
 import {
   Step,
   Stepper,

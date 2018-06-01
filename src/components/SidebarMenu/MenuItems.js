@@ -19,7 +19,6 @@ import Clients from 'material-ui/svg-icons/social/group'
 import Supply from 'material-ui/svg-icons/action/swap-horiz'
 import Products from 'material-ui/svg-icons/device/widgets'
 import Telegram from '../CustomIcons/Telegram'
-import {getPageSize} from '../../helpers/storage'
 import t from '../../helpers/translate'
 
 const NOT_FOUND = -1
@@ -35,30 +34,28 @@ const STATS_CLIENTS = t('Клиенты')
 const STATS_PROVIDERS = t('Поставщики')
 const STATS_STOCK = t('Склад')
 const STATS_OVERALL = t('Общее')
+*/
 
+import {getPageSize} from '../../helpers/storage'
 const DEFAULT_PAGE_SIZE = getPageSize()
-const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE} */
+const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
 const NOT_FOUND = -1
+import AccountIcon from 'material-ui/svg-icons/action/account-box'
 
 export const MenuItems = [
 
-  /* {
-        name: t('Продажи'),
-        icon: (<AttachMoney/>),
-        url: ROUTES.ORDER_LIST_URL,
-        query: defaultPageSizeQuery,
-        childs: [
-            {name: t('Заказы'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_orders'},
-            {name: t('Возвраты'), url: ROUTES.RETURN_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_order_returns'},
-            {name: t('Активность'), url: ROUTES.ACTIVITY_LIST_URL, permission: 'frontend_activity'},
-            {name: t('План'), url: ROUTES.PLAN_LIST_URL, permission: 'frontend_plan'},
-            {name: t('Формирование цен'), url: ROUTES.PRICE_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_prices'},
-            {name: t('Отслеживание'), url: ROUTES.TRACKING_LIST_URL, permission: 'frontend_tracking'},
-            {name: t('Маркетинговые акции'), url: ROUTES.PRICES_LIST_URL, query: defaultPageSizeQuery, permission: 'frontend_bonuses'},
-            {name: t('Зоны'), url: ROUTES.ZONES_LIST_URL, permission: 'frontend_zones'}
-        ]
-    },
+  {
+    name: t('Соискатель'),
+    icon: (<AccountIcon/>),
+    url: ROUTES.APPLICANT_LIST_URL,
+    query: defaultPageSizeQuery,
+    childs: [
+      {name: t('Профайл'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+      {name: t('Резуме'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''}
+    ]
+  },
 
+  /*
     {
         name: t('Магазины'),
         icon: (<Markets/>),
@@ -247,7 +244,8 @@ export const MenuItems = [
       {section: 'Основные', name: t('Навыки'), url: ROUTES.SKILLS_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''}
+      {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''},
+      {section: 'Основные', name: t('Тип компании'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''}
 
     ]
   }

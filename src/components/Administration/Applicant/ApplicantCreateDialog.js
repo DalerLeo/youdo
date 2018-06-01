@@ -7,22 +7,24 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../../Loader/index'
+import {COUNTRY_LIST, COUNTRY_ITEM} from '../../../constants/api'
+import {APPLICANT_STATUS, PROFILE_LANG} from '../../../constants/backendConstants'
 import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
-import {TextField, ImageUploadField, PositionsSearchField, UserStatusRadioButton, RoleSearchField, normalizePhone} from '../../ReduxForm'
+import {
+  TextField,
+  ImageUploadField,
+  MaritalStatusSearchField,
+  GenderSearchField,
+  SphereSearchField,
+  DateField,
+  UniversalSearchField,
+  StaticUniversalSearchField
+} from '../../ReduxForm/index'
 import formValidate from '../../../helpers/formValidate'
 
-export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
-
-const validateForm = values => {
-  const errors = {}
-  if (values.password && values.passwordExp && values.password !== values.passwordExp) {
-    errors.password = t('Пароли не совпадают')
-  }
-  return errors
-}
-
+export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const enhance = compose(
   injectSheet({
     popUp: {
@@ -125,23 +127,63 @@ const enhance = compose(
       margin: '15px 0 10px'
     },
     upperSection: {
-      display: 'flex'
+      display: 'flex',
+      '& > div:first-child': {
+        width: 'calc(100% - 278px)'
+      },
+      '& > div:nth-child(2)': {
+        width: '278px'
+      },
+      '& .imageDropZone': {
+        height: '240px',
+        width: '100%',
+        marginLeft: '30px'
+      }
     },
     status: {
-      '& > div:nth-child(2)': {
+      '& > div:nth-child(3)': {
         width: '65%'
       }
-
+    },
+    inputDateCustom: {
+      fontSize: '13px !important',
+      height: '45px !important',
+      marginTop: '14px',
+      '& > div:first-child': {
+        fontSize: '13px !important'
+      },
+      '& label': {
+        top: '20px !important',
+        lineHeight: '5px !important'
+      },
+      '& input': {
+        marginTop: '0 !important'
+      },
+      '& div:first-child': {
+        height: '45px !important'
+      }
+    },
+    lastBlock: {
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      display: 'flex'
+    },
+    phoneField: {
+      display: 'flex',
+      alignItems: 'flex-end',
+      '& > div:first-child': {
+        width: '150px',
+        marginRight: '10px'
+      }
     }
   }),
   reduxForm({
-    form: 'UsersCreateForm',
-    validate: validateForm,
+    form: 'ApplicantCreateForm',
     enableReinitialize: true
   })
 )
 
-const UsersCreateDialog = enhance((props) => {
+const ApplicantCreateDialog = enhance((props) => {
   const {
     open,
     loading,
@@ -153,18 +195,24 @@ const UsersCreateDialog = enhance((props) => {
   } = props
 
   const formNames = [
-    'firstNameRu',
-    'lastNameRu',
-    'firstNameEn',
-    'lastNameEn',
-    'greetingTextRu',
-    'greetingTextEn',
+    'firstName',
+    'lastName',
+    'address',
+    'countryCode',
     'phoneNumber',
     'photo',
     'email',
-    'password'
+    'sphere',
+    'martialStatus',
+    'birthDate',
+    'gender',
+    'lang',
+    'status'
   ]
   const onSubmit = handleSubmit(() => props.onSubmit()
+    .then(data => {
+      console.warn(data)
+    })
     .catch((error) => {
       formValidate(formNames, dispatch, error)
     }))
@@ -177,7 +225,7 @@ const UsersCreateDialog = enhance((props) => {
       contentStyle={loading ? {width: '400px'} : {width: '600px'}}
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
-        <span>{isUpdate ? t('Изменить пользователя') : t('Добавить пользователя')}</span>
+        <span>{isUpdate ? t('Изменить соискателя') : t('Добавить соискателя')}</span>
         <IconButton onTouchTap={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
@@ -191,29 +239,39 @@ const UsersCreateDialog = enhance((props) => {
             <div className={classes.upperSection}>
               <div>
                 <Field
-                  name="firstNameRu"
+                  name="firstName"
                   component={TextField}
-                  label={t('Имя на русском')}
+                  label={t('Имя')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
-                  name="firstNameEn"
+                  name="lastName"
                   component={TextField}
-                  label={t('Имя на английском')}
+                  label={t('Фамилия')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
-                  name="lastNameRu"
+                  name="email"
                   component={TextField}
-                  label={t('Фамилия на русском')}
+                  type="email"
+                  label={t('email')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
-                <Field
-                  name="lastNameEn"
-                  component={TextField}
-                  label={t('Фамилия на английском')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
+                <div className={classes.phoneField}>
+                  <Field
+                    name="countyCode"
+                    component={UniversalSearchField}
+                    itemPath={COUNTRY_ITEM}
+                    listPath={COUNTRY_LIST}
+                    label={t('страна')}
+                    fullWidth={true}/>
+                  <Field
+                    name="phoneNumber"
+                    component={TextField}
+                    label={t('Телефонный номер')}
+                    className={classes.inputFieldCustom}
+                    fullWidth={true}/>
+                </div>
               </div>
               <Field
                 name="photo"
@@ -224,74 +282,57 @@ const UsersCreateDialog = enhance((props) => {
             <Row className={classes.field}>
               <Col xs={6}>
                 <Field
-                  name="email"
-                  component={TextField}
-                  type="email"
-                  label={t('email') + ' (Логин)'}
+                  name="sphere"
+                  component={SphereSearchField}
+                  label={t('Профессионалная сфера')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
-                  name="phoneNumber"
-                  normalize={normalizePhone}
-                  component={TextField}
-                  label={t('Телефонный номер')}
+                  name="gender"
+                  component={GenderSearchField}
+                  label={t('Пол')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
               </Col>
               <Col xs={6}>
                 <Field
-                  name="passwordExp"
-                  component={TextField}
-                  type="password"
-                  label={isUpdate ? t('Изменить пароль') : t('Пароль')}
+                  name="martialStatus"
+                  component={MaritalStatusSearchField}
+                  label={t('Семейное положения')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
-                  name="password"
-                  type="password"
-                  component={TextField}
-                  label={t('Подтвердите пароль')}
-                  className={classes.inputFieldCustom}
+                  name="birthDate"
+                  component={DateField}
+                  label={t('Дата рождение')}
+                  className={classes.inputDateCustom}
                   fullWidth={true}/>
-
               </Col>
             </Row>
+            <Field
+              name="address"
+              component={TextField}
+              label={t('Адрес')}
+              className={classes.inputFieldCustom}
+              fullWidth={true}/>
             <Row className={classes.field}>
               <Col xs={6}>
                 <Field
-                  name="role"
-                  component={RoleSearchField}
-                  label={t('Роль сотрудника')}
-                  className={classes.inputFieldCustom}
+                  name="lang"
+                  component={StaticUniversalSearchField}
+                  label={t('Язык профиля')}
+                  items={PROFILE_LANG}
                   fullWidth={true}/>
               </Col>
               <Col xs={6}>
                 <Field
-                  name="position"
-                  component={PositionsSearchField}
-                  label={t('Должность')}
-                  className={classes.inputFieldCustom}
+                  name="status"
+                  label={'Статус'}
+                  component={StaticUniversalSearchField}
+                  items={APPLICANT_STATUS}
                   fullWidth={true}/>
               </Col>
             </Row>
-            <div className={classes.status}>
-              <Field
-                name="status"
-                component={UserStatusRadioButton}
-                fullWidth={true}/>
-              <Field
-                name="greetingRu"
-                component={TextField}
-                label={t('Текст приветствия в “онлайн консультант (на русском языке)')}
-                className={classes.inputFieldCustom}
-                fullWidth={true}/>
-              <Field
-                name="greetingEn"
-                component={TextField}
-                label={t('Текст приветствия в “онлайн консультант” (на английском языке)')}
-                className={classes.inputFieldCustom}
-                fullWidth={true}/>
-            </div>
           </div>
           <div className={classes.bottomButton}>
             <FlatButton
@@ -308,7 +349,7 @@ const UsersCreateDialog = enhance((props) => {
   )
 })
 
-UsersCreateDialog.propTyeps = {
+ApplicantCreateDialog.propTyeps = {
   isUpdate: PropTypes.bool,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
@@ -316,4 +357,4 @@ UsersCreateDialog.propTyeps = {
   loading: PropTypes.bool.isRequired
 }
 
-export default UsersCreateDialog
+export default ApplicantCreateDialog

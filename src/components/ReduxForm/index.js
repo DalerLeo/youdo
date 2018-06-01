@@ -14,7 +14,12 @@ import PermissionTimeSearchField from './PermissionTimeSearchField'
 import SphereSearchField from './Position/SphereSearchField'
 import PositionsSearchField from './Position/PositionSearchField'
 import RoleSearchField from './Role/RoleSearchField'
+import GenderSearchField from './GenderSearchField'
+import MaritalStatusSearchField from './Resume/MaritalStatusSearchField'
 import normalizePhone from './normalizers/normalizePhone'
+import ApplicantStatusRadioButton from './Applicant/ApplicantStatusRadioButton'
+import UniversalSearchField from './UniversalSearchField'
+import StaticUniversalSearchField from './StaticUniversalSearchField'
 
 export {
   ClientContactsField,
@@ -32,6 +37,10 @@ export {
   PositionsSearchField,
   UserStatusRadioButton,
   RoleSearchField,
-  normalizePhone
-
+  normalizePhone,
+  GenderSearchField,
+  MaritalStatusSearchField,
+  ApplicantStatusRadioButton,
+  UniversalSearchField,
+  StaticUniversalSearchField
 }

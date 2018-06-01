@@ -2,9 +2,9 @@ import _ from 'lodash'
 import React from 'react'
 import {compose, withPropsOnChange, withState} from 'recompose'
 import injectSheet from 'react-jss'
-import {HR_DRIVER_LICENSE} from '../../../../constants/backendConstants'
-import {COLOR_GREY, LINK_COLOR, COLOR_WHITE, BORDER_COLOR} from '../../../../constants/styleConstants'
-import t from '../../../../helpers/translate'
+import {HR_DRIVER_LICENSE} from '../../../constants/backendConstants'
+import {COLOR_GREY, LINK_COLOR, COLOR_WHITE, BORDER_COLOR} from '../../../constants/styleConstants'
+import t from '../../../helpers/translate'
 
 const enhance = compose(
   injectSheet({

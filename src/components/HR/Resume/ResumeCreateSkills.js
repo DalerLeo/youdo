@@ -7,7 +7,7 @@ import t from '../../../helpers/translate'
 import {TextField} from '../../ReduxForm'
 import ComputerLevelSearchField from '../../ReduxForm/HR/ComputerLevelSearchField'
 import LanguageField from '../../ReduxForm/HR/LanguageField'
-import DriverLicenceCheck from '../../ReduxForm/HR/Resume/DriverLicenceCheck'
+import DriverLicenceCheck from '../../ReduxForm/Resume/DriverLicenceCheck'
 import SkillsTagSearchField from '../../ReduxForm/HR/SkillsTagSearchField'
 
 const validate = values => {

@@ -44,7 +44,7 @@ const enhance = compose(
     },
     sidenav: {
       position: 'fixed',
-      width: '84px',
+      width: '220px',
       top: '0',
       left: '0',
       bottom: '0',
@@ -53,8 +53,8 @@ const enhance = compose(
     content: {
       position: 'relative',
       background: '#f7f8f9',
-      width: 'calc(100% - 84px)',
-      marginLeft: '84px',
+      width: 'calc(100% - 220px)',
+      marginLeft: '220px',
       padding: '0 28px 28px',
       overflowY: 'auto',
       overflowX: 'hidden'

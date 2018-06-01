@@ -8,14 +8,16 @@ import SignIn from '../containers/SignIn'
 import {ClientList} from '../containers/Client'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
+import {CompanyTypeList} from '../containers/Settings/CompanyType'
 import {
   ArticlesList,
   CompaniesList,
-  UsersList
+  ApplicantList
 } from '../containers/Administration'
 import {
   SkillsList,
-  PostList
+  PostList,
+  UsersList
 } from '../containers/Settings'
 
 import {RoleList} from '../containers/Settings/Role'
@@ -141,6 +143,29 @@ export default {
         },
         {
 
+        }
+      ]
+    },
+    // COMPANY TYPE
+    {
+      path: ROUTES.COMPANY_TYPE_LIST_URL,
+      component: userIsAdminChain(CompanyTypeList),
+      childRoutes: [
+        {
+          path: ROUTES.COMPANY_TYPE_ITEM_URL,
+          component: userIsAuth(CompanyTypeList)
+        }
+      ]
+    },
+
+    // COMPANY TYPE
+    {
+      path: ROUTES.APPLICANT_LIST_URL,
+      component: userIsAdminChain(ApplicantList),
+      childRoutes: [
+        {
+          path: ROUTES.APPLICANT_ITEM_URL,
+          component: userIsAuth(ApplicantList)
         }
       ]
     },

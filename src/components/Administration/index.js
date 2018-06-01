@@ -1,6 +1,6 @@
 import {ArticlesGridList} from './Articles'
 import {CompaniesGridList} from './Companies'
-import {UsersGridList} from './Users'
+import {UsersGridList} from '../Settings/Users'
 
 export {
   ArticlesGridList,

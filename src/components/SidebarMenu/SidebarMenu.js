@@ -18,8 +18,9 @@ import * as ROUTE from '../../constants/routes'
 
 const style = {
   style: {
-    width: 84,
-    height: 60,
+    color: '#fff',
+    width: '100%',
+    height: 50,
     minWidth: 'none'
   }
 }
@@ -144,20 +145,20 @@ const SideBarMenu = enhance((props) => {
       }) > NOT_FOUND)
     })
     .value()
+
   const currentMenuURL = _.trimStart(_.get(parent, 'url'), '/')
   const rippleColor = 'rgba(255, 255, 255, 0.05)'
   const getMenuIcon = (url, query, name, icon) => {
     return (
       <Link to={{pathname: url, query: query}}>
-        <ToolTip position="right" text={name}>
-          <FlatButton
-            hoverColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
-            rippleColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
-            className={noNumbersString(url) === currentMenuURL ? classes.activeMenu : ''}
-            style={style.style}>
-            {icon}
-          </FlatButton>
-        </ToolTip>
+        <FlatButton
+          label={name}
+          labelStyle={{textTransform: 'none'}}
+          hoverColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
+          rippleColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
+          className={noNumbersString(url) === currentMenuURL ? classes.activeMenu : ''}
+          icon={icon}
+          style={style.style}/>
       </Link>
     )
   }
@@ -223,15 +224,13 @@ const SideBarMenu = enhance((props) => {
         </div>}
       {!loading &&
             <div ref="logoutBtn">
-              <ToolTip position="right" text="Выйти">
-                <FlatButton
-                  rippleColor={rippleColor}
-                  hoverColor={rippleColor}
-                  style={style.style}
-                  onClick={handleSignOut}>
-                  <SettingsPower/>
-                </FlatButton>
-              </ToolTip>
+              <FlatButton
+                rippleColor={rippleColor}
+                hoverColor={rippleColor}
+                style={style.style}
+                label="Выйти"
+                icon={<SettingsPower/>}
+                onClick={handleSignOut}/>
             </div>}
       <div ref="down_blur" className={classes.downBlur}>
         <ArrowDown color="#fff"/>
@@ -255,11 +254,12 @@ export default injectSheet({
     position: 'relative',
     boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)',
     '& button': {
-      opacity: '0.5',
+      paddingLeft: '10px',
+      opacity: '0.7',
       '& > div': {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         height: '100%',
         width: '100%'
       },
@@ -334,7 +334,7 @@ export default injectSheet({
   },
 
   logo: {
-    padding: '20px 10px 30px',
+    padding: '20px 75px 20px',
     '& div': {
       background: 'url(' + Logo + ') no-repeat center center',
       backgroundSize: '100%',

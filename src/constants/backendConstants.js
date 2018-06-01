@@ -95,7 +95,18 @@ export const HR_RESUME_LONG = 'long'
 export const HR_RESUME_NOTE = 'note'
 
 export const USERS_STATUS = [
-  {value: 'active', name: t('Активный')},
-  {value: 'fired', name: t('Уволен')},
-  {value: 'on_vacation', name: t('Отпуск')}
+  {id: 'active', name: t('Активный')},
+  {id: 'fired', name: t('Уволен')},
+  {id: 'on_vacation', name: t('Отпуск')}
+]
+
+export const APPLICANT_STATUS = [
+  {id: 'no', name: t('Не указан')},
+  {id: 'active', name: t('Активный')},
+  {id: 'banned', name: t('Заблокированный')}
+]
+
+export const PROFILE_LANG = [
+  {id: 'uz', name: 'Узбекский'},
+  {id: 'ru', name: 'Русский'}
 ]

@@ -14,7 +14,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import SideMenu from '../SideMenu'
+import SubMenu from '../../SubMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ToolTip from '../../ToolTip'
 import {Link} from 'react-router'
@@ -66,8 +66,6 @@ const enhance = compose(
       }
     },
     wrapper: {
-      display: 'flex',
-      margin: '0 -28px',
       height: 'calc(100% + 28px)'
     },
     addButtonWrapper: {
@@ -79,8 +77,8 @@ const enhance = compose(
     rightPanel: {
       background: COLOR_WHITE,
       width: '100%',
-      paddingTop: '10px',
       overflowY: 'auto',
+      boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
       overflowX: 'hidden'
     },
     listRow: {
@@ -216,7 +214,7 @@ const CompaniesGridList = enhance((props) => {
   return (
     <Container>
       <div className={classes.wrapper}>
-        <SideMenu currentUrl={ROUTES.COMPANIES_LIST_URL}/>
+        <SubMenu url={ROUTES.COMPANIES_LIST_URL}/>
         <div className={classes.rightPanel}>
           <GridList
             filter={filter}

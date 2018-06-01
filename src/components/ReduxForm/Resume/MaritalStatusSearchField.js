@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../../Basic/SearchField'
-import t from '../../../../helpers/translate'
+import SearchField from '../Basic/SearchField'
+import t from '../../../helpers/translate'
 
 const Items = [
   {id: 'single', name: t('Не женат / не замужем')},

@@ -1,9 +1,9 @@
 import ArticlesList from './Articles'
 import CompaniesList from './Companies'
-import UsersList from './Users'
+import ApplicantList from './Applicant'
 
 export {
   ArticlesList,
   CompaniesList,
-  UsersList
+  ApplicantList
 }

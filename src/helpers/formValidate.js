@@ -18,7 +18,6 @@ const validate = (formNames, dispatch, error) => {
       message: error
     }))
   }
-
   throw new SubmissionError({
     ...errors,
     latLng,

@@ -12,7 +12,7 @@ export const createSerializer = (data) => {
   const status = _.get(data, 'status')
   const password = _.get(data, 'password')
   const phoneNumber = _.get(data, 'phoneNumber')
-  const photo = _.get(data, 'photo')
+  const photo = _.isObject(_.get(data, 'photo')) ? _.get(data, ['photo', 'id']) : _.get(data, 'photo')
   const groups = [_.get(data, ['role', 'value'])]
   const position = _.get(data, ['position', 'value'])
   return {

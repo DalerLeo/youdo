@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
-import {HR_GENDER} from '../../../constants/backendConstants'
+import SearchField from './Basic/SearchField'
+import {HR_GENDER} from '../../constants/backendConstants'
 
 const SexSearchField = (props) => {
   const {removeNoMatter} = props

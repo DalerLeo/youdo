@@ -2,13 +2,13 @@ import _ from 'lodash'
 import React from 'react'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import LinearProgress from '../../../LinearProgress'
-import t from '../../../../helpers/translate'
+import LinearProgress from '../../LinearProgress/index'
+import t from '../../../helpers/translate'
 import {reduxForm} from 'redux-form'
 import {
   PADDING_STANDART,
   BORDER_STYLE
-} from '../../../../constants/styleConstants'
+} from '../../../constants/styleConstants'
 
 const validate = values => {
   const formNames = [

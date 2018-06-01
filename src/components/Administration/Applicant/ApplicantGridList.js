@@ -1,63 +1,34 @@
 import _ from 'lodash'
+import fp from 'lodash/fp'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import IconButton from 'material-ui/IconButton'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import * as ROUTES from '../../../constants/routes'
-import GridList from '../../GridList'
-import Container from '../../Container'
-import PostCreateDialog from './PositionCreateDialog'
-import ConfirmDialog from '../../ConfirmDialog'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import SettingSideMenu from '../../Settings/SideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
-import ToolTip from '../../ToolTip'
-import dateFormat from '../../../helpers/dateFormat'
+import * as ROUTES from '../../../constants/routes'
+import GridList from '../../GridList/index'
+import Container from '../../Container/index'
+import ApplicantCreateDialog from './ApplicantCreateDialog'
+import ConfirmDialog from '../../ConfirmDialog/index'
+import SubMenu from '../../SubMenu'
+import ToolTip from '../../ToolTip/index'
 import t from '../../../helpers/translate'
-
-const listHeader = [
-  {
-    sorting: true,
-    name: 'id',
-    xs: 2,
-    title: 'Id'
-  },
-  {
-    sorting: false,
-    name: 'name',
-    xs: 6,
-    title: t('Наименование')
-  },
-  {
-    sorting: true,
-    xs: 3,
-    name: 'created_date',
-    title: t('Дата создания')
-  },
-  {
-    sorting: false,
-    xs: 1,
-    name: 'actions',
-    title: ''
-  }
-]
+import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 
 const enhance = compose(
   injectSheet({
+    wrapper: {
+      height: 'calc(100% + 28px)'
+    },
     addButton: {
       '& svg': {
         width: '14px !important',
         height: '14px !important'
       }
-    },
-    wrapper: {
-      display: 'flex',
-      margin: '0 -28px',
-      height: 'calc(100% + 28px)'
     },
     addButtonWrapper: {
       height: '100%',
@@ -67,21 +38,17 @@ const enhance = compose(
     },
     rightPanel: {
       background: '#fff',
-      flexBasis: 'calc(100% - 225px)',
-      maxWidth: 'calc(100% - 225px)',
-      paddingTop: '10px',
+      flexBasis: '100%',
+      width: '100%',
       overflowY: 'auto',
-      overflowX: 'hidden'
+      overflowX: 'hidden',
+      boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
     },
-    verticalButton: {
-      border: '2px #dfdfdf solid !important',
-      borderRadius: '50%',
+    iconBtn: {
+      display: 'flex',
+      justifyContent: 'flex-end',
       opacity: '0',
-      '& > div': {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }
+      transition: 'all 200ms ease-out'
     },
     listRow: {
       margin: '0 -30px !important',
@@ -89,12 +56,18 @@ const enhance = compose(
       padding: '0 30px',
       '&:hover > div:last-child > div ': {
         opacity: '1'
+      },
+      '& > div': {
+        overflow: 'hidden',
+        wordBreak: 'normal',
+        textOverflow: 'ellipsis',
+        '&:last-child': {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }
+
       }
-    },
-    iconBtn: {
-      display: 'flex',
-      opacity: '0',
-      transition: 'all 200ms ease-out'
     }
   })
 )
@@ -107,12 +80,13 @@ const iconStyle = {
   },
   button: {
     width: 30,
-    height: 25,
+    height: 30,
     padding: 0
   }
 }
+const findItem = (item) => _.find(APPLICANT_STATUS, {value: _.get(item, 'status')})
 
-const PostGridList = enhance((props) => {
+const ApplicantGridList = enhance((props) => {
   const {
     filter,
     createDialog,
@@ -122,21 +96,54 @@ const PostGridList = enhance((props) => {
     detailData,
     classes
   } = props
+  const listHeader = [
+    {
+      sorting: false,
+      name: 'name',
+      title: 'ФИО',
+      xs: 3
+    },
+    {
+      sorting: false,
+      name: 'resume_num',
+      title: t('Кол-во резюме'),
+      xs: 2
+    },
+    {
+      sorting: false,
+      name: 'modified_date',
+      title: t('Дата обновления'),
+      xs: 3
+    },
+    {
+      sorting: false,
+      name: 'created_date',
+      title: t('Дата создания'),
+      xs: 2
+    },
+    {
+      sorting: false,
+      name: 'balance',
+      title: t('Балансе'),
+      xs: 2
+    }
+  ]
 
-  const postDetail = (
-    <span>a</span>
-  )
-
-  const postList = _.map(_.get(listData, 'data'), (item) => {
+  const applicantList = _.map(_.get(listData, 'data'), (item) => {
     const id = _.get(item, 'id')
-    const name = _.get(item, 'name')
-    const createdDate = dateFormat(_.get(item, 'createdAt'))
+    const status = fp.flow(findItem, fp.get('name'))
+    const username = _.get(item, 'email')
+    const phone = _.get(item, 'phoneNumber')
+    const firstName = _.get(item, 'firstNameRu') || _.get(item, 'firstNameEn')
+    const lastName = _.get(item, 'lastNameRu') || _.get(item, 'lastNameEn')
+    const permissions = _.get(item, ['groups', '0', 'name'])
     return (
       <Row key={id} className={classes.listRow}>
-        <Col xs={2}>{id}</Col>
-        <Col xs={6}>{name}</Col>
-        <Col xs={3}>{createdDate}</Col>
-        <Col xs={1} style={{textAlign: 'right'}}>
+        <Col xs={3}>{id}</Col>
+        <Col xs={2}>{`${firstName} ${lastName}`}</Col>
+        <Col xs={3}>{username}</Col>
+        <Col xs={2} style={{textAlign: 'right'}}>{phone}</Col>
+        <Col xs={2}>{permissions}
           <div className={classes.iconBtn}>
             <ToolTip position="bottom" text={t('Изменить')}>
               <IconButton
@@ -148,25 +155,16 @@ const PostGridList = enhance((props) => {
                 <Edit />
               </IconButton>
             </ToolTip>
-            <ToolTip position="bottom" text={t('Удалить')}>
-              <IconButton
-                disableTouchRipple={true}
-                iconStyle={iconStyle.icon}
-                style={iconStyle.button}
-                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
-                touch={true}>
-                <DeleteIcon />
-              </IconButton>
-            </ToolTip>
           </div>
         </Col>
+
       </Row>
     )
   })
 
   const list = {
     header: listHeader,
-    list: postList,
+    list: applicantList,
     loading: _.get(listData, 'listLoading')
   }
 
@@ -174,48 +172,59 @@ const PostGridList = enhance((props) => {
     <div className={classes.addButtonWrapper}>
       <FlatButton
         backgroundColor="#fff"
-        labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
+        labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
-        label={t('добавить должность')}
+        label={t('добавить соискателя')}
         onTouchTap={createDialog.onOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>
   )
+
+  const currentDetail = _.find(_.get(listData, 'data'), {'id': _.toInteger(_.get(detailData, 'id'))})
+  const currentName = `${_.get(currentDetail, 'firstName')} ${_.get(currentDetail, 'lastName')}`
   return (
     <Container>
       <div className={classes.wrapper}>
-        <SettingSideMenu currentUrl={ROUTES.POST_LIST_URL}/>
+        <SubMenu url={ROUTES.APPLICANT_LIST_URL}/>
         <div className={classes.rightPanel}>
           <GridList
             filter={filter}
             list={list}
-            detail={postDetail}
-            addButton={addButton}
             listShadow={false}
+            detail={<span/>}
+            actionsDialog={<span/>}
+            addButton={addButton}
           />
         </div>
       </div>
 
-      <PostCreateDialog
+      {createDialog.openCreateDialog &&
+      <ApplicantCreateDialog
+        detailData={_.get(detailData, 'data')}
+        initialValues={updateDialog.initialValues}
         open={createDialog.openCreateDialog}
         loading={createDialog.createLoading}
         onClose={createDialog.onCloseCreateDialog}
         onSubmit={createDialog.onSubmitCreateDialog}
-      />
+        errorData={createDialog.errorData}
+      />}
 
-      <PostCreateDialog
-        isUpdate={true}
+      {updateDialog.openUpdateDialog &&
+      <ApplicantCreateDialog
+        detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
+        isUpdate={true}
         open={updateDialog.openUpdateDialog}
         loading={updateDialog.updateLoading}
         onClose={updateDialog.handleCloseUpdateDialog}
         onSubmit={updateDialog.handleSubmitUpdateDialog}
-      />
+        errorData={updateDialog.errorData}
+      />}
 
       {detailData.data && <ConfirmDialog
         type="delete"
-        message={_.get(detailData, ['data', 'name'])}
+        message={currentName}
         loading={confirmDialog.confirmLoading}
         onClose={confirmDialog.handleCloseConfirmDialog}
         onSubmit={confirmDialog.handleSendConfirmDialog}
@@ -225,16 +234,16 @@ const PostGridList = enhance((props) => {
   )
 })
 
-PostGridList.propTypes = {
+ApplicantGridList.propTypes = {
   filter: PropTypes.object.isRequired,
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
     createLoading: PropTypes.bool.isRequired,
     openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
+    onOpenCreateDialog: PropTypes.func.isRequired,
+    onCloseCreateDialog: PropTypes.func.isRequired,
+    onSubmitCreateDialog: PropTypes.func.isRequired
   }).isRequired,
   confirmDialog: PropTypes.shape({
     confirmLoading: PropTypes.bool.isRequired,
@@ -249,7 +258,15 @@ PostGridList.propTypes = {
     handleOpenUpdateDialog: PropTypes.func.isRequired,
     handleCloseUpdateDialog: PropTypes.func.isRequired,
     handleSubmitUpdateDialog: PropTypes.func.isRequired
+  }).isRequired,
+  filterDialog: PropTypes.shape({
+    initialValues: PropTypes.object,
+    filterLoading: PropTypes.bool,
+    openFilterDialog: PropTypes.bool.isRequired,
+    handleOpenFilterDialog: PropTypes.func.isRequired,
+    handleCloseFilterDialog: PropTypes.func.isRequired,
+    handleSubmitFilterDialog: PropTypes.func.isRequired
   }).isRequired
 }
 
-export default PostGridList
+export default ApplicantGridList

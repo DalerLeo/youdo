@@ -30,6 +30,11 @@ export const COMPANIES_LIST_URL = `/${COMPANIES}`
 export const COMPANIES_ITEM_URL = `/${COMPANIES}/:companyId`
 export const COMPANIES_ITEM_PATH = `${COMPANIES}/%d`
 
+export const COMPANY_TYPE = 'company-type'
+export const COMPANY_TYPE_LIST_URL = `/${COMPANY_TYPE}`
+export const COMPANY_TYPE_ITEM_URL = `/${COMPANY_TYPE}/:companyTypeId`
+export const COMPANY_TYPE_ITEM_PATH = `${COMPANY_TYPE}/%d`
+
 export const SKILLS = 'skills'
 export const SKILLS_LIST_URL = `/${SKILLS}`
 export const SKILLS_ITEM_URL = `/${SKILLS}/:skillsId`
@@ -55,10 +60,6 @@ export const LANGUAGES_LIST_URL = `/${SKILLS}`
 export const LANGUAGES_ITEM_URL = `/${SKILLS}/:languagesId`
 export const LANGUAGES_ITEM_PATH = `/${SKILLS}/%d`
 
-/*
-*
-*/
-
 export const HR = 'hr'
 export const HR_URL = `/${HR}`
 export const HR_APPLICATION = `${HR_URL}/application`
@@ -70,3 +71,9 @@ export const HR_RESUME = `${HR_URL}/resume`
 export const HR_RESUME_LIST_URL = `${HR_RESUME}`
 export const HR_RESUME_ITEM_URL = `${HR_RESUME}/:resumeId`
 export const HR_RESUME_ITEM_PATH = `${HR_RESUME}/%d`
+
+export const APPLICANT = 'applicant'
+export const APPLICANT_LIST_URL = `/${APPLICANT}`
+export const APPLICANT_ITEM_URL = `/${APPLICANT}/:id`
+export const APPLICANT_ITEM_PATH = `/${APPLICANT}/%d`
+

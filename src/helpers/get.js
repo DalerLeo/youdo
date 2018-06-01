@@ -1,4 +1,4 @@
-import {get, curry} from 'lodash/fp'
+import {get, curry, curryRight} from 'lodash/fp'
 
 export const getStoreListData = curry((name, state) => get([name, 'list', 'data'], state))
 export const getStoreItemData = curry((name, state) => get([name, 'item', 'data'], state))
@@ -8,6 +8,6 @@ export const getDataFromState = curry((name, state) => ({
   data: get([name, 'data'], state)
 }))
 
-export const compareFilterByProps = (props, nextProps, except = {}) => {
+export const compareFilterByProps = curryRight((props, nextProps, except) => {
   return props.filter.filterRequest(except) === nextProps.filter.filterRequest(except)
-}
+})

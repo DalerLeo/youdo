@@ -6,11 +6,11 @@ import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout/index'
-import {compose, withHandlers, mapPropsStream, pure} from 'recompose'
+import {compose, withHandlers, pure} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
-import filterHelper from '../../../helpers/filter'
-import {compareFilterByProps} from '../../../helpers/get'
+import {createWrapper, listWrapper, detailWrapper} from '../../Wrappers'
 import toBoolean from '../../../helpers/toBoolean'
+import formValidate from '../../../helpers/formValidate'
 import {
   POST_CREATE_DIALOG_OPEN,
   POST_UPDATE_DIALOG_OPEN,
@@ -36,47 +36,18 @@ const mapDispatchToProps = {
 }
 
 const mapStateToProps = (state, props) => {
-  const query = _.get(props, ['location', 'query'])
-  const pathname = _.get(props, ['location', 'pathname'])
-  const detail = _.get(state, ['post', 'item', 'data'])
-  const detailLoading = _.get(state, ['post', 'item', 'loading'])
   const createLoading = _.get(state, ['post', 'create', 'loading'])
   const updateLoading = _.get(state, ['post', 'update', 'loading'])
-  const list = _.get(state, ['post', 'list', 'data'])
-  const listLoading = _.get(state, ['post', 'list', 'loading'])
-  const createForm = _.get(state, ['form', 'PostCreateForm'])
-  const filter = filterHelper(list, pathname, query)
   return {
-    list,
-    listLoading,
-    detail,
-    detailLoading,
     createLoading,
-    updateLoading,
-    filter,
-    createForm
+    updateLoading
   }
 }
 const enhance = compose(
+  listWrapper({listFetchAction: postListFetchAction, storeName: 'post'}),
+  detailWrapper({itemFetchAction: postItemFetchAction, storeName: 'post', paramName: 'postId'}),
+  createWrapper(postCreateAction, POST_CREATE_DIALOG_OPEN, 'PostCreateForm'),
   connect(mapStateToProps, mapDispatchToProps),
-
-  mapPropsStream((props$) => {
-    // GET LIST
-    props$
-      .distinctUntilChanged(compareFilterByProps)
-      .subscribe(({filter, ...props}) => props.postListFetchAction(filter))
-
-    // GET DETAIL
-    props$
-      .filter(fp.get('params.postId'))
-      .distinctUntilChanged(null, fp.get('params.postId'))
-      .subscribe(props => {
-        const postId = fp.flow(fp.get('params.postId'), fp.toInteger)(props)
-        props.postItemFetchAction(postId)
-      })
-
-    return props$
-  }),
 
   withHandlers({
     handleActionEdit: props => () => {
@@ -129,6 +100,10 @@ const enhance = compose(
         .then(() => {
           hashHistory.push({pathname, query: filter.getParams({[POST_CREATE_DIALOG_OPEN]: false})})
           dispatch(postListFetchAction(filter))
+        })
+        .catch(errore => {
+          formValidate(['name'], dispatch, errore)
+          //throw new SubmissionError({_error: 'General Error', name: 'Error Name'})
         })
     },
 
@@ -187,7 +162,8 @@ const PostList = enhance((props) => {
     openCreateDialog,
     handleOpenCreateDialog: props.handleOpenCreateDialog,
     handleCloseCreateDialog: props.handleCloseCreateDialog,
-    handleSubmitCreateDialog: props.handleSubmitCreateDialog
+    handleSubmitCreateDialog: props.handleSubmitCreateDialog,
+    ...props.createDialog
   }
 
   const confirmDialog = {
