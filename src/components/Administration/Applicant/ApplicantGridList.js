@@ -2,12 +2,10 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../../constants/routes'
 import GridList from '../../GridList/index'
 import Container from '../../Container/index'
@@ -15,10 +13,16 @@ import ApplicantCreateDialog from './ApplicantCreateDialog'
 import ApplicationTabs from './ApplicantTabs'
 import ConfirmDialog from '../../ConfirmDialog/index'
 import SubMenu from '../../SubMenu'
-import ToolTip from '../../ToolTip/index'
 import t from '../../../helpers/translate'
 import dateFormat from '../../../helpers/dateFormat'
-import {APPLICANT_STATUS} from '../../../constants/backendConstants'
+// .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
+import IconButton from 'material-ui/IconButton'
+import IconMenu from 'material-ui/IconMenu'
+import MenuItem from 'material-ui/MenuItem'
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
+import DoneIcon from 'material-ui/svg-icons/action/done'
+import BlockIcon from 'material-ui/svg-icons/content/block'
+import EditIcon from 'material-ui/svg-icons/content/create'
 
 const enhance = compose(
   injectSheet({
@@ -47,16 +51,12 @@ const enhance = compose(
     iconBtn: {
       display: 'flex',
       justifyContent: 'flex-end',
-      opacity: '0',
       transition: 'all 200ms ease-out'
     },
     listRow: {
       margin: '0 -30px !important',
       width: 'auto !important',
       padding: '0 30px',
-      '&:hover > div:last-child > div ': {
-        opacity: '1'
-      },
       '& > div': {
         overflow: 'hidden',
         wordBreak: 'normal',
@@ -71,19 +71,6 @@ const enhance = compose(
     }
   })
 )
-
-const iconStyle = {
-  icon: {
-    color: '#666',
-    width: 22,
-    height: 22
-  },
-  button: {
-    width: 30,
-    height: 30,
-    padding: 0
-  }
-}
 
 const ApplicantGridList = enhance((props) => {
   const {
@@ -156,16 +143,24 @@ const ApplicantGridList = enhance((props) => {
         <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
         <Col xs={2}>{balance}
           <div className={classes.iconBtn}>
-            <ToolTip position="bottom" text={t('Изменить')}>
-              <IconButton
-                iconStyle={iconStyle.icon}
-                style={iconStyle.button}
-                disableTouchRipple={true}
-                touch={true}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-                <Edit />
-              </IconButton>
-            </ToolTip>
+            <IconMenu
+              menuItemStyle={{fontSize: '13px'}}
+              className={classes.iconBtn}
+              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
+              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+              targetOrigin={{horizontal: 'right', vertical: 'top'}}
+            >
+              <MenuItem
+                primaryText={t('изменить')}
+                leftIcon={<EditIcon/>}
+                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}/>
+              <MenuItem
+                primaryText={t('одобрить')}
+                leftIcon={<DoneIcon/>}/>
+              <MenuItem
+                primaryText={t('заблокировать')}
+                leftIcon={<BlockIcon/>}/>
+            </IconMenu>
           </div>
         </Col>
 
