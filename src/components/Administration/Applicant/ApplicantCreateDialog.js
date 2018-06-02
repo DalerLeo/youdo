@@ -22,7 +22,6 @@ import {
   UniversalSearchField,
   StaticUniversalSearchField
 } from '../../ReduxForm/index'
-import formValidate from '../../../helpers/formValidate'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const enhance = compose(
@@ -187,7 +186,6 @@ const ApplicantCreateDialog = enhance((props) => {
   const {
     open,
     loading,
-    dispatch,
     handleSubmit,
     onClose,
     classes,
@@ -209,10 +207,7 @@ const ApplicantCreateDialog = enhance((props) => {
     'lang',
     'status'
   ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
     <Dialog
       modal={true}

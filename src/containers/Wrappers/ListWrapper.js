@@ -12,7 +12,7 @@ export default params => {
   } = params
 
   const mapStateToProps = (state, props) => {
-    const list = _.get(state, [storeName, 'list', 'data'])
+    const list = _.get(state, [storeName, 'list', 'data', 'results'])
     const listLoading = _.get(state, [storeName, 'list', 'loading'])
     const query = _.get(props, ['location', 'query'])
     const pathname = _.get(props, ['location', 'pathname'])
@@ -22,7 +22,6 @@ export default params => {
       list,
       listLoading,
       filter
-
     }
   }
   return compose(

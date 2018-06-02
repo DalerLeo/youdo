@@ -12,7 +12,6 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../../Styles/MainStyles'
 import t from '../../../helpers/translate'
-import formValidate from '../../../helpers/formValidate'
 
 export const POST_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -36,12 +35,9 @@ const enhance = compose(
 )
 
 const PostCreateDialog = enhance((props) => {
-  const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
+  const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
   const formNames = ['name', 'beginTime', 'endTime']
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
 
   return (
     <Dialog

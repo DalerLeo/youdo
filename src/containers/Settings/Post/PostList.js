@@ -2,14 +2,12 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {connect} from 'react-redux'
-import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout/index'
 import {compose, withHandlers, pure} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
 import {createWrapper, listWrapper, detailWrapper} from '../../Wrappers'
 import toBoolean from '../../../helpers/toBoolean'
-import formValidate from '../../../helpers/formValidate'
 import {
   POST_CREATE_DIALOG_OPEN,
   POST_UPDATE_DIALOG_OPEN,
@@ -27,11 +25,8 @@ import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
 const mapDispatchToProps = {
-  postCreateAction,
   postUpdateAction,
-  postListFetchAction,
-  postDeleteAction,
-  postItemFetchAction
+  postDeleteAction
 }
 
 const mapStateToProps = (state, props) => {
@@ -49,13 +44,9 @@ const enhance = compose(
   connect(mapStateToProps, mapDispatchToProps),
 
   withHandlers({
-    handleActionEdit: props => () => {
-      return null
-    },
-
     handleOpenConfirmDialog: props => (id) => {
       const {filter} = props
-      hashHistory.push({
+      hashHistory.replace({
         pathname: sprintf(ROUTER.POST_ITEM_PATH, id),
         query: filter.getParams({[POST_DELETE_DIALOG_OPEN]: true})
       })
@@ -63,52 +54,23 @@ const enhance = compose(
 
     handleCloseConfirmDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[POST_DELETE_DIALOG_OPEN]: false})})
+      hashHistory.replace({pathname, query: filter.getParams({[POST_DELETE_DIALOG_OPEN]: false})})
     },
     handleSendConfirmDialog: props => () => {
       const {dispatch, detail, filter, location: {pathname}} = props
       dispatch(postDeleteAction(detail.id))
         .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[POST_DELETE_DIALOG_OPEN]: false})})
-          dispatch(postListFetchAction(filter))
+          hashHistory.replace({pathname, query: filter.getParams({[POST_DELETE_DIALOG_OPEN]: false})})
+          props.listFetchAction(filter)
           return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
         })
         .catch(() => {
           return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
         })
     },
-
-    handleOpenCreateDialog: props => () => {
-      const {dispatch, location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[POST_CREATE_DIALOG_OPEN]: true})})
-      dispatch(reset('PostCreateForm'))
-    },
-
-    handleCloseCreateDialog: props => () => {
-      const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[POST_CREATE_DIALOG_OPEN]: false})})
-    },
-
-    handleSubmitCreateDialog: props => () => {
-      const {dispatch, createForm, filter, location: {pathname}} = props
-
-      return dispatch(postCreateAction(_.get(createForm, ['values'])))
-        .then(() => {
-          return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-        })
-        .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[POST_CREATE_DIALOG_OPEN]: false})})
-          dispatch(postListFetchAction(filter))
-        })
-        .catch(errore => {
-          formValidate(['name'], dispatch, errore)
-          // Throw new SubmissionError({_error: 'General Error', name: 'Error Name'})
-        })
-    },
-
     handleOpenUpdateDialog: props => (id) => {
       const {filter} = props
-      hashHistory.push({
+      hashHistory.replace({
         pathname: sprintf(ROUTER.POST_ITEM_PATH, id),
         query: filter.getParams({[POST_UPDATE_DIALOG_OPEN]: true})
       })
@@ -116,7 +78,7 @@ const enhance = compose(
 
     handleCloseUpdateDialog: props => () => {
       const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[POST_UPDATE_DIALOG_OPEN]: false})})
+      hashHistory.replace({pathname, query: filter.getParams({[POST_UPDATE_DIALOG_OPEN]: false})})
     },
 
     handleSubmitUpdateDialog: props => () => {
@@ -124,12 +86,10 @@ const enhance = compose(
       const postId = _.toInteger(_.get(props, ['params', 'postId']))
 
       return dispatch(postUpdateAction(postId, _.get(createForm, ['values'])))
+        .then(() => props.openSnackbarAction({message: t('Успешно сохранено')}))
         .then(() => {
-          return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-        })
-        .then(() => {
-          hashHistory.push(filter.createURL({[POST_UPDATE_DIALOG_OPEN]: false}))
-          dispatch(postListFetchAction(filter))
+          hashHistory.replace(filter.createURL({[POST_UPDATE_DIALOG_OPEN]: false}))
+          props.listFetchAction(filter)
         })
     }
   }),
@@ -159,9 +119,6 @@ const PostList = enhance((props) => {
   const createDialog = {
     createLoading,
     openCreateDialog,
-    handleOpenCreateDialog: props.handleOpenCreateDialog,
-    handleCloseCreateDialog: props.handleCloseCreateDialog,
-    handleSubmitCreateDialog: props.handleSubmitCreateDialog,
     ...props.createDialog
   }
 
@@ -190,7 +147,7 @@ const PostList = enhance((props) => {
   }
 
   const listData = {
-    data: _.get(list, 'results'),
+    data: list,
     listLoading
   }
 

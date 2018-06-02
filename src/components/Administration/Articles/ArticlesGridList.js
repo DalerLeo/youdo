@@ -67,13 +67,6 @@ const enhance = compose(
       alignItems: 'center',
       marginLeft: '-18px'
     },
-    rightPanel: {
-      background: COLOR_WHITE,
-      width: '100%',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
-    },
     listRow: {
       margin: '0 -30px !important',
       width: 'auto !important',
@@ -205,16 +198,13 @@ const ArticlesGridList = enhance((props) => {
     <Container>
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.ARTICLES_LIST_URL}/>
-        <div className={classes.rightPanel}>
-          <GridList
-            filter={filter}
-            list={list}
-            detail={articlesDetail}
-            addButton={addButton}
-            listShadow={false}
-            detailTransform={false}
-          />
-        </div>
+        <GridList
+          filter={filter}
+          list={list}
+          detail={articlesDetail}
+          addButton={addButton}
+          detailTransform={false}
+        />
       </div>
 
       <ArticlesCreateDialog

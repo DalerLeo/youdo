@@ -232,9 +232,9 @@ PostGridList.propTypes = {
   createDialog: PropTypes.shape({
     createLoading: PropTypes.bool.isRequired,
     openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
+    onOpenCreateDialog: PropTypes.func.isRequired,
+    onCloseCreateDialog: PropTypes.func.isRequired,
+    onSubmitCreateDialog: PropTypes.func.isRequired
   }).isRequired,
   confirmDialog: PropTypes.shape({
     confirmLoading: PropTypes.bool.isRequired,

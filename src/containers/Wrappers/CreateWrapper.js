@@ -5,9 +5,16 @@ import {connect} from 'react-redux'
 import _ from 'lodash'
 import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
-import formValidate from '../../helpers/formValidate'
+import {formInlineValidate} from '../../helpers/formValidate'
 
-const createWrapper = (createAction, queryKey, formName) => {
+const createWrapper = params => {
+  const {
+    createAction,
+    queryKey,
+    formName,
+    thenActionKey
+  } = params
+
   return compose(
     connect((state) => {
       return {
@@ -16,6 +23,7 @@ const createWrapper = (createAction, queryKey, formName) => {
       }
     },
     {createAction, openSnackbarAction}),
+
     mapPropsStream(props$ => {
       const {handler: onOpenCreateDialog, stream: onOpenCreateDialog$} = createEventHandler()
       const {handler: onCloseCreateDialog, stream: onCloseCreateDialog$} = createEventHandler()
@@ -23,7 +31,7 @@ const createWrapper = (createAction, queryKey, formName) => {
 
       onOpenCreateDialog$
         .withLatestFrom(props$)
-        .subscribe(([, {filter, location, ...props}, ...def]) => {
+        .subscribe(([, {filter, location, ...props}]) => {
           replaceUrl(filter, location.pathname, {[queryKey]: true})
           props.dispatch(reset(formName))
         })
@@ -42,9 +50,10 @@ const createWrapper = (createAction, queryKey, formName) => {
             .then(() => {
               replaceUrl(filter, location.pathname, {[queryKey]: false})
               props.listFetchAction(filter)
+              thenActionKey && replaceUrl(filter, location.pathname, {[thenActionKey]: true})
             })
             .catch(error => {
-              formValidate(fieldNames, props.dispatch, error)
+              formInlineValidate(fieldNames, props.dispatch, error, formName)
             })
         })
 

@@ -23,6 +23,40 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
 import DoneIcon from 'material-ui/svg-icons/action/done'
 import BlockIcon from 'material-ui/svg-icons/content/block'
 import EditIcon from 'material-ui/svg-icons/content/create'
+import ApplicantMailDialog from './ApplicantMailDialog'
+
+const listHeader = [
+  {
+    sorting: false,
+    name: 'name',
+    title: 'ФИО',
+    xs: 3
+  },
+  {
+    sorting: false,
+    name: 'resume_num',
+    title: t('Кол-во резюме'),
+    xs: 2
+  },
+  {
+    sorting: false,
+    name: 'modified_date',
+    title: t('Дата обновления'),
+    xs: 3
+  },
+  {
+    sorting: false,
+    name: 'created_date',
+    title: t('Дата создания'),
+    xs: 2
+  },
+  {
+    sorting: false,
+    name: 'balance',
+    title: t('Балансе'),
+    xs: 2
+  }
+]
 
 const enhance = compose(
   injectSheet({
@@ -80,40 +114,9 @@ const ApplicantGridList = enhance((props) => {
     confirmDialog,
     listData,
     detailData,
+    confirmMailDialog,
     classes
   } = props
-  const listHeader = [
-    {
-      sorting: false,
-      name: 'name',
-      title: 'ФИО',
-      xs: 3
-    },
-    {
-      sorting: false,
-      name: 'resume_num',
-      title: t('Кол-во резюме'),
-      xs: 2
-    },
-    {
-      sorting: false,
-      name: 'modified_date',
-      title: t('Дата обновления'),
-      xs: 3
-    },
-    {
-      sorting: false,
-      name: 'created_date',
-      title: t('Дата создания'),
-      xs: 2
-    },
-    {
-      sorting: false,
-      name: 'balance',
-      title: t('Балансе'),
-      xs: 2
-    }
-  ]
 
   const fakeData = [
     {
@@ -206,6 +209,7 @@ const ApplicantGridList = enhance((props) => {
 
       {createDialog.openCreateDialog &&
       <ApplicantCreateDialog
+        onOpenMailDialog={confirmDialog.handleOpenConfirmDialog}
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
         open={createDialog.openCreateDialog}
@@ -235,6 +239,13 @@ const ApplicantGridList = enhance((props) => {
         onSubmit={confirmDialog.handleSendConfirmDialog}
         open={confirmDialog.openConfirmDialog}
       />}
+
+      <ApplicantMailDialog
+        loading={confirmDialog.confirmLoading}
+        onClose={confirmMailDialog.handleClose}
+        onSubmit={confirmDialog.handleSendConfirmDialog}
+        open={confirmMailDialog.open}
+      />
     </Container>
   )
 })

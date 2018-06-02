@@ -16,6 +16,7 @@ import {
   APPLICANT_DELETE_DIALOG_OPEN,
   APPLICANT_FILTER_KEY,
   APPLICANT_FILTER_OPEN,
+  APPLICANT_MAIL_DIALOG_OPEN,
   ApplicantGridList
 } from '../../../components/Administration/Applicant'
 import {
@@ -49,7 +50,12 @@ const mapStateToProps = (state, props) => {
 const enhance = compose(
   listWrapper({listFetchAction: applicantListFetchAction, storeName: 'application'}),
   detailWrapper({itemFetchAction: applicantItemFetchAction, storeName: 'application'}),
-  createWrapper(applicantCreateAction, APPLICANT_CREATE_DIALOG_OPEN, 'ApplicantCreateForm'),
+  createWrapper({
+    createAction: applicantCreateAction,
+    queryKey: APPLICANT_CREATE_DIALOG_OPEN,
+    formName: 'ApplicantCreateForm',
+    thenActionKey: APPLICANT_MAIL_DIALOG_OPEN
+  }),
   connect(mapStateToProps, mapDispatchToProps),
 
   withHandlers({
@@ -85,7 +91,10 @@ const enhance = compose(
       const {location: {pathname}, filter} = props
       hashHistory.push({pathname, query: filter.getParams({[APPLICANT_FILTER_OPEN]: false})})
     },
-
+    handleCloseMailDialog: props => () => {
+      const {location: {pathname}, filter} = props
+      hashHistory.push({pathname, query: filter.getParams({[APPLICANT_MAIL_DIALOG_OPEN]: false})})
+    },
     handleClearFilterDialog: props => () => {
       const {location: {pathname}} = props
       hashHistory.push({pathname, query: {}})
@@ -188,6 +197,7 @@ const ApplicantList = enhance((props) => {
   const openCreateDialog = toBoolean(_.get(location, ['query', APPLICANT_CREATE_DIALOG_OPEN]))
   const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICANT_UPDATE_DIALOG_OPEN]))
   const openConfirmDialog = toBoolean(_.get(location, ['query', APPLICANT_DELETE_DIALOG_OPEN]))
+  const openConfirmMailDialog = toBoolean(_.get(location, ['query', APPLICANT_MAIL_DIALOG_OPEN]))
 
   const manufacture = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.MANUFACTURE))
   const group = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.GROUP))
@@ -254,6 +264,10 @@ const ApplicantList = enhance((props) => {
     handleSubmitFilterDialog: props.handleSubmitFilterDialog
   }
 
+  const confirmMailDialog = {
+    open: openConfirmMailDialog,
+    handleClose: props.handleCloseMailDialog
+  }
   const listData = {
     data: _.get(list, 'results'),
     listLoading
@@ -275,6 +289,7 @@ const ApplicantList = enhance((props) => {
         updateDialog={updateDialog}
         actionsDialog={actionsDialog}
         filterDialog={filterDialog}
+        confirmMailDialog={confirmMailDialog }
       />
     </Layout>
   )
