@@ -196,7 +196,7 @@ const ApplicantCreateDialog = enhance((props) => {
     'firstName',
     'lastName',
     'address',
-    'countryCode',
+    'phone',
     'phoneNumber',
     'photo',
     'email',
@@ -251,7 +251,7 @@ const ApplicantCreateDialog = enhance((props) => {
                   fullWidth={true}/>
                 <div className={classes.phoneField}>
                   <Field
-                    name="countyCode"
+                    name="phoneCode"
                     component={UniversalSearchField}
                     itemPath={COUNTRY_ITEM}
                     listPath={COUNTRY_LIST}

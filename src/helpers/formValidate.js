@@ -14,7 +14,7 @@ export const formInlineValidate = (fieldNames, dispatch, error, formName) => {
     })
     .value(), true)
   if (bigError) {
-    return dispatch(openErrorAction({
+    dispatch(openErrorAction({
       message: error
     }))
   }

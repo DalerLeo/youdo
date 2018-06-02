@@ -102,8 +102,8 @@ export const USERS_STATUS = [
 
 export const APPLICANT_STATUS = [
   {id: 'no', name: t('Не указан')},
-  {id: 'active', name: t('Активный')},
-  {id: 'banned', name: t('Заблокированный')}
+  {id: 'Active', name: t('Активный')},
+  {id: 'Banned', name: t('Заблокированный')}
 ]
 
 export const PROFILE_LANG = [

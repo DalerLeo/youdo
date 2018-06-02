@@ -11,7 +11,9 @@ import GridList from '../../GridList/index'
 import Container from '../../Container/index'
 import ApplicantCreateDialog from './ApplicantCreateDialog'
 import ApplicationTabs from './ApplicantTabs'
+import ApplicantDetails from './ApplicantDetails'
 import ConfirmDialog from '../../ConfirmDialog/index'
+import ToolTip from '../../ToolTip'
 import SubMenu from '../../SubMenu'
 import t from '../../../helpers/translate'
 import dateFormat from '../../../helpers/dateFormat'
@@ -118,14 +120,54 @@ const ApplicantGridList = enhance((props) => {
     classes
   } = props
 
+  const actionButtons = (id) => {
+    return (
+      <div className={classes.actionButtons}>
+        <ToolTip position="bottom" text={t('Изменить')}>
+          <IconButton
+            disableTouchRipple={true}
+            touch={true}
+            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+            <EditIcon />
+          </IconButton>
+        </ToolTip>
+        <ToolTip position="bottom" text={t('Удалить')}>
+          <IconButton
+            disableTouchRipple={true}
+            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+            touch={true}>
+            <EditIcon />
+          </IconButton>
+        </ToolTip>
+      </div>
+    )
+  }
+  const detail = (
+    <ApplicantDetails
+      filter={filter}
+      key={1}
+      actionButtons={actionButtons}
+    />
+  )
+
   const fakeData = [
     {
+      id: '1',
       firstName: 'firstName',
       lastName: 'lastName',
       resumeNum: '6',
       modifiedAt: '2018-12-11',
       createdAt: '2018-11-10',
       balance: '1000'
+    },
+    {
+      id: '2',
+      firstName: 'first Name',
+      lastName: 'last Name',
+      resumeNum: '2',
+      modifiedAt: '2018-11-10',
+      createdAt: '2018-10-12',
+      balance: '100'
     }
   ]
   const applicantList = _.map(fakeData, (item, index) => {
@@ -139,7 +181,7 @@ const ApplicantGridList = enhance((props) => {
     const balance = _.get(item, 'balance')
     const name = firstName + ' ' + lastName
     return (
-      <Row key={index} className={classes.listRow}>
+      <Row key={id} className={classes.listRow}>
         <Col xs={3}>{name}</Col>
         <Col xs={2}>{resumeNum}</Col>
         <Col xs={3}>{modifiedDate}</Col>
@@ -201,7 +243,7 @@ const ApplicantGridList = enhance((props) => {
           filter={filter}
           list={list}
           //          ListShadow={false}
-          detail={<span/>}
+          detail={detail}
           actionsDialog={<span/>}
           addButton={addButton}
         />

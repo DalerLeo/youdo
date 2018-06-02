@@ -147,7 +147,7 @@ export const COMPANY_TYPE_UPDATE = `/${COMPANY_TYPE}/%d`
 export const COMPANY_TYPE_CREATE = `/${COMPANY_TYPE}/`
 export const COMPANY_TYPE_DELETE = `/${COMPANY_TYPE}/%d`
 
-export const APPLICANT = 'main/applicant'
+export const APPLICANT = 'specialists/specialists'
 export const APPLICANT_CREATE = `/${APPLICANT}/`
 export const APPLICANT_LIST = `/${APPLICANT}/`
 export const APPLICANT_ITEM = `/${APPLICANT}/%d/`

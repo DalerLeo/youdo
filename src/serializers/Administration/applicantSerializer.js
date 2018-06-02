@@ -3,21 +3,22 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
   const email = _.get(data, 'email')
-  const firstName = _.get(data, 'firstNameRu')
-  const lastName = _.get(data, 'lastNameRu')
-  const status = _.get(data, 'status')
-  const martialStatus = _.get(data, 'martialStatus')
-  const sphere = _.get(data, 'sphere')
+  const firstName = _.get(data, 'firstName')
+  const lastName = _.get(data, 'lastName')
+  const status = _.get(data, ['status', 'value'])
+  const martialStatus = _.get(data, ['martialStatus', 'value'])
+  const sphere = _.get(data, ['sphere', 'value'])
   const birthDate = _.get(data, 'birthDate')
   const address = _.get(data, 'address')
   const phoneNumber = _.get(data, 'phoneNumber')
-  const gender = _.get(data, 'gender')
-  const lang = _.get(data, 'lang')
+  const gender = _.get(data, ['gender', 'value'])
+  const lang = _.get(data, ['lang', 'value'])
+  const phoneCode = _.get(data, ['phoneCode', 'value'])
   const photo = _.isObject(_.get(data, 'photo')) ? _.get(data, ['photo', 'id']) : _.get(data, 'photo')
-  const groups = [_.get(data, ['role', 'value'])]
+  const groups = _.get(data, ['role', 'value']) && [_.get(data, ['role', 'value'])]
   const position = _.get(data, ['position', 'value'])
   return {
-    email,
+    user: email,
     'phone_number': phoneNumber,
     groups,
     position,
@@ -26,7 +27,7 @@ export const createSerializer = (data) => {
     'first_name': firstName,
     'last_name': lastName,
     address,
-    'country_code': 'countryCode',
+    'phone_code': phoneCode,
     sphere,
     'martial_status': martialStatus,
     'birth_date': birthDate,
