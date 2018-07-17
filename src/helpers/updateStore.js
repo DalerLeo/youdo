@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-const updateStore = (id, list, action, values, innerObj = 'results') => {
+export const updateStore = (id, list, action, values, innerObj = 'results') => {
   const newList = _.map(_.get(list, innerObj), (item) => {
     if (item.id === id) {
       _.merge(item, values)
@@ -18,4 +18,14 @@ const updateStore = (id, list, action, values, innerObj = 'results') => {
   }
 }
 
-export default updateStore
+export const updateDetailStore = (action, values) => {
+  const getNewData = () => {
+    return Promise.resolve(values)
+  }
+  console.warn('getNew DAa', getNewData())
+  return {
+    type: action,
+    payload: getNewData()
+  }
+}
+

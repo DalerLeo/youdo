@@ -6,22 +6,22 @@ import {Row, Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
-import Loader from '../../Loader/index'
-import {COUNTRY_LIST, COUNTRY_ITEM} from '../../../constants/api'
-import {APPLICANT_STATUS, PROFILE_LANG} from '../../../constants/backendConstants'
+import Loader from '../Loader'
+import {COUNTRY_LIST, COUNTRY_ITEM} from '../../constants/api'
+import {APPLICANT_STATUS, PROFILE_LANG, ACTIVITY_STATUS} from '../../constants/backendConstants'
 import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import t from '../../../helpers/translate'
+import t from '../../helpers/translate'
 import {
-  TextField,
+  TextFieldCustom,
   ImageUploadField,
   MaritalStatusSearchField,
   GenderSearchField,
   SphereSearchField,
-  DateField,
+  DateCustomField,
   UniversalSearchField,
   StaticUniversalSearchField
-} from '../../ReduxForm/index'
+} from '../ReduxForm'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 const enhance = compose(
@@ -128,13 +128,13 @@ const enhance = compose(
     upperSection: {
       display: 'flex',
       '& > div:first-child': {
-        width: 'calc(100% - 278px)'
+        width: 'calc(100% - 220px)'
       },
       '& > div:nth-child(2)': {
-        width: '278px'
+        width: '220px'
       },
       '& .imageDropZone': {
-        height: '240px',
+        height: '150px',
         width: '100%',
         marginLeft: '30px'
       }
@@ -195,17 +195,20 @@ const ApplicantCreateDialog = enhance((props) => {
   const formNames = [
     'firstName',
     'lastName',
+    'secondName',
     'address',
     'phone',
-    'phoneNumber',
-    'photo',
+    'phoneCode',
+    'image',
     'email',
     'sphere',
-    'martialStatus',
-    'birthDate',
+    'maritalStatus',
+    'birthday',
     'gender',
-    'lang',
-    'status'
+    'profileLanguage',
+    'interestLevel',
+    'status',
+    'activityField'
   ]
   const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
@@ -232,23 +235,32 @@ const ApplicantCreateDialog = enhance((props) => {
               <div>
                 <Field
                   name="firstName"
-                  component={TextField}
+                  component={TextFieldCustom}
                   label={t('Имя')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
                   name="lastName"
-                  component={TextField}
+                  component={TextFieldCustom}
                   label={t('Фамилия')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
                   name="email"
-                  component={TextField}
+                  component={TextFieldCustom}
                   type="email"
                   label={t('email')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
+              </div>
+              <Field
+                name="image"
+                component={ImageUploadField}
+                label={t('Изображения')}
+                fullWidth={true}/>
+            </div>
+            <Row className={classes.field}>
+              <Col xs={6}>
                 <div className={classes.phoneField}>
                   <Field
                     name="phoneCode"
@@ -258,23 +270,26 @@ const ApplicantCreateDialog = enhance((props) => {
                     label={t('страна')}
                     fullWidth={true}/>
                   <Field
-                    name="phoneNumber"
-                    component={TextField}
+                    name="phone"
+                    component={TextFieldCustom}
                     label={t('Телефонный номер')}
                     className={classes.inputFieldCustom}
                     fullWidth={true}/>
                 </div>
-              </div>
-              <Field
-                name="photo"
-                component={ImageUploadField}
-                label={t('Изображения')}
-                fullWidth={true}/>
-            </div>
+              </Col>
+              <Col xs={6}>
+                <Field
+                  name="interestLevel"
+                  component={StaticUniversalSearchField}
+                  label={t('Заинтересованность')}
+                  items={ACTIVITY_STATUS}
+                  fullWidth={true}/>
+              </Col>
+            </Row>
             <Row className={classes.field}>
               <Col xs={6}>
                 <Field
-                  name="sphere"
+                  name="activityField"
                   component={SphereSearchField}
                   label={t('Профессионалная сфера')}
                   className={classes.inputFieldCustom}
@@ -288,14 +303,14 @@ const ApplicantCreateDialog = enhance((props) => {
               </Col>
               <Col xs={6}>
                 <Field
-                  name="martialStatus"
+                  name="maritalStatus"
                   component={MaritalStatusSearchField}
                   label={t('Семейное положения')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
                 <Field
-                  name="birthDate"
-                  component={DateField}
+                  name="birthday"
+                  component={DateCustomField}
                   label={t('Дата рождение')}
                   className={classes.inputDateCustom}
                   fullWidth={true}/>
@@ -303,14 +318,14 @@ const ApplicantCreateDialog = enhance((props) => {
             </Row>
             <Field
               name="address"
-              component={TextField}
+              component={TextFieldCustom}
               label={t('Адрес')}
               className={classes.inputFieldCustom}
               fullWidth={true}/>
             <Row className={classes.field}>
               <Col xs={6}>
                 <Field
-                  name="lang"
+                  name="profileLanguage"
                   component={StaticUniversalSearchField}
                   label={t('Язык профиля')}
                   items={PROFILE_LANG}

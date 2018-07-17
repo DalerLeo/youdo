@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
@@ -7,7 +8,7 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 // .import Loader from '../../Loader/index'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
-import t from '../../../helpers/translate'
+import t from '../../helpers/translate'
 
 export const APPLICANT_MAIL_DIALOG_OPEN = 'openMailDialog'
 const enhance = compose(
@@ -125,11 +126,16 @@ const ApplicantMailDialog = enhance((props) => {
   const {
     open,
     loading,
-    onSubmit,
+    // . onSubmit,
     onClose,
-    classes
+    classes,
+    data
   } = props
 
+  const firstName = _.get(data, 'firstName')
+  const lastName = _.get(data, 'lastName')
+  const fatherName = _.get(data, 'fatherName')
+  const email = _.get(data, 'email')
   return (
     <Dialog
       modal={true}
@@ -146,7 +152,8 @@ const ApplicantMailDialog = enhance((props) => {
       </div>
       <div className={classes.bodyContent}>
         <div className={classes.success}>
-          Соискател успешно добавлен
+          Соискател успешно добавлен <br/>
+          Данные отправлены на почту
         </div>
         <div className={classes.inContent}>
           <ul>
@@ -156,24 +163,18 @@ const ApplicantMailDialog = enhance((props) => {
             <li>Email: </li>
           </ul>
           <ul>
-            <li>Daler</li>
-            <li>Abdullaev</li>
-            <li>Djamshedalievich</li>
-            <li>dalerleo@gmai.com</li>
+            <li>{firstName}</li>
+            <li>{lastName}</li>
+            <li>{fatherName}</li>
+            <li>{email}</li>
           </ul>
         </div>
         <div className={classes.bottomButton}>
           <FlatButton
-            label={t('Отправить данные на email')}
-            className={classes.actionButton}
-            onTouchTap={onSubmit}
-            labelStyle={{fontSize: '13px', color: '#129fdd'}}
-            primary={true}/>
-          <FlatButton
             label={t('Закрыт')}
             className={classes.actionButton}
-            labelStyle={{fontSize: '13px', color: '#e57373'}}
             onTouchTap={onClose}
+            labelStyle={{fontSize: '13px', color: '#129fdd'}}
             primary={true}/>
         </div>
       </div>

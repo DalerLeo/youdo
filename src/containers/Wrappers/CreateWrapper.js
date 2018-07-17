@@ -12,14 +12,16 @@ const createWrapper = params => {
     createAction,
     queryKey,
     formName,
-    thenActionKey
+    thenActionKey,
+    storeName
   } = params
 
   return compose(
     connect((state) => {
       return {
         createForm: _.get(state, ['form', formName]),
-        createLoading: _.get(state, [formName, 'create', 'loading'])
+        createLoading: _.get(state, [storeName, 'create', 'loading']),
+        createData: _.get(state, [storeName, 'create', 'data'])
       }
     },
     {createAction, openSnackbarAction}),
@@ -50,7 +52,7 @@ const createWrapper = params => {
             .then(() => {
               replaceUrl(filter, location.pathname, {[queryKey]: false})
               props.listFetchAction(filter)
-              thenActionKey && replaceUrl(filter, location.pathname, {[thenActionKey]: true})
+              thenActionKey && replaceUrl(filter, location.pathname, {[thenActionKey]: true, [queryKey]: false})
             })
             .catch(error => {
               formInlineValidate(fieldNames, props.dispatch, error, formName)
@@ -58,14 +60,18 @@ const createWrapper = params => {
         })
 
       return props$
-        .combineLatest(({...props}) => ({
-          createDialog: {
-            onOpenCreateDialog,
-            onCloseCreateDialog,
-            onSubmitCreateDialog
-          },
-          ...props
-        }))
+        .combineLatest(({createData, createLoading, ...props}) => {
+          return ({
+            createDialog: {
+              onOpenCreateDialog,
+              onCloseCreateDialog,
+              onSubmitCreateDialog,
+              createData,
+              createLoading
+            },
+            ...props
+          })
+        })
     }),
     pure
   )

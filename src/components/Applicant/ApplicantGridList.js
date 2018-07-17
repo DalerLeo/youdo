@@ -6,17 +6,19 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import * as ROUTES from '../../../constants/routes'
-import GridList from '../../GridList/index'
-import Container from '../../Container/index'
+import * as ROUTES from '../../constants/routes'
+import GridList from '../GridList/index'
+import Container from '../Container/index'
 import ApplicantCreateDialog from './ApplicantCreateDialog'
 import ApplicationTabs from './ApplicantTabs'
 import ApplicantDetails from './ApplicantDetails'
-import ConfirmDialog from '../../ConfirmDialog/index'
-import ToolTip from '../../ToolTip'
-import SubMenu from '../../SubMenu'
-import t from '../../../helpers/translate'
-import dateFormat from '../../../helpers/dateFormat'
+import ConfirmDialog from '../ConfirmDialog/index'
+import ToolTip from '../ToolTip'
+import SubMenu from '../SubMenu'
+import sprintf from 'sprintf'
+import t from '../../helpers/translate'
+import dateFormat from '../../helpers/dateFormat'
+import {replaceUrl} from '../../helpers/changeUrl'
 // .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import IconMenu from 'material-ui/IconMenu'
@@ -104,6 +106,14 @@ const enhance = compose(
         }
 
       }
+    },
+    link: {
+      position: 'absolute',
+      top: '0',
+      left: '0',
+      right: '0',
+      bottom: '0',
+      zIndex: '1'
     }
   })
 )
@@ -142,36 +152,22 @@ const ApplicantGridList = enhance((props) => {
       </div>
     )
   }
+
   const detail = (
     <ApplicantDetails
+      initialValues={updateDialog.initialValues}
       filter={filter}
-      key={1}
+      key={_.get(detailData, 'id')}
+      updateLoading={_.get(updateDialog, 'updateLoading')}
+      handleSubmitUpdateDialog={updateDialog.handleSubmitUpdateDialog}
+      data={_.get(detailData, 'data') || {}}
+      loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
     />
   )
 
-  const fakeData = [
-    {
-      id: '1',
-      firstName: 'firstName',
-      lastName: 'lastName',
-      resumeNum: '6',
-      modifiedAt: '2018-12-11',
-      createdAt: '2018-11-10',
-      balance: '1000'
-    },
-    {
-      id: '2',
-      firstName: 'first Name',
-      lastName: 'last Name',
-      resumeNum: '2',
-      modifiedAt: '2018-11-10',
-      createdAt: '2018-10-12',
-      balance: '100'
-    }
-  ]
-  const applicantList = _.map(fakeData, (item, index) => {
-    const id = _.get(item, 'id')
+  const applicantList = _.map(_.get(listData, 'data'), (item, index) => {
+    const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const firstName = _.get(item, 'firstName')
     const lastName = _.get(item, 'lastName')
@@ -182,10 +178,13 @@ const ApplicantGridList = enhance((props) => {
     const name = firstName + ' ' + lastName
     return (
       <Row key={id} className={classes.listRow}>
+        <div
+          onClick={() => replaceUrl(filter, sprintf(ROUTES.APPLICANT_ITEM_PATH, id), {})}
+          className={classes.link}/>
         <Col xs={3}>{name}</Col>
         <Col xs={2}>{resumeNum}</Col>
         <Col xs={3}>{modifiedDate}</Col>
-        <Col xs={2} style={{textAlign: 'right'}}>{createdDate}</Col>
+        <Col xs={2}>{createdDate}</Col>
         <Col xs={2}>{balance}
           <div className={classes.iconBtn}>
             <IconMenu
@@ -278,16 +277,17 @@ const ApplicantGridList = enhance((props) => {
         message={currentName}
         loading={confirmDialog.confirmLoading}
         onClose={confirmDialog.handleCloseConfirmDialog}
-        onSubmit={confirmDialog.handleSendConfirmDialog}
+        onSubmit={confirmDialog.handleDeleteConfirmDialog}
         open={confirmDialog.openConfirmDialog}
       />}
 
-      <ApplicantMailDialog
+      {confirmMailDialog.open && <ApplicantMailDialog
+        data={createDialog.createData}
         loading={confirmDialog.confirmLoading}
         onClose={confirmMailDialog.handleClose}
-        onSubmit={confirmDialog.handleSendConfirmDialog}
+        onSubmit={confirmDialog.handleDeleteConfirmDialog}
         open={confirmMailDialog.open}
-      />
+      />}
     </Container>
   )
 })
@@ -308,7 +308,7 @@ ApplicantGridList.propTypes = {
     openConfirmDialog: PropTypes.bool.isRequired,
     handleOpenConfirmDialog: PropTypes.func.isRequired,
     handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
+    handleDeleteConfirmDialog: PropTypes.func.isRequired
   }).isRequired,
   updateDialog: PropTypes.shape({
     updateLoading: PropTypes.bool.isRequired,

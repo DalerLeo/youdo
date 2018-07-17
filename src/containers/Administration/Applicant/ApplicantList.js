@@ -1,15 +1,17 @@
 import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import {reset} from 'redux-form'
-import {compose, withHandlers, pure} from 'recompose'
+import {compose, withHandlers, pure, withState} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
-import Layout from '../../../components/Layout/index'
+import Layout from '../../../components/Layout'
 import * as ROUTER from '../../../constants/routes'
+import * as actionType from '../../../constants/actionTypes'
 import {listWrapper, detailWrapper, createWrapper} from '../../Wrappers'
-import changeUrl from '../../../helpers/changeUrl'
+import {replaceUrl} from '../../../helpers/changeUrl'
+import {updateDetailStore, updateStore} from '../../../helpers/updateStore'
 import toBoolean from '../../../helpers/toBoolean'
+import toCamelCase from '../../../helpers/toCamelCase'
 import {
   APPLICANT_CREATE_DIALOG_OPEN,
   APPLICANT_UPDATE_DIALOG_OPEN,
@@ -18,7 +20,7 @@ import {
   APPLICANT_FILTER_OPEN,
   APPLICANT_MAIL_DIALOG_OPEN,
   ApplicantGridList
-} from '../../../components/Administration/Applicant'
+} from '../../../components/Applicant'
 import {
   applicantCreateAction,
   applicantUpdateAction,
@@ -27,32 +29,39 @@ import {
   applicantItemFetchAction
 } from '../../../actions/Administration/applicant'
 import {openSnackbarAction} from '../../../actions/snackbar'
+import {openErrorAction} from '../../../actions/error'
 import t from '../../../helpers/translate'
 
+const except = {
+  openMailDialog: null
+}
 const mapDispatchToProps = {
   applicantCreateAction,
   applicantUpdateAction,
   applicantDeleteAction,
-  openSnackbarAction
+  updateDetailStore,
+  updateStore,
+  openErrorAction
 }
 
 const mapStateToProps = (state, props) => {
-  const createLoading = _.get(state, ['applicant', 'create', 'loading'])
   const updateLoading = _.get(state, ['applicant', 'update', 'loading'])
   const filterForm = _.get(state, ['form', 'ApplicantFilterForm'])
+  const updateForm = _.get(state, ['form', 'ApplicantUpdateForm'])
   return {
-    createLoading,
     updateLoading,
-    filterForm
+    filterForm,
+    updateForm
   }
 }
 
 const enhance = compose(
-  listWrapper({listFetchAction: applicantListFetchAction, storeName: 'application'}),
-  detailWrapper({itemFetchAction: applicantItemFetchAction, storeName: 'application'}),
+  listWrapper({listFetchAction: applicantListFetchAction, storeName: 'applicant', except}),
+  detailWrapper({itemFetchAction: applicantItemFetchAction, storeName: 'applicant'}),
   createWrapper({
     createAction: applicantCreateAction,
     queryKey: APPLICANT_CREATE_DIALOG_OPEN,
+    storeName: 'applicant',
     formName: 'ApplicantCreateForm',
     thenActionKey: APPLICANT_MAIL_DIALOG_OPEN
   }),
@@ -71,7 +80,7 @@ const enhance = compose(
       const {location: {pathname}, filter} = props
       hashHistory.push({pathname, query: filter.getParams({[APPLICANT_DELETE_DIALOG_OPEN]: false})})
     },
-    handleSendConfirmDialog: props => () => {
+    handleDeleteConfirmDialog: props => () => {
       const {detail, filter, location: {pathname}} = props
       props.applicantDeleteAction(detail.id)
         .then(() => {
@@ -124,31 +133,6 @@ const enhance = compose(
       const {location: {pathname}, filter} = props
       hashHistory.push({pathname, query: filter.getParams({openDeleteDialog: false})})
     },
-
-    handleOpenCreateDialog: ({filter, location, dispatch}) => () => {
-      const params = {[APPLICANT_CREATE_DIALOG_OPEN]: true}
-      changeUrl(filter, location.pathname, params)
-      dispatch(reset('ApplicantCreateForm'))
-    },
-
-    handleCloseCreateDialog: ({filter, location}) => () => {
-      const params = {[APPLICANT_CREATE_DIALOG_OPEN]: false}
-      changeUrl(filter, location.pathname, params)
-    },
-
-    handleSubmitCreateDialog: props => () => {
-      const {createForm, filter, location: {pathname}} = props
-
-      // Noinspection UnterminatedStatementJS
-      return props.applicantCreateAction(_.get(createForm, ['values']))
-        .then(() => props.openSnackbarAction({message: t('Успешно сохранено')}))
-        .then(() => {
-          const params = {[APPLICANT_CREATE_DIALOG_OPEN]: false}
-          changeUrl(filter, pathname, params)
-          props.listFetchAction(filter)
-        })
-    },
-
     handleOpenUpdateDialog: props => (id) => {
       const {filter} = props
       hashHistory.push({
@@ -162,21 +146,58 @@ const enhance = compose(
       hashHistory.push({pathname, query: filter.getParams({[APPLICANT_UPDATE_DIALOG_OPEN]: false})})
     },
 
-    handleSubmitUpdateDialog: props => () => {
-      const {createForm, filter, location: {pathname}} = props
-      const applicantId = _.toInteger(_.get(props, ['params', 'applicantId']))
-      return props.applicantUpdateAction(applicantId, _.get(createForm, ['values']))
-        .then(() => openSnackbarAction({message: t('Успешно сохранено')}))
-        .then(() => {
-          hashHistory.push({
-            pathname,
-            query: filter.getParams({[APPLICANT_UPDATE_DIALOG_OPEN]: false, 'passErr': false})
+    handleSubmitUpdateDialog: props => (fieldNames) => {
+      const {updateForm, detail, list} = props
+      let data = {}
+
+      _.map(fieldNames, name => {
+        const formValue = _.get(updateForm, ['values', name, 'value'])
+        if (formValue && detail[name] !== formValue) data[name] = formValue
+      })
+
+      if (!_.isEmpty(data)) {
+        const id = _.toInteger(_.get(props, ['params', 'id']))
+        return props.applicantUpdateAction(id, data)
+          .then(({value}) => {
+            const formedValue = toCamelCase(value)
+            props.updateDetailStore(actionType.APPLICANT_ITEM, formedValue)
+            return props.updateStore(id, list, actionType.APPLICANT_LIST, {
+              firstName: _.get(formedValue, 'firstName'),
+              lastName: _.get(formedValue, 'lastName'),
+              secondName: _.get(formedValue, 'secondName'),
+              resumeNum: _.get(formedValue, 'resumeNum'),
+              updatedAt: _.get(formedValue, 'updatedAt'),
+              balance: _.get(formedValue, 'balance')
+            })
           })
-          props.listFetchAction(filter)
-          props.itemFetchAction(applicantId)
-        })
+          .then(() => openSnackbarAction({message: t('Успешно сохранено')}))
+          .catch(error => props.openErrorAction({message: error}))
+      }
+      return null
+    },
+
+    handleSubmitCommentDialog: props => () => {
+      const {commentForm} = props
+      return props.applicantSendCommentAction(_.get(commentForm, 'values'))
+        .then(() => props.openSnackbarAction({message: t('Успешно отправлено')}))
+        .catch(error => props.openErrorAction({message: error}))
+    },
+    handleSubmitResetPasswordDialog: props => (id) => {
+      const {filter, location} = props
+      const params = {[APPLICANT_MAIL_DIALOG_OPEN]: true}
+      return props.applicantSendCommentAction(id)
+        .then(() => props.openSnackbarAction({message: t('Успешно отправлено')}))
+        .then(() => replaceUrl(filter, location.pathname, params))
+        .catch(error => props.openErrorAction({message: error}))
+    },
+    handleSubmitRechargeDialog: props => () => {
+      const {rechargeForm} = props
+      return props.applicantRechargeAction(_.get(rechargeForm, 'values'))
+        .then(() => props.openSnackbarAction({message: t('Баланс успешно пополнен')}))
+        .catch(error => props.openErrorAction({message: error}))
     }
   }),
+  withState('openActionDialog', 'setOpenActionDialog', ''),
   pure
 )
 
@@ -187,7 +208,6 @@ const ApplicantList = enhance((props) => {
     listLoading,
     detail,
     detailLoading,
-    createLoading,
     updateLoading,
     filter,
     layout,
@@ -209,16 +229,20 @@ const ApplicantList = enhance((props) => {
   }
 
   const createDialog = {
-    createLoading,
     openCreateDialog,
     ...props.createDialog
   }
   const confirmDialog = {
     confirmLoading: detailLoading,
-    openConfirmDialog: openConfirmDialog,
+    openConfirmDialog,
     handleOpenConfirmDialog: props.handleOpenConfirmDialog,
     handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-    handleSendConfirmDialog: props.handleSendConfirmDialog
+    handleDeleteConfirmDialog: props.handleDeleteConfirmDialog,
+    openActionDialog: props.openActionDialog,
+    setOpenActionDialog: props.setOpenActionDialog,
+    handleSubmitResetPasswordDialog: props.handleSubmitResetPasswordDialog,
+    handleSubmitRechargeDialog: props.handleSubmitRechargeDialog
+
   }
   const updateDialog = {
     initialValues: (() => {
@@ -226,18 +250,22 @@ const ApplicantList = enhance((props) => {
         return {}
       }
       return {
-        firstName: _.get(detail, 'firstName'),
-        lastName: _.get(detail, 'lastName'),
-        email: _.get(detail, 'email'),
+        activityField: {value: _.get(detail, ['activityField', 'id'])},
         address: _.get(detail, 'address'),
+        balance: _.get(detail, 'balance'),
+        birthday: _.get(detail, 'birthday'),
         countryCode: _.get(detail, 'countryCode'),
-        photo: _.get(detail, 'photo'),
-        phoneNumber: _.get(detail, 'phoneNumber'),
-        role: {value: _.get(detail, ['groups', '0', 'id'])},
-        position: {value: _.get(detail, ['position', 'id'])},
-        sphere: {value: _.get(detail, ['sphere', 'id'])},
-        gender: {value: _.get(detail, ['gender', 'id'])},
+        email: _.get(detail, 'email'),
+        firstName: _.get(detail, 'firstName'),
+        gender: {value: _.get(detail, ['gender'])},
+        image: _.get(detail, 'image'),
+        interestLevel: _.get(detail, 'interestLevel'),
+        lastName: _.get(detail, 'lastName'),
         martialStatus: {value: _.get(detail, ['martialStatus', 'id'])},
+        phone: _.get(detail, 'phone'),
+        phoneCode: _.get(detail, 'phoneCode'),
+        profileLanguage: _.get(detail, 'profileLanguage'),
+        secondName: _.get(detail, 'secondName'),
         status: _.get(detail, 'status')
       }
     })(),
@@ -289,7 +317,7 @@ const ApplicantList = enhance((props) => {
         updateDialog={updateDialog}
         actionsDialog={actionsDialog}
         filterDialog={filterDialog}
-        confirmMailDialog={confirmMailDialog }
+        confirmMailDialog={confirmMailDialog}
       />
     </Layout>
   )

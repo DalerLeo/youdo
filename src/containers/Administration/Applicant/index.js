@@ -1,3 +1,3 @@
-import UsersList from './ApplicationList'
+import UsersList from './ApplicantList'
 
 export default UsersList

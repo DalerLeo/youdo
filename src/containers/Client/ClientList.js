@@ -10,7 +10,7 @@ import {compose, withPropsOnChange, withState, withHandlers} from 'recompose'
 import * as ROUTER from '../../constants/routes'
 import filterHelper from '../../helpers/filter'
 import toBoolean from '../../helpers/toBoolean'
-import updateStore from '../../helpers/updateStore'
+import {updateStore} from '../../helpers/updateStore'
 import {joinArray, splitToArray} from '../../helpers/joinSplitValues'
 import * as actionTypes from '../../constants/actionTypes'
 import {

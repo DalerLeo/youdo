@@ -102,11 +102,17 @@ export const USERS_STATUS = [
 
 export const APPLICANT_STATUS = [
   {id: 'no', name: t('Не указан')},
-  {id: 'Active', name: t('Активный')},
-  {id: 'Banned', name: t('Заблокированный')}
+  {id: 'active', name: t('Активный')},
+  {id: 'blocked', name: t('Заблокированный')}
+]
+export const ACTIVITY_STATUS = [
+  {id: 'other', name: t('Другое')},
+  {id: 'in_active_search', name: t('В активном поиске')},
+  {id: 'considering_proposals', name: t('Рассматриваю предложения')},
+  {id: 'not_looking_for_job', name: t('Не ищу работу')}
 ]
 
 export const PROFILE_LANG = [
-  {id: 'uz', name: 'Узбекский'},
+  {id: 'en', name: 'Узбекский'},
   {id: 'ru', name: 'Русский'}
 ]

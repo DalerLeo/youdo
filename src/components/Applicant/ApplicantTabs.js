@@ -1,12 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {hashHistory} from 'react-router'
-import * as ROUTER from '../../../constants/routes'
+import * as ROUTER from '../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose, withHandlers, withState} from 'recompose'
 import {Tabs, Tab} from 'material-ui/Tabs'
-import * as TAB from '../../../constants/ApplicantTab'
-import t from '../../../helpers/translate'
+import * as TAB from '../../constants/ApplicantTab'
+import t from '../../helpers/translate'
 import classNames from 'classnames'
 
 const enhance = compose(

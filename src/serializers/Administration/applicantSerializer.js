@@ -1,38 +1,76 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../helpers/serializer'
+import moment from 'moment'
 
 export const createSerializer = (data) => {
+  const email = _.get(data, ['email', 'value'])
+  const firstName = _.get(data, ['firstName', 'value'])
+  const lastName = _.get(data, ['lastName', 'value'])
+  const secondName = _.get(data, ['secondName', 'value'])
+  const status = _.get(data, ['status', 'value'])
+  const activityField = _.get(data, ['activityField', 'value'])
+  const interestLevel = _.get(data, ['interestLevel', 'value'])
+  const maritalStatus = _.get(data, ['maritalStatus', 'value'])
+  const birthday = _.get(data, ['birthday', 'value'])
+  const address = _.get(data, ['address', 'value'])
+  const phone = _.get(data, ['phone', 'value'])
+  const gender = _.get(data, ['gender', 'value'])
+  const lang = _.get(data, ['profileLanguage', 'value'])
+  const phoneCode = _.get(data, ['phoneCode', 'value'])
+  const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
+  return {
+    email,
+    status,
+    image,
+    address,
+    gender,
+    birthday: birthday && moment(birthday).format('YYYY-MM-DD'),
+    'second_name': secondName,
+    'first_name': firstName,
+    'last_name': lastName,
+    'phone_code': phoneCode,
+    'marital_status': maritalStatus,
+    'phone': phone,
+    'interested_level': interestLevel,
+    'activity_field': activityField,
+    'profile_language': lang
+  }
+}
+
+export const updateSerializer = (data) => {
   const email = _.get(data, 'email')
   const firstName = _.get(data, 'firstName')
   const lastName = _.get(data, 'lastName')
+  const secondName = _.get(data, 'secondName')
   const status = _.get(data, ['status', 'value'])
-  const martialStatus = _.get(data, ['martialStatus', 'value'])
+  const activityField = _.get(data, ['activityField'])
+  const interestLevel = _.get(data, ['interestLevel'])
+  const martialStatus = _.get(data, ['martialStatus'])
   const sphere = _.get(data, ['sphere', 'value'])
-  const birthDate = _.get(data, 'birthDate')
+  const birthday = _.get(data, 'birthday')
   const address = _.get(data, 'address')
-  const phoneNumber = _.get(data, 'phoneNumber')
-  const gender = _.get(data, ['gender', 'value'])
-  const lang = _.get(data, ['lang', 'value'])
-  const phoneCode = _.get(data, ['phoneCode', 'value'])
-  const photo = _.isObject(_.get(data, 'photo')) ? _.get(data, ['photo', 'id']) : _.get(data, 'photo')
-  const groups = _.get(data, ['role', 'value']) && [_.get(data, ['role', 'value'])]
-  const position = _.get(data, ['position', 'value'])
+  const phone = _.get(data, 'phone')
+  const gender = _.get(data, ['gender'])
+  const lang = _.get(data, ['profileLanguage'])
+  const phoneCode = _.get(data, ['phoneCode'])
+  const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
   return {
-    user: email,
-    'phone_number': phoneNumber,
-    groups,
-    position,
+    email,
     status,
-    photo,
+    image,
+    address,
+    sphere,
+    gender,
+    birthday,
+    'second_name': secondName,
     'first_name': firstName,
     'last_name': lastName,
-    address,
     'phone_code': phoneCode,
-    sphere,
     'martial_status': martialStatus,
-    'birth_date': birthDate,
-    gender,
-    lang
+    'phone': phone,
+    'interested_level': interestLevel,
+    'activity_field': activityField,
+    'profile_language': lang
   }
 }
 
