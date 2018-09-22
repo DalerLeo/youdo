@@ -183,7 +183,7 @@ const UsersCreateDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{isUpdate ? t('Изменить пользователя') : t('Добавить пользователя')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

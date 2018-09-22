@@ -144,7 +144,7 @@ const PostGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -153,7 +153,7 @@ const PostGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -177,7 +177,7 @@ const PostGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
         className={classes.addButton}
         label={t('добавить должность')}
-        onTouchTap={createDialog.onOpenCreateDialog}
+        onClick={createDialog.onOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>

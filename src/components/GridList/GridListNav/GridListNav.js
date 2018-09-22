@@ -64,7 +64,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
             {!withoutPagination && <GridListNavPagination filter={filter}/>}
             {withCheckboxes &&
                         <ToolTip position="left" text={showCheckboxes ? t('Спрятать флажки') : t('Выбрать из списка')}>
-                          <IconButton onTouchTap={toggleCheckboxes}>
+                          <IconButton onClick={toggleCheckboxes}>
                             {showCheckboxes
                               ? <HideCheck color="#5d6474"/>
                               : <Check color="#5d6474"/>}
@@ -83,7 +83,7 @@ const GridListNav = ({classes, filter, filterDialog, addButton, withoutSearch, c
             <div className={classes.buttons}>
               {checkboxActions}
               <ToolTip position="left" text={t('Снять выделение')}>
-                <IconButton onTouchTap={clearSelects}>
+                <IconButton onClick={clearSelects}>
                   <Uncheck color="#666"/>
                 </IconButton>
               </ToolTip>

@@ -94,7 +94,7 @@ const ErrorDialog = ({dispatch, message, open, classes, ...defaultProps}) => {
       style={{zIndex: '9999999999'}}
       {...defaultProps}>
       <div className={classes.bodyContent}>
-        <IconButton onTouchTap={close}>
+        <IconButton onClick={close}>
           <CloseIcon color="#fff"/>
         </IconButton>
         <div className={classes.inContent}>

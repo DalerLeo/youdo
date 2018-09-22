@@ -11,7 +11,6 @@ import RaisedButton from 'material-ui/RaisedButton'
 import t from '../../helpers/translate'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import {
-  DateToDateField,
   UsersMultiSearchField,
   CheckBox
 } from '../ReduxForm'
@@ -149,10 +148,10 @@ const ClientFilterForm = enhance((props) => {
         <div className={classes.afterFilter}>
           <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
           <div>
-            <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+            <IconButton onClick={filterDialog.handleOpenFilterDialog}>
               <BorderColorIcon color="#8f8f8f" />
             </IconButton>
-            <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+            <IconButton onClick={filterDialog.handleClearFilterDialog}>
               <CloseIcon className={classes.icon}/>
             </IconButton>
           </div>
@@ -164,7 +163,7 @@ const ClientFilterForm = enhance((props) => {
       <div>
         <Link
           className={classes.arrow}
-          onTouchTap={filterDialog.handleOpenFilterDialog}>
+          onClick={filterDialog.handleOpenFilterDialog}>
           <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
         </Link>
       </div>
@@ -176,7 +175,7 @@ const ClientFilterForm = enhance((props) => {
       <Paper className={classes.wrapper} zDepth={2}>
         <div className={classes.header}>
           <span className={classes.title}>{t('Фильтр')}</span>
-          <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+          <IconButton onClick={filterDialog.handleCloseFilterDialog}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         </div>
@@ -186,11 +185,6 @@ const ClientFilterForm = enhance((props) => {
             name="fromWho"
             component={UsersMultiSearchField}
             label={t('По рекомендации')}/>
-          <Field
-            className={classes.inputDateCustom}
-            name="createdDate"
-            component={DateToDateField}
-            label={t('Дата создания')}/>
           <Field
             className={classes.inputDateCustom}
             name="inBlacklist"

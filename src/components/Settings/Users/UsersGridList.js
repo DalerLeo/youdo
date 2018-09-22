@@ -160,7 +160,7 @@ const UsersGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -184,7 +184,7 @@ const UsersGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
         label={t('добавить пользователя')}
-        onTouchTap={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.handleOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>

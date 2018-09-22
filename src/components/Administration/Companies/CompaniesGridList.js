@@ -143,7 +143,7 @@ const CompaniesGridList = enhance((props) => {
             style={iconStyle.button}
             disableTouchRipple={true}
             touch={true}
-            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+            onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
             <Edit />
           </IconButton>
         </ToolTip>
@@ -152,7 +152,7 @@ const CompaniesGridList = enhance((props) => {
             disableTouchRipple={true}
             iconStyle={iconStyle.icon}
             style={iconStyle.button}
-            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+            onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
             touch={true}>
             <DeleteIcon />
           </IconButton>
@@ -206,7 +206,7 @@ const CompaniesGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: LINK_COLOR, fontSize: '13px'}}
         className={classes.addButton}
         label={t('добавить команию')}
-        onTouchTap={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.handleOpenCreateDialog}
         icon={<ContentAdd color={LINK_COLOR}/>}>
       </FlatButton>
     </div>

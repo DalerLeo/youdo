@@ -65,6 +65,7 @@ const mapStateToProps = (state, props) => {
 }
 
 const enhance = compose(
+
   connect(mapStateToProps, mapDispatchToProps),
   mapPropsStream((props$) => {
     // GET LIST

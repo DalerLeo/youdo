@@ -19,7 +19,7 @@ webpackConfig = {
   devtool: NODE_ENV === 'development' ? 'cheap-module-source-map' : false,
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
-    port: 4200
+    port: 3000
   },
   watchOptions: {
     aggregateTimeout: 300,

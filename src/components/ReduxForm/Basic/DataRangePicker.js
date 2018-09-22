@@ -58,7 +58,7 @@ class DateToDateField extends React.Component {
     }
   }
 
-    handleOnTouchTap = (event) => {
+    handleonClick = (event) => {
       event.preventDefault()
 
       this.setState({
@@ -89,7 +89,7 @@ class DateToDateField extends React.Component {
           <div className={classes.button}>
             <FlatButton
               label={dateLabel}
-              onTouchTap={this.handleOnTouchTap}/>
+              onClick={this.handleonClick}/>
             <Popover
               open={open}
               anchorEl={anchorEl}

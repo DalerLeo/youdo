@@ -406,7 +406,7 @@ const ResumeCreateDialog = enhance((props) => {
 
       <div className={classes.titleContent}>
         <span>{isUpdate ? t('Изменение анкеты') : t('Создание анкеты')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

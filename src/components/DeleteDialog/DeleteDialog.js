@@ -74,7 +74,7 @@ const DeleteDialog = enhance((props) => {
             label={t('СВЕРНУТЬ')}
             primary={true}
             labelStyle={{fontSize: '13px'}}
-            onTouchTap={onClose}
+            onClick={onClose}
           />
 
           <FlatButton

@@ -123,10 +123,10 @@ const ApplicantFilterForm = enhance((props) => {
           {addButton}
           <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
           <div>
-            <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+            <IconButton onClick={filterDialog.handleOpenFilterDialog}>
               <BorderColorIcon color="#8f8f8f" />
             </IconButton>
-            <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+            <IconButton onClick={filterDialog.handleClearFilterDialog}>
               <CloseIcon className={classes.icon}/>
             </IconButton>
           </div>
@@ -138,7 +138,7 @@ const ApplicantFilterForm = enhance((props) => {
       <div style={{display: 'flex'}}>
         <Link
           className={classes.arrow}
-          onTouchTap={filterDialog.handleOpenFilterDialog}>
+          onClick={filterDialog.handleOpenFilterDialog}>
           <div style={{display: 'flex'}}>
             <span>{t('Показать фильтр')}</span>
             <KeyboardArrowDown color="#12aaeb" />
@@ -154,7 +154,7 @@ const ApplicantFilterForm = enhance((props) => {
       <Paper className={classes.wrapper} zDepth={2}>
         <div className={classes.header}>
           <span className={classes.title}>Фильтр</span>
-          <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+          <IconButton onClick={filterDialog.handleCloseFilterDialog}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         </div>

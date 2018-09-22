@@ -151,7 +151,7 @@ const ConfirmDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{title}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>
@@ -171,7 +171,7 @@ const ConfirmDialog = enhance((props) => {
             label={buttonLabel}
             labelStyle={warning ? {color: '#f44336'} : {color: '#129fdd'}}
             primary={true}
-            onTouchTap={onSubmit}
+            onClick={onSubmit}
           />
         </div>
       </div>

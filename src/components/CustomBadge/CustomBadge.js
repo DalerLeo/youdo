@@ -44,7 +44,7 @@ const CustomBadge = enhance((props) => {
           rippleColor={rippleColor}
           hoverColor={rippleColor}
           style={style}
-          onTouchTap={() => {
+          onClick={() => {
             handleOpen(true)
           }}>
           <Notification />
@@ -61,7 +61,7 @@ const CustomBadge = enhance((props) => {
         <FlatButton
           rippleColor="#fff"
           style={style}
-          onTouchTap={() => {
+          onClick={() => {
             handleOpen(true)
           }}>
           <Notification />

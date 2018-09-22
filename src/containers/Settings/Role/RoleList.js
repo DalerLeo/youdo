@@ -24,8 +24,11 @@ import {
 import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 import {ZERO} from '../../../constants/backendConstants'
+import {detailWrapper, listWrapper} from '../../Wrappers'
 
 const enhance = compose(
+  listWrapper({listFetchAction: roleListFetchAction, storeName: 'role'}),
+  detailWrapper({itemFetchAction: roleItemFetchAction, storeName: 'role', paramName: 'roleId'}),
   connect((state, props) => {
     const query = _.get(props, ['location', 'query'])
     const pathname = _.get(props, ['location', 'pathname'])
@@ -60,11 +63,6 @@ const enhance = compose(
       permissionLoading
     }
   }),
-  withPropsOnChange((props, nextProps) => {
-    return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-  }, ({dispatch, filter}) => {
-    dispatch(roleListFetchAction(filter))
-  }),
 
   withPropsOnChange((props, nextProps) => {
     const prevCreateDialog = toBoolean(_.get(props, ['location', 'query', ROLE_CREATE_DIALOG_OPEN]))
@@ -80,14 +78,6 @@ const enhance = compose(
     if (createDialogDialog || updateDialogDialog) {
       dispatch(rolePermissionListFetchAction(filter))
     }
-  }),
-
-  withPropsOnChange((props, nextProps) => {
-    const roleId = _.get(nextProps, ['params', 'roleId'])
-    return (roleId && _.get(props, ['params', 'roleId']) !== roleId)
-  }, ({dispatch, params, detailFilter}) => {
-    const roleId = _.toInteger(_.get(params, 'roleId'))
-    roleId && dispatch(roleItemFetchAction(detailFilter, roleId))
   }),
 
   withState('openConfirmDialog', 'setOpenConfirmDialog', false),

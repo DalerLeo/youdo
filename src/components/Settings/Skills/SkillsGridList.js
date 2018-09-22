@@ -114,7 +114,7 @@ const SkillsGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -123,7 +123,7 @@ const SkillsGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -147,7 +147,7 @@ const SkillsGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
         label={t('добавить навык')}
-        onTouchTap={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.handleOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>

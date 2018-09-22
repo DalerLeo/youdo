@@ -137,7 +137,7 @@ const ImageUploadField = ({classes, setFileUploadLoading, fileUploadLoading, set
       {hasImage && <div style={{position: 'absolute', top: '-5px', right: '-5px'}}>
         <IconButton
           style={iconStyle.button}
-          onTouchTap={() => handleRemoveImage()}
+          onClick={() => handleRemoveImage()}
           iconStyle={iconStyle.icon}>
           <DeleteIcon color="#666666"/>
         </IconButton>

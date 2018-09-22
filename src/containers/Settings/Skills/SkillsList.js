@@ -2,13 +2,14 @@ import React from 'react'
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import {reset} from 'redux-form'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout/index'
 import * as ROUTER from '../../../constants/routes'
-import filterHelper from '../../../helpers/filter'
 import toBoolean from '../../../helpers/toBoolean'
+import {listWrapper, detailWrapper} from '../../Wrappers'
+
 import {
   SKILLS_CREATE_DIALOG_OPEN,
   SKILLS_UPDATE_DIALOG_OPEN,
@@ -26,44 +27,19 @@ import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
+  listWrapper({listFetchAction: skillsListFetchAction, storeName: 'skills'}),
+  detailWrapper({itemFetchAction: skillsItemFetchAction, storeName: 'skills', paramName: 'skillsId'}),
   connect((state, props) => {
-    const query = _.get(props, ['location', 'query'])
-    const pathname = _.get(props, ['location', 'pathname'])
-    const detail = _.get(state, ['skills', 'item', 'data'])
-    const detailLoading = _.get(state, ['skills', 'item', 'loading'])
     const createLoading = _.get(state, ['skills', 'create', 'loading'])
     const updateLoading = _.get(state, ['skills', 'update', 'loading'])
-    const list = _.get(state, ['skills', 'list', 'data'])
-    const listLoading = _.get(state, ['skills', 'list', 'loading'])
     const filterForm = _.get(state, ['form', 'SkillsFilterForm'])
     const createForm = _.get(state, ['form', 'SkillsCreateForm'])
-    const filter = filterHelper(list, pathname, query)
 
     return {
-      list,
-      listLoading,
-      detail,
-      detailLoading,
       createLoading,
       updateLoading,
-      filter,
       filterForm,
       createForm
-    }
-  }),
-  withPropsOnChange((props, nextProps) => {
-    return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-  }, ({dispatch, filter}) => {
-    dispatch(skillsListFetchAction(filter))
-  }),
-
-  withPropsOnChange((props, nextProps) => {
-    const skillsId = _.get(nextProps, ['params', 'skillsId'])
-    return skillsId && _.get(props, ['params', 'skillsId']) !== skillsId
-  }, ({dispatch, params}) => {
-    const skillsId = _.toInteger(_.get(params, 'skillsId'))
-    if (skillsId) {
-      dispatch(skillsItemFetchAction(skillsId))
     }
   }),
 

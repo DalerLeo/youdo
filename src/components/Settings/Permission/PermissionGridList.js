@@ -138,7 +138,7 @@ const PermissionGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
+                onClick={() => { setDateDialog.handleOpenSetDateDialog(id) }}>
                 <ModEditorIcon color='#5d6474'/>
               </IconButton>
             </ToolTip>

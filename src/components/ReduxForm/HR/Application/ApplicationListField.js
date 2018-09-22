@@ -175,7 +175,7 @@ const enhance = compose(
  <Col style={{width: '70%'}}>{product}</Col>
  <Col style={{width: '20%'}}>{amount}</Col>
  <Col style={{width: '10%'}}>
- <IconButton onTouchTap={() => handleRemove(index)}>
+ <IconButton onClick={() => handleRemove(index)}>
  <DeleteIcon color="#666666"/>
  </IconButton>
  </Col>

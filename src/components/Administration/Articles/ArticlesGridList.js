@@ -129,7 +129,7 @@ const ArticlesGridList = enhance((props) => {
             style={iconStyle.button}
             disableTouchRipple={true}
             touch={true}
-            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+            onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
             <Edit />
           </IconButton>
         </ToolTip>
@@ -138,7 +138,7 @@ const ArticlesGridList = enhance((props) => {
             disableTouchRipple={true}
             iconStyle={iconStyle.icon}
             style={iconStyle.button}
-            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+            onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
             touch={true}>
             <DeleteIcon />
           </IconButton>
@@ -189,7 +189,7 @@ const ArticlesGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: LINK_COLOR, fontSize: '13px'}}
         className={classes.addButton}
         label={t('добавить статью')}
-        onTouchTap={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.handleOpenCreateDialog}
         icon={<ContentAdd color={LINK_COLOR}/>}>
       </FlatButton>
     </div>

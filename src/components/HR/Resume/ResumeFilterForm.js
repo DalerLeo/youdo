@@ -185,10 +185,10 @@ const ResumeFilterForm = enhance((props) => {
         <div className={classes.afterFilter}>
           <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
           <div>
-            <IconButton onTouchTap={filterDialog.handleOpenFilterDialog}>
+            <IconButton onClick={filterDialog.handleOpenFilterDialog}>
               <BorderColorIcon color="#8f8f8f" />
             </IconButton>
-            <IconButton onTouchTap={filterDialog.handleClearFilterDialog}>
+            <IconButton onClick={filterDialog.handleClearFilterDialog}>
               <CloseIcon className={classes.icon}/>
             </IconButton>
           </div>
@@ -200,7 +200,7 @@ const ResumeFilterForm = enhance((props) => {
       <div>
         <Link
           className={classes.arrow}
-          onTouchTap={filterDialog.handleOpenFilterDialog}>
+          onClick={filterDialog.handleOpenFilterDialog}>
           <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
         </Link>
       </div>
@@ -212,7 +212,7 @@ const ResumeFilterForm = enhance((props) => {
       <div className={classes.header}>
         <span className={forDialog ? classes.titleDialog : classes.title}>{t('Фильтр')}</span>
         {!forDialog &&
-                <IconButton onTouchTap={filterDialog.handleCloseFilterDialog}>
+                <IconButton onClick={filterDialog.handleCloseFilterDialog}>
                   <CloseIcon className={classes.icon} />
                 </IconButton>}
       </div>
@@ -302,11 +302,11 @@ const ResumeFilterForm = enhance((props) => {
             <FlatButton
               label={t('Очистить')}
               labelStyle={{color: COLOR_RED, fontWeight: '600', verticalAlign: 'inherit'}}
-              onTouchTap={filterDialog.handleClearFilterDialog}/>
+              onClick={filterDialog.handleClearFilterDialog}/>
             <FlatButton
               label={t('Применить')}
               labelStyle={{color: LINK_COLOR, fontWeight: '600', verticalAlign: 'inherit'}}
-              onTouchTap={handleSubmit(filterDialog.handleSubmitFilterDialog)}/>
+              onClick={handleSubmit(filterDialog.handleSubmitFilterDialog)}/>
           </div>
           : <RaisedButton
             type="submit"

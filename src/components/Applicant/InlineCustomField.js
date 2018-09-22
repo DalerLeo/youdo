@@ -65,7 +65,7 @@ const InlineCustomField = enhance((props) => {
         <IconButton
           iconStyle={iconStyle.icon}
           style={iconStyle.button}
-          onTouchTap={() => {
+          onClick={() => {
             updateAction(fieldNames)
             setShowField({loading: true, show: false})
           }}
@@ -84,7 +84,7 @@ const InlineCustomField = enhance((props) => {
         <IconButton
           iconStyle={iconStyle.icon}
           style={iconStyle.button}
-          onTouchTap={() => {
+          onClick={() => {
             updateAction([props.children.props.name])
             setShowField({loading: true, show: false})
           }}

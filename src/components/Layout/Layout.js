@@ -19,6 +19,8 @@ import {
   notificationCountFetchAction
 } from '../../actions/notifications'
 
+const content = React.createRef()
+
 const enhance = compose(
   connect((state, props) => {
     const query = _.get(props, ['location', 'query'])
@@ -31,33 +33,6 @@ const enhance = compose(
       filter,
       notificationsList,
       notificationsLoading
-    }
-  }),
-  injectSheet({
-    wrapper: {
-      height: '100%',
-      width: '100%',
-      display: 'flex'
-    },
-    loader: {
-      padding: '100px 0'
-    },
-    sidenav: {
-      position: 'fixed',
-      width: '220px',
-      top: '0',
-      left: '0',
-      bottom: '0',
-      zIndex: '100'
-    },
-    content: {
-      position: 'relative',
-      background: '#f7f8f9',
-      width: 'calc(100% - 220px)',
-      marginLeft: '220px',
-      padding: '0 28px 28px',
-      overflowY: 'auto',
-      overflowX: 'hidden'
     }
   }),
   withState('loading', 'setLoading', false),
@@ -76,14 +51,58 @@ const enhance = compose(
       }
     }
   }),
+  injectSheet({
+    wrapper: {
+      height: '100%',
+      width: '100%',
+      display: 'flex'
+    },
+    loader: {
+      padding: '100px 0'
+    },
+    sidenav: {
+      position: 'fixed',
+      width: '74px',
+      top: '0',
+      left: '0',
+      bottom: '0',
+      zIndex: '100',
+      transition: 'all 100ms',
+      transitionDelay: '300ms',
+      '&:hover': {
+        width: '220px',
+        '& a > span': {
+          visibility: 'visible',
+          opacity: '1'
+
+        }
+      },
+      '& a > span': {
+        transition: 'all 200ms',
+        transitionDelay: '300ms',
+        visibility: 'hidden',
+        opacity: '0',
+        marginLeft: '10px'
+      }
+    },
+    content: {
+      position: 'relative',
+      background: '#f7f8f9',
+      width: 'calc(100% - 74px)',
+      marginLeft: '74px',
+      padding: '0 28px 28px',
+      overflowY: 'auto',
+      overflowX: 'hidden'
+    }
+  }),
+
   lifecycle({
     componentDidMount () {
-      const content = this.refs.content
       const updateScrollValue = _.get(this, ['props', 'updateScrollValue'])
       const THRESHOLD = 110
       if (updateScrollValue) {
         let fixed = false
-        content.addEventListener('scroll', () => {
+        content.current.addEventListener('scroll', () => {
           const value = content.scrollTop
           const newValue = value >= THRESHOLD
           if (fixed !== newValue) {
@@ -130,8 +149,7 @@ const Layout = enhance((props) => {
             handleSignOut={handleSignOut}
             handleOpenNotificationBar={props.handleOpenNotificationBar}/>
         </div>
-        <div className={classes.content} ref="content">
-
+        <div className={classes.content} ref={content}>
           {children}
         </div>
 

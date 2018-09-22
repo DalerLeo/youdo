@@ -200,7 +200,7 @@ const GridListHeader = enhance((props) => {
           } : {width: width}} key={index}>
             <Link
               className={classes.sortingButton}
-              onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
+              onClick={() => hashHistory.push(filter.sortingURL(name))}>
               <FlatButton
                 className={classes.button}
                 labelStyle={{fontSize: '13px'}}
@@ -220,7 +220,7 @@ const GridListHeader = enhance((props) => {
         <Col xs={xs} key={index} style={alignRight && {textAlign: 'right', justifyContent: 'flex-end'}}>
           <Link
             className={classes.sortingButton}
-            onTouchTap={() => hashHistory.push(filter.sortingURL(name))}>
+            onClick={() => hashHistory.push(filter.sortingURL(name))}>
             <FlatButton
               className={classes.button}
               labelStyle={{fontSize: '13px'}}

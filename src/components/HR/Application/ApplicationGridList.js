@@ -326,26 +326,26 @@ const ApplicationGridList = enhance((props) => {
                   style={popoverStyle.menuItem}
                   innerDivStyle={popoverStyle.innerDiv}
                   leftIcon={<List style={popoverStyle.icon}/>}
-                  onTouchTap={() => { filterByStatus(null) }}
+                  onClick={() => { filterByStatus(null) }}
                   primaryText={t('Все заявки')}/>}
         <MenuItem
           style={popoverStyle.menuItem}
           innerDivStyle={popoverStyle.innerDiv}
           leftIcon={<InProcess style={popoverStyle.icon}/>}
-          onTouchTap={() => { filterByStatus(APPLICATION_ASSIGNED) }}
+          onClick={() => { filterByStatus(APPLICATION_ASSIGNED) }}
           primaryText={t('Все активные')}/>
         <MenuItem
           style={popoverStyle.menuItem}
           innerDivStyle={popoverStyle.innerDiv}
           leftIcon={<Completed style={popoverStyle.icon}/>}
-          onTouchTap={() => { filterByStatus(APPLICATION_COMPLETED) }}
+          onClick={() => { filterByStatus(APPLICATION_COMPLETED) }}
           primaryText={t('Завершенные')}/>
       </IconMenu>
 
       {false &&
             <ToolTip position="left" text={t('Отфильтровать по отмененным заявкам')}>
               <IconButton
-                onTouchTap={() => { filterByStatus(APPLICATION_CANCELED) }}
+                onClick={() => { filterByStatus(APPLICATION_CANCELED) }}
                 iconStyle={badgeStyle.iconStyle(statusIsCanceled)}>
                 <Canceled/>
               </IconButton>
@@ -363,7 +363,7 @@ const ApplicationGridList = enhance((props) => {
             mini={true}
             zDepth={1}
             backgroundColor="#12aaeb"
-            onTouchTap={createDialog.handleOpenCreateDialog}>
+            onClick={createDialog.handleOpenCreateDialog}>
             <ContentAdd />
           </FloatingActionButton>
         </ToolTip>

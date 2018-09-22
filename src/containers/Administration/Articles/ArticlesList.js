@@ -5,9 +5,8 @@ import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
-import filterHelper from '../../../helpers/filter'
 import toBoolean from '../../../helpers/toBoolean'
 import {
   ARTICLES_CREATE_DIALOG_OPEN,
@@ -15,6 +14,8 @@ import {
   ARTICLES_DELETE_DIALOG_OPEN,
   ArticlesGridList
 } from '../../../components/Administration/Articles'
+import {listWrapper, detailWrapper} from '../../Wrappers'
+
 import {
   articlesCreateAction,
   articlesUpdateAction,
@@ -26,41 +27,19 @@ import {openSnackbarAction} from '../../../actions/snackbar'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
+
+  listWrapper({listFetchAction: articlesListFetchAction, storeName: 'articles'}),
+  detailWrapper({itemFetchAction: articlesItemFetchAction, storeName: 'articles', paramName: 'articleId'}),
   connect((state, props) => {
-    const query = _.get(props, ['location', 'query'])
-    const pathname = _.get(props, ['location', 'pathname'])
-    const detail = _.get(state, ['articles', 'item', 'data'])
-    const detailLoading = _.get(state, ['articles', 'item', 'loading'])
     const createLoading = _.get(state, ['articles', 'create', 'loading'])
     const updateLoading = _.get(state, ['articles', 'update', 'loading'])
-    const list = _.get(state, ['articles', 'list', 'data'])
-    const listLoading = _.get(state, ['articles', 'list', 'loading'])
     const createForm = _.get(state, ['form', 'ArticlesCreateForm'])
-    const filter = filterHelper(list, pathname, query)
 
     return {
-      list,
-      listLoading,
-      detail,
-      detailLoading,
       createLoading,
       updateLoading,
-      filter,
       createForm
     }
-  }),
-  withPropsOnChange((props, nextProps) => {
-    return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-  }, ({dispatch, filter}) => {
-    dispatch(articlesListFetchAction(filter))
-  }),
-
-  withPropsOnChange((props, nextProps) => {
-    const articleId = _.get(nextProps, ['params', 'articleId'])
-    return articleId && _.get(props, ['params', 'articleId']) !== articleId
-  }, ({dispatch, params}) => {
-    const articleId = _.toInteger(_.get(params, 'articleId'))
-    articleId && dispatch(articlesItemFetchAction(articleId))
   }),
 
   withHandlers({

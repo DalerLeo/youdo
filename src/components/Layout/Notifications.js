@@ -364,7 +364,7 @@ const Layout = enhance((props) => {
         <IconButton
           iconStyle={iconStyle.icon}
           style={iconStyle.button}
-          onTouchTap={() => {
+          onClick={() => {
             notificationData.handleOpenConfirmDialog(id)
           }}>
           <Clear color="#dadada"/>
@@ -400,7 +400,7 @@ const Layout = enhance((props) => {
           <IconButton
             iconStyle={iconStyle.icon}
             style={iconStyle.buttonClose}
-            onTouchTap={() => {
+            onClick={() => {
               notificationData.handleOpenNotificationBar(false)
             }}>
             <Close color="#968c8c"/>

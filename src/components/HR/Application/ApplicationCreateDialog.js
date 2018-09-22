@@ -345,7 +345,7 @@ const ApplicationCreateDialog = enhance((props) => {
         <div className={classes.addRecruiter}>
           <ToolTip text={recruiter ? t('Изменить рекрутера') : t('Назначить рекрутера')} position={'right'}>
             <IconButton
-              onTouchTap={(event) => {
+              onClick={(event) => {
                 setAnchorEl(event.currentTarget)
                 setOpenRecruiterList(true)
               }}>
@@ -354,7 +354,7 @@ const ApplicationCreateDialog = enhance((props) => {
           </ToolTip>
         </div>
         <span>{isUpdate ? t('Изменение заявки') : t('Заявка на подбор персонала')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

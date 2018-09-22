@@ -56,7 +56,7 @@ const CompanyTypeCreateDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{isUpdate ? t('Изменить тип продукта') : t('Добавить тип продукта')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

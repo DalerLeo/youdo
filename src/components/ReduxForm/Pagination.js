@@ -65,7 +65,7 @@ const Pagination = enhance(({classes, filter, customPagination}) => {
             disabled={Boolean(!prev)}
             disableTouchRipple={true}
             iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
-            onTouchTap={() => prev && hashHistory.push(prev)}>
+            onClick={() => prev && hashHistory.push(prev)}>
             <ArrowLeftIcon />
           </IconButton>
 
@@ -73,7 +73,7 @@ const Pagination = enhance(({classes, filter, customPagination}) => {
             disabled={Boolean(!next)}
             disableTouchRipple={true}
             iconStyle={{color: 'rgba(0, 0, 0, 0.56)'}}
-            onTouchTap={() => next && hashHistory.push(next)}>
+            onClick={() => next && hashHistory.push(next)}>
             <ArrowRightIcon />
           </IconButton>
         </div>

@@ -365,7 +365,7 @@ const ResumeDetails = enhance((props) => {
             <MenuItem
               key={item.id}
               style={popoverStyle.menuItem}
-              onTouchTap={() => {
+              onClick={() => {
                 setDetailStatus({
                   id: item.id,
                   text: item.name
@@ -396,7 +396,7 @@ const ResumeDetails = enhance((props) => {
               iconStyle={iconStyle.icon}
               style={iconStyle.button}
               touch={true}
-              onTouchTap={() => { handleOpenUpdateDialog(resumeId) }}>
+              onClick={() => { handleOpenUpdateDialog(resumeId) }}>
               <Edit />
             </IconButton>
           </ToolTip>
@@ -405,7 +405,7 @@ const ResumeDetails = enhance((props) => {
               iconStyle={iconStyle.icon}
               style={iconStyle.button}
               touch={true}
-              onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(resumeId) }}>
+              onClick={() => { confirmDialog.handleOpenConfirmDialog(resumeId) }}>
               <Delete />
             </IconButton>
           </ToolTip>

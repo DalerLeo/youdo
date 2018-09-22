@@ -136,7 +136,7 @@ const LanguageField = enhance((props) => {
           </div>
         </div>
         <IconButton
-          onTouchTap={() => handleTouchTap(index, false)}
+          onClick={() => handleTouchTap(index, false)}
           disableTouchRipple={true}
           iconStyle={iconStyle.icon}
           style={iconStyle.button}>

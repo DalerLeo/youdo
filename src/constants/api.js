@@ -8,7 +8,7 @@ export const API_PROTOCOL = environment.API_PROTOCOL ? environment.API_PROTOCOL 
 export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
 export const USER = 'user'
-export const SIGN_IN = 'api-auth/'
+export const SIGN_IN = 'main/user/auth/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 
@@ -20,7 +20,7 @@ export const CLIENT_LIST_REPETITION = `/${CLIENT}/repetitions/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 export const CLIENT_ITEM_REPETITION = `/${CLIENT}/%d/repetition/`
 
-export const USERS = 'main/user'
+export const USERS = 'staff/staff'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`

@@ -106,7 +106,7 @@ class DateToDateField extends React.Component {
     this.handleOnRequestClose = this.handleOnRequestClose.bind(this)
   }
 
-    handleOnTouchTap = (event) => {
+    handleonClick = (event) => {
       event.preventDefault()
 
       this.setState({
@@ -141,7 +141,7 @@ class DateToDateField extends React.Component {
             <MUITextField
               errorText={error}
               floatingLabelText={label}
-              onFocus={this.handleOnTouchTap}
+              onFocus={this.handleonClick}
               value={dateLabel}
               className={classes.inputDateCustom}
             />

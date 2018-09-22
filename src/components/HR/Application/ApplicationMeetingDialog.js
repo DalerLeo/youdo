@@ -242,7 +242,7 @@ const ApplicationMeetingDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{isUpdate ? t('Изменить время собеседования') : t('Назначить собеседование')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

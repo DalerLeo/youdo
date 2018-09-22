@@ -219,7 +219,7 @@ const RoleGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => {
+                onClick={() => {
                   updateDialog.handleOpenUpdateDialog(id)
                 }}>
                 <EditIcon/>
@@ -230,7 +230,7 @@ const RoleGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onTouchTap={() => {
+                onClick={() => {
                   confirmDialog.handleOpenConfirmDialog(id)
                 }}
                 touch={true}>
@@ -256,7 +256,7 @@ const RoleGridList = enhance((props) => {
                 label={t('создать права доступа')}
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                onTouchTap={createDialog.handleOpenCreateDialog}
+                onClick={createDialog.handleOpenCreateDialog}
                 icon={<ContentAdd color="#12aaeb"/>}
                 primary={true}
               />

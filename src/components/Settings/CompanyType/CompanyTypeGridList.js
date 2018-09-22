@@ -195,11 +195,11 @@ const CompanyTypeGridList = enhance((props) => {
 
   const actions = (
     <div>
-      <IconButton onTouchTap={actionsDialog.handleActionEdit}>
+      <IconButton onClick={actionsDialog.handleActionEdit}>
         <ModEditorIcon />
       </IconButton>
 
-      <IconButton onTouchTap={actionsDialog.handleActionDelete}>
+      <IconButton onClick={actionsDialog.handleActionDelete}>
         <DeleteIcon />
       </IconButton>
     </div>
@@ -229,7 +229,7 @@ const CompanyTypeGridList = enhance((props) => {
                     style={iconStyle.button}
                     disableTouchRipple={true}
                     touch={true}
-                    onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                    onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                     <Edit />
                   </IconButton>
                 </ToolTip>
@@ -238,7 +238,7 @@ const CompanyTypeGridList = enhance((props) => {
                     disableTouchRipple={true}
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
-                    onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                    onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                     touch={true}>
                     <DeleteIcon />
                   </IconButton>
@@ -264,7 +264,7 @@ const CompanyTypeGridList = enhance((props) => {
                         style={iconStyle.button}
                         disableTouchRipple={true}
                         touch={true}
-                        onTouchTap={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
+                        onClick={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
                         <Edit />
                       </IconButton>
                     </ToolTip>
@@ -273,7 +273,7 @@ const CompanyTypeGridList = enhance((props) => {
                         disableTouchRipple={true}
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
-                        onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                        onClick={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
                         touch={true}>
                         <DeleteIcon />
                       </IconButton>
@@ -299,7 +299,7 @@ const CompanyTypeGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -308,7 +308,7 @@ const CompanyTypeGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -331,7 +331,7 @@ const CompanyTypeGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
         className={classes.addButton}
         label={t('добавить тип продукта')}
-        onTouchTap={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.handleOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>

@@ -170,7 +170,7 @@ const ResumeGridList = enhance((props) => {
             mini={true}
             zDepth={1}
             backgroundColor="#12aaeb"
-            onTouchTap={createDialog.handleOpenCreateDialog}>
+            onClick={createDialog.handleOpenCreateDialog}>
             <ContentAdd />
           </FloatingActionButton>
         </ToolTip>

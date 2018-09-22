@@ -5,6 +5,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {Router} from 'react-router'
 import moment from 'moment'
+import routes from '../../routes'
 const primaryColor = '#5d6474'
 const secondaryColor = '#12aaeb'
 
@@ -72,7 +73,7 @@ class App extends React.Component {
       <Provider store={this.props.store}>
         <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
           <div style={{width: '100%', height: '100%'}}>
-            <Router history={this.props.history} routes={this.props.routes} />
+            <Router history={this.props.history} routes={routes} />
           </div>
         </MuiThemeProvider>
       </Provider>

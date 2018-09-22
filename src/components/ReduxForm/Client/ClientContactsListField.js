@@ -85,7 +85,7 @@ const ClientContactsListField = (props) => {
             <div className={classes.headers}>
               <FloatingActionButton
                 backgroundColor="#12aaeb"
-                onTouchTap={() => handleTouchTap(index)}
+                onClick={() => handleTouchTap(index)}
                 mini={true}>
                 {fields.length !== index + ONE ? <ContentRemove/> : <ContentAdd />}
               </FloatingActionButton>

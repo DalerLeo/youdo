@@ -190,7 +190,7 @@ const ClientDetails = enhance((props) => {
               iconStyle={iconStyle.icon}
               style={iconStyle.button}
               touch={true}
-              onTouchTap={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
+              onClick={ () => { updateDialog.handleOpenUpdateDialog(detId) }}>
               <Edit />
             </IconButton>
           </ToolTip>
@@ -199,7 +199,7 @@ const ClientDetails = enhance((props) => {
               iconStyle={iconStyle.icon}
               style={iconStyle.button}
               touch={true}
-              onTouchTap={confirmDialog.handleOpenConfirmDialog}>
+              onClick={confirmDialog.handleOpenConfirmDialog}>
               <Delete />
             </IconButton>
           </ToolTip>

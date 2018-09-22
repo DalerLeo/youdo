@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {Link} from 'react-router'
 import _ from 'lodash'
+import classNames from 'classnames'
 import {connect} from 'react-redux'
 import {compose, lifecycle} from 'recompose'
 import injectSheet from 'react-jss'
@@ -15,6 +16,11 @@ import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import * as ROUTE from '../../constants/routes'
+const menuWrapper = React.createRef()
+const itemsRef = React.createRef()
+const logoutBtn = React.createRef()
+const downBlurRef = React.createRef()
+const upBlurRef = React.createRef()
 
 const style = {
   style: {
@@ -44,11 +50,11 @@ const enhance = compose(
       const hide = '-50px'
       const addToItemsHeight = 65
 
-      const menu = ReactDOM.findDOMNode(this.refs.menuWrapper)
-      const items = ReactDOM.findDOMNode(this.refs.items)
-      const logout = ReactDOM.findDOMNode(this.refs.logoutBtn)
-      const downBlur = ReactDOM.findDOMNode(this.refs.down_blur)
-      const upBlur = ReactDOM.findDOMNode(this.refs.up_blur)
+      const menu = menuWrapper.current
+      const items = itemsRef.current
+      const logout = logoutBtn.current
+      const downBlur = downBlurRef.current
+      const upBlur = upBlurRef.current
       const buttonHeight = logout.clientHeight
       const itemChildsHeight = _.sumBy(items.childNodes, (o) => {
         return o.clientHeight
@@ -150,15 +156,12 @@ const SideBarMenu = enhance((props) => {
   const rippleColor = 'rgba(255, 255, 255, 0.05)'
   const getMenuIcon = (url, query, name, icon) => {
     return (
-      <Link to={{pathname: url, query: query}}>
-        <FlatButton
-          label={name}
-          labelStyle={{textTransform: 'none'}}
-          hoverColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
-          rippleColor={noNumbersString(url) === currentMenuURL ? 'transparent' : rippleColor}
-          className={noNumbersString(url) === currentMenuURL ? classes.activeMenu : ''}
-          icon={icon}
-          style={style.style}/>
+      <Link className={classNames({
+        [classes.menu]: true,
+        [classes.activeMenu]: noNumbersString(url) === currentMenuURL
+      })} to={{pathname: url, query: query}}>
+        {icon} <span>{name}</span>
+
       </Link>
     )
   }
@@ -197,25 +200,25 @@ const SideBarMenu = enhance((props) => {
   })
 
   return (
-    <div className={classes.wrapper} ref="menuWrapper">
+    <div className={classes.wrapper} ref={menuWrapper}>
       {loading
         ? <div className={classes.menuLoading}>
           <Loader size={0.75}/>
         </div>
-        : <div className={classes.items} ref="items">
+        : <div className={classes.items} ref={itemsRef}>
           <div className={classes.logo}>
             <Link to={ROUTE.DASHBOARD_URL}>
               <div>{null}</div>
             </Link>
           </div>
-          {/* <div className={classes.notifications}>
-                    <CustomBadge
-                        dispatch={dispatch}
-                        classBadge={classes.badge}
-                        handleOpen={handleOpenNotificationBar}
-                        rippleColor={rippleColor}
-                        style={style.style}/>
-                </div> */}
+          <div className={classes.notifications}>
+            {/*<CustomBadge*/}
+              {/*dispatch={dispatch}*/}
+              {/*classBadge={classes.badge}*/}
+              {/*handleOpen={handleOpenNotificationBar}*/}
+              {/*rippleColor={rippleColor}*/}
+              {/*style={style.style}/>*/}
+          </div>
           {items}
           {!_.isEmpty(afterLine) &&
                 <div className={classes.bottom}>
@@ -223,19 +226,13 @@ const SideBarMenu = enhance((props) => {
                 </div>}
         </div>}
       {!loading &&
-            <div ref="logoutBtn">
-              <FlatButton
-                rippleColor={rippleColor}
-                hoverColor={rippleColor}
-                style={style.style}
-                label="Выйти"
-                icon={<SettingsPower/>}
-                onClick={handleSignOut}/>
-            </div>}
-      <div ref="down_blur" className={classes.downBlur}>
+            <a className={classes.menu} onClick={handleSignOut} ref={logoutBtn}>
+              <SettingsPower/><span>Выйти</span>
+            </a>}
+      <div ref={downBlurRef} className={classes.downBlur}>
         <ArrowDown color="#fff"/>
       </div>
-      <div ref="up_blur" className={classes.upBlur}>
+      <div ref={upBlurRef} className={classes.upBlur}>
         <ArrowUp color="#fff"/>
       </div>
     </div>
@@ -253,24 +250,10 @@ export default injectSheet({
     backgroundColor: '#2d3037',
     position: 'relative',
     boxShadow: '0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)',
-    '& button': {
-      paddingLeft: '10px',
-      opacity: '0.7',
-      '& > div': {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        height: '100%',
-        width: '100%'
-      },
-      '&:hover': {
-        opacity: '1'
-      }
-    },
     '& svg': {
       color: '#fff !important',
-      width: '25px !important',
-      height: '25px !important',
+      width: '30px !important',
+      height: '30px !important',
       '&:after': {
         content: '""',
         width: '3px',
@@ -349,7 +332,22 @@ export default injectSheet({
     display: 'flex',
     flexDirection: 'column'
   },
-
+  menu: {
+    whiteSpace: 'nowrap',
+    display: 'block',
+    lineHeight: '60px',
+    paddingLeft: '20px',
+    opacity: '0.7',
+    '&:hover': {
+      background: 'rgba(255, 255, 255, 0.05)',
+      opacity: '1',
+      color: 'fff'
+    },
+    color: '#fff',
+    '& svg': {
+      verticalAlign: 'middle'
+    }
+  },
   activeMenu: {
     boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.35)',
     background: '#24262b !important',

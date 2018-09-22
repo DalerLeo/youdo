@@ -137,14 +137,14 @@ const ApplicantGridList = enhance((props) => {
           <IconButton
             disableTouchRipple={true}
             touch={true}
-            onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+            onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
             <EditIcon />
           </IconButton>
         </ToolTip>
         <ToolTip position="bottom" text={t('Удалить')}>
           <IconButton
             disableTouchRipple={true}
-            onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+            onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
             touch={true}>
             <EditIcon />
           </IconButton>
@@ -197,7 +197,7 @@ const ApplicantGridList = enhance((props) => {
               <MenuItem
                 primaryText={t('изменить')}
                 leftIcon={<EditIcon/>}
-                onTouchTap={() => { updateDialog.handleOpenUpdateDialog(id) }}/>
+                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}/>
               <MenuItem
                 primaryText={t('одобрить')}
                 leftIcon={<DoneIcon/>}/>
@@ -225,7 +225,7 @@ const ApplicantGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
         label={t('добавить соискателя')}
-        onTouchTap={createDialog.onOpenCreateDialog}
+        onClick={createDialog.onOpenCreateDialog}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>

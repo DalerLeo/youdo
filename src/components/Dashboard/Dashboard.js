@@ -249,9 +249,9 @@ const Dashboard = enhance((props) => {
             anchorOrigin={{horizontal: 'right', vertical: 'bottom'}}
             targetOrigin={{horizontal: 'right', vertical: 'bottom'}}
             iconButtonElement={FAB}>
-            <MenuItem style={langIsUZ ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Ўзбекча" onTouchTap={() => props.setLangAction('uz')}/>
-            <MenuItem style={langIsRU ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Русский" onTouchTap={() => props.setLangAction('ru')}/>
-            <MenuItem style={langIsEN ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="English" onTouchTap={() => props.setLangAction('en')}/>
+            <MenuItem style={langIsUZ ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Ўзбекча" onClick={() => props.setLangAction('uz')}/>
+            <MenuItem style={langIsRU ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="Русский" onClick={() => props.setLangAction('ru')}/>
+            <MenuItem style={langIsEN ? fabMenuStyle.activeMenu : fabMenuStyle.defaultMenu} primaryText="English" onClick={() => props.setLangAction('en')}/>
           </IconMenu>
         </div>
 

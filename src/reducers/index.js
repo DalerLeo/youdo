@@ -1,5 +1,4 @@
 import {reducer as formReducer} from 'redux-form'
-import {reducer as toastrReducer} from 'react-redux-toastr'
 import {routerReducer} from 'react-router-redux'
 import {combineReducers} from 'redux'
 import createThunkReducer from '../helpers/createThunkReducer'
@@ -112,7 +111,6 @@ const rootReducer = combineReducers({
   snackbar: snackbarReducer(),
   error: errorReducer(),
   form: formReducer,
-  toastr: toastrReducer,
   routing: routerReducer
 })
 

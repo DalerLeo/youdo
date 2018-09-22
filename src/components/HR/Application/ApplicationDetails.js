@@ -423,13 +423,13 @@ const ApplicationDetails = enhance((props) => {
                           style={popoverStyle.menuItem}
                           innerDivStyle={popoverStyle.innerDiv}
                           leftIcon={<Edit style={popoverStyle.icon}/>}
-                          onTouchTap={() => { handleOpenUpdateDialog(applicationId) }}
+                          onClick={() => { handleOpenUpdateDialog(applicationId) }}
                           primaryText={t('Изменить')}/>}
             <MenuItem
               style={popoverStyle.menuItem}
               innerDivStyle={popoverStyle.innerDiv}
               leftIcon={<Delete style={popoverStyle.icon}/>}
-              onTouchTap={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}
+              onClick={() => { confirmDialog.handleOpenConfirmDialog(applicationId) }}
               primaryText={t('Удалить')}/>
           </IconMenu>
         </div>
@@ -521,7 +521,7 @@ const ApplicationDetails = enhance((props) => {
                         backgroundColor={COLOR_WHITE}
                         hoverColor={BORDER_COLOR}
                         rippleColor={COLOR_WHITE}
-                        onTouchTap={() => setMoreDetails(!moreDetails)}
+                        onClick={() => setMoreDetails(!moreDetails)}
                         fullWidth/>
                     </div>}
         </div>

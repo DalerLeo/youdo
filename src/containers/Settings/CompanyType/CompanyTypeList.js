@@ -5,11 +5,11 @@ import {connect} from 'react-redux'
 import {reset} from 'redux-form'
 import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout'
-import {compose, withPropsOnChange, withHandlers} from 'recompose'
+import {compose, withHandlers} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
-import filterHelper from '../../../helpers/filter'
 import toBoolean from '../../../helpers/toBoolean'
 import t from '../../../helpers/translate'
+import {listWrapper, detailWrapper} from '../../Wrappers'
 
 import {
   COMPANY_TYPE_CREATE_DIALOG_OPEN,
@@ -27,44 +27,20 @@ import {
 import {openSnackbarAction} from '../../../actions/snackbar'
 
 const enhance = compose(
+
+  listWrapper({listFetchAction: companyTypeListFetchAction, storeName: 'companyType'}),
+  detailWrapper({itemFetchAction: companyTypeItemFetchAction, storeName: 'companyType', paramName: 'companyTypeId'}),
   connect((state, props) => {
-    const query = _.get(props, ['location', 'query'])
-    const pathname = _.get(props, ['location', 'pathname'])
-    const detail = _.get(state, ['companyType', 'item', 'data'])
-    const detailLoading = _.get(state, ['companyType', 'item', 'loading'])
     const createLoading = _.get(state, ['companyType', 'create', 'loading'])
     const updateLoading = _.get(state, ['companyType', 'update', 'loading'])
-    const list = _.get(state, ['companyType', 'list', 'data'])
-    const listLoading = _.get(state, ['companyType', 'list', 'loading'])
     const createForm = _.get(state, ['form', 'CompanyTypeCreateForm'])
-    const filter = filterHelper(list, pathname, query)
 
     return {
-      list,
-      listLoading,
-      detail,
-      detailLoading,
       createLoading,
       updateLoading,
-      filter,
       createForm
     }
   }),
-  withPropsOnChange((props, nextProps) => {
-    return props.list && props.filter.filterRequest() !== nextProps.filter.filterRequest()
-  }, ({dispatch, filter}) => {
-    dispatch(companyTypeListFetchAction(filter))
-  }),
-
-  withPropsOnChange((props, nextProps) => {
-    const companyTypeId = _.get(nextProps, ['params', 'companyTypeId'])
-
-    return companyTypeId && _.get(props, ['params', 'companyTypeId']) !== companyTypeId
-  }, ({dispatch, params}) => {
-    const companyTypeId = _.toInteger(_.get(params, 'companyTypeId'))
-    companyTypeId && dispatch(companyTypeItemFetchAction(companyTypeId))
-  }),
-
   withHandlers({
     handleActionEdit: props => () => {
       return null

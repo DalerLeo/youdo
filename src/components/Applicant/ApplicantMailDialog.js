@@ -146,7 +146,7 @@ const ApplicantMailDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{t('Подтвердить')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>
@@ -173,7 +173,7 @@ const ApplicantMailDialog = enhance((props) => {
           <FlatButton
             label={t('Закрыт')}
             className={classes.actionButton}
-            onTouchTap={onClose}
+            onClick={onClose}
             labelStyle={{fontSize: '13px', color: '#129fdd'}}
             primary={true}/>
         </div>

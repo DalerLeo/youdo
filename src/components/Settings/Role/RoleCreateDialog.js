@@ -66,7 +66,7 @@ const RoleCreateDialog = enhance((props) => {
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
         <span>{isUpdate ? t('ИЗМЕНИТЬ ДОЛЖНОСТЬ') : t('ДОБАВЛЕНИЕ ДОЛЖНОСТИ')}</span>
-        <IconButton onTouchTap={onClose}>
+        <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
       </div>

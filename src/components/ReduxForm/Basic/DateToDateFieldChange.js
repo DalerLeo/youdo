@@ -33,6 +33,9 @@ const NINE = 9
 const ELEVEN = 11
 const THIRTY = 30
 const THIRTY_ONE = 31
+
+const TRUE = true
+
 const DAY_OF_LAST_MONTH = (MONTH === ZERO || MONTH === TWO || MONTH === FOUR || MONTH === SIX || MONTH === SEVEN || MONTH === NINE || MONTH === ELEVEN)
   ? THIRTY_ONE : THIRTY
 const range = {
@@ -133,7 +136,7 @@ class DateToDateField extends React.Component {
     }
   }
 
-    handleOnTouchTap = (event) => {
+    handleonClick = (event) => {
       event.preventDefault()
 
       this.setState({
@@ -148,6 +151,13 @@ class DateToDateField extends React.Component {
       })
     }
     render () {
+
+    if(TRUE) {
+      return (
+        <div></div>
+      )
+    }
+
       const {label, classes, input, meta: {error}, filter, hintText} = this.props
       const {
         open,
@@ -180,7 +190,7 @@ class DateToDateField extends React.Component {
               floatingLabelText={label}
               hintText={!label ? hintText : ''}
               hintStyle={!label && hintText ? hintStyle : {}}
-              onFocus={this.handleOnTouchTap}
+              onFocus={this.handleonClick}
               value={dateLabel}
               className={classes.inputDateCustom}
             />
