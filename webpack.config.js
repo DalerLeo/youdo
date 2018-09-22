@@ -86,12 +86,6 @@ webpackConfig = {
 
 if (NODE_ENV !== 'development') {
   webpackConfig.plugins.push(new webpack.NoEmitOnErrorsPlugin())
-  webpackConfig.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    compress: {
-      warnings: false,
-      unsafe: true
-    }
-  }))
 }
 else {
   webpackConfig.plugins.push(new webpack.NamedModulesPlugin())
