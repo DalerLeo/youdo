@@ -7,10 +7,11 @@ export const API_PROTOCOL = environment.API_PROTOCOL ? environment.API_PROTOCOL 
 // Export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
 export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
 
-export const USER = 'user'
+export const USER = 'main/user'
 export const SIGN_IN = 'main/user/auth/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
+export const CONFIG = '/config'
 
 export const CLIENT = 'client'
 export const CLIENT_CREATE = `/${CLIENT}/`

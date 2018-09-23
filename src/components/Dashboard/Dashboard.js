@@ -276,7 +276,7 @@ const Dashboard = enhance((props) => {
           </div>
         </Paper>
 
-        <section className={classes.chartsWrapper} ref="wrapper"/>
+        <section className={classes.chartsWrapper}/>
 
         {noActiveWidgets &&
                 <div className={classes.emptyWidgets}>
