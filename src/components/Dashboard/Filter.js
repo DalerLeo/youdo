@@ -1,7 +1,7 @@
 import React from 'react'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import {Field, reduxForm} from 'redux-form'
+import {reduxForm} from 'redux-form'
 
 const enhance = compose(
   injectSheet({
@@ -31,7 +31,7 @@ const enhance = compose(
 )
 
 const Filter = enhance((props) => {
-  const {classes, filter} = props
+  const {classes} = props
   return (
     <div className={classes.titleDate}>
     </div>

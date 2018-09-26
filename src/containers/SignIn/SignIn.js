@@ -4,7 +4,7 @@ import {compose, withState, withPropsOnChange} from 'recompose'
 import {hashHistory} from 'react-router'
 import {connect} from 'react-redux'
 import injectSheet from 'react-jss'
-import {signInAction, authConfirmAction} from '../../actions/signIn'
+import {signInAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
 import {setApi} from '../../helpers/storage'
@@ -39,24 +39,26 @@ const enhance = compose(
   }),
 )
 
-const getStorage = (local) => {
+/*
+Const getStorage = (local) => {
   return local ? localStorage : sessionStorage
 }
 
-const setConfigs = (configs) => {
+Const setConfigs = (configs) => {
   const storage = getStorage(false)
 
   _.forIn(configs, (value, key) => {
     storage.setItem(key, value)
   })
 }
+*/
 
 const SignIn = enhance((props) => {
   const {classes, dispatch, location, loading, formValues, updateSignInLoading} = props
   const onSubmit = () => {
     return dispatch(signInAction(formValues))
       .then(() => {
-        const rememberUser = _.get(formValues, 'rememberMe') || false
+        // .        const rememberUser = _.get(formValues, 'rememberMe') || false
         const re = _.get(location, ['query', 'redirect'])
         updateSignInLoading(false)
         const redirectUrl = !re || re === '/' ? ROUTES.USERS_LIST_URL : re

@@ -164,7 +164,7 @@ const ApplicantFilterForm = enhance((props) => {
             <Field
               name="date"
               component={DatesField}
-              />
+            />
           </div>
           <RaisedButton
             type="submit"

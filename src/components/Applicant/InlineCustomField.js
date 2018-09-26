@@ -5,7 +5,6 @@ import OkIcon from 'material-ui/svg-icons/action/done'
 import injectSheet from 'react-jss'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
-const TIME = 1000
 const enhance = compose(
   injectSheet({
     field: {
@@ -28,16 +27,6 @@ const iconStyle = {
     padding: 12
   }
 }
-let timer = null
-const setTimer = (props) => {
-//  Props.setShowField({loading: false, show: false})
-  timer = setTimeout(() => props.setShowField({loading: false, show: false}), TIME)
-  return null
-}
-const cancelTimer = () => {
-  clearTimeout(timer)
-  return null
-}
 
 const InlineCustomField = enhance((props) => {
   const {
@@ -55,8 +44,6 @@ const InlineCustomField = enhance((props) => {
   if (showField.show && _.isArray(props.children)) {
     return (
       <div
-//        onMouseLeave={() => setTimer(props)}
-//        onMouseEnter={() => cancelTimer()}
         className={wrapperClass}>
         {props.children.map((child, key) => {
           fieldNames.push(child.props.name)
@@ -77,8 +64,6 @@ const InlineCustomField = enhance((props) => {
   if (showField.show) {
     return (
       <div
-//        onMouseLeave={() => setTimer(props)}
-//        onMouseEnter={() => cancelTimer()}
         className={classes.field}>
         {props.children}
         <IconButton

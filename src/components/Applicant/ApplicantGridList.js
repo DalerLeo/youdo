@@ -167,7 +167,7 @@ const ApplicantGridList = enhance((props) => {
       actionButtons={actionButtons}
     />
   )
-  
+
   const applicantFilterDialog = (
     <ApplicantFilterForm
       filter={filter}

@@ -30,7 +30,7 @@ const DateToDateField = props => {
     'input',
     'meta'
   ])
-  
+
   return (
     <div style={{width: '250px'}}>
       <DateRangePicker

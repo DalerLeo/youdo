@@ -22,7 +22,6 @@ export const updateDetailStore = (action, values) => {
   const getNewData = () => {
     return Promise.resolve(values)
   }
-  console.warn('getNew DAa', getNewData())
   return {
     type: action,
     payload: getNewData()

@@ -212,12 +212,12 @@ const SideBarMenu = enhance((props) => {
             </Link>
           </div>
           <div className={classes.notifications}>
-            {/*<CustomBadge*/}
-              {/*dispatch={dispatch}*/}
-              {/*classBadge={classes.badge}*/}
-              {/*handleOpen={handleOpenNotificationBar}*/}
-              {/*rippleColor={rippleColor}*/}
-              {/*style={style.style}/>*/}
+            {/* <CustomBadge */}
+            {/* Dispatch={dispatch} */}
+            {/* ClassBadge={classes.badge} */}
+            {/* HandleOpen={handleOpenNotificationBar} */}
+            {/* RippleColor={rippleColor} */}
+            {/* Style={style.style}/> */}
           </div>
           {items}
           {!_.isEmpty(afterLine) &&

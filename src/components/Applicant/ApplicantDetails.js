@@ -11,8 +11,7 @@ import {
   TextFieldCustom,
   StaticUniversalSearchField,
   SphereSearchField,
-  GenderSearchField,
-  MaritalStatusSearchField
+  GenderSearchField
 } from '../ReduxForm'
 import {Link} from 'react-router'
 import {BORDER_STYLE, COLOR_GREY} from '../../constants/styleConstants'
@@ -197,19 +196,12 @@ const ApplicantDetails = enhance((props) => {
   const lastName = _.get(data, 'lastName')
   const photo = _.get(data, ['photo', 'file'])
   const firstName = _.get(data, 'firstName')
-  const email = _.get(data, ['email'])
-  const secondName = _.get(data, ['secondName'])
-  const status = _.get(data, ['status'])
+
   const interestLevel = _.get(data, ['interestLevel'])
   const martialStatus = _.get(data, ['martialStatus'])
   const activityField = _.get(data, ['activityField', 'name'])
-  const birthday = _.get(data, ['birthday'])
-  const address = _.get(data, ['address'])
-  const phone = _.get(data, ['phone'])
   const gender = _.get(data, ['gender'])
   const lang = _.get(data, ['profileLanguage'])
-  const phoneCode = _.get(data, ['phoneCode'])
-  const image = _.get(data, ['image', 'file'])
   if (loading) {
     return (
       <div className={classes.loader}>
