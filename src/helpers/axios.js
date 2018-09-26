@@ -9,7 +9,8 @@ import sprintf from 'sprintf'
 const axiosRequest = (useToken = true) => {
   const TOKEN = storageHelper.getToken()
   const LANG = storageHelper.getLanguage()
-  const GIVEN_URL = storageHelper.getApi()
+  const GIVEN_URL = 'undefined'
+// .  const GIVEN_URL = storageHelper.getApi()
   const FORMED_URL = (!_.isNil(GIVEN_URL) && GIVEN_URL !== 'undefined') ? `${GIVEN_URL}/%s/api/v1` : API_URL
   const UNAUTHORIZATE_STATUS = 401
   const NORM_STATUS_BEGIN = 200

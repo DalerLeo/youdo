@@ -28,6 +28,7 @@ import DoneIcon from 'material-ui/svg-icons/action/done'
 import BlockIcon from 'material-ui/svg-icons/content/block'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import ApplicantMailDialog from './ApplicantMailDialog'
+import ApplicantFilterForm from './ApplicantFilterForm'
 
 const listHeader = [
   {
@@ -127,6 +128,7 @@ const ApplicantGridList = enhance((props) => {
     listData,
     detailData,
     confirmMailDialog,
+    filterDialog,
     classes
   } = props
 
@@ -163,6 +165,14 @@ const ApplicantGridList = enhance((props) => {
       data={_.get(detailData, 'data') || {}}
       loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
+    />
+  )
+  
+  const applicantFilterDialog = (
+    <ApplicantFilterForm
+      filter={filter}
+      filterDialog={filterDialog}
+      initialValues={filterDialog.initialValues}
     />
   )
 
@@ -240,6 +250,7 @@ const ApplicantGridList = enhance((props) => {
         <ApplicationTabs/>
         <GridList
           filter={filter}
+          filterDialog={applicantFilterDialog}
           list={list}
           //          ListShadow={false}
           detail={detail}

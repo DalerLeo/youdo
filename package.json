@@ -27,7 +27,7 @@
     "moment": "^2.17.1",
     "prop-types": "^15.5.8",
     "react": "^16.5.2",
-    "react-date-range-ru": "^1.0.0",
+    "react-dates": "^18.1.0",
     "react-document-title": "^2.0.2",
     "react-dom": "^16.5.2",
     "react-dropzone": "^3.13.0",

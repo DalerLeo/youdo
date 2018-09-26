@@ -9,15 +9,16 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {ManufactureSearchField, ApplicantGroupSearchField} from '../ReduxForm/index'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../helpers/translate'
+import DatesField from '../ReduxForm/Basic/DatesField'
 
 export const APPLICANT_FILTER_OPEN = 'openFilterDialog'
 
 export const APPLICANT_FILTER_KEY = {
-  MANUFACTURE: 'manufacture',
+  START_DATE: 'startDate',
+  END_DATE: 'endDate',
   GROUP: 'group'
 }
 
@@ -160,12 +161,11 @@ const ApplicantFilterForm = enhance((props) => {
         </div>
         <form onSubmit={filterDialog.handleSubmitFilterDialog}>
           <div>
-            <Field className={classes.inputFieldCustom} name="manufacture" component={ManufactureSearchField} label={t('Производство')} fullWidth={true}/>
+            <Field
+              name="date"
+              component={DatesField}
+              />
           </div>
-          <div>
-            <Field className={classes.inputFieldCustom} name="group" component={ApplicantGroupSearchField} label={t('Принадлежность к группе')} fullWidth={true}/>
-          </div>
-
           <RaisedButton
             type="submit"
             primary={true}

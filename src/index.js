@@ -6,8 +6,9 @@ import {setObservableConfig} from 'recompose'
 import {hashHistory} from 'react-router'
 import {syncHistoryWithStore} from 'react-router-redux'
 import createStore from './store/createStore'
+import 'react-dates/initialize'
+import 'react-dates/lib/css/_datepicker.css'
 import './styles'
-
 const store = createStore()
 const history = syncHistoryWithStore(hashHistory, store)
 

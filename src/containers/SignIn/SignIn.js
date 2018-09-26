@@ -8,8 +8,6 @@ import {signInAction, authConfirmAction} from '../../actions/signIn'
 import SignInForm from '../../components/SignInForm'
 import * as ROUTES from '../../constants/routes'
 import {setApi} from '../../helpers/storage'
-import axios from '../../helpers/axios'
-import * as API from '../../constants/api'
 
 const enhance = compose(
   injectSheet({
@@ -59,19 +57,29 @@ const SignIn = enhance((props) => {
     return dispatch(signInAction(formValues))
       .then(() => {
         const rememberUser = _.get(formValues, 'rememberMe') || false
-        return dispatch(authConfirmAction(rememberUser))
+        const re = _.get(location, ['query', 'redirect'])
+        updateSignInLoading(false)
+        const redirectUrl = !re || re === '/' ? ROUTES.USERS_LIST_URL : re
+        return hashHistory.push(redirectUrl)
+
+        /*
+        Return dispatch(authConfirmAction(rememberUser))
+
           .then(() => {
             const re = _.get(location, ['query', 'redirect'])
             updateSignInLoading(true)
-            axios()
+
+            Axios()
               .get(API.CONFIG)
               .then((response) => {
                 updateSignInLoading(false)
                 setConfigs(_.get(response, 'data'))
-                const redirectUrl = !re || re === '/' ? ROUTES.USERS_LIST_URL : re
-                hashHistory.push(redirectUrl)
+                                const redirectUrl = !re || re === '/' ? ROUTES.USERS_LIST_URL : re
+                                hashHistory.push(redirectUrl)
               })
+
           })
+          */
       })
   }
 

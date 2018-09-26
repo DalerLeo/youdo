@@ -16,7 +16,6 @@ import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import Language from 'material-ui/svg-icons/social/public'
 import {setLanguage, getLanguage} from '../../helpers/storage'
-
 import t from '../../helpers/translate'
 
 const refreshAction = () => {
@@ -264,6 +263,7 @@ const Dashboard = enhance((props) => {
                         <ToolTip position={'right'} text={'Изменить пароль'}>
                           <EditIcon color={'#666'} onClick={() => { setOpenEditPass(true) }}/>
                         </ToolTip>}
+
           </div>
           <div className={classes.buttons}>
             <Filter
@@ -277,7 +277,6 @@ const Dashboard = enhance((props) => {
         </Paper>
 
         <section className={classes.chartsWrapper}/>
-
         {noActiveWidgets &&
                 <div className={classes.emptyWidgets}>
                   <div>{t('Виджеты отключены')}, <br/> {t('включите, чтобы просмотреть статистику')}</div>

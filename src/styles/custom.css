@@ -151,3 +151,8 @@ hr.lineDote {
         margin: 0;
     }
 }
+
+.DateInput__small {
+    width: calc(50% - 3px);
+    border-bottom: 1px solid #212121;
+}

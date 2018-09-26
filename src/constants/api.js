@@ -5,10 +5,10 @@ export const API_VERSION = 'v1'
 export const API_PROTOCOL = environment.API_PROTOCOL ? environment.API_PROTOCOL : 'http'
 
 // Export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
-export const API_URL = `${API_PROTOCOL}://${API_HOST}/${API_ROOT}/${API_VERSION}`
+export const API_URL = `${API_PROTOCOL}://${API_HOST}/`
 
 export const USER = 'main/user'
-export const SIGN_IN = 'main/user/auth/'
+export const SIGN_IN = 'main/login/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = `/${USER}/unauth/`
 export const CONFIG = '/config'
@@ -75,10 +75,6 @@ export const REGIONS_CREATE = `/${REGIONS}/`
 export const REGIONS_LIST = `/${REGIONS}/`
 export const REGIONS_ITEM = `/${REGIONS}/%d/`
 export const REGIONS_DELETE = `/${REGIONS}/%d/`
-
-/*
-*
-*/
 
 export const HR_APPLICATION = 'hr/application'
 export const HR_APPLICATION_CREATE = `/${HR_APPLICATION}/`

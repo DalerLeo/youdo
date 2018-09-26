@@ -12,6 +12,7 @@ import {replaceUrl} from '../../../helpers/changeUrl'
 import {updateDetailStore, updateStore} from '../../../helpers/updateStore'
 import toBoolean from '../../../helpers/toBoolean'
 import toCamelCase from '../../../helpers/toCamelCase'
+import moment from 'moment'
 import {
   APPLICANT_CREATE_DIALOG_OPEN,
   APPLICANT_UPDATE_DIALOG_OPEN,
@@ -113,11 +114,15 @@ const enhance = compose(
       const {filter, filterForm} = props
       const manufacture = _.get(filterForm, ['values', 'manufacture']) || null
       const group = _.get(filterForm, ['values', 'group']) || null
-
+      const fromDate = _.get(filterForm, ['values', 'date', 'startDate']) || null
+      const toDate = _.get(filterForm, ['values', 'date', 'endDate']) || null
+  
       filter.filterBy({
         [APPLICANT_FILTER_OPEN]: false,
         [APPLICANT_FILTER_KEY.MANUFACTURE]: _.join(manufacture, '-'),
-        [APPLICANT_FILTER_KEY.GROUP]: _.join(group, '-')
+        [APPLICANT_FILTER_KEY.GROUP]: _.join(group, '-'),
+        [APPLICANT_FILTER_KEY.START_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
+        [APPLICANT_FILTER_KEY.END_DATE]: toDate && toDate.format('YYYY-MM-DD'),
       })
     },
 
@@ -218,7 +223,10 @@ const ApplicantList = enhance((props) => {
   const openUpdateDialog = toBoolean(_.get(location, ['query', APPLICANT_UPDATE_DIALOG_OPEN]))
   const openConfirmDialog = toBoolean(_.get(location, ['query', APPLICANT_DELETE_DIALOG_OPEN]))
   const openConfirmMailDialog = toBoolean(_.get(location, ['query', APPLICANT_MAIL_DIALOG_OPEN]))
-
+  const firstDayOfMonth = _.get(location, ['query', 'startDate']) || moment().format('YYYY-MM-01')
+  const lastDay = moment().daysInMonth()
+  const lastDayOfMonth = _.get(location, ['query', 'endDate']) || moment().format('YYYY-MM-' + lastDay)
+  
   const manufacture = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.MANUFACTURE))
   const group = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.GROUP))
   const detailId = _.toInteger(_.get(params, 'id'))
@@ -282,7 +290,12 @@ const ApplicantList = enhance((props) => {
       }),
       group: group && _.map(_.split(group, '-'), (item) => {
         return _.toNumber(item)
-      })
+      }),
+      date: {
+        startDate: moment(firstDayOfMonth),
+        endDate: moment(lastDayOfMonth)
+      }
+  
     },
     filterLoading: false,
     openFilterDialog,
