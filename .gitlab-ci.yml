@@ -1,62 +1,54 @@
 before_script:
 #  - "export PATH=$PATH:/usr/local/bin"
-  - "export PROJECT_DIR=/web/myjob_admin"
-  - "export BUILD_DIR=~/myjob_admin"
+- "export PROJECT_DIR=/web/my_job/admin_ui"
+- "export BUILD_DIR=~/web/my_job_admin/${CI_PIPELINE_ID}"
 
-  # Information
-  - "whoami"
-  - "echo \"Current test location:\" `pwd`"
-#  - "nvm --version"
-#  - "nvm install 6 &> /dev/null"
-#  - "nvm use 6"
-  - "node --version"
-#  - "npm install -g yarn > /dev/null"
-  - "yarn --version"
+# Information
+- "whoami"
+- "echo \"Current test location:\" `pwd`"
+- "node --version"
+- "yarn --version"
 
 stages:
-  - build
-  - test
-  - deploy
+- build
+- test
+- deploy
 
 build:
   stage: build
   script:
-    - "export SOURCE_DIR=`pwd`"
-    - "export API_HOST=myjob.wienerdeming.com"
-    - "export NODE_ENV=production"
-    - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
-    - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
+  - "export SOURCE_DIR=`pwd`"
+  - "export API_HOST=apimyjob.wienerdeming.com"
+  - "export NODE_ENV=production"
+  - "rm -rf ~/admin_ui_${CI_BUILD_REF_NAME}"
+  - "mkdir ~/admin_ui_${CI_BUILD_REF_NAME}"
   tags:
-    - hrc
+  - dev
 
 test:
   stage: test
   script:
-    - "export SOURCE_DIR=`pwd`"
-    - "yarn install"
-    - "yarn lint"
-#    - "export DISPLAY=':99.0'"
-#    - "Xvfb :99 -screen 0 1024x768x24 +extension RANDR > /dev/null 2>&1 &"
-#    - "yarn test:server"
-#    - "kill %1"
+  - "export SOURCE_DIR=`pwd`"
+  - "yarn install"
+  - "yarn lint"
   tags:
-    - hrc
+  - dev
 
 deploy:
   stage: deploy
   script:
-    - "/usr/bin/supervisorctl restart all"
-    - "export SOURCE_DIR=`pwd`"
-    - "export API_HOST=myjob.wienerdeming.com"
-    - "yarn install"
-    - "export NODE_ENV=production"
-    - "yarn build"
-    - "rm -rf ~/basic_ui_${CI_BUILD_REF_NAME}"
-    - "mkdir ~/basic_ui_${CI_BUILD_REF_NAME}"
-    - "cp -R ${SOURCE_DIR}/dist/* ~/basic_ui_${CI_BUILD_REF_NAME}"
-    - "rm -rf ${PROJECT_DIR}/*"
-    - "cp -R ~/basic_ui_${CI_BUILD_REF_NAME}/* ${PROJECT_DIR}/"
+  - "/usr/bin/supervisorctl restart all"
+  - "export SOURCE_DIR=`pwd`"
+  - "export API_HOST=apimyjob.wienerdeming.com"
+  - "yarn install"
+  - "export NODE_ENV=production"
+  - "yarn build"
+  - "rm -rf ~/web/my_job_admin/admin_ui_${CI_BUILD_REF_NAME}"
+  - "mkdir ~/web/my_job_admin/admin_ui_${CI_BUILD_REF_NAME}"
+  - "cp -R ${SOURCE_DIR}/dist/* ~/web/my_job_admin/admin_ui_${CI_BUILD_REF_NAME}"
+  - "rm -rf ${PROJECT_DIR}/*"
+  - "cp -R ~/web/my_job_admin/admin_ui_${CI_BUILD_REF_NAME}/* ${PROJECT_DIR}/"
   only:
-    - master
+  - master
   tags:
-    - hrc
+  - dev
