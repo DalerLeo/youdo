@@ -18,7 +18,7 @@ build:
   stage: build
   script:
   - "export SOURCE_DIR=`pwd`"
-  - "export API_HOST=mjadmin.wienerdeming.com"
+  - "export API_HOST=apimyjob.wienerdeming.com"
   - "export NODE_ENV=production"
   - "rm -rf ~/admin_ui_${CI_BUILD_REF_NAME}"
   - "mkdir ~/admin_ui_${CI_BUILD_REF_NAME}"
@@ -39,7 +39,7 @@ deploy:
   script:
   - "/usr/bin/supervisorctl restart all"
   - "export SOURCE_DIR=`pwd`"
-  - "export API_HOST=mjadmin.wienerdeming.com"
+  - "export API_HOST=apimyjob.wienerdeming.com"
   - "yarn install"
   - "export NODE_ENV=production"
   - "yarn build"
