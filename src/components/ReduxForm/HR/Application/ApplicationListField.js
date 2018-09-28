@@ -123,32 +123,31 @@ const enhance = compose(
   }),
   connect((state) => {
     const currency = _.get(state, ['form', 'PricesCreateForm', 'values', 'currency', 'text'])
+    const createdApp = _.get(state, ['application', 'create', 'data'])
     return {
-      currency
+      currency,
+      createdApp
     }
-  }),
-  withReducer('state', 'dispatch', (state, action) => {
+  }), withReducer('state', 'dispatch', (state, action) => {
     return {...state, ...action}
   }, {open: false}),
 
   withHandlers({
     handleAdd: props => () => {
+      const application = _.get(props, ['createdApp'])
       const product = _.get(props, ['product', 'input', 'value'])
-      const amount = _.get(props, ['amount', 'input', 'value'])
-      const currency = _.get(props, ['currency'])
       const onChange = _.get(props, ['products', 'input', 'onChange'])
-      const products = _.get(props, ['products', 'input', 'value'])
+      const apps = _.get(props, ['applications', 'input', 'value'])
 
-      if (!_.isEmpty(product) && amount) {
+      if (!_.isEmpty(application)) {
         let has = false
-        _.map(products, (item) => {
-          if (_.get(item, 'product') === product) {
-            item.amount = _.toInteger(item.amount) + _.toInteger(amount)
+        _.map(apps, (item) => {
+          if (_.get(item, 'id') === _.get(application, 'id')) {
             has = true
           }
         })
         if (!has) {
-          onChange(_.union(products, [{product, amount, currency}]))
+          onChange(_.union(apps, [{product}]))
           has = false
         }
       }
@@ -162,7 +161,7 @@ const enhance = compose(
 
       onChange(products)
     }
-  })
+  }),
 )
 
 /* _.map(products, (item, index) => {
@@ -175,7 +174,7 @@ const enhance = compose(
  <Col style={{width: '70%'}}>{product}</Col>
  <Col style={{width: '20%'}}>{amount}</Col>
  <Col style={{width: '10%'}}>
- <IconButton onClick={() => handleRemove(index)}>
+ <IconButton onTouchTap={() => handleRemove(index)}>
  <DeleteIcon color="#666666"/>
  </IconButton>
  </Col>

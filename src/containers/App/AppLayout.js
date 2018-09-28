@@ -4,12 +4,13 @@ import _ from 'lodash'
 import * as ROUTES from '../../constants/routes'
 import {setTokenAction, signOutAction, setAuthConfirmAction} from '../../actions/signIn'
 import {hashHistory} from 'react-router'
-
+import injectSheet from 'react-jss'
 import {
   compose,
   withState,
   withHandlers
 } from 'recompose'
+import SideBarMenu from '../../components/SidebarMenu'
 
 const enhance = compose(
   connect(),
@@ -24,7 +25,34 @@ const enhance = compose(
         })
     }
   }),
-  withState('scrollValue', 'updateScrollValue', false)
+  withState('scrollValue', 'updateScrollValue', false),
+  injectSheet({
+    sidenav: {
+      position: 'fixed',
+      width: '74px',
+      top: '0',
+      left: '0',
+      bottom: '0',
+      zIndex: '100',
+      transition: 'all 100ms',
+      transitionDelay: '300ms',
+      '&:hover': {
+        width: '220px',
+        '& a > span': {
+          visibility: 'visible',
+          opacity: '1'
+
+        }
+      },
+      '& a > span': {
+        transition: 'all 200ms',
+        transitionDelay: '300ms',
+        visibility: 'hidden',
+        opacity: '0',
+        marginLeft: '10px'
+      }
+    }
+  })
 
 )
 
@@ -47,10 +75,17 @@ class AppLayout extends React.Component {
   }
 
   render () {
-    const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}} = this.props
-    const layout = {handleSignOut, scrollValue, updateScrollValue, pathname}
+    const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}, classes} = this.props
+    const layout = {scrollValue, updateScrollValue, pathname}
     return (
-      React.cloneElement(this.props.children, {layout})
+      <div style={{width: '100%', height: '100%'}}>
+        <div className={classes.sidenav}>
+          <SideBarMenu
+            handleSignOut={handleSignOut}
+            handleOpenNotificationBar={() => null}/>
+        </div>
+        {React.cloneElement(this.props.children, {layout})}
+      </div>
     )
   }
 }

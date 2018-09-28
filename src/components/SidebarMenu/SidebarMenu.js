@@ -4,7 +4,7 @@ import {Link} from 'react-router'
 import _ from 'lodash'
 import classNames from 'classnames'
 import {connect} from 'react-redux'
-import {compose, lifecycle} from 'recompose'
+import {compose, lifecycle, shouldUpdate, pure} from 'recompose'
 import injectSheet from 'react-jss'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
@@ -16,6 +16,7 @@ import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
 import * as ROUTE from '../../constants/routes'
+import MenuList from './MenuList'
 const menuWrapper = React.createRef()
 const itemsRef = React.createRef()
 const logoutBtn = React.createRef()
@@ -33,14 +34,8 @@ const style = {
 
 const enhance = compose(
   connect((state) => {
-    const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
-      return _.get(item, 'codename')
-    })
-    const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
     const loading = _.get(state, ['authConfirm', 'loading'])
     return {
-      isAdmin,
-      permissions,
       loading
     }
   }),
@@ -118,7 +113,9 @@ const enhance = compose(
         logout.scrollIntoView(scrollIntoViewOptions)
       })
     }
-  })
+  }),
+  pure
+
 )
 /* eslint no-inline-comments: 0 */
 /* eslint no-unused-vars: 0 */
@@ -128,76 +125,8 @@ const SideBarMenu = enhance((props) => {
     classes,
     handleSignOut,
     handleOpenNotificationBar,
-    permissions,
-    isAdmin,
-    loading,
-    dispatch,
-    pathname
+    loading
   } = props
-
-  const noNumbersString = (text) => {
-    if (text) {
-      return _.trimEnd(_.trimStart(text.replace(/[0-9]/g, ''), '/'), '/')
-    }
-    return false
-  }
-  const menu = getMenus(permissions, isAdmin)
-  const parent = _
-    .chain(menu)
-    .find((item) => {
-      return (_.findIndex(item.childs, (ch) => {
-        const trimmedURL = noNumbersString(_.get(ch, 'url'))
-        return trimmedURL === noNumbersString(pathname)
-      }) > NOT_FOUND)
-    })
-    .value()
-
-  const currentMenuURL = _.trimStart(_.get(parent, 'url'), '/')
-  const rippleColor = 'rgba(255, 255, 255, 0.05)'
-  const getMenuIcon = (url, query, name, icon) => {
-    return (
-      <Link className={classNames({
-        [classes.menu]: true,
-        [classes.activeMenu]: noNumbersString(url) === currentMenuURL
-      })} to={{pathname: url, query: query}}>
-        {icon} <span>{name}</span>
-
-      </Link>
-    )
-  }
-  const items = _.map(menu, (item, index) => {
-    const atBottom = _.get(item, 'bottom')
-    const url = _.get(item, 'url')
-    const query = _.get(item, 'query')
-    const dynamic = _.get(item, 'dynamic') && !isAdmin
-    const dynamicOnlyURL = _.get(item, 'dynamicOnlyURL') && !isAdmin
-    const icon = dynamic && !dynamicOnlyURL
-      ? _.get(_.first(_.get(item, 'childs')), 'icon')
-      : _.get(item, 'icon')
-    const tooltip = dynamic && !dynamicOnlyURL
-      ? _.get(_.first(_.get(item, 'childs')), 'name')
-      : _.get(item, 'name')
-    if (atBottom) {
-      return null
-    }
-    return (
-      <div key={index}>
-        {getMenuIcon(url, query, tooltip, icon)}
-      </div>
-    )
-  })
-  const bottomItems = _.filter(menu, (o) => {
-    return o.bottom
-  })
-  const afterLine = _.map(bottomItems, (item, index) => {
-    const url = _.get(item, 'url')
-    const query = _.get(item, 'query')
-    return (
-      <div key={index}>
-        {getMenuIcon(url, query, item.name, item.icon)}
-      </div>
-    )
-  })
 
   return (
     <div className={classes.wrapper} ref={menuWrapper}>
@@ -219,11 +148,7 @@ const SideBarMenu = enhance((props) => {
             {/* RippleColor={rippleColor} */}
             {/* Style={style.style}/> */}
           </div>
-          {items}
-          {!_.isEmpty(afterLine) &&
-                <div className={classes.bottom}>
-                  {afterLine}
-                </div>}
+          <MenuList/>
         </div>}
       {!loading &&
             <a className={classes.menu} onClick={handleSignOut} ref={logoutBtn}>

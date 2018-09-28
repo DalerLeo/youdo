@@ -29,6 +29,7 @@ import BlockIcon from 'material-ui/svg-icons/content/block'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import ApplicantMailDialog from './ApplicantMailDialog'
 import ApplicantFilterForm from './ApplicantFilterForm'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
 
 const listHeader = [
   {
@@ -74,12 +75,6 @@ const enhance = compose(
         height: '14px !important'
       }
     },
-    addButtonWrapper: {
-      height: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      marginLeft: '-18px'
-    },
     rightPanel: {
       background: '#fff',
       flexBasis: '100%',
@@ -115,7 +110,14 @@ const enhance = compose(
       right: '0',
       bottom: '0',
       zIndex: '1'
+    },
+    addButtonWrapper: {
+      position: 'absolute',
+      top: '10px',
+      right: '0',
+      marginBottom: '0px'
     }
+
   })
 )
 
@@ -235,7 +237,7 @@ const ApplicantGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
         label={t('добавить соискателя')}
-        onClick={createDialog.onOpenCreateDialog}
+        onClick={createDialog.onOpen}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>
@@ -247,27 +249,38 @@ const ApplicantGridList = enhance((props) => {
     <Container>
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.APPLICANT_LIST_URL}/>
+        <div className={classes.addButtonWrapper}>
+          <ToolTip position="left" text={'добавить соискателя'}>
+            <FloatingActionButton
+              mini={true}
+              zDepth={1}
+              backgroundColor="#12aaeb"
+              onClick={createDialog.onOpen}>
+              <ContentAdd/>
+            </FloatingActionButton>
+          </ToolTip>
+        </div>
+
         <ApplicationTabs/>
         <GridList
           filter={filter}
           filterDialog={applicantFilterDialog}
           list={list}
-          //          ListShadow={false}
           detail={detail}
           actionsDialog={<span/>}
           addButton={addButton}
         />
       </div>
 
-      {createDialog.openCreateDialog &&
+      {createDialog.open &&
       <ApplicantCreateDialog
         onOpenMailDialog={confirmDialog.handleOpenConfirmDialog}
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
-        open={createDialog.openCreateDialog}
-        loading={createDialog.createLoading}
-        onClose={createDialog.onCloseCreateDialog}
-        onSubmit={createDialog.onSubmitCreateDialog}
+        open={createDialog.isOpen}
+        loading={createDialog.loading}
+        onClose={createDialog.onClose}
+        onSubmit={createDialog.onSubmit}
         errorData={createDialog.errorData}
       />}
 

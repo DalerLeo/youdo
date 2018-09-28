@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import searchFieldGetOptions from '../../../../helpers/searchFieldGetOptions'
 import getIdsOption from '../../../../helpers/getIdsOption'
 
-const SphereMultiSearchField = connect()((props) => {
+const PositionMultiSearchField = connect()((props) => {
   const {params, pageSize} = props
   return (
     <MultiSelectField
@@ -19,4 +19,4 @@ const SphereMultiSearchField = connect()((props) => {
   )
 })
 
-export default SphereMultiSearchField
+export default PositionMultiSearchField

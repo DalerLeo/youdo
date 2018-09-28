@@ -77,3 +77,8 @@ export const APPLICANT_LIST_URL = `/${APPLICANT}`
 export const APPLICANT_ITEM_URL = `/${APPLICANT}/:id`
 export const APPLICANT_ITEM_PATH = `/${APPLICANT}/%d`
 
+export const PLAN = 'plan'
+export const PLAN_LIST_URL = `/${PLAN}`
+export const PLAN_ITEM_URL = `/${PLAN}/:id`
+export const PLAN_ITEM_PATH = `/${PLAN}/%d`
+

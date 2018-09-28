@@ -6,6 +6,7 @@ import {MainList} from '../containers/Main'
 import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
 import {ClientList} from '../containers/Client'
+import PlanList from '../containers/Plan'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
 import {CompanyTypeList} from '../containers/Settings/CompanyType'
@@ -166,6 +167,18 @@ export default {
         {
           path: ROUTES.APPLICANT_ITEM_URL,
           component: userIsAuth(ApplicantList)
+        }
+      ]
+    },
+
+    // PLAN TYPE
+    {
+      path: ROUTES.PLAN_LIST_URL,
+      component: userIsAdminChain(PlanList),
+      childRoutes: [
+        {
+          path: ROUTES.PLAN_ITEM_URL,
+          component: userIsAuth(PlanList)
         }
       ]
     },

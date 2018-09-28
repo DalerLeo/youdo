@@ -16,26 +16,24 @@ const enhance = compose(
     onDatesChange: props => ({startDate, endDate}) => {
       const {input} = props
       input.onChange({
-        startDate, endDate
+        fromDate: startDate, toDate: endDate
       })
     }
   })
 )
 
-const DateToDateField = props => {
-  const values = props.input.value
+const DateToDateField = ({className, input, ...props}) => {
   const defaultProps = _.omit(props, [
     'setFocusedInput',
     'stateDateWrapper',
-    'input',
     'meta'
   ])
 
   return (
-    <div style={{width: '250px'}}>
+    <div className={className} style={{width: '250px'}}>
       <DateRangePicker
         {...defaultProps}
-        {...values}
+        {...{startDate: _.get(input, 'value.fromDate'), endDate: _.get(input, 'value.toDate')}}
       />
     </div>
   )

@@ -72,9 +72,7 @@ class App extends React.Component {
     return (
       <Provider store={this.props.store}>
         <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
-          <div style={{width: '100%', height: '100%'}}>
-            <Router history={this.props.history} routes={routes} />
-          </div>
+          <Router history={this.props.history} routes={routes} />
         </MuiThemeProvider>
       </Provider>
     )

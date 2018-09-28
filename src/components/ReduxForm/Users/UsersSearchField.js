@@ -17,9 +17,8 @@ const getItem = (id) => {
 const UsersSearchField = (props) => {
   const {params, pageSize} = props
   const getText = (value) => {
-    const firstName = _.get(value, 'firstName')
-    const lastName = _.get(value, 'lastName')
-    return `${firstName} ${lastName}`
+    const firstName = _.get(value, 'fullName')
+    return firstName
   }
 
   return (

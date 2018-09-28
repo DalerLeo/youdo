@@ -154,3 +154,11 @@ export const APPLICANT_GROUP_ITEM = `/${APPLICANT_GROUP}/%d/`
 
 export const COUNTRY_LIST = 'main/country/'
 export const COUNTRY_ITEM = 'main/country/%d/'
+
+export const PLAN = 'staff/plan'
+export const PLAN_CREATE = `/${PLAN}/`
+export const PLAN_DELETE = `/${PLAN}/%d/`
+export const PLAN_LIST = `/${PLAN}/`
+export const PLAN_LIST_REPETITION = `/${PLAN}/repetitions/`
+export const PLAN_ITEM = `/${PLAN}/%d/`
+export const PLAN_ITEM_REPETITION = `/${PLAN}/%d/repetition/`

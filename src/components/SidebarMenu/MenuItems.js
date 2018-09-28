@@ -231,7 +231,8 @@ export const MenuItems = [
     url: ROUTES.ARTICLES_LIST_URL,
     childs: [
       {section: 'Основные', name: t('Статьи'), url: ROUTES.ARTICLES_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''}
+      {section: 'Основные', name: t('Компании'), url: ROUTES.COMPANIES_LIST_URL, permission: ''},
+      {section: 'Основные', name: t('План'), url: ROUTES.PLAN_LIST_URL, permission: ''}
     ]
   },
   {

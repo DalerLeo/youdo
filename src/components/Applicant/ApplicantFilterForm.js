@@ -13,13 +13,15 @@ import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import t from '../../helpers/translate'
 import DatesField from '../ReduxForm/Basic/DatesField'
+import {UsersSearchField} from '../ReduxForm'
 
 export const APPLICANT_FILTER_OPEN = 'openFilterDialog'
 
 export const APPLICANT_FILTER_KEY = {
   START_DATE: 'startDate',
   END_DATE: 'endDate',
-  GROUP: 'group'
+  GROUP: 'group',
+  USER: 'user'
 }
 
 const enhance = compose(
@@ -164,6 +166,13 @@ const ApplicantFilterForm = enhance((props) => {
             <Field
               name="date"
               component={DatesField}
+            />
+          </div>
+          <div>
+            <Field
+              name="user"
+              component={UsersSearchField}
+              label={'User'}
             />
           </div>
           <RaisedButton

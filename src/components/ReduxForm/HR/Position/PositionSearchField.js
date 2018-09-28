@@ -1,7 +1,6 @@
-import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../../Basic/ChildSearchField'
+import SearchField from '../../Basic/SearchField'
 import axios from '../../../../helpers/axios'
 import * as PATH from '../../../../constants/api'
 import toCamelCase from '../../../../helpers/toCamelCase'
@@ -24,7 +23,6 @@ const PositionSearchField = (props) => {
       getOptions={search => searchFieldGetOptions(PATH.HR_POSITION_LIST, search, params, pageSize)}
       getItem={getItem}
       getItemText={SearchField.defaultGetText('name')}
-      parent={_.get(params, 'child')}
       {...props}
     />
   )

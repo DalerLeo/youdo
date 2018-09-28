@@ -137,11 +137,11 @@ const enhance = compose(
     }
   }),
   withPropsOnChange((props, nextProps) => {
-    return _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value']) && _.get(nextProps, ['withDetails'])
+    return _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value']) && _.get(nextProps, ['withDetails'])
   }, (props) => {
     _.get(props, ['withDetails']) &&
-        _.get(props, ['input', 'value', 'value']) &&
-        props.getItem(_.get(props, ['input', 'value', 'value']))
+        _.get(props, ['input', 'value']) &&
+        props.getItem(_.get(props, ['input', 'value']))
   }),
   withPropsOnChange((props, nextProps) => {
     const text = _.get(props, ['state', 'text'])
@@ -158,9 +158,9 @@ const enhance = compose(
         _.get(nextProps, ['input', 'value'])
   }, (props) => {
     const {state, input, getItem, dispatch, getText, getValue} = props
-    const finder = _.find(state.dataSource, {'value': input.value.value})
-    if (_.isEmpty(finder) && input.value.value) {
-      getItem(input.value.value).then((data) => {
+    const finder = _.find(state.dataSource, {'value': input.value})
+    if (_.isEmpty(finder) && input.value) {
+      getItem(input.value).then((data) => {
         if (!_.isEmpty(data)) {
           return dispatch({
             dataSource: _.unionBy(props.state.dataSource, [{
@@ -189,9 +189,8 @@ const SearchField = enhance((props) => {
     placeHolder
   } = props
   const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
-  const inputValue = _.get(input, ['value', 'value'])
+  const inputValue = _.get(input, ['value'])
   const isEmptyValue = _.isNumber(inputValue) ? false : (_.isEmpty(inputValue) || _.isNaN(inputValue))
-
   return (
     <div className={classes.wrapper}>
       <div className={classNames({
@@ -201,9 +200,9 @@ const SearchField = enhance((props) => {
       <Select
         className={(meta.error && meta.touched) ? classes.selectError : classes.select}
         options={state.dataSource}
-        value={input.value.value || null}
+        value={input.value || null}
         onInputChange={text => dispatch({text: text})}
-        onChange={value => input.onChange(value)}
+        onChange={value => input.onChange(value.value)}
         onBlur={() => input.onBlur()}
         onFocus={input.onFocus}
         placeholder={placeHolder || ''}

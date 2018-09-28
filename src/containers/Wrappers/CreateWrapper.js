@@ -6,11 +6,12 @@ import _ from 'lodash'
 import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {formInlineValidate} from '../../helpers/formValidate'
+import toBoolean from '../../helpers/toBoolean'
 
 const createWrapper = params => {
   const {
     createAction,
-    queryKey,
+    queryKey = 'openCreateDialog',
     formName,
     thenActionKey,
     storeName
@@ -63,11 +64,12 @@ const createWrapper = params => {
         .combineLatest(({createData, createLoading, ...props}) => {
           return ({
             createDialog: {
-              onOpenCreateDialog,
-              onCloseCreateDialog,
-              onSubmitCreateDialog,
-              createData,
-              createLoading
+              isOpen: toBoolean(_.get(props, ['location', 'query', queryKey])),
+              onOpen: onOpenCreateDialog,
+              onClose: onCloseCreateDialog,
+              onSubmit: onSubmitCreateDialog,
+              data: createData,
+              loading: createLoading
             },
             ...props
           })

@@ -7,7 +7,7 @@ import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout'
 import * as ROUTER from '../../../constants/routes'
 import * as actionType from '../../../constants/actionTypes'
-import {listWrapper, detailWrapper, createWrapper} from '../../Wrappers'
+import {listWrapper, detailWrapper, createWrapper, updateWrapper, confirmWrapper} from '../../Wrappers'
 import {replaceUrl} from '../../../helpers/changeUrl'
 import {updateDetailStore, updateStore} from '../../../helpers/updateStore'
 import toBoolean from '../../../helpers/toBoolean'
@@ -47,7 +47,7 @@ const mapDispatchToProps = {
 
 const mapStateToProps = (state, props) => {
   const updateLoading = _.get(state, ['applicant', 'update', 'loading'])
-  const filterForm = _.get(state, ['form', 'ApplicantFilterForm'])
+  const filterForm = _.get(state, ['form', 'PlanFilterForm'])
   const updateForm = _.get(state, ['form', 'ApplicantUpdateForm'])
   return {
     updateLoading,
@@ -65,6 +65,17 @@ const enhance = compose(
     storeName: 'applicant',
     formName: 'ApplicantCreateForm',
     thenActionKey: APPLICANT_MAIL_DIALOG_OPEN
+  }),
+  updateWrapper({
+    updateAction: applicantUpdateAction,
+    queryKey: APPLICANT_UPDATE_DIALOG_OPEN,
+    storeName: 'applicant',
+    formName: 'ApplicantCreateForm'
+  }),
+  confirmWrapper({
+    confirmAction: applicantUpdateAction,
+    queryKey: APPLICANT_UPDATE_DIALOG_OPEN,
+    storeName: 'applicant'
   }),
   connect(mapStateToProps, mapDispatchToProps),
 
@@ -114,6 +125,7 @@ const enhance = compose(
       const {filter, filterForm} = props
       const manufacture = _.get(filterForm, ['values', 'manufacture']) || null
       const group = _.get(filterForm, ['values', 'group']) || null
+      const user = _.get(filterForm, ['values', 'user']) || null
       const fromDate = _.get(filterForm, ['values', 'date', 'startDate']) || null
       const toDate = _.get(filterForm, ['values', 'date', 'endDate']) || null
 
@@ -121,6 +133,7 @@ const enhance = compose(
         [APPLICANT_FILTER_OPEN]: false,
         [APPLICANT_FILTER_KEY.MANUFACTURE]: _.join(manufacture, '-'),
         [APPLICANT_FILTER_KEY.GROUP]: _.join(group, '-'),
+        [APPLICANT_FILTER_KEY.USER]: user,
         [APPLICANT_FILTER_KEY.START_DATE]: fromDate && fromDate.format('YYYY-MM-DD'),
         [APPLICANT_FILTER_KEY.END_DATE]: toDate && toDate.format('YYYY-MM-DD')
       })
@@ -229,6 +242,7 @@ const ApplicantList = enhance((props) => {
 
   const manufacture = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.MANUFACTURE))
   const group = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.GROUP))
+  const user = _.toInteger(filter.getParam(APPLICANT_FILTER_KEY.USER)) || null
   const detailId = _.toInteger(_.get(params, 'id'))
 
   const actionsDialog = {
@@ -237,7 +251,7 @@ const ApplicantList = enhance((props) => {
   }
 
   const createDialog = {
-    openCreateDialog,
+    open: openCreateDialog,
     ...props.createDialog
   }
   const confirmDialog = {
@@ -252,10 +266,14 @@ const ApplicantList = enhance((props) => {
     handleSubmitRechargeDialog: props.handleSubmitRechargeDialog
 
   }
+
   const updateDialog = {
     initialValues: (() => {
       if (!detail || openCreateDialog) {
-        return {}
+        return {
+          experiences: [{}],
+          educations: [{}]
+        }
       }
       return {
         activityField: {value: _.get(detail, ['activityField', 'id'])},
@@ -281,7 +299,8 @@ const ApplicantList = enhance((props) => {
     openUpdateDialog,
     handleOpenUpdateDialog: props.handleOpenUpdateDialog,
     handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-    handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
+    handleSubmitUpdateDialog: props.handleSubmitUpdateDialog,
+    ...props.updateDialog
   }
   const filterDialog = {
     initialValues: {
@@ -291,6 +310,7 @@ const ApplicantList = enhance((props) => {
       group: group && _.map(_.split(group, '-'), (item) => {
         return _.toNumber(item)
       }),
+      user,
       date: {
         startDate: moment(firstDayOfMonth),
         endDate: moment(lastDayOfMonth)

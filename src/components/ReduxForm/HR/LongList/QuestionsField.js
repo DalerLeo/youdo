@@ -101,7 +101,7 @@ const QuestionsField = enhance((props) => {
             fullWidth={true}/>
         </div>
         <IconButton
-          onClick={() => handleTouchTap(index, false)}
+          onTouchTap={() => handleTouchTap(index, false)}
           iconStyle={iconStyle.icon}
           style={iconStyle.button}>
           <ContentRemove/>

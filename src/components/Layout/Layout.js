@@ -9,7 +9,6 @@ import {
 import React from 'react'
 import injectSheet from 'react-jss'
 import DocumentTitle from 'react-document-title'
-import SideBarMenu from '../SidebarMenu'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ErrorDialog from '../ErrorDialog'
@@ -24,11 +23,10 @@ const content = React.createRef()
 const enhance = compose(
   connect((state, props) => {
     const query = _.get(props, ['location', 'query'])
-    const pathname = _.get(props, ['location', 'pathname'])
+    const pathname = _.get(props, 'pathname')
     const filter = filterHelper(pathname, query)
     const notificationsList = _.get(state, ['notifications', 'list', 'data'])
     const notificationsLoading = _.get(state, ['notifications', 'list', 'loading'])
-
     return {
       filter,
       notificationsList,
@@ -59,31 +57,6 @@ const enhance = compose(
     },
     loader: {
       padding: '100px 0'
-    },
-    sidenav: {
-      position: 'fixed',
-      width: '74px',
-      top: '0',
-      left: '0',
-      bottom: '0',
-      zIndex: '100',
-      transition: 'all 100ms',
-      transitionDelay: '300ms',
-      '&:hover': {
-        width: '220px',
-        '& a > span': {
-          visibility: 'visible',
-          opacity: '1'
-
-        }
-      },
-      '& a > span': {
-        transition: 'all 200ms',
-        transitionDelay: '300ms',
-        visibility: 'hidden',
-        opacity: '0',
-        marginLeft: '10px'
-      }
     },
     content: {
       position: 'relative',
@@ -118,7 +91,6 @@ const enhance = compose(
 const Layout = enhance((props) => {
   const {
     classes,
-    handleSignOut,
     children,
     dispatch,
     loading,
@@ -126,7 +98,6 @@ const Layout = enhance((props) => {
     openNotifications,
     notificationsList,
     notificationsLoading,
-    pathname,
     title
   } = props
   const mainTitle = 'MyJob Administration'
@@ -141,14 +112,7 @@ const Layout = enhance((props) => {
           loading={loading}
           setLoading={setLoading}
           handleOpenNotificationBar={props.handleOpenNotificationBar}
-
         />
-        <div className={classes.sidenav}>
-          <SideBarMenu
-            pathname={pathname}
-            handleSignOut={handleSignOut}
-            handleOpenNotificationBar={props.handleOpenNotificationBar}/>
-        </div>
         <div className={classes.content} ref={content}>
           {children}
         </div>
