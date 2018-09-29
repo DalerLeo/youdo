@@ -25,7 +25,10 @@ webpackConfig = {
     aggregateTimeout: 300,
     poll: 1000
   },
-
+  resolve: {
+    modules: ['src', 'node_modules'],
+    extensions: ['.web.js', '.mjs', '.js', '.json', '.web.jsx', '.jsx']
+  },
   entry: {
     main: path.join(__dirname, 'src/index.js'),
     vendor: vendorPackages

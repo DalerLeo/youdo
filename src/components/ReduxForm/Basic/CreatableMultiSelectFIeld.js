@@ -3,12 +3,12 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
-import Select from 'react-select'
+import {Creatable} from 'react-select'
 import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 import t from '../../../helpers/translate'
 import classNames from 'classnames'
-
+const ENTER = 13
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
   dispatch({loading: true})
   getOptions(state.text)
@@ -143,6 +143,17 @@ const enhance = compose(
       if (_.isEmpty(options)) {
         input.onChange([])
       }
+    },
+    onInputKeyDown: props => (event) => {
+      const {state: {text, dataSource}, input, dispatch} = props
+      if (event.keyCode === ENTER && text) {
+        dispatch({dataSource: _.union(dataSource, [{text, value: text}])})
+        input.onChange(_.union(input.value, [text]))
+      }
+      return null
+    },
+    onTest: props => (...w) => {
+      console.warn(w)
     }
   }),
   withPropsOnChange((props, nextProps) => {
@@ -150,6 +161,7 @@ const enhance = compose(
             _.get(props, ['state', 'open']) !== _.get(nextProps, ['state', 'open'])) &&
             _.get(nextProps, ['state', 'open'])
   }, (props) => props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)),
+
   withPropsOnChange((props, nextProps) => {
     return _.isEmpty(_.get(nextProps, ['state', 'dataSource'])) && _.get(nextProps, ['input', 'value'])
   }, (props) => {
@@ -190,16 +202,20 @@ const MultiSelectField = enhance((props) => {
     disabled,
     input,
     meta,
-    filterOptionRender
+    onInputKeyDown
   } = props
-  const hintText = state.loading ? <div>{t('Загрузка')}...</div> : <div>{t('Не найдено')}</div>
+  const hintText = state.loading
+    ? <div>{t('Загрузка')}...</div>
+    : state.text
+      ? <div>Добавить: <b>{state.text}</b></div>
+      : <div>{t('Не найдено')}</div>
   return (
     <div className={classes.wrapper}>
       <div className={classNames({
         [classes.label]: meta.active || !_.isEmpty(input.value),
         [classes.labelColor]: meta.active
       })}>{label}</div>
-      <Select.Creatable
+      <Creatable
         className={classes.select}
         options={state.dataSource}
         value={input.value}
@@ -210,15 +226,13 @@ const MultiSelectField = enhance((props) => {
         isLoading={state.loading}
         labelKey={'text'}
         disabled={disabled}
-        promptTextCreator={value => (t('Добавить') + ': ' + value)}
-        filterOptions={filterOptionRender}
         loadingPlaceholder={t('Загрузка') + '...'}
         onOpen={() => dispatch({open: true})}
         clearAllText={t('Очистить')}
+        onInputKeyDown={onInputKeyDown}
         multi={true}
         removeSelected={true}
         deleteRemoves={false}
-        rtl={true}
       />
     </div>
   )

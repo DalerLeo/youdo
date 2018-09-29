@@ -7,15 +7,19 @@ import t from '../../helpers/translate'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {formInlineValidate} from '../../helpers/formValidate'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
 
 const updateWrapper = params => {
   const {
-    updateAction,
-    queryKey = 'openUpdateDialog',
     formName,
-    thenActionKey = null,
     storeName,
-    updateKeys
+    updateAction,
+    itemPath = null,
+    listPath = null,
+    updateKeys = {},
+    createKeys = {},
+    thenActionKey = null,
+    queryKey = 'openUpdateDialog'
   } = params
 
   return compose(
@@ -34,15 +38,17 @@ const updateWrapper = params => {
 
       onOpen$
         .withLatestFrom(props$)
-        .subscribe(([, {filter, location, ...props}]) => {
-          replaceUrl(filter, location.pathname, {[queryKey]: true})
+        .subscribe(([value, {filter, location, ...props}]) => {
+          const pathname = itemPath ? sprintf(itemPath, value) : location.pathname
+          replaceUrl(filter, pathname, {[queryKey]: true})
           props.dispatch(reset(formName))
         })
 
       onClose$
         .withLatestFrom(props$)
         .subscribe(([, {filter, location, ...props}]) => {
-          replaceUrl(filter, location.pathname, {[queryKey]: false})
+          const pathname = listPath || location.pathname
+          replaceUrl(filter, pathname, {[queryKey]: false})
         })
 
       onSubmit$
@@ -53,6 +59,7 @@ const updateWrapper = params => {
             .then(() => {
               replaceUrl(filter, location.pathname, {[queryKey]: false})
               props.listFetchAction(filter)
+              props.itemFetchAction(detail.id)
               thenActionKey &&
               replaceUrl(filter, location.pathname, {[thenActionKey]: true, [queryKey]: false})
             })
@@ -64,9 +71,8 @@ const updateWrapper = params => {
       return props$
         .combineLatest(({updateData, updateLoading, detailLoading, detail, ...props}) => {
           const initialValues = (() => {
-            if (!detail || _.get(props, 'createDialog.isOpen')) {
-              return {
-              }
+            if (!detail || _.get(props, 'createDialog.open')) {
+              return createKeys
             }
             return _.chain(updateKeys)
               .mapValues(path => _.get(detail, path))
@@ -75,14 +81,13 @@ const updateWrapper = params => {
 
           return ({
             updateDialog: {
-              isOpen: toBoolean(_.get(props, ['location', 'query', queryKey])),
+              open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen,
               onClose,
               onSubmit,
               initialValues,
               data: updateData,
               loading: updateLoading || detailLoading
-
             },
             detailLoading,
             detail,

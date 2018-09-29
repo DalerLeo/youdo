@@ -82,3 +82,8 @@ export const PLAN_LIST_URL = `/${PLAN}`
 export const PLAN_ITEM_URL = `/${PLAN}/:id`
 export const PLAN_ITEM_PATH = `/${PLAN}/%d`
 
+export const JOB_SEARCH = 'job-search'
+export const JOB_SEARCH_LIST_URL = `/${JOB_SEARCH}`
+export const JOB_SEARCH_ITEM_URL = `/${JOB_SEARCH}/:id`
+export const JOB_SEARCH_ITEM_PATH = `${JOB_SEARCH}/%d`
+

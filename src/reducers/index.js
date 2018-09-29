@@ -113,6 +113,12 @@ const rootReducer = combineReducers({
     update: createThunkReducer(actionTypes.PLAN_UPDATE),
     item: createThunkReducer(actionTypes.PLAN_ITEM)
   }),
+  jobSearch: combineReducers({
+    create: createThunkReducer(actionTypes.JOB_SEARCH_CREATE),
+    list: createThunkReducer(actionTypes.JOB_SEARCH_LIST),
+    update: createThunkReducer(actionTypes.JOB_SEARCH_UPDATE),
+    item: createThunkReducer(actionTypes.JOB_SEARCH_ITEM)
+  }),
 
   snackbar: snackbarReducer(),
   error: errorReducer(),

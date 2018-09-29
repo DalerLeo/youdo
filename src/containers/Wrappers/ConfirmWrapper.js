@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 import _ from 'lodash'
 import {openSnackbarAction} from '../../actions/snackbar'
 import toBoolean from '../../helpers/toBoolean'
+import sprintf from 'sprintf'
 
 const createWrapper = params => {
   const {
@@ -11,7 +12,9 @@ const createWrapper = params => {
     queryKey = 'confirmDialog',
     thenActionKey = null,
     successMessage,
-    failMessage
+    failMessage,
+    itemPath = null,
+    listPath = null
   } = params
 
   return compose(
@@ -25,14 +28,16 @@ const createWrapper = params => {
 
       onOpen$
         .withLatestFrom(props$)
-        .subscribe(([, {filter, location, ...props}]) => {
-          replaceUrl(filter, location.pathname, {[queryKey]: true})
+        .subscribe(([value, {filter, location, ...props}]) => {
+          const pathname = itemPath ? sprintf(itemPath, value) : location.pathname
+          replaceUrl(filter, pathname, {[queryKey]: true})
         })
 
       onClose$
         .withLatestFrom(props$)
         .subscribe(([, {filter, location, ...props}]) => {
-          replaceUrl(filter, location.pathname, {[queryKey]: false})
+          const pathname = listPath || location.pathname
+          replaceUrl(filter, pathname, {[queryKey]: false})
         })
 
       onSubmit$
@@ -41,7 +46,8 @@ const createWrapper = params => {
           return props.confirmAction(_.get(detail, 'id'))
             .then(() => props.openSnackbarAction({message: successMessage}))
             .then(() => {
-              replaceUrl(filter, location.pathname, {[queryKey]: false})
+              const pathname = listPath || location.pathname
+              replaceUrl(filter, pathname, {[queryKey]: false})
               props.listFetchAction(filter)
               thenActionKey && replaceUrl(filter, location.pathname, {[thenActionKey]: true, [queryKey]: false})
             })
@@ -54,7 +60,7 @@ const createWrapper = params => {
         .combineLatest(({updateData, updateLoading, ...props}) => {
           return ({
             confirmDialog: {
-              isOpen: toBoolean(_.get(props, ['location', 'query', queryKey])),
+              open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen,
               onClose,
               onSubmit

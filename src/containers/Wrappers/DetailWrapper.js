@@ -4,9 +4,9 @@ import _ from 'lodash'
 import {flow, get, toInteger} from 'lodash/fp'
 export default params => {
   const {
-    itemFetchAction,
     storeName,
-    paramName = 'id'
+    paramName = 'id',
+    itemFetchAction
   } = params
   const mapStateToProps = (state) => {
     const detail = _.get(state, [storeName, 'item', 'data'])

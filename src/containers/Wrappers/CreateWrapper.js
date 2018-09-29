@@ -64,7 +64,7 @@ const createWrapper = params => {
         .combineLatest(({createData, createLoading, ...props}) => {
           return ({
             createDialog: {
-              isOpen: toBoolean(_.get(props, ['location', 'query', queryKey])),
+              open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen: onOpenCreateDialog,
               onClose: onCloseCreateDialog,
               onSubmit: onSubmitCreateDialog,

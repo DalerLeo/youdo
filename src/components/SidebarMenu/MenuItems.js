@@ -246,7 +246,8 @@ export const MenuItems = [
       {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Тип компании'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''}
+      {section: 'Основные', name: t('Тип компании'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''},
+      {section: 'Основные', name: t('Статус поиска работы'), url: ROUTES.JOB_SEARCH_LIST_URL, permission: ''}
 
     ]
   }

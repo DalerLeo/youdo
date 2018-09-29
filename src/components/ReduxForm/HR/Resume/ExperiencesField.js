@@ -160,15 +160,15 @@ const ExperiencesField = enhance((props) => {
               fullWidth={true}/>
           </div>
           {!hideWorkEnd &&
-                        <div className={classes.half}>
-                          <Field
-                            label={t('Окончание')}
-                            name={`${detail}.workEnd`}
-                            component={DateField}
-                            className={classes.inputDateCustom}
-                            errorStyle={{bottom: 2}}
-                            fullWidth={true}/>
-                        </div>}
+            <div className={classes.half}>
+              <Field
+                label={t('Окончание')}
+                name={`${detail}.workEnd`}
+                component={DateField}
+                className={classes.inputDateCustom}
+                errorStyle={{bottom: 2}}
+                fullWidth={true}/>
+            </div>}
           <Field
             label={t('Организация')}
             name={`${detail}.organization`}

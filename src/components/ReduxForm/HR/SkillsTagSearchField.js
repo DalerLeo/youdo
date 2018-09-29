@@ -8,11 +8,11 @@ const SkillsTagSearchField = (props) => {
   const {params, pageSize} = props
   return (
     <CreatableMultiSelectFIeld
-      getValue={CreatableMultiSelectFIeld.defaultGetValue('name')}
-      getText={CreatableMultiSelectFIeld.defaultGetText('name')}
-      getOptions={search => searchFieldGetOptions(PATH.HR_SKILLS_LIST, search, params, pageSize)}
-      getIdsOption={(ids) => getIdsOption(ids, PATH.HR_SKILLS_LIST)}
-      getItemText={CreatableMultiSelectFIeld.defaultGetText('name')}
+      getValue={CreatableMultiSelectFIeld.defaultGetValue('fullName')}
+      getText={CreatableMultiSelectFIeld.defaultGetText('fullName')}
+      getOptions={search => searchFieldGetOptions(PATH.USERS_LIST, search, params, pageSize)}
+      getIdsOption={(ids) => getIdsOption(ids, PATH.USERS_LIST)}
+      getItemText={CreatableMultiSelectFIeld.defaultGetText('fullName')}
       withDetails={true}
       {...props}
     />

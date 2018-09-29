@@ -22,6 +22,7 @@ import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import PlanFilterForm from './PlanFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import defaultsPropTypes from '../../constants/propTypes'
 
 const listHeader = [
   {
@@ -243,23 +244,23 @@ const PlanGridList = enhance((props) => {
         />
       </div>
 
-      {createDialog.isOpen &&
+      {createDialog.open &&
       <PlanCreateDialog
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
-        open={createDialog.isOpen}
+        open={createDialog.open}
         loading={createDialog.loading}
         onClose={createDialog.onClose}
         onSubmit={createDialog.onSubmit}
         errorData={createDialog.errorData}
       />}
 
-      {updateDialog.isOpen &&
+      {updateDialog.open &&
       <PlanCreateDialog
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
         isUpdate={true}
-        open={updateDialog.isOpen}
+        open={updateDialog.open}
         loading={updateDialog.loading}
         onClose={updateDialog.onClose}
         onSubmit={updateDialog.onSubmit}
@@ -273,7 +274,7 @@ const PlanGridList = enhance((props) => {
         loading={confirmDialog.confirmLoading}
         onClose={confirmDialog.onClose}
         onSubmit={confirmDialog.onSubmit}
-        open={confirmDialog.isOpen}
+        open={confirmDialog.open}
       />}
 
     </Container>
@@ -285,33 +286,18 @@ PlanGridList.propTypes = {
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    onOpenCreateDialog: PropTypes.func.isRequired,
-    onCloseCreateDialog: PropTypes.func.isRequired,
-    onSubmitCreateDialog: PropTypes.func.isRequired
+    ...defaultsPropTypes
   }).isRequired,
   confirmDialog: PropTypes.shape({
-    confirmLoading: PropTypes.bool.isRequired,
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleDeleteConfirmDialog: PropTypes.func.isRequired
+    ...defaultsPropTypes
   }).isRequired,
   updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
+    ...defaultsPropTypes,
+    initialValues: PropTypes.object
   }).isRequired,
   filterDialog: PropTypes.shape({
-    initialValues: PropTypes.object,
-    filterLoading: PropTypes.bool,
-    openFilterDialog: PropTypes.bool.isRequired,
-    handleOpenFilterDialog: PropTypes.func.isRequired,
-    handleCloseFilterDialog: PropTypes.func.isRequired,
-    handleSubmitFilterDialog: PropTypes.func.isRequired
+    ...defaultsPropTypes,
+    initialValues: PropTypes.object
   }).isRequired
 }
 

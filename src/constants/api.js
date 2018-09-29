@@ -162,3 +162,10 @@ export const PLAN_LIST = `/${PLAN}/`
 export const PLAN_LIST_REPETITION = `/${PLAN}/repetitions/`
 export const PLAN_ITEM = `/${PLAN}/%d/`
 export const PLAN_ITEM_REPETITION = `/${PLAN}/%d/repetition/`
+
+export const JOB_SEARCH = 'staff/staff'
+export const JOB_SEARCH_H_LIST = `/${JOB_SEARCH}/`
+export const JOB_SEARCH_ITEM = `/${JOB_SEARCH}/%d`
+export const JOB_SEARCH_UPDATE = `/${JOB_SEARCH}/%d`
+export const JOB_SEARCH_CREATE = `/${JOB_SEARCH}/`
+export const JOB_SEARCH_DELETE = `/${JOB_SEARCH}/%d`

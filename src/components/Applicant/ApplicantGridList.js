@@ -17,6 +17,7 @@ import ToolTip from '../ToolTip'
 import SubMenu from '../SubMenu'
 import sprintf from 'sprintf'
 import t from '../../helpers/translate'
+import defaultPropTypes from '../../constants/propTypes'
 import dateFormat from '../../helpers/dateFormat'
 import {replaceUrl} from '../../helpers/changeUrl'
 // .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
@@ -162,8 +163,8 @@ const ApplicantGridList = enhance((props) => {
       initialValues={updateDialog.initialValues}
       filter={filter}
       key={_.get(detailData, 'id')}
-      updateLoading={_.get(updateDialog, 'updateLoading')}
-      handleSubmitUpdateDialog={updateDialog.handleSubmitUpdateDialog}
+      updateLoading={_.get(updateDialog, 'loading')}
+      handleSubmitUpdateDialog={updateDialog.onSubmit}
       data={_.get(detailData, 'data') || {}}
       loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
@@ -277,22 +278,22 @@ const ApplicantGridList = enhance((props) => {
         onOpenMailDialog={confirmDialog.handleOpenConfirmDialog}
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
-        open={createDialog.isOpen}
+        open={createDialog.open}
         loading={createDialog.loading}
         onClose={createDialog.onClose}
         onSubmit={createDialog.onSubmit}
         errorData={createDialog.errorData}
       />}
 
-      {updateDialog.openUpdateDialog &&
+      {updateDialog.open &&
       <ApplicantCreateDialog
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
         isUpdate={true}
-        open={updateDialog.openUpdateDialog}
-        loading={updateDialog.updateLoading}
-        onClose={updateDialog.handleCloseUpdateDialog}
-        onSubmit={updateDialog.handleSubmitUpdateDialog}
+        open={updateDialog.open}
+        loading={updateDialog.loading}
+        onClose={updateDialog.onClose}
+        onSubmit={updateDialog.onSubmit}
         errorData={updateDialog.errorData}
       />}
 
@@ -300,9 +301,9 @@ const ApplicantGridList = enhance((props) => {
         type="delete"
         message={currentName}
         loading={confirmDialog.confirmLoading}
-        onClose={confirmDialog.handleCloseConfirmDialog}
-        onSubmit={confirmDialog.handleDeleteConfirmDialog}
-        open={confirmDialog.openConfirmDialog}
+        onClose={confirmDialog.onClose}
+        onSubmit={confirmDialog.onSubmit}
+        open={confirmDialog.open}
       />}
 
       {confirmMailDialog.open && <ApplicantMailDialog
@@ -321,33 +322,18 @@ ApplicantGridList.propTypes = {
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    onOpenCreateDialog: PropTypes.func.isRequired,
-    onCloseCreateDialog: PropTypes.func.isRequired,
-    onSubmitCreateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   confirmDialog: PropTypes.shape({
-    confirmLoading: PropTypes.bool.isRequired,
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleDeleteConfirmDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   updateDialog: PropTypes.shape({
     updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   filterDialog: PropTypes.shape({
     initialValues: PropTypes.object,
-    filterLoading: PropTypes.bool,
-    openFilterDialog: PropTypes.bool.isRequired,
-    handleOpenFilterDialog: PropTypes.func.isRequired,
-    handleCloseFilterDialog: PropTypes.func.isRequired,
-    handleSubmitFilterDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired
 }
 

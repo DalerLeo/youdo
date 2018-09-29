@@ -38,6 +38,7 @@ import Expectations from 'material-ui/svg-icons/action/trending-up'
 import ResumeCreatePersonal from './ResumeCreatePersonal'
 import ResumeCreateSkills from './ResumeCreateSkills'
 import ResumeCreateExpectations from './ResumeCreateExpectations'
+import defaultPropTypes from '../../constants/propTypes'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 export const APPLICANT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -479,10 +480,7 @@ const ResumeCreateDialog = enhance((props) => {
 
 ResumeCreateDialog.propTypes = {
   isUpdate: PropTypes.bool,
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
-  onSubmit: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired
+  ...defaultPropTypes
 }
 
 ResumeCreateDialog.defaultProps = {

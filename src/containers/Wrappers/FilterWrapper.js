@@ -77,7 +77,7 @@ const FilterWrapper = params => {
 
           return ({
             filterDialog: {
-              isOpen: toBoolean(_.get(props, ['location', 'query', queryKey])),
+              open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen,
               onClose,
               onClear,

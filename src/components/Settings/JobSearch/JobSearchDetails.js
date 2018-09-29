@@ -1,21 +1,21 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import * as ROUTES from '../../constants/routes'
+import * as ROUTES from '../../../constants/routes'
 import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import LinearProgress from '../LinearProgress'
-import ToolTip from '../ToolTip'
+import LinearProgress from '../../LinearProgress'
+import ToolTip from '../../ToolTip'
 import {
   TextFieldCustom,
   StaticUniversalSearchField,
   SphereSearchField,
   GenderSearchField
-} from '../ReduxForm'
+} from '../../ReduxForm'
 import {Link} from 'react-router'
-import {BORDER_STYLE, COLOR_GREY} from '../../constants/styleConstants'
-import {PROFILE_LANG, ACTIVITY_STATUS} from '../../constants/backendConstants'
+import {BORDER_STYLE, COLOR_GREY} from '../../../constants/styleConstants'
+import {PROFILE_LANG, ACTIVITY_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import AnnounceIcon from 'material-ui/svg-icons/action/announcement'
@@ -23,8 +23,8 @@ import ActivateIcon from 'material-ui/svg-icons/action/check-circle'
 import Edit from 'material-ui/svg-icons/editor/mode-edit'
 import BalanceIcon from 'material-ui/svg-icons/editor/attach-money'
 import BlockIcon from 'material-ui/svg-icons/content/block'
-import t from '../../helpers/translate'
-import NotFound from '../Images/not-found.png'
+import t from '../../../helpers/translate'
+import NotFound from '../../Images/not-found.png'
 import InlineCustomField from './InlineCustomField'
 
 const enhance = compose(
@@ -183,7 +183,7 @@ const iconStyle = {
     padding: 12
   }
 }
-const PlanDetails = enhance((props) => {
+const JobSearchDetails = enhance((props) => {
   const {
     filter,
     data,
@@ -403,9 +403,9 @@ const PlanDetails = enhance((props) => {
   )
 })
 
-PlanDetails.propTypes = {
+JobSearchDetails.propTypes = {
   loading: PropTypes.bool,
   data: PropTypes.object
 }
 
-export default PlanDetails
+export default JobSearchDetails

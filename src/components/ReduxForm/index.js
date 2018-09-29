@@ -12,6 +12,7 @@ import UserStatusRadioButton from './Users/UserStatusRadioButton'
 import ClientContactsField from './Client/ClientContactsField'
 import PermissionTimeSearchField from './PermissionTimeSearchField'
 import DatesField from './Basic/DatesField'
+import {Editor} from './Editor'
 
 import SphereSearchField from './Position/SphereSearchField'
 import PositionsSearchField from './Position/PositionSearchField'
@@ -46,5 +47,6 @@ export {
   StaticUniversalSearchField,
   TextFieldCustom,
   DateCustomField,
-  DatesField
+  DatesField,
+  Editor
 }

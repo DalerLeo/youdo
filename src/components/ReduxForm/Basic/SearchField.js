@@ -49,6 +49,7 @@ const enhance = compose(
       }
     },
     label: {
+      zIndex: '2',
       top: '0 !important',
       transform: 'scale(0.75) !important'
     },

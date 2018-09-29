@@ -11,14 +11,14 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import t from '../../helpers/translate'
-import defaultsPropTypes from '../../constants/propTypes'
-import DatesField from '../ReduxForm/Basic/DatesField'
-import {UsersSearchField} from '../ReduxForm'
+import t from '../../../helpers/translate'
+import defaultsPropTypes from '../../../constants/propTypes'
+import DatesField from '../../ReduxForm/Basic/DatesField'
+import {UsersSearchField} from '../../ReduxForm'
 
-export const PLAN_FILTER_OPEN = 'openFilterDialog'
+export const JOB_SEARCH_FILTER_OPEN = 'openFilterDialog'
 
-export const PLAN_FILTER_KEY = {
+export const JOB_SEARCH_FILTER_KEY = {
   START_DATE: 'date.startDate',
   END_DATE: 'date.endDate',
   USER: 'user'
@@ -99,15 +99,15 @@ const enhance = compose(
     }
   }),
   reduxForm({
-    form: 'PlanFilterForm',
+    form: 'JobSearchFilterForm',
     enableReinitialize: true
   }),
   withHandlers({
     getCount: props => () => {
       const {filter} = props
-      return _(PLAN_FILTER_KEY)
+      return _(JOB_SEARCH_FILTER_KEY)
         .values()
-        .filter(item => item !== PLAN_FILTER_KEY.FROM_DATE)
+        .filter(item => item !== JOB_SEARCH_FILTER_KEY.FROM_DATE)
         .filter(item => filter.getParam(item))
         .value()
         .length
@@ -115,7 +115,7 @@ const enhance = compose(
   })
 )
 
-const PlanFilterForm = enhance((props) => {
+const JobSearchFilterForm = enhance((props) => {
   const {classes, filterDialog, getCount, addButton} = props
   const filterCounts = getCount()
 
@@ -189,11 +189,11 @@ const PlanFilterForm = enhance((props) => {
   )
 })
 
-PlanFilterForm.propTypes = {
+JobSearchFilterForm.propTypes = {
   filter: PropTypes.object.isRequired,
   filterDialog: PropTypes.shape({
     ...defaultsPropTypes
   })
 }
 
-export default PlanFilterForm
+export default JobSearchFilterForm

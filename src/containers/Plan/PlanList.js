@@ -78,7 +78,7 @@ const enhance = compose(
   }),
   filterWrapper({
     queryKey: PLAN_FILTER_OPEN,
-    formName: 'PlanFilterForm',
+    formName: 'JobSearchFilterForm',
     filterKeys: PLAN_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),

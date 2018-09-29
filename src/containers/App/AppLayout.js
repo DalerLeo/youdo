@@ -75,15 +75,18 @@ class AppLayout extends React.Component {
   }
 
   render () {
+
     const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}, classes} = this.props
     const layout = {scrollValue, updateScrollValue, pathname}
+    const isSignIn = pathname === '/sign-in'
     return (
       <div style={{width: '100%', height: '100%'}}>
+        {!isSignIn &&
         <div className={classes.sidenav}>
           <SideBarMenu
             handleSignOut={handleSignOut}
             handleOpenNotificationBar={() => null}/>
-        </div>
+        </div>}
         {React.cloneElement(this.props.children, {layout})}
       </div>
     )

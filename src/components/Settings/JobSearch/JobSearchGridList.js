@@ -12,12 +12,12 @@ import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from '../../../constants/routes'
 import GridList from '../../GridList/index'
 import Container from '../../Container/index'
-import UsersCreateDialog from './UsersCreateDialog'
+import JobSearchCreateDialog from './JobSearchCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog/index'
 import SideMenu from '../SideMenu'
 import ToolTip from '../../ToolTip/index'
 import t from '../../../helpers/translate'
-import {USERS_STATUS} from '../../../constants/backendConstants'
+import {JOB_SEARCH_STATUS} from '../../../constants/backendConstants'
 import defaultPropTypes from '../../../constants/propTypes'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 const ZERO = 0
@@ -128,9 +128,9 @@ const iconStyle = {
     padding: 0
   }
 }
-const findItem = (item) => _.find(USERS_STATUS, {value: _.get(item, 'status')})
+const findItem = (item) => _.find(JOB_SEARCH_STATUS, {value: _.get(item, 'status')})
 
-const UsersGridList = enhance((props) => {
+const JobSearchGridList = enhance((props) => {
   const {
     filter,
     createDialog,
@@ -206,7 +206,7 @@ const UsersGridList = enhance((props) => {
   return (
     <Container>
       <div className={classes.wrapper}>
-        <SideMenu currentUrl={ROUTES.USERS_LIST_URL}/>
+        <SideMenu currentUrl={ROUTES.JOB_SEARCH_LIST_URL}/>
         <div className={classes.rightPanel}>
           <GridList
             filter={filter}
@@ -220,7 +220,7 @@ const UsersGridList = enhance((props) => {
       </div>
 
       {createDialog.open &&
-      <UsersCreateDialog
+      <JobSearchCreateDialog
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
         open={createDialog.open}
@@ -231,7 +231,7 @@ const UsersGridList = enhance((props) => {
       />}
 
       {updateDialog.open &&
-      <UsersCreateDialog
+      <JobSearchCreateDialog
         detailData={_.get(detailData, 'data')}
         initialValues={updateDialog.initialValues}
         isUpdate={true}
@@ -253,7 +253,7 @@ const UsersGridList = enhance((props) => {
   )
 })
 
-UsersGridList.propTypes = {
+JobSearchGridList.propTypes = {
   filter: PropTypes.object.isRequired,
   listData: PropTypes.object,
   detailData: PropTypes.object,
@@ -266,11 +266,7 @@ UsersGridList.propTypes = {
   updateDialog: PropTypes.shape({
     initialValues: PropTypes.object,
     ...defaultPropTypes
-  }).isRequired,
-  filterDialog: PropTypes.shape({
-    initialValues: PropTypes.object,
-    ...defaultPropTypes
   }).isRequired
 }
 
-export default UsersGridList
+export default JobSearchGridList

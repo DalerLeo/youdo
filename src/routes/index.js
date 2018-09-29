@@ -18,7 +18,8 @@ import {
 import {
   SkillsList,
   PostList,
-  UsersList
+  UsersList,
+  JobSearch
 } from '../containers/Settings'
 
 import {RoleList} from '../containers/Settings/Role'
@@ -159,7 +160,7 @@ export default {
       ]
     },
 
-    // COMPANY TYPE
+    // APPLICANT
     {
       path: ROUTES.APPLICANT_LIST_URL,
       component: userIsAdminChain(ApplicantList),
@@ -179,6 +180,17 @@ export default {
         {
           path: ROUTES.PLAN_ITEM_URL,
           component: userIsAuth(PlanList)
+        }
+      ]
+    },
+    // PLAN TYPE
+    {
+      path: ROUTES.JOB_SEARCH_LIST_URL,
+      component: userIsAdminChain(JobSearch),
+      childRoutes: [
+        {
+          path: ROUTES.JOB_SEARCH_ITEM_URL,
+          component: userIsAuth(JobSearch)
         }
       ]
     },
