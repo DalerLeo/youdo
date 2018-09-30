@@ -1,5 +1,5 @@
 # Abwise UI
-[![build status](https://gitlab.gapbor.com/fennecui/fennec_ui/badges/master/build.svg)](https://gitlab.gapbor.com/fennecui/fennec_ui/commits/master)
+
 
 Front side Abwise application.
 
@@ -18,14 +18,13 @@ And many other libraries.
 
 ### Installation
 
-Dillinger requires [Node.js](https://nodejs.org/) v4+ and [Yarn] to run.
+Dillinger requires [Node.js](https://nodejs.org/) v6+ and [Yarn] to run.
 
 Install the dependencies and devDependencies and start the server.
 
 ```sh
-$ git clone https://gitlab.gapbor.com/fennecui/fennec_ui.git
-$ cd fennec_ui
-$ git checkout development
+$ git clone https://lab.wienerdeming.com/myjob/admin.git
+$ cd admin
 $ yarn install
 $ yarn start
 ```
@@ -35,7 +34,7 @@ In this moment we don't have any test but you can run lint for same issue
 ```sh 
 $ yarn run lint
 ```
-
+``````````````````
 Another use case write hook for git like this
 ```sh
 $ echo -e '#!/bin/sh\nyarn run lint' > .git/hooks/pre-push
@@ -53,7 +52,7 @@ $ yarn start
 For production release:
 ```sh
 $ git checkout production
-$ export API_HOST=api.gapbor.com
+$ export API_HOST=apimyjob.wienerdeming.com
 $ yarn build
 ```
 
