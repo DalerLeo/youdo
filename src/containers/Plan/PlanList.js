@@ -34,6 +34,7 @@ import {
 } from '../../actions/plan'
 import {openSnackbarAction} from '../../actions/snackbar'
 import {openErrorAction} from '../../actions/error'
+import * as ROUTES from '../../constants/routes'
 
 const updateKeys = {
   'manager': 'manager.id',
@@ -67,18 +68,22 @@ const enhance = compose(
     queryKey: PLAN_UPDATE_DIALOG_OPEN,
     storeName: 'plan',
     formName: 'PlanCreateForm',
-    updateKeys
+    updateKeys,
+    itemPath: ROUTES.PLAN_ITEM_PATH,
+    listPath: ROUTES.PLAN_LIST_URL
   }),
   confirmWrapper({
     confirmAction: planDeleteAction,
-    queryKey: PLAN_DELETE_DIALOG_OPEN,
     storeName: 'plan',
+    queryKey: PLAN_DELETE_DIALOG_OPEN,
+    itemPath: ROUTES.PLAN_ITEM_PATH,
+    listPath: ROUTES.PLAN_LIST_URL,
     successMessage: 'Успешно удалено',
     failMessage: 'Удаление невозможно из-за связи с другими данными'
   }),
   filterWrapper({
     queryKey: PLAN_FILTER_OPEN,
-    formName: 'JobSearchFilterForm',
+    formName: 'PlanFilterForm',
     filterKeys: PLAN_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),
@@ -122,15 +127,15 @@ const PlanList = enhance((props) => {
     filterDialog
   } = props
 
-  const startDate = _.get(location, ['query', 'startDate']) || null
-  const endDate = _.get(location, ['query', 'endDate']) || null
+  const fromDate = _.get(location, ['query', 'fromDate']) || null
+  const toDate = _.get(location, ['query', 'toDate']) || null
 
   const detailId = _.toInteger(_.get(params, 'id'))
 
   const filterInitial = {
     date: {
-      startDate: startDate && moment(startDate),
-      endDate: endDate && moment(endDate)
+      fromDate: fromDate && moment(fromDate),
+      toDate: toDate && moment(toDate)
     }
   }
   const UpdateInitial = {
@@ -140,7 +145,6 @@ const PlanList = enhance((props) => {
 
     }
   }
-
   // SET SOME VALUES TO INITIAL VALUES MANUALLY
   setInitialValues(filterDialog, filterInitial)
   setInitialValues(updateDialog, UpdateInitial)

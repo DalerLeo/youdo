@@ -220,7 +220,6 @@ export const MenuItems = [
             {section: SETTINGS_MISC, name: t('Оборудования'), url: ROUTES.EQUIPMENT_LIST_URL, permission: 'frontend_settings_equipment'},
             {section: SETTINGS_MISC, name: t('Организация'), url: ROUTES.DIVISION_LIST_URL, permission: 'frontend_settings_division'},
             {section: SETTINGS_MISC, name: t('Объединение'), url: ROUTES.JOIN_LIST_URL, permission: 'frontend_settings_join'},
-            {section: SETTINGS_MISC, name: t('Ограничение времени'), url: ROUTES.PERMISSION_LIST_URL, permission: 'frontend_settings_permissions'},
             {section: SETTINGS_MISC, name: t('Уведомления'), url: ROUTES.NOTIFICATION_TEMPLATE_LIST_URL, permission: 'frontend_settings_notifications'}
         ]
     } */

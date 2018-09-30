@@ -4,56 +4,62 @@ import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import * as ROUTES from '../../constants/routes'
 import GridList from '../GridList/index'
 import Container from '../Container/index'
 import PlanCreateDialog from './PlanCreateDialog'
-import PlanDetails from './PlanDetails'
 import ConfirmDialog from '../ConfirmDialog/index'
 import ToolTip from '../ToolTip'
 import SubMenu from '../SubMenu'
-import sprintf from 'sprintf'
 import t from '../../helpers/translate'
 import dateFormat from '../../helpers/dateFormat'
-import {replaceUrl} from '../../helpers/changeUrl'
+import numberFormat from '../../helpers/numberFormat'
 import IconButton from 'material-ui/IconButton'
-import EditIcon from 'material-ui/svg-icons/content/create'
 import PlanFilterForm from './PlanFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import defaultsPropTypes from '../../constants/propTypes'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import {hashHistory} from 'react-router'
+import Edit from 'material-ui/svg-icons/image/edit'
+import DeleteIcon from 'material-ui/svg-icons/action/delete'
 
 const listHeader = [
   {
     sorting: false,
     name: 'name',
     title: 'ФИО',
-    xs: 3
+    xs: 2
   },
   {
     sorting: false,
-    name: 'resume_num',
-    title: t('Кол-во резюме'),
+    name: 'amount',
+    title: 'Сумма плана',
     xs: 2
   },
   {
     sorting: false,
     name: 'modified_date',
-    title: t('Дата обновления'),
+    title: 'Кол-во обработанных заказов',
     xs: 3
   },
   {
     sorting: false,
-    name: 'created_date',
-    title: t('Дата создания'),
+    name: 'sales_amount',
+    title: 'Сумма от продаж',
     xs: 2
   },
   {
     sorting: false,
-    name: 'balance',
-    title: t('Балансе'),
+    name: 'till_end',
+    title: 'До выполнения плана',
     xs: 2
+  },
+  {
+    sorting: false,
+    name: '',
+    title: '',
+    xs: 1
   }
 ]
 
@@ -75,11 +81,7 @@ const enhance = compose(
       overflowY: 'auto',
       overflowX: 'hidden'
     },
-    iconBtn: {
-      display: 'flex',
-      justifyContent: 'flex-end',
-      transition: 'all 200ms ease-out'
-    },
+
     listRow: {
       margin: '0 -30px !important',
       width: 'auto !important',
@@ -93,7 +95,34 @@ const enhance = compose(
           alignItems: 'center',
           justifyContent: 'space-between'
         }
-
+      },
+      '&:hover > div:last-child > div ': {
+        opacity: '1'
+      }
+    },
+    tabs: {
+      marginBottom: '20px',
+      width: '100%',
+      '& > div': {
+        boxSizing: 'content-box',
+        width: '100% !important',
+        '&:first-child': {
+          boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px',
+          borderRadius: '2px',
+          height: '52px',
+          alignItems: 'center'
+        },
+        '&:nth-child(2)': {
+          marginTop: '-3px'
+        },
+        '&:last-child': {
+          width: '100% !important',
+          padding: '0'
+        }
+      },
+      '& button div div': {
+        textTransform: 'initial',
+        height: '52px !important'
       }
     },
     link: {
@@ -109,11 +138,28 @@ const enhance = compose(
       top: '10px',
       right: '0',
       marginBottom: '0px'
+    },
+    iconBtn: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      opacity: '0',
+      transition: 'all 200ms ease-out'
     }
-
   })
 )
 
+const iconStyle = {
+  icon: {
+    color: '#666',
+    width: 22,
+    height: 22
+  },
+  button: {
+    width: 30,
+    height: 30,
+    padding: 0
+  }
+}
 const PlanGridList = enhance((props) => {
   const {
     filter,
@@ -125,45 +171,9 @@ const PlanGridList = enhance((props) => {
     filterDialog,
     classes
   } = props
+  const tabbed = filter.getParam('status')
 
   const confirmDetails = _.get(detailData, 'data.id')
-  const actionButtons = (id) => {
-    return (
-      <div className={classes.actionButtons}>
-        <ToolTip position="bottom" text={t('Изменить')}>
-          <IconButton
-            disableTouchRipple={true}
-            touch={true}
-            onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
-            <EditIcon />
-          </IconButton>
-        </ToolTip>
-        <ToolTip position="bottom" text={t('Удалить')}>
-          <IconButton
-            disableTouchRipple={true}
-            onClick={confirmDialog.onOpen}
-            touch={true}>
-            <EditIcon />
-          </IconButton>
-        </ToolTip>
-      </div>
-    )
-  }
-
-  const detail = (
-    <PlanDetails
-      initialValues={updateDialog.initialValues}
-      filter={filter}
-      key={_.get(detailData, 'id')}
-      updateLoading={_.get(updateDialog, 'updateLoading')}
-      handleSubmitUpdateDialog={updateDialog.handleSubmitUpdateDialog}
-      data={_.get(detailData, 'data') || {}}
-      loading={_.get(detailData, 'detailLoading')}
-      onDeleteOpen={confirmDialog.onOpen}
-      onUpdateOpen={updateDialog.onOpen}
-      actionButtons={actionButtons}
-    />
-  )
 
   const planFilterDialog = (
     <PlanFilterForm
@@ -176,23 +186,40 @@ const PlanGridList = enhance((props) => {
   const planList = _.map(_.get(listData, 'data'), (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
-    const firstName = _.get(item, 'firstName')
-    const lastName = _.get(item, 'lastName')
-    const resumeNum = _.get(item, 'resumeNum')
-    const modifiedDate = dateFormat(_.get(item, 'modifiedAt'))
-    const createdDate = dateFormat(_.get(item, 'createdAt'))
-    const balance = _.get(item, 'balance')
-    const name = firstName + ' ' + lastName
+    const fullName = _.get(item, 'manager.fullName')
+    const salesAmount = numberFormat(_.get(item, 'salesAmount'), 'сум')
+    const modifiedDate = dateFormat(_.get(item, 'toDate'))
+
     return (
       <Row key={id} className={classes.listRow}>
-        <div
-          onClick={() => replaceUrl(filter, sprintf(ROUTES.PLAN_ITEM_PATH, id), {})}
-          className={classes.link}/>
-        <Col xs={3}>{name}</Col>
-        <Col xs={2}>{resumeNum}</Col>
+        <Col xs={2}>{fullName}</Col>
+        <Col xs={2}>{salesAmount}</Col>
         <Col xs={3}>{modifiedDate}</Col>
-        <Col xs={2}>{createdDate}</Col>
-        <Col xs={2}>{balance}
+        <Col xs={2}>{salesAmount}</Col>
+        <Col xs={2}>{modifiedDate}</Col>
+        <Col xs={1}>
+          <div className={classes.iconBtn}>
+            <ToolTip position="bottom" text={t('Изменить')}>
+              <IconButton
+                iconStyle={iconStyle.icon}
+                style={iconStyle.button}
+                disableTouchRipple={true}
+                touch={true}
+                onClick={() => { updateDialog.onOpen(id) }}>
+                <Edit />
+              </IconButton>
+            </ToolTip>
+            <ToolTip position="bottom" text={t('Удалить')}>
+              <IconButton
+                disableTouchRipple={true}
+                iconStyle={iconStyle.icon}
+                style={iconStyle.button}
+                onClick={() => { confirmDialog.onOpen(id) }}
+                touch={true}>
+                <DeleteIcon />
+              </IconButton>
+            </ToolTip>
+          </div>
         </Col>
 
       </Row>
@@ -204,19 +231,6 @@ const PlanGridList = enhance((props) => {
     list: planList,
     loading: _.get(listData, 'listLoading')
   }
-
-  const addButton = (
-    <div className={classes.addButtonWrapper}>
-      <FlatButton
-        backgroundColor="#fff"
-        labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
-        className={classes.addButton}
-        label={t('добавить соискателя')}
-        onClick={createDialog.onOpen}
-        icon={<ContentAdd color="#12aaeb"/>}>
-      </FlatButton>
-    </div>
-  )
 
   return (
     <Container>
@@ -234,13 +248,21 @@ const PlanGridList = enhance((props) => {
           </ToolTip>
         </div>
 
+        <Tabs
+          inkBarStyle={{backgroundColor: '#12aaeb', height: '3px'}}
+          tabItemContainerStyle={{backgroundColor: '#fff', color: '#333'}}
+          className={classes.tabs}
+          value={tabbed}
+          onChange={status => hashHistory.push({pathname: '/plan', query: {status}})}>
+          <Tab label={'Текущий план'} value={'active'}/>
+          <Tab label={'Архив'} value={'paid'}/>
+        </Tabs>
+
         <GridList
           filter={filter}
           filterDialog={planFilterDialog}
           list={list}
-          detail={detail}
-          actionsDialog={<span/>}
-          addButton={addButton}
+          detail={<span/>}
         />
       </div>
 

@@ -114,7 +114,7 @@ const SkillsGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.onOpen(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -123,7 +123,7 @@ const SkillsGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.onOpen(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -147,7 +147,7 @@ const SkillsGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
         label={t('добавить навык')}
-        onClick={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.onOpen}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>
@@ -169,34 +169,34 @@ const SkillsGridList = enhance((props) => {
         </div>
       </div>
 
-      {createDialog.openCreateDialog &&
-            <SkillsCreateDialog
-              detailData={_.get(detailData, 'data')}
-              initialValues={createDialog.initialValues}
-              open={createDialog.openCreateDialog}
-              loading={createDialog.createLoading}
-              onClose={createDialog.handleCloseCreateDialog}
-              onSubmit={createDialog.handleSubmitCreateDialog}
-            />}
+      {createDialog.open &&
+        <SkillsCreateDialog
+          detailData={_.get(detailData, 'data')}
+          initialValues={updateDialog.initialValues}
+          open={createDialog.open}
+          loading={createDialog.loading}
+          onClose={createDialog.onClose}
+          onSubmit={createDialog.onSubmit}
+        />}
 
-      {updateDialog.openUpdateDialog &&
-            <SkillsCreateDialog
-              detailData={_.get(detailData, 'data')}
-              initialValues={updateDialog.initialValues}
-              isUpdate={true}
-              open={updateDialog.openUpdateDialog}
-              loading={updateDialog.updateLoading}
-              onClose={updateDialog.handleCloseUpdateDialog}
-              onSubmit={updateDialog.handleSubmitUpdateDialog}
-            />}
+      {updateDialog.open &&
+        <SkillsCreateDialog
+          detailData={_.get(detailData, 'data')}
+          initialValues={updateDialog.initialValues}
+          isUpdate={true}
+          open={updateDialog.open}
+          loading={updateDialog.loading}
+          onClose={updateDialog.onClose}
+          onSubmit={updateDialog.onSubmit}
+        />}
 
       {detailData.data && <ConfirmDialog
         type="delete"
         message={''}
-        loading={confirmDialog.confirmLoading}
-        onClose={confirmDialog.handleCloseConfirmDialog}
-        onSubmit={confirmDialog.handleSendConfirmDialog}
-        open={confirmDialog.openConfirmDialog}
+        loading={confirmDialog.loading}
+        onClose={confirmDialog.onClose}
+        onSubmit={confirmDialog.onSubmit}
+        open={confirmDialog.open}
       />}
     </Container>
   )

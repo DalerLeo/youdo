@@ -46,9 +46,8 @@ const FilterWrapper = params => {
           const values = _
             .chain(filterKeys)
             .mapValues(key => {
-              const value = _.get(filterForm, ['values', key])
+              const value = _.get(filterForm, `values.${key}`)
               const isMulti = _.isArray(value)
-
               if (isMulti) return _.join(value, '~')
 
               if (_.includes(_.lowerCase(key), 'date')) {

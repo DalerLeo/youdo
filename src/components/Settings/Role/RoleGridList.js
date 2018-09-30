@@ -19,6 +19,7 @@ import {reduxForm} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Loader from '../../Loader/index'
 import userGroupFormat from '../../../helpers/userGroupFormat'
+import defaultPropTypes from '../../../constants/propTypes'
 import t from '../../../helpers/translate'
 
 const enhance = compose(
@@ -231,7 +232,7 @@ const RoleGridList = enhance((props) => {
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
                 onClick={() => {
-                  confirmDialog.handleOpenConfirmDialog(id)
+                  confirmDialog.onOpen(id)
                 }}
                 touch={true}>
                 <DeleteIcon/>
@@ -256,7 +257,7 @@ const RoleGridList = enhance((props) => {
                 label={t('создать права доступа')}
                 labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
                 className={classes.addButton}
-                onClick={createDialog.handleOpenCreateDialog}
+                onClick={createDialog.onOpen}
                 icon={<ContentAdd color="#12aaeb"/>}
                 primary={true}
               />
@@ -270,13 +271,13 @@ const RoleGridList = enhance((props) => {
             : <div className={classes.list}>{permissionList}</div>}
         </div>
         <RoleCreateDialog
-          initialValues={createDialog.initialValues}
+          initialValues={updateDialog.initialValues}
           data={_.get(createDialog, ['permissionList', 'results'])}
-          open={createDialog.openCreateDialog}
-          loading={createDialog.createLoading}
+          open={createDialog.open}
+          loading={createDialog.loading}
           dataLoading={_.get(createDialog, 'permissionLoading')}
-          onClose={createDialog.handleCloseCreateDialog}
-          onSubmit={createDialog.handleSubmitCreateDialog}
+          onClose={createDialog.onClose}
+          onSubmit={createDialog.onSubmit}
         />
 
         <RoleCreateDialog
@@ -284,19 +285,19 @@ const RoleGridList = enhance((props) => {
           initialValues={updateDialog.initialValues}
           dataLoading={_.get(createDialog, 'permissionLoading')}
           data={_.get(createDialog, ['permissionList', 'results'])}
-          open={updateDialog.openUpdateDialog}
-          loading={updateDialog.updateLoading}
-          onClose={updateDialog.handleCloseUpdateDialog}
-          onSubmit={updateDialog.handleSubmitUpdateDialog}
+          open={updateDialog.open}
+          loading={updateDialog.loading}
+          onClose={updateDialog.onClose}
+          onSubmit={updateDialog.onSubmit}
         />
-        {confirmDialog.openConfirmDialog &&
-                <ConfirmDialog
-                  type="delete"
-                  message={confirmMessage}
-                  onClose={confirmDialog.handleCloseConfirmDialog}
-                  onSubmit={confirmDialog.handleSendConfirmDialog}
-                  open={confirmDialog.openConfirmDialog}
-                />}
+        {confirmDialog.open &&
+          <ConfirmDialog
+            type="delete"
+            message={confirmMessage}
+            onClose={confirmDialog.onClose}
+            onSubmit={confirmDialog.onSubmit}
+            open={confirmDialog.open}
+          />}
       </div>
     </Container>
   )
@@ -307,24 +308,13 @@ RoleGridList.propTypes = {
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   confirmDialog: PropTypes.shape({
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired
 }
 

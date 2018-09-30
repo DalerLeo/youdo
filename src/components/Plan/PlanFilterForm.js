@@ -19,9 +19,9 @@ import {UsersSearchField} from '../ReduxForm'
 export const PLAN_FILTER_OPEN = 'openFilterDialog'
 
 export const PLAN_FILTER_KEY = {
-  START_DATE: 'date.startDate',
-  END_DATE: 'date.endDate',
-  USER: 'user'
+  FROM_DATE: 'date.fromDate',
+  TO_DATE: 'date.toDate',
+  MANAGER: 'manager'
 }
 
 const enhance = compose(
@@ -116,7 +116,7 @@ const enhance = compose(
 )
 
 const PlanFilterForm = enhance((props) => {
-  const {classes, filterDialog, getCount, addButton} = props
+  const {classes, filterDialog, getCount, addButton, handleSubmit} = props
   const filterCounts = getCount()
 
   if (!filterDialog.open) {
@@ -161,7 +161,7 @@ const PlanFilterForm = enhance((props) => {
             <CloseIcon className={classes.icon} />
           </IconButton>
         </div>
-        <form onSubmit={filterDialog.onSubmit}>
+        <form onSubmit={handleSubmit(filterDialog.onSubmit)}>
           <div>
             <Field
               name="date"
@@ -170,9 +170,9 @@ const PlanFilterForm = enhance((props) => {
           </div>
           <div>
             <Field
-              name="user"
+              name="manager"
               component={UsersSearchField}
-              label={'User'}
+              label={'Менеджер'}
             />
           </div>
           <RaisedButton

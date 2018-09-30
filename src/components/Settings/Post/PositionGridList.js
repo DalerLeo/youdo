@@ -17,6 +17,7 @@ import SettingSideMenu from '../../Settings/SideMenu'
 import Edit from 'material-ui/svg-icons/image/edit'
 import ToolTip from '../../ToolTip'
 import dateFormat from '../../../helpers/dateFormat'
+import defaultPropTypes from '../../../constants/propTypes'
 import t from '../../../helpers/translate'
 
 const listHeader = [
@@ -144,7 +145,7 @@ const PostGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.onOpen(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -153,7 +154,7 @@ const PostGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.onOpen(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -198,28 +199,29 @@ const PostGridList = enhance((props) => {
       </div>
 
       <PostCreateDialog
-        open={createDialog.openCreateDialog}
-        loading={createDialog.createLoading}
-        onClose={createDialog.onCloseCreateDialog}
-        onSubmit={createDialog.onSubmitCreateDialog}
+        open={createDialog.open}
+        initialValues={updateDialog.initialValues}
+        loading={createDialog.loading}
+        onClose={createDialog.onClose}
+        onSubmit={createDialog.onSubmit}
       />
 
       <PostCreateDialog
         isUpdate={true}
         initialValues={updateDialog.initialValues}
-        open={updateDialog.openUpdateDialog}
-        loading={updateDialog.updateLoading}
-        onClose={updateDialog.handleCloseUpdateDialog}
-        onSubmit={updateDialog.handleSubmitUpdateDialog}
+        open={updateDialog.open}
+        loading={updateDialog.loading}
+        onClose={updateDialog.onClose}
+        onSubmit={updateDialog.onSubmit}
       />
 
       {detailData.data && <ConfirmDialog
         type="delete"
         message={_.get(detailData, ['data', 'name'])}
-        loading={confirmDialog.confirmLoading}
-        onClose={confirmDialog.handleCloseConfirmDialog}
-        onSubmit={confirmDialog.handleSendConfirmDialog}
-        open={confirmDialog.openConfirmDialog}
+        loading={confirmDialog.loading}
+        onClose={confirmDialog.onClose}
+        onSubmit={confirmDialog.onSubmit}
+        open={confirmDialog.open}
       />}
     </Container>
   )
@@ -230,25 +232,13 @@ PostGridList.propTypes = {
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    onOpenCreateDialog: PropTypes.func.isRequired,
-    onCloseCreateDialog: PropTypes.func.isRequired,
-    onSubmitCreateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   confirmDialog: PropTypes.shape({
-    confirmLoading: PropTypes.bool.isRequired,
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired
 }
 

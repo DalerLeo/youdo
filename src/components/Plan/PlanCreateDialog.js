@@ -6,7 +6,6 @@ import Dialog from 'material-ui/Dialog'
 import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
-import formValidate from '../../helpers/formValidate'
 import {
   BORDER_STYLE,
   COLOR_WHITE,
@@ -137,7 +136,6 @@ const enhance = compose(
 
 const PlanCreateDialog = enhance((props) => {
   const {
-    dispatch,
     open,
     handleSubmit,
     onClose,
@@ -146,17 +144,11 @@ const PlanCreateDialog = enhance((props) => {
   } = props
 
   const formNames = [
-    'fullName',
-    'dateOfBirth',
-    'familyStatus',
-    'address',
-    'phone',
-    'email'
+    'manager',
+    'salesAmount',
+    'comment'
   ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
 
   return (
     <Dialog

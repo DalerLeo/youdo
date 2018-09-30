@@ -17,6 +17,7 @@ import Container from '../../Container'
 import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
 import SettingSideMenu from '../../Settings/SideMenu'
+import defaultPropTypes from '../../../constants/propTypes'
 import ToolTip from '../../ToolTip'
 import Dot from '../../Images/dot.png'
 import t from '../../../helpers/translate'
@@ -389,25 +390,13 @@ CompanyTypeGridList.propTypes = {
   listData: PropTypes.object,
   detailData: PropTypes.object,
   createDialog: PropTypes.shape({
-    createLoading: PropTypes.bool.isRequired,
-    openCreateDialog: PropTypes.bool.isRequired,
-    handleOpenCreateDialog: PropTypes.func.isRequired,
-    handleCloseCreateDialog: PropTypes.func.isRequired,
-    handleSubmitCreateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   confirmDialog: PropTypes.shape({
-    confirmLoading: PropTypes.bool.isRequired,
-    openConfirmDialog: PropTypes.bool.isRequired,
-    handleOpenConfirmDialog: PropTypes.func.isRequired,
-    handleCloseConfirmDialog: PropTypes.func.isRequired,
-    handleSendConfirmDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   updateDialog: PropTypes.shape({
-    updateLoading: PropTypes.bool.isRequired,
-    openUpdateDialog: PropTypes.bool.isRequired,
-    handleOpenUpdateDialog: PropTypes.func.isRequired,
-    handleCloseUpdateDialog: PropTypes.func.isRequired,
-    handleSubmitUpdateDialog: PropTypes.func.isRequired
+    ...defaultPropTypes
   }).isRequired,
   actionsDialog: PropTypes.shape({
     handleActionEdit: PropTypes.func.isRequired,

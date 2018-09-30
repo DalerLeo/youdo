@@ -10,7 +10,6 @@ import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
 import {TextField} from '../../ReduxForm/index'
-import formValidate from '../../../helpers/formValidate'
 
 export const SKILLS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -117,25 +116,14 @@ const SkillsCreateDialog = enhance((props) => {
   const {
     open,
     loading,
-    dispatch,
     handleSubmit,
     onClose,
     classes,
     isUpdate
   } = props
 
-  const formNames = [
-    'firstName',
-    'lastName',
-    'phoneNumber',
-    'image',
-    'username',
-    'password'
-  ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const formNames = ['name']
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
     <Dialog
       modal={true}
