@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import React from 'react'
-import SearchField from '../Basic/SearchField'
+import SearchField from '../Basic/Search2Field'
 import {HR_GENDER} from '../../../constants/backendConstants'
 
 const SexSearchField = (props) => {

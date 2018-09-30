@@ -88,7 +88,6 @@ const InlineCustomField = enhance((props) => {
         style={{zIndex: '2'}}
         onDoubleClick={() => setShowField({loading: false, show: true})}>
         {label}
-        {console.warn(label)}
       </div>
     )
 })

@@ -75,7 +75,6 @@ class AppLayout extends React.Component {
   }
 
   render () {
-
     const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}, classes} = this.props
     const layout = {scrollValue, updateScrollValue, pathname}
     const isSignIn = pathname === '/sign-in'

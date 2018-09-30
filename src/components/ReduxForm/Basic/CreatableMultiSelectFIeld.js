@@ -8,7 +8,6 @@ import 'react-select/dist/react-select.css'
 const DELAY_FOR_TYPE_ATTACK = 300
 import t from '../../../helpers/translate'
 import classNames from 'classnames'
-const ENTER = 13
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
   dispatch({loading: true})
   getOptions(state.text)
@@ -143,17 +142,6 @@ const enhance = compose(
       if (_.isEmpty(options)) {
         input.onChange([])
       }
-    },
-    onInputKeyDown: props => (event) => {
-      const {state: {text, dataSource}, input, dispatch} = props
-      if (event.keyCode === ENTER && text) {
-        dispatch({dataSource: _.union(dataSource, [{text, value: text}])})
-        input.onChange(_.union(input.value, [text]))
-      }
-      return null
-    },
-    onTest: props => (...w) => {
-      console.warn(w)
     }
   }),
   withPropsOnChange((props, nextProps) => {
@@ -201,8 +189,7 @@ const MultiSelectField = enhance((props) => {
     handleChange,
     disabled,
     input,
-    meta,
-    onInputKeyDown
+    meta
   } = props
   const hintText = state.loading
     ? <div>{t('Загрузка')}...</div>
@@ -229,7 +216,6 @@ const MultiSelectField = enhance((props) => {
         loadingPlaceholder={t('Загрузка') + '...'}
         onOpen={() => dispatch({open: true})}
         clearAllText={t('Очистить')}
-        onInputKeyDown={onInputKeyDown}
         multi={true}
         removeSelected={true}
         deleteRemoves={false}

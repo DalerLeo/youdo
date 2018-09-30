@@ -14,6 +14,7 @@ import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-dow
 import t from '../../helpers/translate'
 import DatesField from '../ReduxForm/Basic/DatesField'
 import {UsersSearchField} from '../ReduxForm'
+import SkillsTagSearchField from '../ReduxForm/HR/SkillsTagSearchField'
 
 export const APPLICANT_FILTER_OPEN = 'openFilterDialog'
 
@@ -21,7 +22,8 @@ export const APPLICANT_FILTER_KEY = {
   START_DATE: 'startDate',
   END_DATE: 'endDate',
   GROUP: 'group',
-  USER: 'user'
+  USER: 'user',
+  GENDER: 'gender'
 }
 
 const enhance = compose(
@@ -99,7 +101,7 @@ const enhance = compose(
     }
   }),
   reduxForm({
-    form: 'ApplicantFilterForm',
+    form: 'FilterForm',
     enableReinitialize: true
   }),
   withHandlers({
@@ -116,20 +118,20 @@ const enhance = compose(
 )
 
 const ApplicantFilterForm = enhance((props) => {
-  const {classes, filterDialog, getCount, addButton} = props
+  const {classes, filterDialog, getCount, handleSubmit, addButton} = props
   const filterCounts = getCount()
 
-  if (!filterDialog.openFilterDialog) {
+  if (!filterDialog.open) {
     if (filterCounts) {
       return (
         <div className={classes.afterFilter}>
           {addButton}
           <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
           <div>
-            <IconButton onClick={filterDialog.handleOpenFilterDialog}>
+            <IconButton onClick={filterDialog.onOpen}>
               <BorderColorIcon color="#8f8f8f" />
             </IconButton>
-            <IconButton onClick={filterDialog.handleClearFilterDialog}>
+            <IconButton onClick={filterDialog.onClear}>
               <CloseIcon className={classes.icon}/>
             </IconButton>
           </div>
@@ -141,7 +143,7 @@ const ApplicantFilterForm = enhance((props) => {
       <div style={{display: 'flex'}}>
         <Link
           className={classes.arrow}
-          onClick={filterDialog.handleOpenFilterDialog}>
+          onClick={filterDialog.onOpen}>
           <div style={{display: 'flex'}}>
             <span>{t('Показать фильтр')}</span>
             <KeyboardArrowDown color="#12aaeb" />
@@ -157,11 +159,11 @@ const ApplicantFilterForm = enhance((props) => {
       <Paper className={classes.wrapper} zDepth={2}>
         <div className={classes.header}>
           <span className={classes.title}>Фильтр</span>
-          <IconButton onClick={filterDialog.handleCloseFilterDialog}>
+          <IconButton onClick={filterDialog.onClose}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         </div>
-        <form onSubmit={filterDialog.handleSubmitFilterDialog}>
+        <form onSubmit={handleSubmit(filterDialog.onSubmit)}>
           <div>
             <Field
               name="date"
@@ -173,6 +175,13 @@ const ApplicantFilterForm = enhance((props) => {
               name="user"
               component={UsersSearchField}
               label={'User'}
+            />
+          </div>
+          <div>
+            <Field
+              name="gender"
+              component={SkillsTagSearchField}
+              label={'Gentder'}
             />
           </div>
           <RaisedButton

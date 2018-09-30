@@ -43,13 +43,19 @@ const FilterWrapper = params => {
       onSubmit$
         .withLatestFrom(props$)
         .subscribe(([, {filter, location, filterForm, ...props}]) => {
-          const values = _.chain(filterKeys)
+          const values = _
+            .chain(filterKeys)
             .mapValues(key => {
+              const value = _.get(filterForm, ['values', key])
+              const isMulti = _.isArray(value)
+
+              if (isMulti) return _.join(value, '~')
+
               if (_.includes(_.lowerCase(key), 'date')) {
-                const date = _.get(filterForm, `values.${key}`) || null
+                const date = value || null
                 return date && date.format('YYYY-MM-DD')
               }
-              return _.get(filterForm, ['values', key]) || null
+              return value || null
             })
             .mapKeys((v, key) => _.camelCase(key))
             .value()
@@ -61,16 +67,23 @@ const FilterWrapper = params => {
         })
 
       return props$
-        .combineLatest(({updateData, updateLoading, filter, ...props}) => {
-          const values = _.chain(filterKeys)
+        .combineLatest(({filter, ...props}) => {
+          const initialValues = _
+            .chain(filterKeys)
             .mapValues((key, index) => {
+              const value = filter.getParam(key)
+              // FOR MULTI VALUE OBJECTS
+              if (_.includes(value, '~')) {
+                return _.split(value, '~')
+              }
+              // FOR DATES OBJECT JUST SKIP THEM, TO MANAGE MANUALLY
               if (_.includes(_.lowerCase(key), 'date')) {
                 return null
               }
-              if (_.toNumber(filter.getParam(key))) {
-                return _.toInteger(filter.getParam(key))
+              if (_.toNumber(value)) {
+                return _.toInteger(value)
               }
-              return filter.getParam(key)
+              return value
             })
             .mapKeys((v, key) => _.camelCase(key))
             .value()
@@ -82,7 +95,7 @@ const FilterWrapper = params => {
               onClose,
               onClear,
               onSubmit,
-              initialValues: values
+              initialValues
             },
             filter,
             ...props

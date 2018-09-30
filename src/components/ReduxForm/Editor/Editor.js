@@ -56,7 +56,7 @@ const enhance = compose(
   }),
   injectSheet({
     wrapper: {
-      borderRadius: '4px',
+      borderRadius: '0',
       border: BORDER_STYLE
     },
     controls: {

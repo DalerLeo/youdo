@@ -1,5 +1,5 @@
 import React from 'react'
-import CreatableMultiSelectFIeld from '../Basic/CreatableMultiSelectFIeld'
+import CreatableMultiSelectFIeld from '../Basic/Creatable2MultiSelectFIeld'
 import * as PATH from '../../../constants/api'
 import searchFieldGetOptions from '../../../helpers/searchFieldGetOptions'
 import getIdsOption from '../../../helpers/getIdsOption'
