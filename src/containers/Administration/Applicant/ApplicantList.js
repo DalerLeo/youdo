@@ -74,27 +74,34 @@ const mapDispatchToProps = {
 const mapStateToProps = () => ({})
 
 const enhance = compose(
-  listWrapper({listFetchAction: applicantListFetchAction, storeName: 'applicant', except}),
-  detailWrapper({itemFetchAction: applicantItemFetchAction, storeName: 'applicant'}),
+  listWrapper({
+    except,
+    storeName: 'applicant',
+    listFetchAction: applicantListFetchAction
+  }),
+  detailWrapper({
+    storeName: 'applicant',
+    itemFetchAction: applicantItemFetchAction
+  }),
   createWrapper({
-    createAction: applicantCreateAction,
-    queryKey: APPLICANT_CREATE_DIALOG_OPEN,
     storeName: 'applicant',
     formName: 'ApplicantCreateForm',
+    createAction: applicantCreateAction,
+    queryKey: APPLICANT_CREATE_DIALOG_OPEN,
     thenActionKey: APPLICANT_MAIL_DIALOG_OPEN
   }),
   updateWrapper({
     updateKeys,
     createKeys,
-    updateAction: applicantUpdateAction,
-    queryKey: APPLICANT_UPDATE_DIALOG_OPEN,
     storeName: 'applicant',
-    formName: 'ApplicantCreateForm'
+    formName: 'ApplicantCreateForm',
+    updateAction: applicantUpdateAction,
+    queryKey: APPLICANT_UPDATE_DIALOG_OPEN
   }),
   confirmWrapper({
+    storeName: 'applicant',
     confirmAction: applicantDeleteAction,
     queryKey: APPLICANT_DELETE_DIALOG_OPEN,
-    storeName: 'applicant',
     successMessage: 'Успешно удалено',
     failMessage: 'Удаление невозможно из-за связи с другими данными'
   }),

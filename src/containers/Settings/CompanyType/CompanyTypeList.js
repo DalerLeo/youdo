@@ -1,15 +1,15 @@
 import React from 'react'
 import _ from 'lodash'
-import sprintf from 'sprintf'
-import {connect} from 'react-redux'
-import {reset} from 'redux-form'
-import {hashHistory} from 'react-router'
 import Layout from '../../../components/Layout'
-import {compose, withHandlers} from 'recompose'
+import {compose} from 'recompose'
 import * as ROUTER from '../../../constants/routes'
-import toBoolean from '../../../helpers/toBoolean'
-import t from '../../../helpers/translate'
-import {listWrapper, detailWrapper} from '../../Wrappers'
+import {
+  listWrapper,
+  detailWrapper,
+  createWrapper,
+  confirmWrapper,
+  updateWrapper
+} from '../../Wrappers'
 
 import {
   COMPANY_TYPE_CREATE_DIALOG_OPEN,
@@ -24,170 +24,68 @@ import {
   companyTypeDeleteAction,
   companyTypeItemFetchAction
 } from '../../../actions/Settings/companyType'
-import {openSnackbarAction} from '../../../actions/snackbar'
+
+const UPDATE_KEYS = {
+  name: 'name',
+  division: 'division.id',
+  parent: 'parent'
+}
 
 const enhance = compose(
-
-  listWrapper({listFetchAction: companyTypeListFetchAction, storeName: 'companyType'}),
-  detailWrapper({itemFetchAction: companyTypeItemFetchAction, storeName: 'companyType', paramName: 'companyTypeId'}),
-  connect((state, props) => {
-    const createLoading = _.get(state, ['companyType', 'create', 'loading'])
-    const updateLoading = _.get(state, ['companyType', 'update', 'loading'])
-    const createForm = _.get(state, ['form', 'CompanyTypeCreateForm'])
-
-    return {
-      createLoading,
-      updateLoading,
-      createForm
-    }
+  listWrapper({
+    storeName: 'companyType',
+    listFetchAction: companyTypeListFetchAction
   }),
-  withHandlers({
-    handleActionEdit: props => () => {
-      return null
-    },
-
-    handleOpenDeleteDialog: props => () => {
-      return null
-    },
-
-    handleOpenConfirmDialog: props => (id) => {
-      const {filter} = props
-      hashHistory.push({
-        pathname: sprintf(ROUTER.COMPANY_TYPE_ITEM_PATH, id),
-        query: filter.getParams({[COMPANY_TYPE_DELETE_DIALOG_OPEN]: true})
-      })
-    },
-
-    handleCloseConfirmDialog: props => () => {
-      const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_DELETE_DIALOG_OPEN]: false})})
-    },
-    handleSendConfirmDialog: props => () => {
-      const {dispatch, detail, filter, location: {pathname}} = props
-      dispatch(companyTypeDeleteAction(detail.id))
-        .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_DELETE_DIALOG_OPEN]: false})})
-          dispatch(companyTypeListFetchAction(filter))
-          return dispatch(openSnackbarAction({message: t('Успешно удалено')}))
-        })
-        .catch(() => {
-          return dispatch(openSnackbarAction({message: t('Удаление невозможно из-за связи с другими данными')}))
-        })
-    },
-
-    handleOpenCreateDialog: props => () => {
-      const {dispatch, location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_CREATE_DIALOG_OPEN]: true})})
-      dispatch(reset('CompanyTypeCreateForm'))
-    },
-
-    handleCloseCreateDialog: props => () => {
-      const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_CREATE_DIALOG_OPEN]: false})})
-    },
-
-    handleSubmitCreateDialog: props => () => {
-      const {dispatch, createForm, filter, location: {pathname}} = props
-
-      return dispatch(companyTypeCreateAction(_.get(createForm, ['values'])))
-        .then(() => {
-          return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-        })
-        .then(() => {
-          hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_CREATE_DIALOG_OPEN]: false})})
-          dispatch(companyTypeListFetchAction(filter))
-        })
-    },
-
-    handleOpenUpdateDialog: props => (id) => {
-      const {filter} = props
-      hashHistory.push({
-        pathname: sprintf(ROUTER.COMPANY_TYPE_ITEM_PATH, id),
-        query: filter.getParams({[COMPANY_TYPE_UPDATE_DIALOG_OPEN]: true})
-      })
-    },
-
-    handleCloseUpdateDialog: props => () => {
-      const {location: {pathname}, filter} = props
-      hashHistory.push({pathname, query: filter.getParams({[COMPANY_TYPE_UPDATE_DIALOG_OPEN]: false})})
-    },
-
-    handleSubmitUpdateDialog: props => () => {
-      const {dispatch, createForm, filter} = props
-      const companyTypeId = _.toInteger(_.get(props, ['params', 'companyTypeId']))
-
-      return dispatch(companyTypeUpdateAction(companyTypeId, _.get(createForm, ['values'])))
-        .then(() => {
-          return dispatch(openSnackbarAction({message: t('Успешно сохранено')}))
-        })
-        .then(() => {
-          hashHistory.push(filter.createURL({[COMPANY_TYPE_UPDATE_DIALOG_OPEN]: false}))
-          dispatch(companyTypeListFetchAction(filter))
-        })
-    }
+  detailWrapper({
+    storeName: 'companyType',
+    paramName: 'companyTypeId',
+    itemFetchAction: companyTypeItemFetchAction
+  }),
+  createWrapper({
+    createAction: companyTypeCreateAction,
+    queryKey: COMPANY_TYPE_CREATE_DIALOG_OPEN,
+    storeName: 'plan',
+    formName: 'CompanyTypeCreateForm'
+  }),
+  updateWrapper({
+    updateKeys: UPDATE_KEYS,
+    storeName: 'companyType',
+    formName: 'CompanyTypeCreateForm',
+    updateAction: companyTypeUpdateAction,
+    queryKey: COMPANY_TYPE_UPDATE_DIALOG_OPEN,
+    itemPath: ROUTER.COMPANY_TYPE_ITEM_PATH,
+    listPath: ROUTER.COMPANY_TYPE_LIST_URL
+  }),
+  confirmWrapper({
+    storeName: 'companyType',
+    confirmAction: companyTypeDeleteAction,
+    queryKey: COMPANY_TYPE_DELETE_DIALOG_OPEN,
+    itemPath: ROUTER.COMPANY_TYPE_ITEM_PATH,
+    listPath: ROUTER.COMPANY_TYPE_LIST_URL,
+    successMessage: 'Успешно удалено',
+    failMessage: 'Удаление невозможно из-за связи с другими данными'
   })
 )
 
 const CompanyTypeList = enhance((props) => {
   const {
-    location,
     list,
     listLoading,
     detail,
     detailLoading,
-    createLoading,
-    updateLoading,
     filter,
     layout,
-    params
+    params,
+    createDialog,
+    updateDialog,
+    confirmDialog
   } = props
-
-  const openCreateDialog = toBoolean(_.get(location, ['query', COMPANY_TYPE_CREATE_DIALOG_OPEN]))
-  const openUpdateDialog = toBoolean(_.get(location, ['query', COMPANY_TYPE_UPDATE_DIALOG_OPEN]))
-  const openConfirmDialog = toBoolean(_.get(location, ['query', COMPANY_TYPE_DELETE_DIALOG_OPEN]))
 
   const detailId = _.toInteger(_.get(params, 'companyTypeId'))
 
   const actionsDialog = {
     handleActionEdit: props.handleActionEdit,
     handleActionDelete: props.handleOpenDeleteDialog
-  }
-
-  const createDialog = {
-    createLoading,
-    openCreateDialog,
-    handleOpenCreateDialog: props.handleOpenCreateDialog,
-    handleCloseCreateDialog: props.handleCloseCreateDialog,
-    handleSubmitCreateDialog: props.handleSubmitCreateDialog
-  }
-
-  const confirmDialog = {
-    confirmLoading: detailLoading,
-    openConfirmDialog: openConfirmDialog,
-    handleOpenConfirmDialog: props.handleOpenConfirmDialog,
-    handleCloseConfirmDialog: props.handleCloseConfirmDialog,
-    handleSendConfirmDialog: props.handleSendConfirmDialog
-  }
-
-  const updateDialog = {
-    initialValues: (() => {
-      if (!detail || openCreateDialog) {
-        return {}
-      }
-      const parentId = _.get(detail, 'parent')
-      return {
-        name: _.get(detail, 'name'),
-        division: {value: _.get(detail, ['division', 'id'])},
-        parent: {
-          value: parentId
-        }
-      }
-    })(),
-    updateLoading: detailLoading || updateLoading,
-    openUpdateDialog,
-    handleOpenUpdateDialog: props.handleOpenUpdateDialog,
-    handleCloseUpdateDialog: props.handleCloseUpdateDialog,
-    handleSubmitUpdateDialog: props.handleSubmitUpdateDialog
   }
 
   const listData = {

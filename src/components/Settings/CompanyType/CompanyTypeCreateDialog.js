@@ -7,7 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import {Field, reduxForm} from 'redux-form'
-import {TextField, CompanyTypeSearchField, DivisionSearchField} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../../Styles/MainStyles'
@@ -68,25 +68,10 @@ const CompanyTypeCreateDialog = enhance((props) => {
           <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
             <div className={classes.field}>
               <Field
-                name="parent"
-                component={CompanyTypeSearchField}
-                className={classes.inputFieldCustom}
-                params={{parent: 0}}
-                label={t('Родительская категория')}
-                fullWidth={true}
-              />
-              <Field
                 name="name"
                 component={TextField}
                 className={classes.inputFieldCustom}
                 label={t('Наименование категории')}
-                fullWidth={true}
-              />
-              <Field
-                name="division"
-                component={DivisionSearchField}
-                className={classes.inputFieldCustom}
-                label={t('Организация')}
                 fullWidth={true}
               />
             </div>

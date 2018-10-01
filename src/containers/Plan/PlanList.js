@@ -54,27 +54,34 @@ const mapDispatchToProps = {
 const mapStateToProps = () => ({})
 
 const enhance = compose(
-  listWrapper({listFetchAction: planListFetchAction, storeName: 'plan', except}),
-  detailWrapper({itemFetchAction: planItemFetchAction, storeName: 'plan'}),
+  listWrapper({
+    except,
+    storeName: 'plan',
+    listFetchAction: planListFetchAction
+  }),
+  detailWrapper({
+    storeName: 'plan',
+    itemFetchAction: planItemFetchAction
+  }),
   createWrapper({
-    createAction: planCreateAction,
-    queryKey: PLAN_CREATE_DIALOG_OPEN,
     storeName: 'plan',
     formName: 'PlanCreateForm',
+    createAction: planCreateAction,
+    queryKey: PLAN_CREATE_DIALOG_OPEN,
     thenActionKey: PLAN_MAIL_DIALOG_OPEN
   }),
   updateWrapper({
-    updateAction: planUpdateAction,
-    queryKey: PLAN_UPDATE_DIALOG_OPEN,
+    updateKeys,
     storeName: 'plan',
     formName: 'PlanCreateForm',
-    updateKeys,
+    updateAction: planUpdateAction,
+    queryKey: PLAN_UPDATE_DIALOG_OPEN,
     itemPath: ROUTES.PLAN_ITEM_PATH,
     listPath: ROUTES.PLAN_LIST_URL
   }),
   confirmWrapper({
-    confirmAction: planDeleteAction,
     storeName: 'plan',
+    confirmAction: planDeleteAction,
     queryKey: PLAN_DELETE_DIALOG_OPEN,
     itemPath: ROUTES.PLAN_ITEM_PATH,
     listPath: ROUTES.PLAN_LIST_URL,
@@ -82,8 +89,8 @@ const enhance = compose(
     failMessage: 'Удаление невозможно из-за связи с другими данными'
   }),
   filterWrapper({
-    queryKey: PLAN_FILTER_OPEN,
     formName: 'PlanFilterForm',
+    queryKey: PLAN_FILTER_OPEN,
     filterKeys: PLAN_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),

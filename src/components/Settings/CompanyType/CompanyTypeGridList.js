@@ -230,7 +230,7 @@ const CompanyTypeGridList = enhance((props) => {
                     style={iconStyle.button}
                     disableTouchRipple={true}
                     touch={true}
-                    onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                    onClick={() => { updateDialog.onOpen(id) }}>
                     <Edit />
                   </IconButton>
                 </ToolTip>
@@ -239,7 +239,7 @@ const CompanyTypeGridList = enhance((props) => {
                     disableTouchRipple={true}
                     iconStyle={iconStyle.icon}
                     style={iconStyle.button}
-                    onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                    onClick={() => { confirmDialog.onOpen(id) }}
                     touch={true}>
                     <DeleteIcon />
                   </IconButton>
@@ -265,7 +265,7 @@ const CompanyTypeGridList = enhance((props) => {
                         style={iconStyle.button}
                         disableTouchRipple={true}
                         touch={true}
-                        onClick={() => { updateDialog.handleOpenUpdateDialog(childId) }}>
+                        onClick={() => { updateDialog.onOpen(childId) }}>
                         <Edit />
                       </IconButton>
                     </ToolTip>
@@ -274,7 +274,7 @@ const CompanyTypeGridList = enhance((props) => {
                         disableTouchRipple={true}
                         iconStyle={iconStyle.icon}
                         style={iconStyle.button}
-                        onClick={() => { confirmDialog.handleOpenConfirmDialog(childId) }}
+                        onClick={() => { confirmDialog.onOpen(childId) }}
                         touch={true}>
                         <DeleteIcon />
                       </IconButton>
@@ -300,7 +300,7 @@ const CompanyTypeGridList = enhance((props) => {
                 style={iconStyle.button}
                 disableTouchRipple={true}
                 touch={true}
-                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}>
+                onClick={() => { updateDialog.onOpen(id) }}>
                 <Edit />
               </IconButton>
             </ToolTip>
@@ -309,7 +309,7 @@ const CompanyTypeGridList = enhance((props) => {
                 disableTouchRipple={true}
                 iconStyle={iconStyle.icon}
                 style={iconStyle.button}
-                onClick={() => { confirmDialog.handleOpenConfirmDialog(id) }}
+                onClick={() => { confirmDialog.onOpen(id) }}
                 touch={true}>
                 <DeleteIcon />
               </IconButton>
@@ -332,7 +332,7 @@ const CompanyTypeGridList = enhance((props) => {
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
         className={classes.addButton}
         label={t('добавить тип продукта')}
-        onClick={createDialog.handleOpenCreateDialog}
+        onClick={createDialog.onOpen}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
     </div>
@@ -358,28 +358,29 @@ const CompanyTypeGridList = enhance((props) => {
       </div>
 
       <CompanyTypeCreateDialog
-        open={createDialog.openCreateDialog}
-        loading={createDialog.createLoading}
-        onClose={createDialog.handleCloseCreateDialog}
-        onSubmit={createDialog.handleSubmitCreateDialog}
+        open={createDialog.open}
+        loading={createDialog.loading}
+        onClose={createDialog.onClose}
+        onSubmit={createDialog.onSubmit}
+        initialValues={updateDialog.initialValues}
       />
 
       <CompanyTypeCreateDialog
         isUpdate={true}
+        open={updateDialog.open}
+        loading={updateDialog.loading}
+        onClose={updateDialog.onClose}
+        onSubmit={updateDialog.onSubmit}
         initialValues={updateDialog.initialValues}
-        open={updateDialog.openUpdateDialog}
-        loading={updateDialog.updateLoading}
-        onClose={updateDialog.handleCloseUpdateDialog}
-        onSubmit={updateDialog.handleSubmitUpdateDialog}
       />
 
       {detailData.data && <ConfirmDialog
         type="delete"
         message={_.get(detailData, ['data', 'name'])}
-        loading={confirmDialog.confirmLoading}
-        onClose={confirmDialog.handleCloseConfirmDialog}
-        onSubmit={confirmDialog.handleSendConfirmDialog}
-        open={confirmDialog.openConfirmDialog}
+        loading={confirmDialog.loading}
+        onClose={confirmDialog.onClose}
+        onSubmit={confirmDialog.onSubmit}
+        open={confirmDialog.open}
       />}
     </Container>
   )
