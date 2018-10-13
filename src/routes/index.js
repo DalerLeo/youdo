@@ -10,6 +10,7 @@ import PlanList from '../containers/Plan'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
 import {CompanyTypeList} from '../containers/Settings/CompanyType'
+import ProjectList from '../containers/Project'
 import {
   ArticlesList,
   CompaniesList,
@@ -191,6 +192,17 @@ export default {
         {
           path: ROUTES.JOB_SEARCH_ITEM_URL,
           component: userIsAuth(JobSearch)
+        }
+      ]
+    },
+    // PROJECT TYPE
+    {
+      path: ROUTES.PROJECT_LIST_URL,
+      component: userIsAdminChain(ProjectList),
+      childRoutes: [
+        {
+          path: ROUTES.PROJECT_ITEM_URL,
+          component: userIsAuth(ProjectList)
         }
       ]
     },

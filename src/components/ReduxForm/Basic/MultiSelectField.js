@@ -233,7 +233,6 @@ const MultiSelectField = enhance((props) => {
         labelKey={'text'}
         multi
         disabled={disabled}
-        rtl={true}
         filterOptions={filterOptionRender}
         loadingPlaceholder={t('Загрузка') + '...'}
         onOpen={() => dispatch({open: true})}

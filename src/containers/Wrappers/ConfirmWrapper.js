@@ -6,8 +6,9 @@ import {openSnackbarAction} from '../../actions/snackbar'
 import toBoolean from '../../helpers/toBoolean'
 import sprintf from 'sprintf'
 
-const createWrapper = params => {
+const confirmWrapper = params => {
   const {
+    name = 'confirm',
     confirmAction,
     queryKey = 'confirmDialog',
     thenActionKey = null,
@@ -59,7 +60,7 @@ const createWrapper = params => {
       return props$
         .combineLatest(({updateData, updateLoading, ...props}) => {
           return ({
-            confirmDialog: {
+            [`${name}Dialog`]: {
               open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen,
               onClose,
@@ -73,4 +74,4 @@ const createWrapper = params => {
   )
 }
 
-export default createWrapper
+export default confirmWrapper

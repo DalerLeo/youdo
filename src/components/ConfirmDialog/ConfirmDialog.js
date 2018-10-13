@@ -7,6 +7,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import Loader from '../Loader'
+import classNames from 'classnames'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../helpers/translate'
 
@@ -126,7 +127,7 @@ const enhance = compose(
 )
 
 const ConfirmDialog = enhance((props) => {
-  const {open, onClose, classes, type, message, onSubmit, loading, warning} = props
+  const {open, onClose, className, classes, customName, type, message, onSubmit, loading, warning} = props
   const typesList = {
     delete: {
       name: t('Подтверждение удаления'), submitName: t('Удалить')
@@ -136,6 +137,9 @@ const ConfirmDialog = enhance((props) => {
     },
     submit: {
       name: t('Подтверждение запроса'), submitName: t('Подтвердить')
+    },
+    create: {
+      name: 'Создания ' + customName, submitName: t('Подтвердить')
     }
   }
   const title = _.get(typesList, [type, 'name'])
@@ -157,13 +161,20 @@ const ConfirmDialog = enhance((props) => {
       </div>
       <div className={classes.bodyContent}>
         <div className={classes.inContent}>
-          {loading &&
-                    <div className={classes.loader}>
-                      <Loader size={0.75}/>
-                    </div>}
-          {message && <div className={warning ? classes.warningBackground : classes.background}>
-            {message}
-          </div>}
+          {loading && (
+            <div className={classes.loader}>
+              <Loader size={0.75}/>
+            </div>
+          )}
+          {message && (
+            <div className={classNames({
+              [className]: true,
+              [classes.background]: !warning,
+              [classes.warningBackground]: warning
+            })}>
+              {message}
+            </div>
+          )}
         </div>
         <div className={classes.bottomButton}>
           <FlatButton
@@ -180,7 +191,7 @@ const ConfirmDialog = enhance((props) => {
 })
 
 ConfirmDialog.propTypes = {
-  type: PropTypes.oneOf(['delete', 'cancel', 'submit']).isRequired,
+  type: PropTypes.oneOf(['delete', 'cancel', 'submit', 'create']).isRequired,
   message: PropTypes.any,
   loading: PropTypes.bool,
   open: PropTypes.bool.isRequired,

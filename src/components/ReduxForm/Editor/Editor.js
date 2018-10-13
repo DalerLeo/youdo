@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 import {
   compose,
   withState,
@@ -46,33 +47,56 @@ const enhance = compose(
         )
         setEditorState(state)
       }
-    }
+    },
+    componentDidUpdate (prevProps) {
+      const nextProps = this.props
+      const {setEditorState} = nextProps
+      const prevInputValue = _.get(prevProps, 'input.value')
+      const nextInputValue = _.get(nextProps, 'input.value')
 
-    /* ComponentDidUpdate (prevProps) {
-            const nextProps = this.props
-            const prevInputValue = _.get(prevProps, 'input.value')
-            const nextInputValue = _.get(nextProps, 'input.value')
-        } */
+      if (nextInputValue !== prevInputValue && !nextInputValue) {
+        const state = EditorState.createWithContent(
+          ContentState.createFromText('')
+        )
+        setEditorState(state)
+      }
+    }
   }),
   injectSheet({
     wrapper: {
       borderRadius: '0',
-      border: BORDER_STYLE
+      border: BORDER_STYLE,
+      position: 'relative',
+      background: '#fff'
     },
     controls: {
+      transition: 'all 300ms',
       borderBottom: BORDER_STYLE,
+      opacity: '0',
+      height: '0',
       display: 'flex',
+      overflow: 'hidden',
+      visibility: 'hidden',
+      margin: '0',
+      padding: '0'
+    },
+    controlShow: {
       margin: '0 15px',
-      padding: '12px 10px'
+      height: '45px',
+      overflow: 'hidden',
+      padding: '12px 10px',
+      opacity: '1',
+      visibility: 'visible'
     },
     editor: {
       cursor: 'text',
-      minHeight: '82px',
+      minHeight: '40px',
       padding: '10px 15px',
       '& .public-DraftEditorPlaceholder-root': {
         color: '#bfbfbf'
       }
-    }
+    },
+    editAnim: {minHeight: '55px'}
   })
 )
 
@@ -81,9 +105,11 @@ const TextEditor = (props) => {
     classes,
     editorState,
     label,
-    placeholder
+    placeholder,
+    button,
+    meta: {active},
+    input
   } = props
-
   const editor = React.createRef()
 
   const focus = () => {
@@ -155,7 +181,11 @@ const TextEditor = (props) => {
     <div>
       <Label label={label}/>
       <div className={classes.wrapper}>
-        <div className={classes.controls}>
+        <div className={classNames({
+          [classes.controls]: true,
+          [classes.controlShow]: active
+        })}>
+          {button}
           <BlockStyleControls
             editorState={editorState}
             onToggle={toggleBlockType}
@@ -166,6 +196,7 @@ const TextEditor = (props) => {
           />
         </div>
         <div className={classNames(classes.editor, {
+          [classes.editAnim]: active,
           'RichEditor-hidePlaceholder': hidePlaceholder
         })} onClick={focus}>
           <Editor
@@ -177,6 +208,8 @@ const TextEditor = (props) => {
             handleKeyCommand={handleKeyCommand}
             keyBindingFn={mapKeyToEditorCommand}
             onChange={props.onChange}
+            onBlur={() => input.onBlur()}
+            onFocus={() => input.onFocus()}
             spellCheck={true}
           />
         </div>

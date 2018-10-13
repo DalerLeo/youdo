@@ -12,10 +12,26 @@ export default params => {
     const detail = _.get(state, [storeName, 'item', 'data'])
     const detailLoading = _.get(state, [storeName, 'item', 'loading'])
 
+    if (!itemFetchAction) {
+      return {
+        [`${storeName}Detail`]: {
+          detail,
+          detailLoading
+        }
+      }
+    }
+
     return {
       detail,
       detailLoading
     }
+  }
+
+  if (!itemFetchAction) {
+    return compose(
+      connect(mapStateToProps),
+      pure
+    )
   }
   return compose(
     connect(mapStateToProps, {itemFetchAction}),

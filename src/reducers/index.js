@@ -119,7 +119,24 @@ const rootReducer = combineReducers({
     update: createThunkReducer(actionTypes.JOB_SEARCH_UPDATE),
     item: createThunkReducer(actionTypes.JOB_SEARCH_ITEM)
   }),
-
+  project: combineReducers({
+    create: createThunkReducer(actionTypes.PROJECT_CREATE),
+    list: createThunkReducer(actionTypes.PROJECT_LIST),
+    update: createThunkReducer(actionTypes.PROJECT_UPDATE),
+    item: createThunkReducer(actionTypes.PROJECT_ITEM)
+  }),
+  task: combineReducers({
+    create: createThunkReducer(actionTypes.TASK_CREATE),
+    list: createThunkReducer(actionTypes.TASK_LIST),
+    update: createThunkReducer(actionTypes.TASK_UPDATE),
+    item: createThunkReducer(actionTypes.TASK_ITEM)
+  }),
+  comment: combineReducers({
+    create: createThunkReducer(actionTypes.COMMENT_CREATE),
+    list: createThunkReducer(actionTypes.COMMENT_LIST),
+    update: createThunkReducer(actionTypes.COMMENT_UPDATE),
+    item: createThunkReducer(actionTypes.COMMENT_ITEM)
+  }),
   snackbar: snackbarReducer(),
   error: errorReducer(),
   form: formReducer,

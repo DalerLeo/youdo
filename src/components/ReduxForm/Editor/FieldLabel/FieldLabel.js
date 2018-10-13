@@ -10,7 +10,7 @@ const enhance = compose(
     label: {
       fontWeight: '600',
       lineHeight: 'normal',
-      marginBottom: '16px'
+      marginBottom: '10px'
     },
     errorLabel: {
       color: COLOR_RED

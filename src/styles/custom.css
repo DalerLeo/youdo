@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800&subset=cyrillic');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,500,600,700,800&subset=cyrillic');
 
 .react-datepicker__input-container {
     width: 100%;
@@ -155,4 +155,51 @@ hr.lineDote {
 .DateInput__small {
     width: calc(50% - 3px);
     border-bottom: 1px solid #212121;
+}
+
+.input_date_field {
+    font-size: 13px !important;
+    height: 45px !important;
+    margin-top: 7px
+}
+
+.input_date_field div {
+    font-size: 13px !important
+}
+
+.input_date_field label {
+    top: 20px !important;
+    line-height: 5px !important
+}
+
+.input_date_field input {
+    margin-top: 0 !important;
+}
+
+.input_date_field div:first-child {
+    height: 45px !important
+}
+
+.input_date_field div:first-child div:first-child {
+    transform: translate(0px, 0px) !important
+}
+
+.input_field {
+    fontSize: 13px !important;
+    height: 45px !important;
+    marginTop: 7px
+}
+
+
+.input_field label {
+    top: 20px !important;
+    line-height: 5px !important
+}
+
+.input_field input {
+    margin-top: 0 !important;
+}
+
+.input_field > div:first-child {
+    fontSize: 13px !important
 }

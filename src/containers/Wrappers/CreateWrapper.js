@@ -62,7 +62,7 @@ const createWrapper = params => {
 
       return props$
         .combineLatest(({createData, createLoading, ...props}) => {
-          return ({
+          return {
             createDialog: {
               open: toBoolean(_.get(props, ['location', 'query', queryKey])),
               onOpen: onOpenCreateDialog,
@@ -72,7 +72,7 @@ const createWrapper = params => {
               loading: createLoading
             },
             ...props
-          })
+          }
         })
     }),
     pure

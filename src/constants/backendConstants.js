@@ -116,3 +116,8 @@ export const PROFILE_LANG = [
   {id: 'en', name: 'Узбекский'},
   {id: 'ru', name: 'Русский'}
 ]
+
+export const PROJECT_VISIBILITY = [
+  {id: 'True', name: 'Всем'},
+  {id: 'False', name: 'Рабочей группе'}
+]

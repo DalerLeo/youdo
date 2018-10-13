@@ -1,6 +1,6 @@
 import {find, flow} from 'lodash/fp'
 import React from 'react'
-import SearchField from './Basic/SearchField'
+import Search2Field from './Basic/Search2Field'
 import toCamelCase from '../../helpers/toCamelCase'
 
 const getOptions = (search, ITEMS) => Promise.resolve(ITEMS)
@@ -15,12 +15,12 @@ const StaticUniversalSearchField = (props) => {
   const {items, ...defaultProps} = props
 
   return (
-    <SearchField
-      getValue={SearchField.defaultGetValue('id')}
-      getText={SearchField.defaultGetText('name')}
+    <Search2Field
+      getValue={Search2Field.defaultGetValue('id')}
+      getText={Search2Field.defaultGetText('name')}
       getOptions={search => getOptions(search, items)}
       getItem={(id) => getItem(id, items)}
-      getItemText={SearchField.defaultGetText('name')}
+      getItemText={Search2Field.defaultGetText('name')}
       {...defaultProps}
     />
   )

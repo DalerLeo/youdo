@@ -23,6 +23,7 @@ import normalizePhone from './normalizers/normalizePhone'
 import ApplicantStatusRadioButton from './Applicant/ApplicantStatusRadioButton'
 import UniversalSearchField from './UniversalSearchField'
 import StaticUniversalSearchField from './StaticUniversalSearchField'
+import UsersMultiSearchField from './Users/UsersMultiSearchField'
 
 export {
   ClientContactsField,
@@ -38,6 +39,7 @@ export {
   SphereSearchField,
   PositionsSearchField,
   UserStatusRadioButton,
+  UsersMultiSearchField,
   RoleSearchField,
   normalizePhone,
   GenderSearchField,

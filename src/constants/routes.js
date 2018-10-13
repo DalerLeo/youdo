@@ -87,3 +87,8 @@ export const JOB_SEARCH_LIST_URL = `/${JOB_SEARCH}`
 export const JOB_SEARCH_ITEM_URL = `/${JOB_SEARCH}/:id`
 export const JOB_SEARCH_ITEM_PATH = `${JOB_SEARCH}/%d`
 
+export const PROJECT = 'project'
+export const PROJECT_LIST_URL = `/${PROJECT}`
+export const PROJECT_ITEM_URL = `/${PROJECT}/:id`
+export const PROJECT_ITEM_PATH = `/${PROJECT}/%d`
+

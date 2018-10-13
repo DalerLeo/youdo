@@ -10,7 +10,7 @@ export const API_URL = `${API_PROTOCOL}://${API_HOST}/`
 export const USER = 'main/user'
 export const SIGN_IN = 'main/login/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
-export const SIGN_OUT = `/${USER}/unauth/`
+export const SIGN_OUT = '/main/logout/'
 export const CONFIG = '/config'
 
 export const CLIENT = 'client'
@@ -169,3 +169,24 @@ export const JOB_SEARCH_ITEM = `/${JOB_SEARCH}/%d`
 export const JOB_SEARCH_UPDATE = `/${JOB_SEARCH}/%d`
 export const JOB_SEARCH_CREATE = `/${JOB_SEARCH}/`
 export const JOB_SEARCH_DELETE = `/${JOB_SEARCH}/%d`
+
+export const PROJECT = 'staff/project'
+export const PROJECT_LIST = `/${PROJECT}/`
+export const PROJECT_ITEM = `/${PROJECT}/%d/`
+export const PROJECT_UPDATE = `/${PROJECT}/%d`
+export const PROJECT_CREATE = `/${PROJECT}/`
+export const PROJECT_DELETE = `/${PROJECT}/%d`
+
+export const TASK = 'staff/project/%d/tasks'
+export const TASK_LIST = `/${TASK}/`
+export const TASK_ITEM = `/${TASK}/%d/`
+export const TASK_UPDATE = `/${TASK}/%d`
+export const TASK_CREATE = `/${TASK}/`
+export const TASK_DELETE = `/${TASK}/%d`
+
+export const COMMENT = 'staff/project/%d/tasks/%d/comments'
+export const COMMENT_LIST = `/${COMMENT}/`
+export const COMMENT_ITEM = `/${COMMENT}/%d/`
+export const COMMENT_UPDATE = `/${COMMENT}/%d`
+export const COMMENT_CREATE = `/${COMMENT}/`
+export const COMMENT_DELETE = `/${COMMENT}/%d`
