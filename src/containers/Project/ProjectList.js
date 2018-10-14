@@ -4,6 +4,7 @@ import {compose, pure, mapPropsStream, createEventHandler} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import setInitialValues from '../../helpers/setInitialValues'
+import {compareFilterByProps} from '../../helpers/get'
 import {
   listWrapper,
   detailWrapper,
@@ -49,7 +50,13 @@ const updateKeys = {
 const except = {
   openMailDialog: null,
   project: null,
-  taskOpen: null
+  taskOpen: null,
+  ordering: null
+}
+
+const exceptTask = {
+  taskOpen: null,
+  openCreateDialog: null
 }
 const mapDispatchToProps = {
   updateDetailStore,
@@ -140,8 +147,11 @@ const enhance = compose(
 
     props$
       .filter((props) => props.filter.getParam('project'))
-      .distinctUntilChanged(null, (props) => props.filter.getParam('project'))
-      .subscribe(({filter, ...props}) => props.taskListFetchAction(filter.getParam('project')))
+      .distinctUntilChanged(compareFilterByProps(exceptTask))
+      .subscribe(({filter, ...props}) => {
+        const id = filter.getParam('project')
+        props.taskListFetchAction(id, filter)
+      })
 
     props$
       .filter((props) => props.params.id)

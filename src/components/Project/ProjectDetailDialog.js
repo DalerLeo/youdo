@@ -179,7 +179,8 @@ const ProjectDetailDialog = enhance((props) => {
     onClose,
     classes,
     detailData,
-    onComment
+    onComment,
+    loading
   } = props
 
   const formNames = [
@@ -201,7 +202,7 @@ const ProjectDetailDialog = enhance((props) => {
       open={open}
       onRequestClose={onClose}
       className={classes.dialog}
-      contentStyle={{width: '700px', maxWidth: 'none'}}
+      contentStyle={{width: loading ? '550px' : '700px', maxWidth: 'none'}}
       bodyClassName={classes.popUp}>
 
       <div className={classes.titleContent}>

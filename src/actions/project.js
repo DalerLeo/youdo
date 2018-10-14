@@ -141,9 +141,10 @@ export const taskUpdateAction = (id, formValues) => {
   }
 }
 
-export const taskListFetchAction = (id) => {
+export const taskListFetchAction = (id, filter) => {
+  const params = {ordering: filter.getParam('ordering')}
   const payload = axios()
-    .get(sprintf(API.TASK_LIST, Number(id)))
+    .get(sprintf(API.TASK_LIST, Number(id)), {params})
     .then((response) => {
       return _.get(response, 'data')
     })

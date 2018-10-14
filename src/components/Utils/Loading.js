@@ -13,7 +13,7 @@ const Loading = ({height, size, loading}) => {
 }
 
 Loading.propTypes = {
-  height: PropTypes.number,
+  height: PropTypes.number.isRequired,
   size: PropTypes.number.isRequired,
   loading: PropTypes.bool.isRequired
 }

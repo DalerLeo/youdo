@@ -16,16 +16,22 @@ import SubMenu from '../SubMenu'
 import t from '../../helpers/translate'
 import IconButton from 'material-ui/IconButton'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
+import FlatButton from 'material-ui/FlatButton'
 import ProjectDetailDialog from './ProjectDetailDialog'
 import {TextField, DateField, UniversalSearchField} from '../ReduxForm'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
 import defaultsPropTypes from '../../constants/propTypes'
 import classNames from 'classnames'
 import {hashHistory} from 'react-router'
 import ChatIcon from 'material-ui/svg-icons/communication/chat'
+import EventIcon from 'material-ui/svg-icons/notification/event-note'
+import LineIcon from 'material-ui/svg-icons/action/dashboard'
 import Paper from 'material-ui/Paper'
-import {DISPLAY_FLEX_CENTER, DISPLAY_FLEX_START, COLOR_GREEN, COLOR_RED} from '../Styles/commonStyles'
-import Loader from 'components/Loader/Loader'
+import {
+  DISPLAY_FLEX_CENTER,
+  DISPLAY_FLEX_START,
+  COLOR_GREEN,
+  COLOR_RED
+} from '../Styles/commonStyles'
 import sprintf from 'sprintf'
 import dateFormat from 'helpers/dateFormat'
 import EmptyQuery from 'components/Utils/EmptyQuery'
@@ -70,22 +76,7 @@ const enhance = compose(
       display: 'flex',
       margin: '0 -28px',
       padding: '0 28px 0 0',
-      maxHeight: 'calc(100% - 72px)'
-    },
-    wrapper: {
-      height: 'calc(100% + 28px)'
-    },
-    addButton: {
-      '& svg': {
-        width: '14px !important',
-        height: '14px !important'
-      }
-    },
-    loader: {
-      height: '300px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
+      maxHeight: 'calc(100vh - 110px)'
     },
     leftSide: {
       width: '350px',
@@ -96,8 +87,8 @@ const enhance = compose(
       marginLeft: '28px'
     },
     outerTitle: {
-      height: '40px',
-      lineHeight: '40px',
+      height: '50px',
+      lineHeight: '50px',
       fontWeight: '600',
       paddingLeft: '30px',
       '& > div': {
@@ -112,9 +103,12 @@ const enhance = compose(
       }
     },
     listWrapper: {
-      maxHeight: 'calc(100vh - 120px)',
-      minHeight: 'calc(100vh - 120px)',
+      maxHeight: 'calc(100vh - 135px)',
+      minHeight: 'calc(100vh - 135px)',
       overflow: 'auto'
+    },
+    anotherWapper: {
+      animation: 'tubeFadeOut 800ms ease'
     },
     list: {
       borderBottom: '1px solid #efefef',
@@ -124,7 +118,8 @@ const enhance = compose(
       position: 'relative'
     },
     title: {
-      fontWeight: '600'
+      fontWeight: '600',
+      cursor: 'unset'
     },
     titlePro: {
       extend: 'title',
@@ -155,22 +150,13 @@ const enhance = compose(
     activePro: {
       backgroundColor: '#f2f5f8'
     },
-
-    link: {
-      position: 'absolute',
-      top: '0',
-      left: '0',
-      right: '0',
-      bottom: '0',
-      zIndex: '1'
-    },
-    '@keyframes tubeFadeIn': {
-      '0%': {opacity: '0', marginTop: '10px'},
+    '@keyframes tubeFadeOut': {
+      '0%': {opacity: '0', marginTop: '-10px'},
       '100%': {opacity: '1', marginTop: '0'}
     },
     cardContent: {
       overflow: 'auto',
-      maxHeight: 'calc(100vh - 140px)',
+      maxHeight: 'calc(100vh - 150px)',
       paddingTop: '4px',
       marginTop: '-4px',
       '& > div:first-child': {
@@ -181,7 +167,7 @@ const enhance = compose(
       }
     },
     cardPaper: {
-      animation: 'tubeFadeIn 800ms ease',
+      animation: 'tubeFadeOut 800ms ease',
       borderLeft: '2px solid ' + COLOR_RED,
       cursor: 'pointer',
       padding: '10px 20px',
@@ -191,7 +177,7 @@ const enhance = compose(
       }
     },
     addCardBtn: {
-      animation: 'tubeFadeIn 700ms ease',
+      animation: 'tubeFadeOut 700ms ease',
       cursor: 'pointer',
       padding: '4px 20px',
       marginBottom: '15px',
@@ -249,11 +235,32 @@ const enhance = compose(
       right: '0',
       marginBottom: '0px'
     },
-    iconBtn: {
+    toggleWrapper: {
       display: 'flex',
+      alignItems: 'center',
       justifyContent: 'flex-end',
-      opacity: '0',
-      transition: 'all 200ms ease-out'
+      borderTop: '1px #efefef solid',
+      '& > div': {
+        display: 'flex',
+        background: 'transparent !important'
+      },
+      '& button': {
+        height: '25px !important',
+        lineHeight: '25px !important',
+        minWidth: '55px !important',
+        '& > div': {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          '& svg': {
+            width: '20px !important',
+            height: '20px !important'
+          }
+        }
+      }
+    },
+    shadowButton: {
+      boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
     }
   })
 )
@@ -277,6 +284,10 @@ const iconStyle = {
     padding: 0
   }
 }
+
+const primaryColor = '#12aaeb'
+const disabledColor = '#dadada'
+const whiteColor = '#fff'
 const ProjectGridList = enhance((props) => {
   const {
     filter,
@@ -288,6 +299,7 @@ const ProjectGridList = enhance((props) => {
     taskDialog,
     classes
   } = props
+  const ordered = filter.getParam('ordering') === 'deadline'
   const tasks = _.get(taskDialog, 'taskList.list.results')
   const tasksLoading = _.get(taskDialog, 'taskList.loading')
   const projects = _.get(listData, 'data')
@@ -297,12 +309,6 @@ const ProjectGridList = enhance((props) => {
   const tasksLeft = _.filter(tasks, (item, i) => !(i % TWO))
   const tasksRight = _.filter(tasks, (item, i) => (i % TWO))
   const currentProject = _.find(projects, {id: currentProjectId})
-
-  const loader = (
-    <div className={classes.loader}>
-      <Loader size={1}/>
-    </div>
-  )
 
   const getCol = (list) => (
     <Row>
@@ -344,32 +350,29 @@ const ProjectGridList = enhance((props) => {
             </Paper>
           </Col>
         )
-      })
-      }
+      })}
     </Row>
   )
-  const taksCards = tasksLoading
-    ? loader
-    : (
-      <Row className={classes.cardContent}>
-        <Col xs={6}>
-          <Row>
-            <Col xs={12}>
-              <Paper
-                zDepth={1}
-                onClick={taskDialog.onOpen}
-                className={classes.addCardBtn}>
-                <ContentAdd style={{verticalAlign: 'middle'}}/>
-              </Paper>
-            </Col>
-          </Row>
-          {getCol(tasksLeft)}
-        </Col>
-        <Col xs={6}>
-          {getCol(tasksRight)}
-        </Col>
-      </Row>
-    )
+  const taksCards = (
+    <Row className={classes.cardContent}>
+      <Col xs={6}>
+        <Row>
+          <Col xs={12}>
+            <Paper
+              zDepth={1}
+              onClick={taskDialog.onOpen}
+              className={classes.addCardBtn}>
+              <ContentAdd style={{verticalAlign: 'middle'}}/>
+            </Paper>
+          </Col>
+        </Row>
+        {getCol(tasksLeft)}
+      </Col>
+      <Col xs={6}>
+        {getCol(tasksRight)}
+      </Col>
+    </Row>
+  )
 
   const projectsList = (
     <div className={classes.leftSide}>
@@ -404,29 +407,31 @@ const ProjectGridList = enhance((props) => {
             height={100}
             loading={projectsLoading}
           />
-          {_.map(projects, project => {
-            const id = _.get(project, 'id')
-            const title = _.get(project, 'title')
-            const description = _.get(project, 'description')
-            const isActive = currentProjectId === id
-            return (
-              <div
-                key={id}
-                onClick={() => hashHistory.replace({
-                  pathname: ROUTES.PROJECT_LIST_URL,
-                  query: filter.getParams({project: id})
-                })}
-                className={classNames({
-                  [classes.list]: true,
-                  [classes.activePro]: isActive
-                })}>
-                <div className={classes.titlePro}>
-                  <div>{title} <div dangerouslySetInnerHTML={{__html: description}}/></div>
-                  <span>1</span>
+          {!projectsLoading && <div className={classes.anotherWapper}>
+            {_.map(projects, project => {
+              const id = _.get(project, 'id')
+              const title = _.get(project, 'title')
+              const description = _.get(project, 'description')
+              const isActive = currentProjectId === id
+              return (
+                <div
+                  key={id}
+                  onClick={() => hashHistory.replace({
+                    pathname: ROUTES.PROJECT_LIST_URL,
+                    query: filter.getParams({project: id})
+                  })}
+                  className={classNames({
+                    [classes.list]: true,
+                    [classes.activePro]: isActive
+                  })}>
+                  <div className={classes.titlePro}>
+                    <div>{title} <div dangerouslySetInnerHTML={{__html: description}}/></div>
+                    <span>1</span>
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>}
         </div>
       </Paper>
     </div>
@@ -435,25 +440,40 @@ const ProjectGridList = enhance((props) => {
   return (
     <Container>
       <SubMenu url={ROUTES.PROJECT_LIST_URL}/>
-      <div className={classes.addButtonWrapper}>
-        <ToolTip position="left" text={'добавить соискателя'}>
-          <FloatingActionButton
-            mini={true}
-            zDepth={1}
-            backgroundColor="#12aaeb"
-            onClick={createDialog.onOpen}>
-            <ContentAdd/>
-          </FloatingActionButton>
-        </ToolTip>
-      </div>
 
       <div className={classes.wrap}>
         {projectsList}
         <div className={classes.rightSide}>
           <div className={classes.outerTitle} style={{paddingLeft: '0'}}>
-            {_.get(currentProject, 'title') || 'Выберите проект'}
+            <div>
+              {_.get(currentProject, 'title') || 'Выберите проект'}
+              <div className={classes.toggleWrapper}>
+                <ToolTip position="left" text="Сортировать по дату создания">
+                  <FlatButton
+                    icon={<LineIcon color={whiteColor}/>}
+                    className={classes.shadowButton}
+                    onClick={() => hashHistory.push(filter.createURL({ordering: ''}))}
+                    backgroundColor={!ordered ? primaryColor : disabledColor}
+                    rippleColor={whiteColor}
+                    hoverColor={!ordered ? primaryColor : disabledColor}/>
+                </ToolTip>
+                <ToolTip position="left" text="Сортировать по дедлайну">
+                  <FlatButton
+                    icon={<EventIcon color={whiteColor}/>}
+                    className={ordered ? classes.shadowButton : ''}
+                    onClick={() => hashHistory.push(filter.createURL({ordering: 'deadline'}))}
+                    backgroundColor={ordered ? primaryColor : disabledColor}
+                    rippleColor={whiteColor}
+                    hoverColor={ordered ? primaryColor : disabledColor}/>
+                </ToolTip>
+              </div>
+            </div>
           </div>
-          {taksCards}
+          <Loading
+            height={200}
+            size={1}
+            loading={tasksLoading}/>
+          {!tasksLoading && taksCards}
 
         </div>
       </div>
