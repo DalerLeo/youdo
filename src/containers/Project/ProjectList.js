@@ -128,7 +128,7 @@ const enhance = compose(
 
   mapPropsStream(props$ => {
     props$
-      .filter((props) => props.list)
+      .filter(({list}) => !_.isEmpty(_.get(list, 'results')))
       .filter((props) => !props.filter.getParam('project'))
       .subscribe(({filter, list, location: {pathname}, ...props}) => {
         const project = _.get(list, 'results.0.id')
@@ -233,7 +233,7 @@ const ProjectList = enhance((props) => {
 
   const listData = {
     data: _.get(list, 'results'),
-    listLoading
+    loading: listLoading
   }
   const detailData = {
     id: detailId,

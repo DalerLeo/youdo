@@ -14,14 +14,13 @@ import {
   COLOR_WHITE,
   COLOR_DEFAULT
 } from '../../constants/styleConstants'
-import {getLoader} from '../Styles/commonStyles'
 import Loader from '../Loader'
 import {Editor, TextFieldInlineEdit} from '../ReduxForm'
 import dateFormat from '../../helpers/dateFormat'
 import FlatButton from 'material-ui/FlatButton'
 import EmptyQuery from 'components/Utils/EmptyQuery'
+import Loading from 'components/Utils/Loading'
 
-const HEIGHT = 50
 const enhance = compose(
   injectSheet({
     dialog: {
@@ -241,8 +240,16 @@ const ProjectDetailDialog = enhance((props) => {
               />
             </div>
             <div>
-              {_.isEmpty(comment) && <EmptyQuery size={160} text={'Комментов нет'} />}
-              {commentLoading && getLoader(HEIGHT, '0.55')}
+              <EmptyQuery
+                size={160}
+                list={comment}
+                text={'Комментов нет'}
+                loading={commentLoading}
+              />
+              <Loading
+                size={0.55}
+                height={50}
+                loading={commentLoading}/>
               {_.map(comment, item => {
                 const id = _.get(item, 'id')
                 const createdDate = dateFormat(_.get(item, 'createdDate'), true)

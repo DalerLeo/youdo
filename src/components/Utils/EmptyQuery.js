@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import NotFound from 'components/Images/not-found.png'
+import _ from 'lodash'
 
 const enhance = compose(
   injectSheet({
@@ -20,21 +21,26 @@ const enhance = compose(
   }))
 
 const THE = 30
-const EmptyQuery = enhance(({classes, size, text}) => {
+const EmptyQuery = enhance(({classes, size, text, list, loading}) => {
   const style = {
     paddingTop: `${size}px`,
     backgroundSize: `${size + THE}px`
   }
+
+  if (!_.isEmpty(list) || loading) return null
+
   return (
     <div className={classes.emptyQuery} style={style}>
-      {text}
+      {text || 'По вашему запросу ничего не найдено'}
     </div>
   )
 })
 
 EmptyQuery.propTypes = {
-  position: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired
+  text: PropTypes.string,
+  size: PropTypes.number.isRequired,
+  list: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired
 }
 
 export default EmptyQuery

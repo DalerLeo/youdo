@@ -28,6 +28,8 @@ import {DISPLAY_FLEX_CENTER, DISPLAY_FLEX_START, COLOR_GREEN, COLOR_RED} from '.
 import Loader from 'components/Loader/Loader'
 import sprintf from 'sprintf'
 import dateFormat from 'helpers/dateFormat'
+import EmptyQuery from 'components/Utils/EmptyQuery'
+import Loading from 'components/Utils/Loading'
 
 const TWO = 2
 const ZERO = 0
@@ -111,6 +113,7 @@ const enhance = compose(
     },
     listWrapper: {
       maxHeight: 'calc(100vh - 120px)',
+      minHeight: 'calc(100vh - 120px)',
       overflow: 'auto'
     },
     list: {
@@ -288,6 +291,7 @@ const ProjectGridList = enhance((props) => {
   const tasks = _.get(taskDialog, 'taskList.list.results')
   const tasksLoading = _.get(taskDialog, 'taskList.loading')
   const projects = _.get(listData, 'data')
+  const projectsLoading = _.get(listData, 'loading')
   const confirmDetails = _.get(detailData, 'data.id')
   const currentProjectId = _.toNumber(filter.getParam('project'))
   const tasksLeft = _.filter(tasks, (item, i) => !(i % TWO))
@@ -390,7 +394,17 @@ const ProjectGridList = enhance((props) => {
               {t('Все')}
             </div>
           </div>
-          {_.map(_.get(listData, 'data'), project => {
+          <EmptyQuery
+            size={150}
+            list={projects}
+            loading={projectsLoading}
+          />
+          <Loading
+            size={0.5}
+            height={100}
+            loading={projectsLoading}
+          />
+          {_.map(projects, project => {
             const id = _.get(project, 'id')
             const title = _.get(project, 'title')
             const description = _.get(project, 'description')
