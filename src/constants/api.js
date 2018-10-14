@@ -184,6 +184,13 @@ export const TASK_UPDATE = `/${TASK}/%d`
 export const TASK_CREATE = `/${TASK}/`
 export const TASK_DELETE = `/${TASK}/%d`
 
+export const PROJECT_PARTICIPANT = 'staff/project/%d/participants'
+export const PROJECT_PARTICIPANT_LIST = `/${PROJECT_PARTICIPANT}/`
+export const PROJECT_PARTICIPANT_ITEM = `/${PROJECT_PARTICIPANT}/%d/`
+export const PROJECT_PARTICIPANT_UPDATE = `/${PROJECT_PARTICIPANT}/%d`
+export const PROJECT_PARTICIPANT_CREATE = `/${PROJECT_PARTICIPANT}/`
+export const PROJECT_PARTICIPANT_DELETE = `/${PROJECT_PARTICIPANT}/%d`
+
 export const COMMENT = 'staff/project/%d/tasks/%d/comments'
 export const COMMENT_LIST = `/${COMMENT}/`
 export const COMMENT_ITEM = `/${COMMENT}/%d/`

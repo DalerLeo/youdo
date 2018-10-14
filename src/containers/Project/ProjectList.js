@@ -13,6 +13,7 @@ import {
   filterWrapper
 } from '../Wrappers'
 import {reset} from 'redux-form'
+import {formInlineValidate} from 'helpers/formValidate'
 import {updateDetailStore, updateStore} from '../../helpers/updateStore'
 import moment from 'moment'
 import {
@@ -32,6 +33,7 @@ import {
   taskListFetchAction,
   taskItemFetchAction,
   commentListFetchAction,
+  taskCreateAction,
   commentCreateAction
 } from '../../actions/project'
 import {openErrorAction} from '../../actions/error'
@@ -57,6 +59,7 @@ const mapDispatchToProps = {
   taskItemFetchAction,
   commentListFetchAction,
   commentCreateAction,
+  taskCreateAction,
   resetForm: reset
 }
 
@@ -64,6 +67,7 @@ const mapStateToProps = (state) => ({
   detail: _.get(state, ['task', 'item', 'data']),
   detailLoading: _.get(state, ['task', 'item', 'loading']),
   commentForm: _.get(state, 'form.ProjectDetailForm.values'),
+  taskForm: _.get(state, 'form.TaskForm.values'),
   commentCreateLoading: _.get(state, ['comment', 'create', 'loading'])
 })
 
@@ -150,6 +154,22 @@ const enhance = compose(
       })
 
     const {handler: onComment, stream: onComment$} = createEventHandler()
+    const {handler: onTaskCreate, stream: onTaskCreate$} = createEventHandler()
+
+    onTaskCreate$
+      .withLatestFrom(props$)
+      .subscribe(([fieldNames, {filter, location: {pathname}, taskForm, ...props}]) => {
+        const pId = filter.getParam('project')
+        return props.taskCreateAction(pId, taskForm)
+          .then(() => props.resetForm('TaskForm'))
+          .then(() => {
+            props.taskDialog.onClose()
+            props.taskListFetchAction(pId)
+          })
+          .catch(error => {
+            return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')
+          })
+      })
 
     onComment$
       .withLatestFrom(props$)
@@ -161,13 +181,14 @@ const enhance = compose(
           .then(() => {
             props.commentListFetchAction(pId, id)
           })
-          .catch(() => {
-            return null
+          .catch(error => {
+            return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')
           })
       })
 
     return props$.combineLatest(props => {
       return {
+        onTaskCreate,
         onComment,
         ...props
       }
@@ -192,7 +213,8 @@ const ProjectList = enhance((props) => {
     commentList,
     taskList,
     onComment,
-    taskDetail
+    taskDetail,
+    onTaskCreate
   } = props
 
   const fromDate = _.get(location, ['query', 'fromDate']) || null
@@ -231,7 +253,7 @@ const ProjectList = enhance((props) => {
         createDialog={createDialog}
         updateDialog={updateDialog}
         filterDialog={filterDialog}
-        taskDialog={{...taskDialog, taskList}}
+        taskDialog={{...taskDialog, taskList, onTaskCreate}}
         confirmDialog={{...confirmDialog, loading: listLoading}}
       />
     </Layout>

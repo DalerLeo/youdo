@@ -11,7 +11,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import SettingSideMenu from '../SideMenu'
 import SetDateDialog from './SetDateDialog'
-import ToolTip from '../../ToolTip/index'
+import ToolTip from '../../Utils/ToolTip/index'
 import toBoolean from '../../../helpers/toBoolean'
 import {
   getPermName,

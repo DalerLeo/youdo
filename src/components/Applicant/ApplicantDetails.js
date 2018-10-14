@@ -6,7 +6,7 @@ import {reduxForm, Field} from 'redux-form'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import LinearProgress from '../LinearProgress'
-import ToolTip from '../ToolTip'
+import ToolTip from '../Utils/ToolTip'
 import {
   TextFieldCustom,
   StaticUniversalSearchField,

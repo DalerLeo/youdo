@@ -7,16 +7,17 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import * as ROUTES from '../../constants/routes'
+import * as API from '../../constants/api'
 import Container from '../Container/index'
 import ProjectCreateDialog from './ProjectCreateDialog'
 import ConfirmDialog from '../ConfirmDialog'
-import ToolTip from '../ToolTip'
+import ToolTip from '../Utils/ToolTip'
 import SubMenu from '../SubMenu'
 import t from '../../helpers/translate'
 import IconButton from 'material-ui/IconButton'
 import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import ProjectDetailDialog from './ProjectDetailDialog'
-import {TextField, DateField, UsersSearchField} from '../ReduxForm'
+import {TextField, DateField, UniversalSearchField} from '../ReduxForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import defaultsPropTypes from '../../constants/propTypes'
 import classNames from 'classnames'
@@ -33,9 +34,9 @@ const ZERO = 0
 const taskEnhancer = compose(
   reduxForm({form: 'TaskForm'}),
 )
-const TaskForm = taskEnhancer(({classes}) => {
+const TaskForm = taskEnhancer(({classes, projectId}) => {
   return (
-    <div>
+    <div style={{fontWeight: '500'}}>
       <Field
         className='input_date_field'
         name={'deadline'}
@@ -52,8 +53,10 @@ const TaskForm = taskEnhancer(({classes}) => {
       />
       <Field
         label={'Ответственное лицо'}
-        name={'responsible'}
-        component={UsersSearchField}
+        name={'worker'}
+        textName={'fullName'}
+        listPath={sprintf(API.PROJECT_PARTICIPANT_LIST, projectId)}
+        component={UniversalSearchField}
       />
     </div>
   )
@@ -65,7 +68,7 @@ const enhance = compose(
       display: 'flex',
       margin: '0 -28px',
       padding: '0 28px 0 0',
-      minHeight: 'calc(100% - 72px)'
+      maxHeight: 'calc(100% - 72px)'
     },
     wrapper: {
       height: 'calc(100% + 28px)'
@@ -158,6 +161,10 @@ const enhance = compose(
       bottom: '0',
       zIndex: '1'
     },
+    '@keyframes tubeFadeIn': {
+      '0%': {opacity: '0', marginTop: '10px'},
+      '100%': {opacity: '1', marginTop: '0'}
+    },
     cardContent: {
       overflow: 'auto',
       maxHeight: 'calc(100vh - 140px)',
@@ -171,6 +178,7 @@ const enhance = compose(
       }
     },
     cardPaper: {
+      animation: 'tubeFadeIn 800ms ease',
       borderLeft: '2px solid ' + COLOR_RED,
       cursor: 'pointer',
       padding: '10px 20px',
@@ -180,6 +188,7 @@ const enhance = compose(
       }
     },
     addCardBtn: {
+      animation: 'tubeFadeIn 700ms ease',
       cursor: 'pointer',
       padding: '4px 20px',
       marginBottom: '15px',
@@ -301,7 +310,7 @@ const ProjectGridList = enhance((props) => {
         const date = dateFormat(_.get(task, 'deadline'))
         const status = _.get(task, 'status')
         return (
-          <Col key={id} xs={12}>
+          <Col key={id} xs={12} style={{position: 'relative'}}>
             <Paper
               zDepth={1}
               onClick={() => hashHistory.push({
@@ -337,28 +346,26 @@ const ProjectGridList = enhance((props) => {
   )
   const taksCards = tasksLoading
     ? loader
-    : _.isEmpty(tasksLeft)
-      ? 'Empty'
-      : (
-        <Row className={classes.cardContent}>
-          <Col xs={6}>
-            <Row>
-              <Col xs={12}>
-                <Paper
-                  zDepth={1}
-                  onClick={taskDialog.onOpen}
-                  className={classes.addCardBtn}>
-                  <ContentAdd style={{verticalAlign: 'middle'}}/>
-                </Paper>
-              </Col>
-            </Row>
-            {getCol(tasksLeft)}
-          </Col>
-          <Col xs={6}>
-            {getCol(tasksRight)}
-          </Col>
-        </Row>
-      )
+    : (
+      <Row className={classes.cardContent}>
+        <Col xs={6}>
+          <Row>
+            <Col xs={12}>
+              <Paper
+                zDepth={1}
+                onClick={taskDialog.onOpen}
+                className={classes.addCardBtn}>
+                <ContentAdd style={{verticalAlign: 'middle'}}/>
+              </Paper>
+            </Col>
+          </Row>
+          {getCol(tasksLeft)}
+        </Col>
+        <Col xs={6}>
+          {getCol(tasksRight)}
+        </Col>
+      </Row>
+    )
 
   const projectsList = (
     <div className={classes.leftSide}>
@@ -433,6 +440,7 @@ const ProjectGridList = enhance((props) => {
             {_.get(currentProject, 'title') || 'Выберите проект'}
           </div>
           {taksCards}
+
         </div>
       </div>
 
@@ -462,6 +470,7 @@ const ProjectGridList = enhance((props) => {
       <ProjectDetailDialog
         detailData={detailData}
         loading={_.get(detailData, 'loading')}
+        initialValues={{desc: _.get(detailData, 'data.description')}}
         open={detailData.id > ZERO}
         onComment={_.get(detailData, 'onComment')}
         onClose={() => hashHistory.replace({pathname: ROUTES.PROJECT_LIST_URL, query: filter.getParams()})}
@@ -479,10 +488,10 @@ const ProjectGridList = enhance((props) => {
       <ConfirmDialog
         type="create"
         customName={'задач'}
-        message={<TaskForm/>}
+        message={<TaskForm projectId={currentProjectId}/>}
         loading={taskDialog.confirmLoading}
         onClose={taskDialog.onClose}
-        onSubmit={taskDialog.onSubmit}
+        onSubmit={taskDialog.onTaskCreate}
         open={taskDialog.open}
       />
     </Container>

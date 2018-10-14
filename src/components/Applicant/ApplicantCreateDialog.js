@@ -19,7 +19,7 @@ import {
   COLOR_GREY_LIGHTEN
 } from '../../constants/styleConstants'
 import {ZERO} from '../../constants/backendConstants'
-import ToolTip from '../ToolTip'
+import ToolTip from '../Utils/ToolTip'
 import ExperiencesField from '../ReduxForm/HR/Resume/ExperiencesField'
 import ExperienceForm from '../ReduxForm/HR/Resume/ExperienceForm'
 import EducationForm from '../ReduxForm/HR/Resume/EducationForm'

@@ -13,7 +13,10 @@ const getOptions = (api, search, params, pageSize = PAGE_SIZE) => {
   listToken = CancelToken.source()
   return axios().get(api, {params: _.merge(_.merge(params, {search}), {page_size: pageSize}), cancelToken: listToken.token})
     .then(({data}) => {
-      return Promise.resolve(toCamelCase(data.results))
+      if (data.results) {
+        return Promise.resolve(toCamelCase(data.results))
+      }
+      return Promise.resolve(toCamelCase(data))
     })
     .catch((error) => {
       caughtCancel(error)

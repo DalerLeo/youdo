@@ -5,7 +5,7 @@ import axios from '../helpers/axios'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
 import * as serializers from '../serializers/projectSerializer'
-
+import moment from 'moment'
 export const projectCreateAction = (formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
@@ -88,10 +88,13 @@ export const projectItemFetchAction = (id) => {
     payload
   }
 }
-export const taskCreateAction = (formValues) => {
-  const requestData = serializers.createSerializer(formValues)
+export const taskCreateAction = (id, formValues) => {
+  const params = {
+    ...formValues,
+    deadline: _.get(formValues, 'deadline') && moment(_.get(formValues, 'deadline')).format('YYYY-MM-DD')
+  }
   const payload = axios()
-    .post(API.TASK_CREATE, requestData)
+    .post(sprintf(API.TASK_CREATE, Number(id)), params)
     .then((response) => {
       return _.get(response, 'data')
     })

@@ -15,7 +15,7 @@ import Container from '../../Container/index'
 import SkillsCreateDialog from './SkillsCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog/index'
 import SideMenu from '../SideMenu'
-import ToolTip from '../../ToolTip/index'
+import ToolTip from '../../Utils/ToolTip/index'
 import t from '../../../helpers/translate'
 
 const enhance = compose(

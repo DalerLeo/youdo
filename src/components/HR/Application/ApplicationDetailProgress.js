@@ -23,7 +23,7 @@ import {
   COLOR_GREY
 } from '../../../constants/styleConstants'
 import getDocument from '../../../helpers/getDocument'
-import ToolTip from '../../ToolTip'
+import ToolTip from '../../Utils/ToolTip'
 import Loader from '../../Loader'
 import ConfirmDialog from '../../ConfirmDialog'
 import ApplicationSendReportDialog from './ApplicationSendReportDialog'

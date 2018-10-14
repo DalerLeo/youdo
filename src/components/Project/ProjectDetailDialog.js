@@ -7,6 +7,7 @@ import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import DeadlineIcon from 'material-ui/svg-icons/notification/event-note'
 import IconButton from 'material-ui/IconButton'
+
 import _ from 'lodash'
 import {
   BORDER_STYLE,
@@ -15,9 +16,10 @@ import {
 } from '../../constants/styleConstants'
 import {getLoader} from '../Styles/commonStyles'
 import Loader from '../Loader'
-import {Editor} from '../ReduxForm'
+import {Editor, TextFieldInlineEdit} from '../ReduxForm'
 import dateFormat from '../../helpers/dateFormat'
 import FlatButton from 'material-ui/FlatButton'
+import EmptyQuery from 'components/Utils/EmptyQuery'
 
 const HEIGHT = 50
 const enhance = compose(
@@ -98,21 +100,13 @@ const enhance = compose(
     },
     proTitle: {
       borderBottom: '1px solid #efefef',
-      paddingBottom: '20px',
+      paddingBottom: '10px',
       display: 'flex',
       flexDirection: 'column',
       '& > span': {
-        '&:first-child': {
-          fontSize: '14px',
-          fontWeight: '500',
-          color: '#777',
-          paddingBottom: '5px'
-        },
-        '&:last-child': {
-          fontSize: '16px',
-          color: '#333',
-          fontWeight: '600'
-        }
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#777'
       }
     },
     commentWrap: {
@@ -199,7 +193,6 @@ const ProjectDetailDialog = enhance((props) => {
   const worker = _.get(detailData, 'data.worker.fullName')
   const title = _.get(detailData, 'data.project.title')
   const deadline = dateFormat(_.get(detailData, 'data.deadline'))
-  const description = _.get(detailData, 'data.description')
 
   const comment = _.get(detailData, 'comment')
   const commentLoading = _.get(detailData, 'commentLoading')
@@ -236,12 +229,19 @@ const ProjectDetailDialog = enhance((props) => {
           <div className={classes.loader}>
             <Loader size={0.75}/>
           </div>
-          <div className={classes.inContent} style={{minHeight: '260px', padding: '15px 30px 30px'}}>
+          <div className={classes.inContent} style={{padding: '20px 30px 30px'}}>
             <div className={classes.proTitle}>
               <span>{title}</span>
-              <span>{description}</span>
+              <Field
+                name={'desc'}
+                fullWidth={true}
+                fontSize={'18px'}
+                onSubmit={(val) => null}
+                component={TextFieldInlineEdit}
+              />
             </div>
             <div>
+              {_.isEmpty(comment) && <EmptyQuery size={160} text={'Комментов нет'} />}
               {commentLoading && getLoader(HEIGHT, '0.55')}
               {_.map(comment, item => {
                 const id = _.get(item, 'id')

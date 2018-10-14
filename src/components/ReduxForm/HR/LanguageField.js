@@ -8,7 +8,7 @@ import LanguageSearchField from './LanguageSearchField'
 import ContentRemove from 'material-ui/svg-icons/content/remove-circle-outline'
 import IconButton from 'material-ui/IconButton'
 import CheckBox from '../Basic/CheckBox'
-import ToolTip from '../../ToolTip'
+import ToolTip from '../../Utils/ToolTip'
 
 const enhance = compose(
   injectSheet({

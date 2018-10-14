@@ -18,7 +18,7 @@ import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
 import SettingSideMenu from '../../Settings/SideMenu'
 import defaultPropTypes from '../../../constants/propTypes'
-import ToolTip from '../../ToolTip'
+import ToolTip from '../../Utils/ToolTip'
 import Dot from '../../Images/dot.png'
 import t from '../../../helpers/translate'
 

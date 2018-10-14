@@ -6,7 +6,7 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import HardwareKeyboardArrowRight from 'material-ui/svg-icons/hardware/keyboard-arrow-right'
 import {getMenus} from '../SidebarMenu/MenuItems'
-import ToolTip from '../ToolTip'
+import ToolTip from '../Utils/ToolTip'
 import {connect} from 'react-redux'
 
 const NOT_FOUND = -1
