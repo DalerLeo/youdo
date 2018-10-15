@@ -14,7 +14,6 @@ import {
 import Loader from '../Loader'
 import {
   TextField,
-  Editor,
   UsersSearchField,
   UsersMultiSearchField
 } from '../ReduxForm'
@@ -163,8 +162,10 @@ const ProjectCreateDialog = enhance((props) => {
                 fullWidth={true}/>
               <Field
                 name="description"
-                component={Editor}
-                className={classes.inputFieldCustom}
+                component={TextField}
+                multiLine={true}
+                rows={1}
+                rowsMax={4}
                 label={'Описание'}
                 fullWidth={true}/>
               <Field

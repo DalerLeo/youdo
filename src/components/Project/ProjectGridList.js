@@ -14,11 +14,10 @@ import ConfirmDialog from '../ConfirmDialog'
 import ToolTip from '../Utils/ToolTip'
 import SubMenu from '../SubMenu'
 import t from '../../helpers/translate'
-import IconButton from 'material-ui/IconButton'
-import AddIcon from 'material-ui/svg-icons/content/add-circle-outline'
 import FlatButton from 'material-ui/FlatButton'
 import ProjectDetailDialog from './ProjectDetailDialog'
 import {TextField, DateField, UniversalSearchField} from '../ReduxForm'
+import FloatingActionButton from 'material-ui/FloatingActionButton'
 import defaultsPropTypes from '../../constants/propTypes'
 import classNames from 'classnames'
 import {hashHistory} from 'react-router'
@@ -36,6 +35,7 @@ import sprintf from 'sprintf'
 import dateFormat from 'helpers/dateFormat'
 import EmptyQuery from 'components/Utils/EmptyQuery'
 import Loading from 'components/Utils/Loading'
+import UsersSearchField from 'components/ReduxForm/Users/ProjectUsersSearchField'
 
 const TWO = 2
 const ZERO = 0
@@ -116,6 +116,10 @@ const enhance = compose(
       margin: '0',
       cursor: 'pointer',
       position: 'relative'
+    },
+    filter: {
+      padding: '0 30px 10px',
+      borderBottom: '1px #efefef solid'
     },
     title: {
       fontWeight: '600',
@@ -262,7 +266,8 @@ const enhance = compose(
     shadowButton: {
       boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
     }
-  })
+  }),
+  reduxForm({form: 'ProjectFilterForm'})
 )
 
 const iconStyle = {
@@ -292,12 +297,12 @@ const ProjectGridList = enhance((props) => {
   const {
     filter,
     createDialog,
-    updateDialog,
     confirmDialog,
     listData,
     detailData,
     taskDialog,
-    classes
+    classes,
+    onFilterSubmit
   } = props
   const ordered = filter.getParam('ordering') === 'deadline'
   const tasks = _.get(taskDialog, 'taskList.list.results')
@@ -379,23 +384,17 @@ const ProjectGridList = enhance((props) => {
       <div className={classes.outerTitle}>
         <div>
           {t('Проекты')}
-          <ToolTip position={'bottom'} text={'Добавить проект'}>
-            <IconButton
-              iconStyle={iconStyle.icon}
-              style={iconStyle.button}
-              touch={true}
-              onClick={createDialog.onOpen}>
-              <AddIcon />
-            </IconButton>
-          </ToolTip>
         </div>
       </div>
       <Paper zDepth={2} style={{height: '100%'}}>
         <div className={classes.listWrapper}>
-          <div className={classes.list}>
-            <div className={classes.title}>
-              {t('Все')}
-            </div>
+          <div className={classes.filter}>
+            <Field
+              name={'worker'}
+              autoFetch
+              onChange={(p, v) => onFilterSubmit(v)}
+              component={UsersSearchField}
+            />
           </div>
           <EmptyQuery
             size={150}
@@ -440,6 +439,17 @@ const ProjectGridList = enhance((props) => {
   return (
     <Container>
       <SubMenu url={ROUTES.PROJECT_LIST_URL}/>
+      <div className={classes.addButtonWrapper}>
+        <ToolTip position="left" text={'Добавить проект'}>
+          <FloatingActionButton
+            mini={true}
+            zDepth={1}
+            backgroundColor="#12aaeb"
+            onClick={createDialog.onOpen}>
+            <ContentAdd/>
+          </FloatingActionButton>
+        </ToolTip>
+      </div>
 
       <div className={classes.wrap}>
         {projectsList}
@@ -489,25 +499,13 @@ const ProjectGridList = enhance((props) => {
         errorData={createDialog.errorData}
       />}
 
-      {updateDialog.open &&
-      <ProjectCreateDialog
-        detailData={_.get(detailData, 'data')}
-        initialValues={updateDialog.initialValues}
-        isUpdate={true}
-        open={updateDialog.open}
-        loading={updateDialog.loading}
-        onClose={updateDialog.onClose}
-        onSubmit={updateDialog.onSubmit}
-        errorData={updateDialog.errorData}
-      />}
-
       <ProjectDetailDialog
         detailData={detailData}
         loading={_.get(detailData, 'loading')}
         initialValues={{desc: _.get(detailData, 'data.description')}}
         open={detailData.id > ZERO}
         onComment={_.get(detailData, 'onComment')}
-        onClose={() => hashHistory.replace({pathname: ROUTES.PROJECT_LIST_URL, query: filter.getParams()})}
+        onClose={taskDialog.onTaskClose}
       />
 
       {detailData.data &&
@@ -541,14 +539,6 @@ ProjectGridList.propTypes = {
   }).isRequired,
   confirmDialog: PropTypes.shape({
     ...defaultsPropTypes
-  }).isRequired,
-  updateDialog: PropTypes.shape({
-    ...defaultsPropTypes,
-    initialValues: PropTypes.object
-  }).isRequired,
-  filterDialog: PropTypes.shape({
-    ...defaultsPropTypes,
-    initialValues: PropTypes.object
   }).isRequired
 }
 

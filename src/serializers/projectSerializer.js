@@ -24,7 +24,7 @@ export const listFilterSerializer = (data) => {
   return {
     'begin_date': _.get(defaultData, 'fromDate'),
     'end_date': _.get(defaultData, 'toDate'),
-    'manager': _.get(defaultData, 'manager'),
+    'worker': _.get(defaultData, 'worker'),
     'search': _.get(defaultData, 'search'),
     'page': _.get(defaultData, 'page'),
     'page_size': _.get(defaultData, 'pageSize'),

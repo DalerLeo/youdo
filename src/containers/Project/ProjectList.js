@@ -2,33 +2,25 @@ import React from 'react'
 import _ from 'lodash'
 import {compose, pure, mapPropsStream, createEventHandler} from 'recompose'
 import {connect} from 'react-redux'
+import {reset} from 'redux-form'
 import Layout from '../../components/Layout'
-import setInitialValues from '../../helpers/setInitialValues'
 import {compareFilterByProps} from '../../helpers/get'
 import {
   listWrapper,
   detailWrapper,
   createWrapper,
-  updateWrapper,
-  confirmWrapper,
-  filterWrapper
+  confirmWrapper
 } from '../Wrappers'
-import {reset} from 'redux-form'
 import {formInlineValidate} from 'helpers/formValidate'
 import {updateDetailStore, updateStore} from '../../helpers/updateStore'
-import moment from 'moment'
 import {
   PROJECT_CREATE_DIALOG_OPEN,
-  PROJECT_UPDATE_DIALOG_OPEN,
   PROJECT_DELETE_DIALOG_OPEN,
-  PROJECT_FILTER_KEY,
-  PROJECT_FILTER_OPEN,
   PROJECT_TASK_DIALOG_OPEN,
   ProjectGridList
 } from '../../components/Project'
 import {
   projectCreateAction,
-  projectUpdateAction,
   projectListFetchAction,
   projectDeleteAction,
   taskListFetchAction,
@@ -41,12 +33,6 @@ import {openErrorAction} from '../../actions/error'
 import * as ROUTES from '../../constants/routes'
 import {hashHistory} from 'react-router'
 
-const updateKeys = {
-  'manager': 'manager.id',
-  'salesAmount': 'salesAmount',
-  'comment': 'comment'
-}
-
 const except = {
   openMailDialog: null,
   project: null,
@@ -56,7 +42,9 @@ const except = {
 
 const exceptTask = {
   taskOpen: null,
-  openCreateDialog: null
+  openCreateDialog: null,
+  worker: null,
+  page: null
 }
 const mapDispatchToProps = {
   updateDetailStore,
@@ -99,15 +87,6 @@ const enhance = compose(
     createAction: projectCreateAction,
     queryKey: PROJECT_CREATE_DIALOG_OPEN
   }),
-  updateWrapper({
-    updateKeys,
-    storeName: 'project',
-    formName: 'ProjectCreateForm',
-    updateAction: projectUpdateAction,
-    queryKey: PROJECT_UPDATE_DIALOG_OPEN,
-    itemPath: ROUTES.PROJECT_ITEM_PATH,
-    listPath: ROUTES.PROJECT_LIST_URL
-  }),
   confirmWrapper({
     storeName: 'project',
     confirmAction: projectDeleteAction,
@@ -124,11 +103,6 @@ const enhance = compose(
     queryKey: PROJECT_TASK_DIALOG_OPEN,
     successMessage: 'Успешно удалено',
     failMessage: 'Удаление невозможно из-за связи с другими данными'
-  }),
-  filterWrapper({
-    formName: 'ProjectFilterForm',
-    queryKey: PROJECT_FILTER_OPEN,
-    filterKeys: PROJECT_FILTER_KEY
   }),
 
   connect(mapStateToProps, mapDispatchToProps),
@@ -165,6 +139,8 @@ const enhance = compose(
 
     const {handler: onComment, stream: onComment$} = createEventHandler()
     const {handler: onTaskCreate, stream: onTaskCreate$} = createEventHandler()
+    const {handler: onTaskClose, stream: onTaskClose$} = createEventHandler()
+    const {handler: onFilterSubmit, stream: onFilterSubmit$} = createEventHandler()
 
     onTaskCreate$
       .withLatestFrom(props$)
@@ -179,6 +155,21 @@ const enhance = compose(
           .catch(error => {
             return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')
           })
+      })
+
+    onFilterSubmit$
+      .withLatestFrom(props$)
+      .subscribe(([value, {filter, resetForm}]) => {
+        filter.filterBy({
+          worker: value
+        })
+      })
+
+    onTaskClose$
+      .withLatestFrom(props$)
+      .subscribe(([fieldNames, {filter, resetForm}]) => {
+        hashHistory.replace({pathname: ROUTES.PROJECT_LIST_URL, query: filter.getParams()})
+        return resetForm('ProjectDetailForm')
       })
 
     onComment$
@@ -198,8 +189,10 @@ const enhance = compose(
 
     return props$.combineLatest(props => {
       return {
+        onTaskClose,
         onTaskCreate,
         onComment,
+        onFilterSubmit,
         ...props
       }
     })
@@ -209,38 +202,25 @@ const enhance = compose(
 
 const ProjectList = enhance((props) => {
   const {
-    location,
     list,
     listLoading,
     filter,
     layout,
     params,
     createDialog,
-    updateDialog,
-    filterDialog,
     confirmDialog,
     taskDialog,
     commentList,
     taskList,
     onComment,
     taskDetail,
-    onTaskCreate
+    onTaskCreate,
+    onTaskClose,
+    onFilterSubmit
   } = props
 
-  const fromDate = _.get(location, ['query', 'fromDate']) || null
-  const toDate = _.get(location, ['query', 'toDate']) || null
-
   const detailId = _.toInteger(_.get(params, 'id'))
-
-  const filterInitial = {
-    date: {
-      fromDate: fromDate && moment(fromDate),
-      toDate: toDate && moment(toDate)
-    }
-  }
-  // SET SOME VALUES TO INITIAL VALUES MANUALLY
-  setInitialValues(filterDialog, filterInitial)
-
+  const worker = filter.getParam('worker') ? _.toNumber(filter.getParam('worker')) : filter.getParam('worker')
   const listData = {
     data: _.get(list, 'results'),
     loading: listLoading
@@ -261,10 +241,10 @@ const ProjectList = enhance((props) => {
         listData={listData}
         detailData={detailData}
         createDialog={createDialog}
-        updateDialog={updateDialog}
-        filterDialog={filterDialog}
-        taskDialog={{...taskDialog, taskList, onTaskCreate}}
+        taskDialog={{...taskDialog, taskList, onTaskCreate, onTaskClose}}
         confirmDialog={{...confirmDialog, loading: listLoading}}
+        onFilterSubmit={onFilterSubmit}
+        initialValues={{worker}}
       />
     </Layout>
   )

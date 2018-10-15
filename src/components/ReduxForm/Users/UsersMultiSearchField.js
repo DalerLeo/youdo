@@ -4,7 +4,7 @@ import * as PATH from 'constants/api'
 import searchFieldGetOptions from 'helpers/searchFieldGetOptions'
 import getIdsOption from 'helpers/getIdsOption'
 
-const PositionMultiSearchField = (props) => {
+const UserMultiSearchField = (props) => {
   const {params, pageSize} = props
   return (
     <MultiSelectField
@@ -18,4 +18,4 @@ const PositionMultiSearchField = (props) => {
   )
 }
 
-export default PositionMultiSearchField
+export default UserMultiSearchField

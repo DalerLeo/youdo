@@ -46,7 +46,7 @@ const enhance = compose(
     const nextOpen = _.get(nextProps, ['state', 'open'])
     return (text !== nextText || open !== nextOpen) && nextOpen
   }, (props) => {
-    props.state.open && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
+    (props.state.open || props.autoFetch) && _.debounce(fetchList, DELAY_FOR_TYPE_ATTACK)(props)
   }),
 
   withPropsOnChange((props, nextProps) => {
@@ -132,7 +132,7 @@ const customStyle = {
   },
   menu: (base) => ({
     ...base,
-    zIndex: '2',
+    zIndex: '3',
     border: 'none',
     borderRadius: '0',
     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 10px, rgba(0, 0, 0, 0.23) 0px 3px 10px'

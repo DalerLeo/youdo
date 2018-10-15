@@ -19,9 +19,7 @@ import {UsersSearchField} from '../ReduxForm'
 export const PROJECT_FILTER_OPEN = 'openFilterDialog'
 
 export const PROJECT_FILTER_KEY = {
-  FROM_DATE: 'date.fromDate',
-  TO_DATE: 'date.toDate',
-  MANAGER: 'manager'
+  USER: 'user'
 }
 
 const enhance = compose(
