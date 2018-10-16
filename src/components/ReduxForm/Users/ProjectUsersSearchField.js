@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
 import React from 'react'
-import SearchField from '../Basic/Search2Field'
+import SearchField from '../Basic/Search2InlineField'
 import axios from '../../../helpers/axios'
 import * as PATH from '../../../constants/api'
 import toCamelCase from '../../../helpers/toCamelCase'
@@ -52,7 +52,7 @@ const UsersSearchField = (props) => {
 
   return (
     <SearchField
-      getValue={SearchField.defaultGetValue('id')}
+      getValue={(v) => _.get(v, 'id')}
       getText={getText}
       getOptions={search => getOptions(PATH.USERS_LIST, search, params, pageSize)}
       getItem={getItem}

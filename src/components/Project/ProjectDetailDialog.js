@@ -7,6 +7,7 @@ import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import DeadlineIcon from 'material-ui/svg-icons/notification/event-note'
 import IconButton from 'material-ui/IconButton'
+import {DateCustomField} from 'components/ReduxForm'
 
 import _ from 'lodash'
 import {
@@ -15,7 +16,7 @@ import {
   COLOR_DEFAULT
 } from '../../constants/styleConstants'
 import Loader from '../Loader'
-import {Editor, TextFieldInlineEdit} from '../ReduxForm'
+import {Editor, TextFieldInlineEdit, UsersSearchInlineField} from '../ReduxForm'
 import dateFormat from '../../helpers/dateFormat'
 import FlatButton from 'material-ui/FlatButton'
 import EmptyQuery from 'components/Utils/EmptyQuery'
@@ -67,8 +68,11 @@ const enhance = compose(
       padding: '0 10px 0 30px',
       height: '60px',
       zIndex: '999',
-      '& > div:first-child': {
-        display: 'flex'
+      '& > div': {
+        display: 'flex',
+        width: '80%',
+        alignItems: 'center'
+
       }
     },
     img: {
@@ -77,25 +81,21 @@ const enhance = compose(
       background: '#efefef',
       borderRadius: '50%'
     },
-    workerInfo: {
+    response: {
+      '& $img': {
+        marginRight: '10px'
+      },
+      width: '200px',
       display: 'flex',
-      flexDirection: 'column',
-      marginLeft: '8px',
-      '& > span': {
-        '&:first-child': {
-          fontSize: '11px',
-          color: '#777'
-        },
-        '&:last-child': {
-          fontSize: '13px',
-          color: '#333',
-          fontWeight: '600'
-        }
+      alignItems: 'center',
+      '& > div': {
+        width: 'calc(100% - 30px)'
       }
     },
     deadline: {
       marginLeft: '40px',
-      display: 'flex'
+      display: 'flex',
+      alignItems: 'center'
     },
     proTitle: {
       borderBottom: '1px solid #efefef',
@@ -167,9 +167,10 @@ const enhance = compose(
   })
 )
 const icon = {
-  color: '#666',
+  color: '#888',
   width: 30,
-  height: 30
+  height: 30,
+  marginRight: '8px'
 }
 
 const ProjectDetailDialog = enhance((props) => {
@@ -190,9 +191,7 @@ const ProjectDetailDialog = enhance((props) => {
   ]
   const onSubmit = handleSubmit(() => onComment(formNames))
 
-  const worker = _.get(detailData, 'data.worker.fullName')
   const title = _.get(detailData, 'data.project.title')
-  const deadline = dateFormat(_.get(detailData, 'data.deadline'))
 
   const comment = _.get(detailData, 'comment')
   const commentLoading = _.get(detailData, 'commentLoading')
@@ -207,18 +206,24 @@ const ProjectDetailDialog = enhance((props) => {
 
       <div className={classes.titleContent}>
         <div>
-          <span className={classes.img}/>
-          <span className={classes.workerInfo}>
-            <span>Ответственное лицо</span>
-            <span>{worker}</span>
-          </span>
-          <span className={classes.deadline}>
+          <div className={classes.response}>
+            <span className={classes.img}/>
+            <Field
+              label={'Ответственное лицо'}
+              name={'worker'}
+              onSubmit={(val) => null}
+              component={UsersSearchInlineField}
+            />
+          </div>
+          <div className={classes.deadline}>
             <DeadlineIcon style={icon}/>
-            <span className={classes.workerInfo}>
-              <span>Дедлайн</span>
-              <span>{deadline}</span>
-            </span>
-          </span>
+            <Field
+              label={'Дедлайн'}
+              name={'deadline'}
+              onSubmit={(val) => null}
+              component={DateCustomField}
+            />
+          </div>
         </div>
         <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
@@ -233,7 +238,7 @@ const ProjectDetailDialog = enhance((props) => {
             <div className={classes.proTitle}>
               <span>{title}</span>
               <Field
-                name={'desc'}
+                name={'description'}
                 fullWidth={true}
                 fontSize={'18px'}
                 onSubmit={(val) => null}

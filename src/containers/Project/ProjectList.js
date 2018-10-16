@@ -220,7 +220,7 @@ const ProjectList = enhance((props) => {
   } = props
 
   const detailId = _.toInteger(_.get(params, 'id'))
-  const worker = filter.getParam('worker') ? _.toNumber(filter.getParam('worker')) : filter.getParam('worker')
+  const worker = filter.getParam('worker') ? _.toNumber(filter.getParam('worker')) : ''
   const listData = {
     data: _.get(list, 'results'),
     loading: listLoading
@@ -231,7 +231,12 @@ const ProjectList = enhance((props) => {
     loading: _.get(taskDetail, 'detailLoading'),
     comment: _.get(commentList, 'list.results'),
     commentLoading: _.get(commentList, 'loading'),
-    onComment
+    onComment,
+    initialValues: {
+      worker: _.get(taskDetail, 'detail.worker.id'),
+      deadline: _.get(taskDetail, 'detail.deadline') && new Date(_.get(taskDetail, 'detail.deadline')),
+      description: _.get(taskDetail, 'detail.description')
+    }
   }
 
   return (

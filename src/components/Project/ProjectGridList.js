@@ -502,7 +502,7 @@ const ProjectGridList = enhance((props) => {
       <ProjectDetailDialog
         detailData={detailData}
         loading={_.get(detailData, 'loading')}
-        initialValues={{desc: _.get(detailData, 'data.description')}}
+        initialValues={detailData.initialValues}
         open={detailData.id > ZERO}
         onComment={_.get(detailData, 'onComment')}
         onClose={taskDialog.onTaskClose}

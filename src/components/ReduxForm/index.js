@@ -24,6 +24,7 @@ import ApplicantStatusRadioButton from './Applicant/ApplicantStatusRadioButton'
 import UniversalSearchField from './UniversalSearchField'
 import StaticUniversalSearchField from './StaticUniversalSearchField'
 import UsersMultiSearchField from './Users/UsersMultiSearchField'
+import UsersSearchInlineField from './Users/UsersSearchInlineField'
 import TextFieldInlineEdit from './Basic/TextFieldInlineEdit'
 
 export {
@@ -51,6 +52,7 @@ export {
   TextFieldCustom,
   DateCustomField,
   TextFieldInlineEdit,
+  UsersSearchInlineField,
   DatesField,
   Editor
 }
