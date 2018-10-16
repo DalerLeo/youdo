@@ -149,8 +149,8 @@ const enhance = compose(
         return props.taskCreateAction(pId, taskForm)
           .then(() => props.resetForm('TaskForm'))
           .then(() => {
+            props.taskListFetchAction(pId, filter)
             props.taskDialog.onClose()
-            props.taskListFetchAction(pId)
           })
           .catch(error => {
             return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')
