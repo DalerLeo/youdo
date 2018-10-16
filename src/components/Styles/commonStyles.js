@@ -14,3 +14,5 @@ export const DISPLAY_FLEX_START = {
 
 export const COLOR_GREEN = '#81c784'
 export const COLOR_RED = '#e57373'
+export const COLOR_YELLOW = '#f0ad4e'
+

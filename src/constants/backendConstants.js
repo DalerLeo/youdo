@@ -39,7 +39,10 @@ export const APPLICATION_ASSIGNED = 'assigned'
 export const APPLICATION_CANCELED = 'canceled'
 export const APPLICATION_COMPLETED = 'completed'
 export const APPLICATION_PENDING = 'pending'
-export const APPLICATION_REWORK = 'rework'
+
+export const PENDING = 'pending'
+export const DONE = 'done'
+export const PASSED = 'passed'
 
 export const HR_DRIVER_LICENSE = [
   {id: 'A', name: 'A', active: false},

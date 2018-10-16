@@ -29,10 +29,16 @@ import {
   DISPLAY_FLEX_CENTER,
   DISPLAY_FLEX_START,
   COLOR_GREEN,
-  COLOR_RED
+  COLOR_RED,
+  COLOR_YELLOW
 } from '../Styles/commonStyles'
 import sprintf from 'sprintf'
 import dateFormat from 'helpers/dateFormat'
+import {
+  PENDING,
+  DONE,
+  PASSED
+} from 'constants/backendConstants'
 import EmptyQuery from 'components/Utils/EmptyQuery'
 import Loading from 'components/Utils/Loading'
 import UsersSearchField from 'components/ReduxForm/Users/ProjectUsersSearchField'
@@ -172,7 +178,7 @@ const enhance = compose(
     },
     cardPaper: {
       animation: 'tubeFadeOut 800ms ease',
-      borderLeft: '2px solid ' + COLOR_RED,
+      borderLeft: '2px solid ' + COLOR_YELLOW,
       cursor: 'pointer',
       padding: '10px 20px',
       marginBottom: '20px',
@@ -224,6 +230,9 @@ const enhance = compose(
     },
     done: {
       borderColor: `${COLOR_GREEN} !important`
+    },
+    passed: {
+      borderColor: `${COLOR_RED} !important`
     },
     person: {
       marginRight: '3px',
@@ -334,7 +343,8 @@ const ProjectGridList = enhance((props) => {
               })}
               className={classNames({
                 [classes.cardPaper]: true,
-                [classes.done]: status
+                [classes.done]: status === DONE,
+                [classes.passed]: status === PASSED
               })}>
               <div className={classes.cardTitle}>
                 <div>{name}</div>
