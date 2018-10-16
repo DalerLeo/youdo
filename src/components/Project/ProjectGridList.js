@@ -410,6 +410,7 @@ const ProjectGridList = enhance((props) => {
             {_.map(projects, project => {
               const id = _.get(project, 'id')
               const title = _.get(project, 'title')
+              const taskCount = _.toNumber(_.get(project, 'taskCount'))
               const description = _.get(project, 'description')
               const isActive = currentProjectId === id
               return (
@@ -425,7 +426,7 @@ const ProjectGridList = enhance((props) => {
                   })}>
                   <div className={classes.titlePro}>
                     <div>{title} <div dangerouslySetInnerHTML={{__html: description}}/></div>
-                    <span>1</span>
+                    <span>{taskCount}</span>
                   </div>
                 </div>
               )
