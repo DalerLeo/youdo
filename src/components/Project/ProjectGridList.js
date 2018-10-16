@@ -35,7 +35,6 @@ import {
 import sprintf from 'sprintf'
 import dateFormat from 'helpers/dateFormat'
 import {
-  PENDING,
   DONE,
   PASSED
 } from 'constants/backendConstants'
