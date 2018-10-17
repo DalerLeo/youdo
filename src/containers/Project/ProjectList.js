@@ -207,6 +207,7 @@ const enhance = compose(
           .then(() => props.resetForm('ProjectDetailForm'))
           .then(() => {
             props.commentListFetchAction(pId, id)
+            props.taskListFetchAction(pId, filter)
           })
           .catch(error => {
             return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')

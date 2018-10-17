@@ -280,7 +280,7 @@ const ProjectDetailDialog = enhance((props) => {
                       <span className={classes.commentName}>{fullName}</span>
                       <span className={classes.commentDate}>{createdDate}</span>
                       <div className={classes.commentBody} dangerouslySetInnerHTML={{__html: comments}}/>
-                      <a href={file} target={'_blank'} className={classes.commentFile}>file.{format}</a>
+                      {file && <a href={file} target={'_blank'} className={classes.commentFile}>file.{format}</a>}
                     </div>
                   </div>
                 )

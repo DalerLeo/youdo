@@ -79,15 +79,15 @@ const FileUploadField = ({
   const dropZoneView = ({acceptedFiles, rejectedFiles}) => {
     const zero = 0
     if (fileUploadLoading) {
-      return {label} + ' Загрузка...'
+      return (<div>{label} Загрузка...</div>)
     }
 
     if (fileUploadErrors !== null) {
-      return (<div className={classes.error}>{t('Ошибка')}</div>)
+      return (<div>{label}<div className={classes.error}>{t('Ошибка')}</div></div>)
     }
 
     if (error) {
-      return (<div className={classes.error}>{t('Ошибка')}</div>)
+      return (<div>{label}<div className={classes.error}>{t('Ошибка')}</div></div>)
     }
 
     if (acceptedFiles.length === zero || !_.get(input, 'value')) {
