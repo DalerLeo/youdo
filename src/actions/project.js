@@ -124,10 +124,14 @@ export const taskDeleteAction = (id) => {
   }
 }
 
-export const taskUpdateAction = (id, formValues) => {
-  const requestData = serializers.createSerializer(formValues)
+export const taskUpdateAction = (pId, taskId, formValues) => {
+  const params = {
+    ...formValues,
+    deadline: _.get(formValues, 'deadline') && moment(_.get(formValues, 'deadline')).format('YYYY-MM-DD')
+  }
+
   const payload = axios()
-    .put(sprintf(API.TASK_ITEM, id), requestData)
+    .put(sprintf(API.TASK_UPDATE, pId, taskId), params)
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -155,6 +159,12 @@ export const taskListFetchAction = (id, filter) => {
   return {
     type: actionTypes.TASK_LIST,
     payload
+  }
+}
+
+export const taskListClear = () => {
+  return {
+    type: `${actionTypes.TASK_LIST}_CLEAR`
   }
 }
 
@@ -191,8 +201,12 @@ export const commentListFetchAction = (pId, id) => {
 }
 
 export const commentCreateAction = (pId, id, formValues) => {
+  const params = {
+    comment: _.get(formValues, 'comment'),
+    file: _.get(formValues, 'file')
+  }
   const payload = axios()
-    .post(sprintf(API.COMMENT_CREATE, Number(pId), Number(id)), formValues)
+    .post(sprintf(API.COMMENT_CREATE, Number(pId), Number(id)), params)
     .then((response) => {
       return _.get(response, 'data')
     })

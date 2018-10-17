@@ -21,6 +21,7 @@ import dateFormat from '../../helpers/dateFormat'
 import FlatButton from 'material-ui/FlatButton'
 import EmptyQuery from 'components/Utils/EmptyQuery'
 import Loading from 'components/Utils/Loading'
+import {LINK_COLOR} from 'constants/styleConstants'
 
 const enhance = compose(
   injectSheet({
@@ -127,6 +128,13 @@ const enhance = compose(
     commentBody: {
       marginTop: '5px'
     },
+    commentFile: {
+      cursor: 'pointer',
+      color: LINK_COLOR,
+      fontSize: '12px',
+      fontWeight: '600',
+      marginTop: '3px'
+    },
     bottomButton: {
       bottom: '0',
       left: '0',
@@ -180,7 +188,6 @@ const ProjectDetailDialog = enhance((props) => {
     onClose,
     classes,
     detailData,
-    onComment,
     loading
   } = props
 
@@ -189,9 +196,11 @@ const ProjectDetailDialog = enhance((props) => {
     'salesAmount',
     'comment'
   ]
-  const onSubmit = handleSubmit(() => onComment(formNames))
+  const onComment = handleSubmit(() => props.onComment(formNames))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
 
   const title = _.get(detailData, 'data.project.title')
+  const pId = _.get(detailData, 'data.project.id')
 
   const comment = _.get(detailData, 'comment')
   const commentLoading = _.get(detailData, 'commentLoading')
@@ -211,7 +220,8 @@ const ProjectDetailDialog = enhance((props) => {
             <Field
               label={'Ответственное лицо'}
               name={'worker'}
-              onSubmit={(val) => null}
+              pId={pId}
+              onSubmit={onSubmit}
               component={UsersSearchInlineField}
             />
           </div>
@@ -220,7 +230,7 @@ const ProjectDetailDialog = enhance((props) => {
             <Field
               label={'Дедлайн'}
               name={'deadline'}
-              onSubmit={(val) => null}
+              onSubmit={onSubmit}
               component={DateCustomField}
             />
           </div>
@@ -230,7 +240,7 @@ const ProjectDetailDialog = enhance((props) => {
         </IconButton>
       </div>
       <div className={classes.bodyContent}>
-        <form onSubmit={onSubmit} className={classes.form}>
+        <form onSubmit={onComment} className={classes.form}>
           <div className={classes.loader}>
             <Loader size={0.75}/>
           </div>
@@ -241,7 +251,7 @@ const ProjectDetailDialog = enhance((props) => {
                 name={'description'}
                 fullWidth={true}
                 fontSize={'18px'}
-                onSubmit={(val) => null}
+                onSubmit={onSubmit}
                 component={TextFieldInlineEdit}
               />
             </div>
@@ -261,6 +271,8 @@ const ProjectDetailDialog = enhance((props) => {
                 const createdDate = dateFormat(_.get(item, 'createdDate'), true)
                 const comments = _.get(item, 'comment')
                 const fullName = _.get(item, 'worker.fullName')
+                const file = _.get(item, 'file.file')
+                const format = _.get(item, 'file.contentType')
                 return (
                   <div key={id} className={classes.commentWrap}>
                     <span className={classes.img}/>
@@ -268,6 +280,7 @@ const ProjectDetailDialog = enhance((props) => {
                       <span className={classes.commentName}>{fullName}</span>
                       <span className={classes.commentDate}>{createdDate}</span>
                       <div className={classes.commentBody} dangerouslySetInnerHTML={{__html: comments}}/>
+                      <a href={file} target={'_blank'} className={classes.commentFile}>file.{format}</a>
                     </div>
                   </div>
                 )
@@ -278,6 +291,7 @@ const ProjectDetailDialog = enhance((props) => {
               <Field
                 name="comment"
                 component={Editor}
+                file={true}
                 className={classes.inputFieldCustom}
                 button={(
                   <FlatButton

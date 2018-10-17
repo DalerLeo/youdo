@@ -329,7 +329,7 @@ const ProjectGridList = enhance((props) => {
         const name = _.get(task, 'description')
         const id = _.get(task, 'id')
         const fullName = _.get(task, 'worker.fullName')
-        const count = i
+        const count = _.toNumber(_.get(task, 'commentCount'))
         const date = dateFormat(_.get(task, 'deadline'))
         const status = _.get(task, 'status')
         return (
@@ -399,7 +399,7 @@ const ProjectGridList = enhance((props) => {
         <div className={classes.listWrapper}>
           <div className={classes.filter}>
             <Field
-              name={'worker'}
+              name={'workers'}
               autoFetch
               onChange={(p, v) => onFilterSubmit(v)}
               component={UsersSearchField}
@@ -514,6 +514,7 @@ const ProjectGridList = enhance((props) => {
         loading={_.get(detailData, 'loading')}
         initialValues={detailData.initialValues}
         open={detailData.id > ZERO}
+        onSubmit={taskDialog.onTaskUpdate}
         onComment={_.get(detailData, 'onComment')}
         onClose={taskDialog.onTaskClose}
       />

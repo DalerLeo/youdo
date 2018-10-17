@@ -3,6 +3,7 @@ import _ from 'lodash'
 import {compose, pure, mapPropsStream, createEventHandler} from 'recompose'
 import {connect} from 'react-redux'
 import {reset} from 'redux-form'
+// .import getDocument from 'helpers/getDocument'
 import Layout from '../../components/Layout'
 import {compareFilterByProps} from '../../helpers/get'
 import {
@@ -27,6 +28,8 @@ import {
   taskItemFetchAction,
   commentListFetchAction,
   taskCreateAction,
+  taskUpdateAction,
+  taskListClear,
   commentCreateAction
 } from '../../actions/project'
 import {openErrorAction} from '../../actions/error'
@@ -51,10 +54,12 @@ const mapDispatchToProps = {
   updateStore,
   openErrorAction,
   taskListFetchAction,
+  taskListClear,
   taskItemFetchAction,
   commentListFetchAction,
   commentCreateAction,
   taskCreateAction,
+  taskUpdateAction,
   resetForm: reset
 }
 
@@ -109,7 +114,9 @@ const enhance = compose(
 
   mapPropsStream(props$ => {
     props$
-      .filter(({list}) => !_.isEmpty(_.get(list, 'results')))
+      .distinctUntilChanged((next, prev) => {
+        return _.isEqual(_.get(next, 'list.results'), _.get(prev, 'list.results'))
+      })
       .filter((props) => !props.filter.getParam('project'))
       .subscribe(({filter, list, location: {pathname}, ...props}) => {
         const project = _.get(list, 'results.0.id')
@@ -120,11 +127,13 @@ const enhance = compose(
       })
 
     props$
-      .filter((props) => props.filter.getParam('project'))
       .distinctUntilChanged(compareFilterByProps(exceptTask))
       .subscribe(({filter, ...props}) => {
         const id = filter.getParam('project')
-        props.taskListFetchAction(id, filter)
+        if (id) {
+          return props.taskListFetchAction(id, filter)
+        }
+        return props.taskListClear()
       })
 
     props$
@@ -140,7 +149,9 @@ const enhance = compose(
     const {handler: onComment, stream: onComment$} = createEventHandler()
     const {handler: onTaskCreate, stream: onTaskCreate$} = createEventHandler()
     const {handler: onTaskClose, stream: onTaskClose$} = createEventHandler()
+    const {handler: onTaskUpdate, stream: onTaskUpdate$} = createEventHandler()
     const {handler: onFilterSubmit, stream: onFilterSubmit$} = createEventHandler()
+    // .   const {handler: onGetFile, stream: onGetFile$} = createEventHandler()
 
     onTaskCreate$
       .withLatestFrom(props$)
@@ -153,23 +164,38 @@ const enhance = compose(
             props.taskDialog.onClose()
           })
           .catch(error => {
+            return formInlineValidate(fieldNames, props.dispatch, error, 'TaskForm')
+          })
+      })
+
+    onTaskUpdate$
+      .withLatestFrom(props$)
+      .subscribe(([fieldNames, {filter, location: {pathname}, params, commentForm, ...props}]) => {
+        const pId = _.toNumber(filter.getParam('project'))
+        const taskId = _.toNumber(_.get(params, 'id'))
+        return props.taskUpdateAction(pId, taskId, commentForm)
+          .then(() => {
+            props.taskListFetchAction(pId, filter)
+          })
+          .catch(error => {
             return formInlineValidate(fieldNames, props.dispatch, error, 'ProjectDetailForm')
           })
+      })
+
+    onTaskClose$
+      .withLatestFrom(props$)
+      .subscribe(([fieldNames, {filter, resetForm, params, ...props}]) => {
+        props.taskItemFetchAction(filter.getParam('project'), params.id)
+        hashHistory.replace({pathname: ROUTES.PROJECT_LIST_URL, query: filter.getParams()})
+        return resetForm('ProjectDetailForm')
       })
 
     onFilterSubmit$
       .withLatestFrom(props$)
       .subscribe(([value, {filter, resetForm}]) => {
         filter.filterBy({
-          worker: value
+          workers: value
         })
-      })
-
-    onTaskClose$
-      .withLatestFrom(props$)
-      .subscribe(([fieldNames, {filter, resetForm}]) => {
-        hashHistory.replace({pathname: ROUTES.PROJECT_LIST_URL, query: filter.getParams()})
-        return resetForm('ProjectDetailForm')
       })
 
     onComment$
@@ -191,6 +217,7 @@ const enhance = compose(
       return {
         onTaskClose,
         onTaskCreate,
+        onTaskUpdate,
         onComment,
         onFilterSubmit,
         ...props
@@ -216,6 +243,7 @@ const ProjectList = enhance((props) => {
     taskDetail,
     onTaskCreate,
     onTaskClose,
+    onTaskUpdate,
     onFilterSubmit
   } = props
 
@@ -246,7 +274,7 @@ const ProjectList = enhance((props) => {
         listData={listData}
         detailData={detailData}
         createDialog={createDialog}
-        taskDialog={{...taskDialog, taskList, onTaskCreate, onTaskClose}}
+        taskDialog={{...taskDialog, taskList, onTaskCreate, onTaskClose, onTaskUpdate}}
         confirmDialog={{...confirmDialog, loading: listLoading}}
         onFilterSubmit={onFilterSubmit}
         initialValues={{worker}}

@@ -24,6 +24,10 @@ import 'draft-js/dist/Draft.css'
 import './Editor.css'
 import {BORDER_STYLE} from '../../../constants/styleConstants'
 import Label from './FieldLabel'
+import AttachIcon from 'material-ui/svg-icons/editor/attach-file'
+import FileSimpleUploadField from 'components/ReduxForm/Basic/FileSimpleUploadField'
+import {Field} from 'redux-form'
+import ToolTip from 'components/Utils/ToolTip/ToolTip'
 
 const enhance = compose(
   withState('editorState', 'setEditorState', EditorState.createEmpty()),
@@ -89,6 +93,7 @@ const enhance = compose(
       visibility: 'visible'
     },
     editor: {
+      transition: 'all 300ms',
       cursor: 'text',
       minHeight: '40px',
       padding: '10px 15px',
@@ -107,6 +112,7 @@ const TextEditor = (props) => {
     label,
     placeholder,
     button,
+    file,
     meta: {active},
     input
   } = props
@@ -183,7 +189,7 @@ const TextEditor = (props) => {
       <div className={classes.wrapper}>
         <div className={classNames({
           [classes.controls]: true,
-          [classes.controlShow]: active
+          [classes.controlShow]: (active || file)
         })}>
           {button}
           <BlockStyleControls
@@ -194,6 +200,15 @@ const TextEditor = (props) => {
             editorState={editorState}
             onToggle={toggleInlineStyle}
           />
+          {file && (
+            <ToolTip position={'bottom'} text={'Загрузить файл'}>
+              <Field
+                name={'file'}
+                label={<AttachIcon style={{height: '20px'}}/>}
+                component={FileSimpleUploadField}
+              />
+            </ToolTip>
+          )}
         </div>
         <div className={classNames(classes.editor, {
           [classes.editAnim]: active,

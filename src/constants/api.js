@@ -180,9 +180,9 @@ export const PROJECT_DELETE = `/${PROJECT}/%d`
 export const TASK = 'staff/project/%d/tasks'
 export const TASK_LIST = `/${TASK}/`
 export const TASK_ITEM = `/${TASK}/%d/`
-export const TASK_UPDATE = `/${TASK}/%d`
+export const TASK_UPDATE = `/${TASK}/%d/`
 export const TASK_CREATE = `/${TASK}/`
-export const TASK_DELETE = `/${TASK}/%d`
+export const TASK_DELETE = `/${TASK}/%d/`
 
 export const PROJECT_PARTICIPANT = 'staff/project/%d/participants'
 export const PROJECT_PARTICIPANT_LIST = `/${PROJECT_PARTICIPANT}/`
