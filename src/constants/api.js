@@ -7,11 +7,14 @@ export const API_PROTOCOL = environment.API_PROTOCOL ? environment.API_PROTOCOL 
 // Export const API_URL = `${API_PROTOCOL}://${API_HOST}/%s/${API_ROOT}/${API_VERSION}`
 export const API_URL = `${API_PROTOCOL}://${API_HOST}/`
 
+const MAIN = 'main'
 export const USER = 'main/user'
 export const SIGN_IN = 'main/login/'
 export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
 export const SIGN_OUT = '/main/logout/'
 export const CONFIG = '/config'
+
+export const SPECIALITY_LIST = `/${MAIN}/speciality/`
 
 export const CLIENT = 'client'
 export const CLIENT_CREATE = `/${CLIENT}/`
@@ -144,7 +147,7 @@ export const COMPANY_TYPE_UPDATE = `/${COMPANY_TYPE}/%d`
 export const COMPANY_TYPE_CREATE = `/${COMPANY_TYPE}/`
 export const COMPANY_TYPE_DELETE = `/${COMPANY_TYPE}/%d`
 
-export const APPLICANT = 'specialists/specialists'
+export const APPLICANT = 'staff/staff'
 export const APPLICANT_CREATE = `/${APPLICANT}/`
 export const APPLICANT_LIST = `/${APPLICANT}/`
 export const APPLICANT_ITEM = `/${APPLICANT}/%d/`
@@ -197,3 +200,10 @@ export const COMMENT_ITEM = `/${COMMENT}/%d/`
 export const COMMENT_UPDATE = `/${COMMENT}/%d`
 export const COMMENT_CREATE = `/${COMMENT}/`
 export const COMMENT_DELETE = `/${COMMENT}/%d`
+
+export const CUSTOMER = 'staff/staff'
+export const CUSTOMER_CREATE = `/${CUSTOMER}/`
+export const CUSTOMER_LIST = `/${CUSTOMER}/`
+export const CUSTOMER_ITEM = `/${CUSTOMER}/%d/`
+export const CUSTOMER_DELETE = `/${CUSTOMER}/%d/`
+

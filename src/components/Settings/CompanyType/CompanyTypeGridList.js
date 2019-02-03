@@ -17,6 +17,7 @@ import Container from '../../Container'
 import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
 import SettingSideMenu from '../../Settings/SideMenu'
+import SubMenu from '../../SubMenu'
 import defaultPropTypes from '../../../constants/propTypes'
 import ToolTip from '../../Utils/ToolTip'
 import Dot from '../../Images/dot.png'
@@ -339,23 +340,14 @@ const CompanyTypeGridList = enhance((props) => {
   )
   return (
     <Container>
-      <div className={classes.wrapper}>
-        <SettingSideMenu currentUrl={ROUTES.COMPANY_TYPE_LIST_URL}/>
-        <div className={classes.rightPanel}>
-          <GridList
-            filter={filter}
-            list={list}
-            detail={companyTypeDetail}
-            actionsDialog={actions}
-            withoutPagination={true}
-            withoutSearch={true}
-            flexibleRow={true}
-            hoverableList={false}
-            listShadow={false}
-            addButton={addButton}
-          />
-        </div>
-      </div>
+      <SubMenu url={ROUTES.COMPANY_TYPE_LIST_URL}/>
+      <GridList
+        filter={filter}
+        list={list}
+        detail={companyTypeDetail}
+        actionsDialog={actions}
+        addButton={addButton}
+      />
 
       <CompanyTypeCreateDialog
         open={createDialog.open}

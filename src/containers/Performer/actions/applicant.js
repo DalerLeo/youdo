@@ -1,9 +1,9 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import axios from '../../helpers/axios'
-import * as API from '../../constants/api'
-import * as actionTypes from '../../constants/actionTypes'
-import * as serializers from '../../serializers/Administration/applicantSerializer'
+import axios from '../../../helpers/axios'
+import * as API from '../../../constants/api'
+import * as actionTypes from '../../../constants/actionTypes'
+import * as serializers from './applicantSerializer'
 
 export const applicantCreateAction = (formValues) => {
   const requestData = serializers.createSerializer(formValues)
@@ -69,6 +69,21 @@ export const applicantListFetchAction = (filter) => {
 
   return {
     type: actionTypes.APPLICANT_LIST,
+    payload
+  }
+}
+export const spheresFetchAction = () => {
+  const payload = axios()
+    .get(API.SPECIALITY_LIST, {params: {pageSize: '10000'}})
+    .then((response) => {
+      return _.get(response, 'data')
+    })
+    .catch((error) => {
+      return Promise.reject(_.get(error, ['response', 'data']))
+    })
+
+  return {
+    type: actionTypes.SPHERES_LIST,
     payload
   }
 }

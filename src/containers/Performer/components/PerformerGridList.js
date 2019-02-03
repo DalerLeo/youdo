@@ -6,32 +6,42 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import * as ROUTES from '../../constants/routes'
-import GridList from '../GridList/index'
-import Container from '../Container/index'
-import ApplicantCreateDialog from './ApplicantCreateDialog'
-import ApplicationTabs from './ApplicantTabs'
-import ApplicantDetails from './ApplicantDetails'
-import ConfirmDialog from '../ConfirmDialog/index'
-import ToolTip from '../Utils/ToolTip'
-import SubMenu from '../SubMenu'
+import * as ROUTES from '../../../constants/routes'
+import GridList from '../../../components/GridList'
+import Container from '../../../components/Container'
+import ApplicantCreateDialog from './PerformerCreateDialog'
+import PerformerDetails from './PerformerDetails'
+import ConfirmDialog from '../../../components/ConfirmDialog'
+import ToolTip from '../../../components/Utils/ToolTip'
+import SubMenu from '../../../components/SubMenu'
 import sprintf from 'sprintf'
-import t from '../../helpers/translate'
-import defaultPropTypes from '../../constants/propTypes'
-import dateFormat from '../../helpers/dateFormat'
-import {replaceUrl} from '../../helpers/changeUrl'
+import t from '../../../helpers/translate'
+import defaultPropTypes from '../../../constants/propTypes'
+import dateFormat from '../../../helpers/dateFormat'
+import {replaceUrl} from '../../../helpers/changeUrl'
 // .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
-import IconMenu from 'material-ui/IconMenu'
-import MenuItem from 'material-ui/MenuItem'
-import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert'
-import DoneIcon from 'material-ui/svg-icons/action/done'
-import BlockIcon from 'material-ui/svg-icons/content/block'
 import EditIcon from 'material-ui/svg-icons/content/create'
-import ApplicantMailDialog from './ApplicantMailDialog'
-import ApplicantFilterForm from './ApplicantFilterForm'
+import PerformerFilterForm from './PerformerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import CustomerDetails from '../../Customer/components/CustomerDetails'
 
+const data = [
+  {
+    id: '1',
+    fullName: 'Shokir Shomullaev',
+    city: 'Tashkent',
+    district: 'Yunusobod',
+    balance: '100 000'
+  },
+  {
+    id: '2',
+    fullName: 'Mahmud Mulloev',
+    city: 'Tashkent',
+    district: 'Chilonzor',
+    balance: '20 000'
+  }
+]
 const listHeader = [
   {
     sorting: false,
@@ -42,13 +52,13 @@ const listHeader = [
   {
     sorting: false,
     name: 'resume_num',
-    title: t('Кол-во резюме'),
+    title: t('Город'),
     xs: 2
   },
   {
     sorting: false,
     name: 'modified_date',
-    title: t('Дата обновления'),
+    title: t('Район'),
     xs: 3
   },
   {
@@ -122,7 +132,7 @@ const enhance = compose(
   })
 )
 
-const ApplicantGridList = enhance((props) => {
+const PerformerGridList = enhance((props) => {
   const {
     filter,
     createDialog,
@@ -159,68 +169,46 @@ const ApplicantGridList = enhance((props) => {
   }
 
   const detail = (
-    <ApplicantDetails
+    <PerformerDetails
       initialValues={updateDialog.initialValues}
       filter={filter}
+      onUpdateOpen={updateDialog.onOpen}
+      onDeleteOpen={confirmDialog.onOpen}
       key={_.get(detailData, 'id')}
       updateLoading={_.get(updateDialog, 'loading')}
       handleSubmitUpdateDialog={updateDialog.onSubmit}
-      data={_.get(detailData, 'data') || {}}
+      data={_.get(detailData, 'data') || _.get(data, '0')}
       loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
     />
   )
 
   const applicantFilterDialog = (
-    <ApplicantFilterForm
+    <PerformerFilterForm
       filter={filter}
       filterDialog={filterDialog}
       initialValues={filterDialog.initialValues}
     />
   )
 
-  const applicantList = _.map(_.get(listData, 'data'), (item, index) => {
+  const applicantList = _.map(data, (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
-    const firstName = _.get(item, 'firstName')
-    const lastName = _.get(item, 'lastName')
-    const resumeNum = _.get(item, 'resumeNum')
-    const modifiedDate = dateFormat(_.get(item, 'modifiedAt'))
+    const fullName = _.get(item, 'fullName')
+    const city = _.get(item, 'city')
+    const district = _.get(item, 'district')
     const createdDate = dateFormat(_.get(item, 'createdAt'))
     const balance = _.get(item, 'balance')
-    const name = firstName + ' ' + lastName
     return (
       <Row key={id} className={classes.listRow}>
         <div
           onClick={() => replaceUrl(filter, sprintf(ROUTES.APPLICANT_ITEM_PATH, id), {})}
           className={classes.link}/>
-        <Col xs={3}>{name}</Col>
-        <Col xs={2}>{resumeNum}</Col>
-        <Col xs={3}>{modifiedDate}</Col>
+        <Col xs={3}>{fullName}</Col>
+        <Col xs={2}>{city}</Col>
+        <Col xs={3}>{district}</Col>
         <Col xs={2}>{createdDate}</Col>
-        <Col xs={2}>{balance}
-          <div className={classes.iconBtn}>
-            <IconMenu
-              menuItemStyle={{fontSize: '13px'}}
-              className={classes.iconBtn}
-              iconButtonElement={<IconButton><MoreVertIcon /></IconButton>}
-              anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-              targetOrigin={{horizontal: 'right', vertical: 'top'}}
-            >
-              <MenuItem
-                primaryText={t('изменить')}
-                leftIcon={<EditIcon/>}
-                onClick={() => { updateDialog.handleOpenUpdateDialog(id) }}/>
-              <MenuItem
-                primaryText={t('одобрить')}
-                leftIcon={<DoneIcon/>}/>
-              <MenuItem
-                primaryText={t('заблокировать')}
-                leftIcon={<BlockIcon/>}/>
-            </IconMenu>
-          </div>
-        </Col>
-
+        <Col xs={2}>{balance}</Col>
       </Row>
     )
   })
@@ -261,14 +249,11 @@ const ApplicantGridList = enhance((props) => {
             </FloatingActionButton>
           </ToolTip>
         </div>
-
-        <ApplicationTabs/>
         <GridList
           filter={filter}
           filterDialog={applicantFilterDialog}
           list={list}
           detail={detail}
-          actionsDialog={<span/>}
           addButton={addButton}
         />
       </div>
@@ -305,19 +290,11 @@ const ApplicantGridList = enhance((props) => {
         onSubmit={confirmDialog.onSubmit}
         open={confirmDialog.open}
       />}
-
-      {confirmMailDialog.open && <ApplicantMailDialog
-        data={createDialog.createData}
-        loading={confirmDialog.confirmLoading}
-        onClose={confirmMailDialog.handleClose}
-        onSubmit={confirmDialog.handleDeleteConfirmDialog}
-        open={confirmMailDialog.open}
-      />}
     </Container>
   )
 })
 
-ApplicantGridList.propTypes = {
+PerformerGridList.propTypes = {
   filter: PropTypes.object.isRequired,
   listData: PropTypes.object,
   detailData: PropTypes.object,
@@ -337,4 +314,4 @@ ApplicantGridList.propTypes = {
   }).isRequired
 }
 
-export default ApplicantGridList
+export default PerformerGridList

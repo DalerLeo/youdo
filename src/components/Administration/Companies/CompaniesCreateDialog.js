@@ -6,7 +6,7 @@ import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
 import {Field, FieldArray, reduxForm} from 'redux-form'
-import {ImageUploadField, TextField, CheckBox, SphereSearchField} from '../../ReduxForm'
+import {ImageUploadField, TextField, CheckBox, SphereSearchField, CheckBoxGroup} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import t from '../../../helpers/translate'
@@ -228,6 +228,11 @@ const CompaniesCreateDialog = enhance((props) => {
               name="hrAgency"
               component={CheckBox}
               label={t('Кадровое агентсво')}/>
+            <Field
+              name="hrAgency"
+              items={[{name: 'hey', id: 3}, {name: 'mey', id: 2}]}
+              component={CheckBoxGroup}
+              label={t('Magent')}/>
             <FieldArray
               name="users"
               component={CompanyUsersField}/>

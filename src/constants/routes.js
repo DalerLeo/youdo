@@ -92,3 +92,9 @@ export const PROJECT_LIST_URL = `/${PROJECT}`
 export const PROJECT_ITEM_URL = `/${PROJECT}/:id`
 export const PROJECT_ITEM_PATH = `/${PROJECT}/%d`
 
+
+export const CUSTOMER = 'customer'
+export const CUSTOMER_LIST_URL = `/${CUSTOMER}`
+export const CUSTOMER_ITEM_URL = `/${CUSTOMER}/:id`
+export const CUSTOMER_ITEM_PATH = `/${CUSTOMER}/%d`
+

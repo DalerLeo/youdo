@@ -8,29 +8,29 @@ import {Link} from 'react-router'
 import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import RaisedButton from 'material-ui/RaisedButton'
-import t from '../../helpers/translate'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
-import {
-  UsersMultiSearchField,
-  CheckBox
-} from '../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
+import t from '../../../helpers/translate'
+import DatesField from '../../../components/ReduxForm/Basic/DatesField'
+import {UsersSearchField} from '../../../components/ReduxForm'
+import SkillsTagSearchField from '../../../components/ReduxForm/HR/SkillsTagSearchField'
 
-export const CLIENT_FILTER_OPEN = 'openFilterDialog'
+export const APPLICANT_FILTER_OPEN = 'openFilterDialog'
 
-export const CLIENT_FILTER_KEY = {
-  IN_BLACKLIST: 'inBlacklist',
-  FROM_DATE: 'fromDate',
-  TO_DATE: 'toDate',
-  FROM_WHO: 'fromWho'
+export const APPLICANT_FILTER_KEY = {
+  START_DATE: 'startDate',
+  END_DATE: 'endDate',
+  GROUP: 'group',
+  USER: 'user',
+  GENDER: 'gender'
 }
 
 const enhance = compose(
   injectSheet({
     wrapper: {
       position: 'absolute',
-      width: '310px',
+      minWidth: '300px',
       background: '#fff',
       zIndex: 99,
       top: 0,
@@ -98,39 +98,18 @@ const enhance = compose(
       '& input': {
         marginTop: '0 !important'
       }
-    },
-    inputDateCustom: {
-      fontSize: '13px !important',
-      height: '45px !important',
-      marginTop: '7px',
-      '& div': {
-        fontSize: '13px !important'
-      },
-      '& label': {
-        top: '20px !important',
-        lineHeight: '5px !important'
-      },
-      '& input': {
-        marginTop: '0 !important'
-      },
-      '& div:first-child': {
-        height: '45px !important'
-      },
-      '& div:first-child div:first-child': {
-        transform: 'translate(0px, 0px) !important'
-      }
     }
   }),
   reduxForm({
-    form: 'ClientFilterForm',
+    form: 'FilterForm',
     enableReinitialize: true
   }),
   withHandlers({
     getCount: props => () => {
       const {filter} = props
-      return _(CLIENT_FILTER_KEY)
+      return _(APPLICANT_FILTER_KEY)
         .values()
-        .filter(item => item !== CLIENT_FILTER_KEY.FROM_DATE)
+        .filter(item => item !== APPLICANT_FILTER_KEY.FROM_DATE)
         .filter(item => filter.getParam(item))
         .value()
         .length
@@ -138,20 +117,21 @@ const enhance = compose(
   })
 )
 
-const ClientFilterForm = enhance((props) => {
-  const {classes, filterDialog, getCount, handleSubmit} = props
+const CustomerFilterForm = enhance((props) => {
+  const {classes, filterDialog, getCount, handleSubmit, addButton} = props
   const filterCounts = getCount()
 
-  if (!filterDialog.openFilterDialog) {
+  if (!filterDialog.open) {
     if (filterCounts) {
       return (
         <div className={classes.afterFilter}>
+          {addButton}
           <div>{t('Фильтр')}: {filterCounts} {t('элемента')}</div>
           <div>
-            <IconButton onClick={filterDialog.handleOpenFilterDialog}>
+            <IconButton onClick={filterDialog.onOpen}>
               <BorderColorIcon color="#8f8f8f" />
             </IconButton>
-            <IconButton onClick={filterDialog.handleClearFilterDialog}>
+            <IconButton onClick={filterDialog.onClear}>
               <CloseIcon className={classes.icon}/>
             </IconButton>
           </div>
@@ -160,12 +140,16 @@ const ClientFilterForm = enhance((props) => {
     }
 
     return (
-      <div>
+      <div style={{display: 'flex'}}>
         <Link
           className={classes.arrow}
-          onClick={filterDialog.handleOpenFilterDialog}>
-          <div>{t('Показать фильтр')} <KeyboardArrowDown color="#12aaeb" /></div>
+          onClick={filterDialog.onOpen}>
+          <div style={{display: 'flex'}}>
+            <span>{t('Показать фильтр')}</span>
+            <KeyboardArrowDown color="#12aaeb" />
+          </div>
         </Link>
+        {addButton}
       </div>
     )
   }
@@ -174,28 +158,38 @@ const ClientFilterForm = enhance((props) => {
     <div>
       <Paper className={classes.wrapper} zDepth={2}>
         <div className={classes.header}>
-          <span className={classes.title}>{t('Фильтр')}</span>
-          <IconButton onClick={filterDialog.handleCloseFilterDialog}>
+          <span className={classes.title}>Фильтр</span>
+          <IconButton onClick={filterDialog.onClose}>
             <CloseIcon className={classes.icon} />
           </IconButton>
         </div>
-        <form onSubmit={handleSubmit(filterDialog.handleSubmitFilterDialog)}>
-          <Field
-            className={classes.inputFieldCustom}
-            name="fromWho"
-            component={UsersMultiSearchField}
-            label={t('По рекомендации')}/>
-          <Field
-            className={classes.inputDateCustom}
-            name="inBlacklist"
-            component={CheckBox}
-            label={t('В черном списке')}/>
+        <form onSubmit={handleSubmit(filterDialog.onSubmit)}>
+          <div>
+            <Field
+              name="date"
+              component={DatesField}
+            />
+          </div>
+          <div>
+            <Field
+              name="user"
+              component={UsersSearchField}
+              label={'User'}
+            />
+          </div>
+          <div>
+            <Field
+              name="gender"
+              component={SkillsTagSearchField}
+              label={'Gentder'}
+            />
+          </div>
           <RaisedButton
             type="submit"
             primary={true}
             buttonStyle={{color: '#fff'}}
-            label={t('Применить')}
             labelStyle={{fontSize: '13px'}}
+            label={t('Применить')}
             style={{marginTop: '15px'}}>
           </RaisedButton>
         </form>
@@ -204,7 +198,7 @@ const ClientFilterForm = enhance((props) => {
   )
 })
 
-ClientFilterForm.propTypes = {
+CustomerFilterForm.propTypes = {
   filter: PropTypes.object.isRequired,
   filterDialog: PropTypes.shape({
     filterLoading: PropTypes.bool.isRequired,
@@ -215,4 +209,4 @@ ClientFilterForm.propTypes = {
   })
 }
 
-export default ClientFilterForm
+export default CustomerFilterForm

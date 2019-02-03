@@ -12,6 +12,7 @@ import DocumentTitle from 'react-document-title'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ErrorDialog from '../ErrorDialog'
+import DataLayout from './DataLayout'
 import Notifications from './Notifications'
 import {
   notificationListFetchAction,
@@ -26,11 +27,13 @@ const enhance = compose(
     const pathname = _.get(props, 'pathname')
     const filter = filterHelper(pathname, query)
     const notificationsList = _.get(state, ['notifications', 'list', 'data'])
+    const spheres = _.get(state, ['spheres', 'data'])
     const notificationsLoading = _.get(state, ['notifications', 'list', 'loading'])
     return {
       filter,
       notificationsList,
-      notificationsLoading
+      notificationsLoading,
+      spheres
     }
   }),
   withState('loading', 'setLoading', false),

@@ -10,6 +10,7 @@ import errorReducer from './errorReducer'
 const rootReducer = combineReducers({
   signIn: createThunkReducer(actionTypes.SIGN_IN),
   authConfirm: createThunkReducer(actionTypes.AUTH_CONFIRM),
+  spheres: createThunkReducer(actionTypes.SPHERES_LIST),
   config: combineReducers({
     primaryCurrency: createThunkReducer(actionTypes.CONFIG)
   }),
@@ -106,6 +107,12 @@ const rootReducer = combineReducers({
     list: createThunkReducer(actionTypes.APPLICANT_LIST),
     update: createThunkReducer(actionTypes.APPLICANT_UPDATE),
     item: createThunkReducer(actionTypes.APPLICANT_ITEM)
+  }),
+  customer: combineReducers({
+    create: createThunkReducer(actionTypes.CUSTOMER_CREATE),
+    list: createThunkReducer(actionTypes.CUSTOMER_LIST),
+    update: createThunkReducer(actionTypes.CUSTOMER_UPDATE),
+    item: createThunkReducer(actionTypes.CUSTOMER_ITEM)
   }),
   plan: combineReducers({
     create: createThunkReducer(actionTypes.PLAN_CREATE),

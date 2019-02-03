@@ -5,6 +5,7 @@ import t from '../../helpers/translate'
 
 import Administration from 'material-ui/svg-icons/action/dashboard'
 import Settings from 'material-ui/svg-icons/action/settings'
+import Widgets from 'material-ui/svg-icons/device/widgets'
 
 /* .import React from 'react'
 import * as ROUTES from '../../constants/routes'
@@ -45,13 +46,23 @@ import AccountIcon from 'material-ui/svg-icons/action/account-box'
 export const MenuItems = [
 
   {
-    name: t('Соискатель'),
+    name: t('Users'),
     icon: (<AccountIcon/>),
     url: ROUTES.APPLICANT_LIST_URL,
     query: defaultPageSizeQuery,
     childs: [
-      {name: t('Профайл'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-      {name: t('Резуме'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''}
+      {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+      {name: t('Заказчик'), url: ROUTES.CUSTOMER_LIST_URL, query: defaultPageSizeQuery, permission: ''}
+    ]
+  },
+
+  {
+    name: t('Сфера услуг'),
+    icon: (<Widgets/>),
+    url: ROUTES.COMPANY_TYPE_LIST_URL,
+    query: defaultPageSizeQuery,
+    childs: [
+      {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''}
     ]
   },
 
@@ -246,7 +257,6 @@ export const MenuItems = [
       {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Тип компании'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''},
       {section: 'Основные', name: t('Статус поиска работы'), url: ROUTES.JOB_SEARCH_LIST_URL, permission: ''}
 
     ]

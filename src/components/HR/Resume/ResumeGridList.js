@@ -15,6 +15,7 @@ import ContentAdd from 'material-ui/svg-icons/content/add'
 import ToolTip from '../../Utils/ToolTip'
 import {Link} from 'react-router'
 import ResumeDetail from './ResumeDetails'
+import SubMenu from 'components/SubMenu'
 import ResumeFilterForm from './ResumeFilterForm'
 import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
@@ -163,6 +164,7 @@ const ResumeGridList = enhance((props) => {
 
   return (
     <Container>
+      <SubMenu url={ROUTES.HR_RESUME_LIST_URL}/>
       <div className={classes.header}>
         <h2>{t('Анкеты')}</h2>
         <ToolTip position="left" text={t('Добавить анкету')}>

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../../helpers/serializer'
+import {orderingSnakeCase} from '../../../helpers/serializer'
 import moment from 'moment'
 
 export const createSerializer = (data) => {

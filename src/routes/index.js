@@ -5,16 +5,16 @@ import AppLayout from '../containers/App/AppLayout'
 import {MainList} from '../containers/Main'
 import {AccessList} from '../containers/Access'
 import SignIn from '../containers/SignIn'
-import {ClientList} from '../containers/Client'
 import PlanList from '../containers/Plan'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
 import {CompanyTypeList} from '../containers/Settings/CompanyType'
+import CustomerList from '../containers/Customer'
 import ProjectList from '../containers/Project'
 import {
   ArticlesList,
   CompaniesList,
-  ApplicantList
+  PerformerList
 } from '../containers/Administration'
 import {
   SkillsList,
@@ -43,17 +43,6 @@ export default {
       path: ROUTES.ACCESS_DENIED_URL,
       component: userIsAuth(AccessList),
       childRoutes: []
-    },
-    // Client
-    {
-      path: ROUTES.CLIENT_LIST_URL,
-      component: userIsAdminChain(ClientList),
-      childRoutes: [
-        {
-          path: ROUTES.CLIENT_ITEM_URL,
-          component: userIsAuth(ClientList)
-        }
-      ]
     },
     // Permission
     {
@@ -164,11 +153,11 @@ export default {
     // APPLICANT
     {
       path: ROUTES.APPLICANT_LIST_URL,
-      component: userIsAdminChain(ApplicantList),
+      component: userIsAdminChain(PerformerList),
       childRoutes: [
         {
           path: ROUTES.APPLICANT_ITEM_URL,
-          component: userIsAuth(ApplicantList)
+          component: userIsAuth(PerformerList)
         }
       ]
     },
@@ -203,6 +192,18 @@ export default {
         {
           path: ROUTES.PROJECT_ITEM_URL,
           component: userIsAuth(ProjectList)
+        }
+      ]
+    },
+
+    // CUSTOMER
+    {
+      path: ROUTES.CUSTOMER_LIST_URL,
+      component: userIsAdminChain(CustomerList),
+      childRoutes: [
+        {
+          path: ROUTES.CUSTOMER_ITEM_URL,
+          component: userIsAuth(CustomerList)
         }
       ]
     },

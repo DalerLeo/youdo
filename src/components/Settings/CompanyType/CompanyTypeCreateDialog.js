@@ -4,10 +4,11 @@ import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
+import {Field, reduxForm} from 'redux-form'
+import * as API from 'constants/api'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
-import {Field, reduxForm} from 'redux-form'
-import {TextField} from '../../ReduxForm'
+import {TextField, UniversalSearchField} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../../Styles/MainStyles'
@@ -67,6 +68,15 @@ const CompanyTypeCreateDialog = enhance((props) => {
           </div>
           <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
             <div className={classes.field}>
+              <Field
+                name="parent"
+                component={UniversalSearchField}
+                className={classes.inputFieldCustom}
+                params={{parent: 0}}
+                listPath={API.COMPANIES_LIST}
+                label={t('Родительская категория')}
+                fullWidth={true}
+              />
               <Field
                 name="name"
                 component={TextField}

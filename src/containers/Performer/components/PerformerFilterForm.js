@@ -11,10 +11,10 @@ import RaisedButton from 'material-ui/RaisedButton'
 import BorderColorIcon from 'material-ui/svg-icons/editor/border-color'
 import CloseIcon from 'material-ui/svg-icons/action/highlight-off'
 import KeyboardArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
-import t from '../../helpers/translate'
-import DatesField from '../ReduxForm/Basic/DatesField'
-import {UsersSearchField} from '../ReduxForm'
-import SkillsTagSearchField from '../ReduxForm/HR/SkillsTagSearchField'
+import t from '../../../helpers/translate'
+import DatesField from '../../../components/ReduxForm/Basic/DatesField'
+import {UsersSearchField} from '../../../components/ReduxForm'
+import SkillsTagSearchField from '../../../components/ReduxForm/HR/SkillsTagSearchField'
 
 export const APPLICANT_FILTER_OPEN = 'openFilterDialog'
 
@@ -117,7 +117,7 @@ const enhance = compose(
   })
 )
 
-const ApplicantFilterForm = enhance((props) => {
+const PerformerFilterForm = enhance((props) => {
   const {classes, filterDialog, getCount, handleSubmit, addButton} = props
   const filterCounts = getCount()
 
@@ -198,7 +198,7 @@ const ApplicantFilterForm = enhance((props) => {
   )
 })
 
-ApplicantFilterForm.propTypes = {
+PerformerFilterForm.propTypes = {
   filter: PropTypes.object.isRequired,
   filterDialog: PropTypes.shape({
     filterLoading: PropTypes.bool.isRequired,
@@ -209,4 +209,4 @@ ApplicantFilterForm.propTypes = {
   })
 }
 
-export default ApplicantFilterForm
+export default PerformerFilterForm

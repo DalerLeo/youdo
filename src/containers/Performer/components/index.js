@@ -1,6 +1,6 @@
-import ApplicantGridList from './ApplicantGridList'
-import {APPLICANT_CREATE_DIALOG_OPEN} from './ApplicantCreateDialog'
-import {APPLICANT_FILTER_KEY, APPLICANT_FILTER_OPEN} from './ApplicantFilterForm'
+import PerformerGridList from './PerformerGridList'
+import {APPLICANT_CREATE_DIALOG_OPEN} from './PerformerCreateDialog'
+import {APPLICANT_FILTER_KEY, APPLICANT_FILTER_OPEN} from './PerformerFilterForm'
 
 const APPLICANT_DELETE_DIALOG_OPEN = 'openDeleteDialog'
 const APPLICANT_UPDATE_DIALOG_OPEN = 'openUpdateDialog'
@@ -12,5 +12,5 @@ export {
   APPLICANT_FILTER_KEY,
   APPLICANT_FILTER_OPEN,
   APPLICANT_MAIL_DIALOG_OPEN,
-  ApplicantGridList
+  PerformerGridList
 }
