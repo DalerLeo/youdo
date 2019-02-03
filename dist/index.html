@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <title>MyJob</title>
+<link rel="shortcut icon" href="rhythm-logo.png"><link href="css/main.css" rel="stylesheet"><link href="css/vendor.css" rel="stylesheet"></head>
+<style>
+    #wrapper {
+        width: 100%;
+        height: 100%;
+    }
+    .react-dom-loader {
+        background: #2d3037;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+    }
+    .react-dom-loader svg {
+        width: 175px;
+    }
+    .loader {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .loader .el {
+        position: relative;
+        width: 6px;
+        margin: 0 2px;
+        height: 30px;
+        background: #efefef;
+        -webkit-transition: all 100ms ease;
+        -moz-transition: all 100ms ease;
+        -o-transition: all 100ms ease;
+        transition: all 100ms ease;
+        -webkit-transform: scaleY(0);
+        -moz-transform: scaleY(0);
+        -ms-transform: scaleY(0);
+        -o-transform: scaleY(0);
+        transform: scaleY(0);
+        -webkit-animation: animation 600ms infinite;
+        -o-animation: animation 600ms infinite;
+        animation: animation 600ms infinite;
+    }
+    .loader .el:nth-child(1) {height: 10px; top: 5px; animation-delay: 0ms}
+    .loader .el:nth-child(2) {height: 24px; top: 5px; animation-delay: 100ms}
+    .loader .el:nth-child(3) {height: 36px; top: 6px; animation-delay: 200ms}
+    .loader .el:nth-child(4) {height: 37px; top: -5px; animation-delay: 300ms}
+    .loader .el:nth-child(5) {height: 25px; top: 8px; animation-delay: 400ms}
+    .loader .el:nth-child(6) {height: 24px; top: 2px; animation-delay: 500ms}
+    .loader .el:nth-child(7) {height: 9px; top: 6px; animation-delay: 600ms}
+    .loader .el.blue {
+        background: #1BA3C6;
+    }
+    @keyframes animation {
+        0% {transform: scaleY(0.6)}
+        50% {transform: scaleY(1)}
+        100% {transform: scaleY(0.6)}
+    }
+</style>
+<body id="body">
+    <div id="wrapper">
+        <div class="react-dom-loader">
+            <div class="loader">
+                <div class="el"></div>
+                <div class="el blue"></div>
+                <div class="el"></div>
+                <div class="el"></div>
+                <div class="el blue"></div>
+                <div class="el"></div>
+                <div class="el"></div>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript" src="57fe2a049f45048b9185-0.main.js"></script><script type="text/javascript" src="57fe2a049f45048b9185-1.vendor.js"></script></body>
+</html>
