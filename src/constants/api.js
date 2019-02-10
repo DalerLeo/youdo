@@ -147,13 +147,11 @@ export const COMPANY_TYPE_UPDATE = `/${COMPANY_TYPE}/%d`
 export const COMPANY_TYPE_CREATE = `/${COMPANY_TYPE}/`
 export const COMPANY_TYPE_DELETE = `/${COMPANY_TYPE}/%d`
 
-export const APPLICANT = 'staff/staff'
+export const APPLICANT = 'main/executor'
 export const APPLICANT_CREATE = `/${APPLICANT}/`
 export const APPLICANT_LIST = `/${APPLICANT}/`
 export const APPLICANT_ITEM = `/${APPLICANT}/%d/`
 export const APPLICANT_DELETE = `/${APPLICANT}/%d/`
-export const APPLICANT_GROUP = 'user/group/gcrud/'
-export const APPLICANT_GROUP_ITEM = `/${APPLICANT_GROUP}/%d/`
 
 export const COUNTRY_LIST = 'main/country/'
 export const COUNTRY_ITEM = 'main/country/%d/'

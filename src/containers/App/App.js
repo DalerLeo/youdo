@@ -6,7 +6,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import {Router} from 'react-router'
 import moment from 'moment'
 import routes from '../../routes'
-const primaryColor = '#5d6474'
+const primaryColor = '#78909C'
 const secondaryColor = '#12aaeb'
 
 const muiTheme = getMuiTheme({

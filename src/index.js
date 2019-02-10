@@ -6,6 +6,7 @@ import {setObservableConfig} from 'recompose'
 import {hashHistory} from 'react-router'
 import {syncHistoryWithStore} from 'react-router-redux'
 import createStore from './store/createStore'
+import registerServiceWorker from './registerServiceWorker'
 import 'react-dates/initialize'
 import 'react-dates/lib/css/_datepicker.css'
 import './styles'
@@ -41,3 +42,5 @@ if (module.hot) {
 }
 
 render()
+
+registerServiceWorker()

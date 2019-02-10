@@ -135,11 +135,6 @@ const SideBarMenu = enhance((props) => {
           <Loader size={0.75}/>
         </div>
         : <div className={classes.items} ref={itemsRef}>
-          <div className={classes.logo}>
-            <Link to={ROUTE.DASHBOARD_URL}>
-              <div>{null}</div>
-            </Link>
-          </div>
           <div className={classes.notifications}>
             {/* <CustomBadge */}
             {/* Dispatch={dispatch} */}
@@ -166,6 +161,7 @@ const SideBarMenu = enhance((props) => {
 
 export default injectSheet({
   wrapper: {
+    paddingTop: '40px',
     height: '100%',
     display: 'flex',
     flexDirection: 'column',

@@ -3,6 +3,7 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <link rel="manifest" href="./manifest.json">
 </head>
 <style>
     #wrapper {
@@ -10,7 +11,7 @@
         height: 100%;
     }
     .react-dom-loader {
-        background: #2d3037;
+        background: #455A64;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -64,20 +65,39 @@
         50% {transform: scaleY(1)}
         100% {transform: scaleY(0.6)}
     }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        25% { -webkit-transform: rotate(120deg); }
+        50% { -webkit-transform: rotate(270deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg);}
+        25% { transform: rotate(120deg);}
+        50% { transform: rotate(270deg);}
+        100% { transform: rotate(360deg); }
+    }
+
+    .loaderStyle {
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #CFD8DC;
+        width: 80px;
+        height: 80px;
+        display: inline-block;
+    'WebkitAnimation': spin 800ms linear infinite;
+    animation: spin 800ms linear infinite
+    }
 </style>
 <body id="body">
     <div id="wrapper">
         <div class="react-dom-loader">
-            <div class="loader">
-                <div class="el"></div>
-                <div class="el blue"></div>
-                <div class="el"></div>
-                <div class="el"></div>
-                <div class="el blue"></div>
-                <div class="el"></div>
-                <div class="el"></div>
-            </div>
+                <div class="loaderStyle"></div>
         </div>
     </div>
 </body>
+<!-- Prompt a message in the browser if users disabled JS -->
+<noscript>Your browser does not support JavaScript!</noscript>
 </html>

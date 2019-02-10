@@ -34,9 +34,63 @@ const enhance = compose(
       '0%': {transform: 'scaleY(0.6)'},
       '50%': {transform: 'scaleY(1)'},
       '100%': {transform: 'scaleY(0.6)'}
+    },
+    '@-webkit-keyframes spin': {
+      '0%': {'-webkit-transform': 'rotate(0deg)'},
+      '25%': {'-webkit-transform': 'rotate(120deg)'},
+      '50%': {'-webkit-transform': 'rotate(270deg)'},
+      '100%': {'-webkit-transform': 'rotate(360deg)'}
+    },
+
+    '@keyframes spin': {
+      '0%': {transform: 'rotate(0deg)'},
+      '25%': {transform: 'rotate(120deg)'},
+      '50%': {transform: 'rotate(270deg)'},
+      '100%': {transform: 'rotate(360deg)'}
+    },
+    loadWrap: {
+      zIndex: '99',
+      background: '#fff9',
+      position: 'absolute',
+      top: '0',
+      textAlign: 'center',
+      paddingTop: '220px',
+      height: '100%',
+      width: '100%'
+    },
+    loaderStyle: {
+      border: '5px solid #f3f3f3',
+      borderRadius: '50%',
+      borderTop: '8px solid #78909C',
+      width: '75px',
+      height: '75px',
+      display: 'inline-block',
+      'WebkitAnimation': 'spin 800ms linear infinite',
+      animation: 'spin 800ms linear infinite'
     }
   })
 )
+const loaderStyle = {
+  border: '10px solid #f3f3f3',
+  borderRadius: '50%',
+  borderTop: '8px solid #636ec1',
+  width: '120px',
+  height: '120px',
+  display: 'inline-block',
+  'WebkitAnimation': 'spin 800ms linear infinite',
+  animation: 'spin 800ms linear infinite'
+}
+const loadWrap = {
+  display: 'none',
+  zIndex: '99',
+  background: '#fff9',
+  position: 'absolute',
+  top: '0',
+  textAlign: 'center',
+  paddingTop: '300px',
+  height: '100%',
+  width: '100%'
+}
 const ONE = 1
 const ELEMENTS_AMOUNT = 7
 const BLUE_ELEMENTS = _.map(['2', '5'], _.parseInt)
@@ -45,6 +99,12 @@ const Loader = enhance((props) => {
   const customStyles = {
     transform: 'scale(' + size + ')'
   }
+
+  return (
+    <div className={classes.loadWrap} id="loader">
+      <div className={classes.loaderStyle}/>
+    </div>
+  )
   const elements = _.map(_.range(ELEMENTS_AMOUNT), (item, index) => {
     const hasBlueElements = _.includes(BLUE_ELEMENTS, (index + ONE))
     const HUNDRED = 100

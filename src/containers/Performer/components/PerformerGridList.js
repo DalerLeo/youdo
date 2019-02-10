@@ -216,7 +216,7 @@ const PerformerGridList = enhance((props) => {
   const list = {
     header: listHeader,
     list: applicantList,
-    loading: _.get(listData, 'listLoading')
+    loading: true
   }
 
   const addButton = (
