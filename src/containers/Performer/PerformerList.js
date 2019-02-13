@@ -18,7 +18,6 @@ import {
   APPLICANT_DELETE_DIALOG_OPEN,
   APPLICANT_FILTER_KEY,
   APPLICANT_FILTER_OPEN,
-  APPLICANT_MAIL_DIALOG_OPEN,
   PerformerGridList
 } from './components'
 import {
@@ -31,7 +30,7 @@ import {
 import {openErrorAction} from 'actions/error'
 
 const updateKeys = {
-  city: 'city',
+  livingPlace: 'city',
   email: 'email',
   fullName: 'fullName',
   image: 'image',
@@ -39,8 +38,6 @@ const updateKeys = {
   phoneNumber: 'phoneNumber'
 }
 const createKeys = {
-  experiences: [{}],
-  educations: [{}]
 }
 const except = {
   openMailDialog: null
@@ -55,12 +52,13 @@ const mapDispatchToProps = {
   openErrorAction
 }
 
-const mapStateToProps = (state) => ({spheres: _.get(state, 'spheres.data')})
+const mapStateToProps = (state) => ({})
 
 const enhance = compose(
   listWrapper({
     except,
     storeName: 'applicant',
+    name: 'performer',
     listFetchAction: applicantListFetchAction
   }),
   detailWrapper({
@@ -69,16 +67,15 @@ const enhance = compose(
   }),
   createWrapper({
     storeName: 'applicant',
-    formName: 'ApplicantCreateForm',
+    formName: 'PerformerCreateForm',
     createAction: applicantCreateAction,
-    queryKey: APPLICANT_CREATE_DIALOG_OPEN,
-    thenActionKey: APPLICANT_MAIL_DIALOG_OPEN
+    queryKey: APPLICANT_CREATE_DIALOG_OPEN
   }),
   updateWrapper({
     updateKeys,
     createKeys,
     storeName: 'applicant',
-    formName: 'ApplicantCreateForm',
+    formName: 'PerformerCreateForm',
     updateAction: applicantUpdateAction,
     queryKey: APPLICANT_UPDATE_DIALOG_OPEN
   }),

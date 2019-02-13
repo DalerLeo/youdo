@@ -60,7 +60,7 @@ const enhance = compose(
   }),
   createWrapper({
     storeName: 'customer',
-    formName: 'ApplicantCreateForm',
+    formName: 'CustomerCreateForm',
     createAction: customerCreateAction,
     queryKey: CUSTOMER_CREATE_DIALOG_OPEN,
     thenActionKey: CUSTOMER_MAIL_DIALOG_OPEN
@@ -69,7 +69,7 @@ const enhance = compose(
     updateKeys,
     createKeys,
     storeName: 'customer',
-    formName: 'ApplicantCreateForm',
+    formName: 'CustomerCreateForm',
     updateAction: customerUpdateAction,
     queryKey: CUSTOMER_UPDATE_DIALOG_OPEN
   }),

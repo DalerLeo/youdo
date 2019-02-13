@@ -15,6 +15,7 @@ import AnnounceIcon from 'material-ui/svg-icons/action/announcement'
 import EditPasswordIcon from 'material-ui/svg-icons/editor/mode-edit'
 import BalanceIcon from 'material-ui/svg-icons/editor/attach-money'
 import t from '../../../helpers/translate'
+import numberFormat from '../../../helpers/numberFormat'
 import EmptyQuery from '../../../components/Utils/EmptyQuery'
 import {Col, Row} from 'react-flexbox-grid'
 
@@ -64,7 +65,7 @@ const enhance = compose(
     mainBlock: {
       padding: '20px 0',
       display: 'flex',
-      width: '380px',
+      width: '400px',
       borderRight: '1px solid #efefef',
       paddingRight: '20px'
     },
@@ -125,7 +126,7 @@ const enhance = compose(
       width: 'calc(100% - 230px)'
     },
     detailsBlock: {
-      width: 'calc(100% - 380px)',
+      width: 'calc(100% - 400px)',
       '& .dottedList': {
         padding: '10px 0',
         '&:after': {
@@ -213,8 +214,11 @@ const PerformerDetails = enhance((props) => {
   const fullName = _.get(data, 'fullName')
 
   const city = _.get(data, 'city')
-  const district = _.get(data, 'district')
-  const balance = _.get(data, 'balance')
+  const numberPassport = _.get(data, 'numberPassport')
+  const email = _.get(data, 'email')
+  const phoneNumber = _.get(data, 'phoneNumber')
+  const district = _.get(data, 'livingPlace.name')
+  const balance = numberFormat(_.get(data, 'balance'))
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -280,7 +284,9 @@ const PerformerDetails = enhance((props) => {
                 </div>}
             </div>
             <div className={classes.detailData}>
-              <div className={classes.bodyTitle}>{t('Город')}: <span>{city}</span></div>
+              <div className={classes.bodyTitle}>{t('Тель')}: <span>{phoneNumber}</span></div>
+              <div className={classes.bodyTitle}>{t('Email')}: <span>{email}</span></div>
+              <div className={classes.bodyTitle}>{t('Пасспорт №')}: <span>{numberPassport}</span></div>
               <div className={classes.bodyTitle}>{t('Район')}: <span>{district}</span></div>
               <div className={classes.bodyTitle}>{t('Балансе')}: <span>{balance}</span></div>
             </div>

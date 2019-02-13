@@ -25,6 +25,7 @@ import EditIcon from 'material-ui/svg-icons/content/create'
 import PerformerFilterForm from './PerformerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 import CustomerDetails from '../../Customer/components/CustomerDetails'
+import numberFormat from '../../../helpers/numberFormat'
 
 const data = [
   {
@@ -140,7 +141,6 @@ const PerformerGridList = enhance((props) => {
     confirmDialog,
     listData,
     detailData,
-    confirmMailDialog,
     filterDialog,
     classes
   } = props
@@ -191,14 +191,14 @@ const PerformerGridList = enhance((props) => {
     />
   )
 
-  const applicantList = _.map(data, (item, index) => {
+  const applicantList = _.map(listData.data, (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const fullName = _.get(item, 'fullName')
     const city = _.get(item, 'city')
-    const district = _.get(item, 'district')
-    const createdDate = dateFormat(_.get(item, 'createdAt'))
-    const balance = _.get(item, 'balance')
+    const district = _.get(item, 'livingPlace.name')
+    const createdDate = dateFormat(_.get(item, 'createdDate'))
+    const balance = numberFormat(_.get(item, 'balance'))
     return (
       <Row key={id} className={classes.listRow}>
         <div
@@ -216,7 +216,7 @@ const PerformerGridList = enhance((props) => {
   const list = {
     header: listHeader,
     list: applicantList,
-    loading: true
+    loading: listData.listLoading
   }
 
   const addButton = (

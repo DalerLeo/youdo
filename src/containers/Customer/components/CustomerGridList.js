@@ -189,7 +189,7 @@ const CustomerGridList = enhance((props) => {
     />
   )
 
-  const applicantList = _.map(data, (item, index) => {
+  const applicantList = _.map(listData.data, (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const fullName = _.get(item, 'fullName')

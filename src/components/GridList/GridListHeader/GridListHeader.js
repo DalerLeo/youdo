@@ -21,7 +21,7 @@ const enhance = compose(
       width: '100%',
       height: '50px',
       alignItems: 'center',
-      background: '#5d6474',
+      background: '#78909C',
       overflow: 'hidden',
       fontWeight: '600',
       color: '#fff',

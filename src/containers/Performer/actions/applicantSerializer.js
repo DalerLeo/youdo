@@ -1,40 +1,25 @@
 import _ from 'lodash'
 import {orderingSnakeCase} from '../../../helpers/serializer'
-import moment from 'moment'
+import toSnakeCase from '../../../helpers/toSnakeCase'
 
 export const createSerializer = (data) => {
-  const email = _.get(data, ['email', 'value'])
-  const firstName = _.get(data, ['firstName', 'value'])
-  const lastName = _.get(data, ['lastName', 'value'])
-  const secondName = _.get(data, ['secondName', 'value'])
-  const status = _.get(data, ['status', 'value'])
-  const activityField = _.get(data, ['activityField', 'value'])
-  const interestLevel = _.get(data, ['interestLevel', 'value'])
-  const maritalStatus = _.get(data, ['maritalStatus', 'value'])
-  const birthday = _.get(data, ['birthday', 'value'])
-  const address = _.get(data, ['address', 'value'])
-  const phone = _.get(data, ['phone', 'value'])
-  const gender = _.get(data, ['gender', 'value'])
-  const lang = _.get(data, ['profileLanguage', 'value'])
-  const phoneCode = _.get(data, ['phoneCode', 'value'])
+  const email = _.get(data, ['email'])
+  const fullName = _.get(data, ['fullName'])
+  const phoneNumber = _.get(data, ['phoneNumber'])
+  const speciality = _.get(data, ['speciality'])
+  const numberPassport = _.get(data, ['numberPassport'])
+  const livingPlace = _.get(data, ['district'])
   const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
-  return {
+
+  return toSnakeCase({
+    fullName,
+    phoneNumber,
     email,
-    status,
-    image,
-    address,
-    gender,
-    birthday: birthday && moment(birthday).format('YYYY-MM-DD'),
-    'second_name': secondName,
-    'first_name': firstName,
-    'last_name': lastName,
-    'phone_code': phoneCode,
-    'marital_status': maritalStatus,
-    'phone': phone,
-    'interested_level': interestLevel,
-    'activity_field': activityField,
-    'profile_language': lang
-  }
+    speciality,
+    numberPassport,
+    livingPlace,
+    image
+  })
 }
 
 export const updateSerializer = (data) => {

@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
@@ -14,7 +13,6 @@ import {
   normalizePhone,
   ImageUploadField
 } from 'components/ReduxForm'
-import formValidate from 'helpers/formValidate'
 import t from 'helpers/translate'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -144,7 +142,7 @@ const enhance = compose(
     }
   }),
   reduxForm({
-    form: 'UsersCreateForm',
+    form: 'CustomerCreateForm',
     validate: validateForm,
     enableReinitialize: true
   })
@@ -154,7 +152,6 @@ const CustomerCreateDialog = enhance((props) => {
   const {
     open,
     loading,
-    dispatch,
     handleSubmit,
     onClose,
     classes,
@@ -162,21 +159,11 @@ const CustomerCreateDialog = enhance((props) => {
   } = props
 
   const formNames = [
-    'firstNameRu',
-    'lastNameRu',
-    'firstNameEn',
-    'lastNameEn',
-    'greetingTextRu',
-    'greetingTextEn',
+    'fullName',
     'phoneNumber',
-    'photo',
-    'email',
-    'password'
+    'email'
   ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
     <Dialog
       modal={true}
@@ -226,26 +213,6 @@ const CustomerCreateDialog = enhance((props) => {
                 label={t('Изображения')}
                 fullWidth={true}/>
             </div>
-            <Row className={classes.field}>
-              <Col xs={6}>
-                <Field
-                  name="passwordExp"
-                  component={TextField}
-                  type="password"
-                  label={isUpdate ? 'Изменить пароль' : 'Пароль'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-              <Col xs={6}>
-                <Field
-                  name="password"
-                  type="password"
-                  component={TextField}
-                  label={'Подтвердите пароль'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-            </Row>
           </div>
           <div className={classes.bottomButton}>
             <FlatButton

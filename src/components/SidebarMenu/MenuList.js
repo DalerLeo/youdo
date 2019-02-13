@@ -33,14 +33,14 @@ const enhance = compose(
         opacity: '1',
         color: 'fff'
       },
-      color: '#fff',
+      color: '#78909C',
       '& svg': {
         verticalAlign: 'middle'
       }
     },
     activeMenu: {
-      boxShadow: 'inset 0 0 10px rgba(0, 0, 0, 0.35)',
-      background: '#24262b !important',
+      color: '#1c313a',
+      background: '#efefef !important',
       borderRadius: '0 !important',
       opacity: '1 !important'
     }

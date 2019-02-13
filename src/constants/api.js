@@ -73,7 +73,7 @@ export const LANGUAGES_LIST = `/${LANGUAGES}/`
 export const LANGUAGES_ITEM = `/${LANGUAGES}/%d/`
 export const LANGUAGES_DELETE = `/${LANGUAGES}/%d/`
 
-export const REGIONS = 'main/regions'
+export const REGIONS = 'main/region'
 export const REGIONS_CREATE = `/${REGIONS}/`
 export const REGIONS_LIST = `/${REGIONS}/`
 export const REGIONS_ITEM = `/${REGIONS}/%d/`
@@ -199,7 +199,7 @@ export const COMMENT_UPDATE = `/${COMMENT}/%d`
 export const COMMENT_CREATE = `/${COMMENT}/`
 export const COMMENT_DELETE = `/${COMMENT}/%d`
 
-export const CUSTOMER = 'staff/staff'
+export const CUSTOMER = 'main/client'
 export const CUSTOMER_CREATE = `/${CUSTOMER}/`
 export const CUSTOMER_LIST = `/${CUSTOMER}/`
 export const CUSTOMER_ITEM = `/${CUSTOMER}/%d/`

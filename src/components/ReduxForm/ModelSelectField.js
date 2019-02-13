@@ -93,13 +93,13 @@ const enhance = compose(
     },
     popUp: {
       maxHeight: 'unset!important',
-      padding: '0 !important',
+      padding: '0 !important'
     },
     notSelected: {
       color: 'black',
       fontWeight: '500',
       fontSize: '14px',
-      marginLeft: '17px',
+      marginTop: '15px',
       lineHeight: 'normal',
       cursor: 'pointer',
       textDecoration: 'underline'
@@ -159,18 +159,17 @@ const ModelSelectField = props => {
     classes,
     onComplete,
     required,
-    label,
     state: {loading, data, open},
     selectLabel
   } = props
 
   return (
     <div className={classNames(classes.wrapper, className)}>
-      <Label2 label={label} required={required}/>
       <div
         onClick={() => onOpen(true)}
-        className={classes.notSelected}>{selectLabel}</div>
-
+        className={classes.notSelected}>
+        <Label2 label={selectLabel} required={required}/>
+        </div>
       <Dialog
         modal={true}
         open={open}

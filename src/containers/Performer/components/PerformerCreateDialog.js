@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {compose} from 'recompose'
 import injectSheet from 'react-jss'
-import {Row, Col} from 'react-flexbox-grid'
 import Dialog from 'material-ui/Dialog'
 import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
@@ -11,14 +10,11 @@ import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {
   TextField,
-  PositionsSearchField,
-  RoleSearchField,
   UniversalSearchField,
   normalizePhone,
   ImageUploadField,
   ModelSelectField
 } from 'components/ReduxForm'
-import formValidate from 'helpers/formValidate'
 import * as API from 'constants/api'
 import t from 'helpers/translate'
 
@@ -149,7 +145,7 @@ const enhance = compose(
     }
   }),
   reduxForm({
-    form: 'UsersCreateForm',
+    form: 'PerformerCreateForm',
     validate: validateForm,
     enableReinitialize: true
   })
@@ -159,7 +155,6 @@ const PerformerCreateDialog = enhance((props) => {
   const {
     open,
     loading,
-    dispatch,
     handleSubmit,
     onClose,
     classes,
@@ -171,13 +166,9 @@ const PerformerCreateDialog = enhance((props) => {
     'district',
     'phoneNumber',
     'photo',
-    'email',
-    'password'
+    'email'
   ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
     <Dialog
       modal={true}
@@ -220,6 +211,12 @@ const PerformerCreateDialog = enhance((props) => {
                   label={'Телефонный номер'}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
+                <Field
+                  name="numberPassport"
+                  component={TextField}
+                  label={'Номер пасспорта'}
+                  className={classes.inputFieldCustom}
+                  fullWidth={true}/>
               </div>
               <Field
                 name="photo"
@@ -233,59 +230,22 @@ const PerformerCreateDialog = enhance((props) => {
               component={UniversalSearchField}
               listPath={API.REGIONS_LIST}
               label={'Город'}
+              params={{type: 'region'}}
               fullWidth={true}/>
             <Field
               name="district"
               component={UniversalSearchField}
               listPath={API.REGIONS_LIST}
+              params={{type: 'district'}}
               label={'Район'}
               fullWidth={true}/>
             <Field
-              name="spheres"
+              name="speciality"
               component={ModelSelectField}
               selectLabel={'Указать сферу деятельности'}
               api={API.SPECIALITY_LIST}
               label={'Сфера услуг'}
               fullWidth={true}/>
-
-            <Row className={classes.field}>
-              <Col xs={6}>
-                <Field
-                  name="passwordExp"
-                  component={TextField}
-                  type="password"
-                  label={isUpdate ? 'Изменить пароль' : 'Пароль'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-              <Col xs={6}>
-                <Field
-                  name="password"
-                  type="password"
-                  component={TextField}
-                  label={'Подтвердите пароль'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-            </Row>
-            <Row className={classes.field}>
-              <Col xs={6}>
-                <Field
-                  name="role"
-                  component={RoleSearchField}
-                  label={'Роль сотрудника'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-              <Col xs={6}>
-                <Field
-                  name="position"
-                  component={PositionsSearchField}
-                  label={'Должность'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-            </Row>
           </div>
           <div className={classes.bottomButton}>
             <FlatButton
