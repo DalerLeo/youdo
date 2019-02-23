@@ -2,21 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import _ from 'lodash'
 import {
-  compose,
-  withState,
-  withHandlers,
-  lifecycle
+  compose
 } from 'recompose'
 import injectSheet from 'react-jss'
 import classNames from 'classnames'
 import {
-  Editor,
+//  Editor,
   EditorState,
   RichUtils,
   getDefaultKeyBinding,
   convertFromHTML,
   ContentState
 } from 'draft-js'
+import Editor from 'draft-js-plugins-editor'
+import createImagePlugin from 'draft-js-image-plugin'
+
 import {stateToHTML} from 'draft-js-export-html'
 import BlockStyleControls from './BlockStyleControls'
 import InlineStyleControls from './InlineStyleControls'
@@ -28,50 +28,16 @@ import AttachIcon from 'material-ui/svg-icons/editor/attach-file'
 import FileSimpleUploadField from 'components/ReduxForm/Basic/FileSimpleUploadField'
 import {Field} from 'redux-form'
 import ToolTip from 'components/Utils/ToolTip/ToolTip'
+import AddImage from './AddImage'
 
 const enhance = compose(
-  withState('editorState', 'setEditorState', EditorState.createEmpty()),
-  withHandlers({
-    onChange: props => (state) => {
-      const {setEditorState, input} = props
-      const html = stateToHTML(state.getCurrentContent())
-      setEditorState(state)
-      return input.onChange(html)
-    }
-  }),
-  lifecycle({
-    componentDidMount () {
-      const {input, setEditorState} = this.props
-      const value = input.value
-      if (value) {
-        const state = EditorState.createWithContent(
-          ContentState.createFromBlockArray(
-            convertFromHTML(input.value)
-          )
-        )
-        setEditorState(state)
-      }
-    },
-    componentDidUpdate (prevProps) {
-      const nextProps = this.props
-      const {setEditorState} = nextProps
-      const prevInputValue = _.get(prevProps, 'input.value')
-      const nextInputValue = _.get(nextProps, 'input.value')
-
-      if (nextInputValue !== prevInputValue && !nextInputValue) {
-        const state = EditorState.createWithContent(
-          ContentState.createFromText('')
-        )
-        setEditorState(state)
-      }
-    }
-  }),
   injectSheet({
     wrapper: {
       borderRadius: '0',
       border: BORDER_STYLE,
       position: 'relative',
-      background: '#fff'
+      background: '#fff',
+      overflow: 'auto'
     },
     controls: {
       transition: 'all 300ms',
@@ -105,132 +71,187 @@ const enhance = compose(
   })
 )
 
-const TextEditor = (props) => {
-  const {
-    classes,
-    editorState,
-    label,
-    placeholder,
-    button,
-    file,
-    meta: {active},
-    input
-  } = props
-  const editor = React.createRef()
+const imagePlugin = createImagePlugin()
 
-  const focus = () => {
-    return editor.current.focus()
+class TextEditor extends React.Component {
+  constructor (props) {
+    super(props)
+    this.editor = React.createRef()
+    this.state = {editorState: EditorState.createEmpty()}
+    this.onChange = this.onChange.bind(this)
+    this.focus = this.focus.bind(this)
   }
 
-  const handleKeyCommand = (command, state) => {
-    const newState = RichUtils.handleKeyCommand(state, command)
-    if (newState) {
-      props.onChange(newState)
-      return true
-    }
-    return false
-  }
-
-  const mapKeyToEditorCommand = (event) => {
-    const TAB_CHAR = 9
-    const MAX_DEPTH = 4
-    if (event.keyCode === TAB_CHAR) {
-      const newEditorState = RichUtils.onTab(
-        event,
-        editorState,
-        MAX_DEPTH
+  componentDidMount () {
+    const {input} = this.props
+    const value = input.value
+    if (value) {
+      const state = EditorState.createWithContent(
+        ContentState.createFromBlockArray(
+          convertFromHTML(input.value)
+        )
       )
-      if (newEditorState !== editorState) {
-        return props.onChange(newEditorState)
+      this.setState({editorState: state})
+    }
+  }
+
+  componentDidUpdate (prevProps) {
+    const nextProps = this.props
+    const prevInputValue = _.get(prevProps, 'input.value')
+    const nextInputValue = _.get(nextProps, 'input.value')
+
+    if (nextInputValue !== prevInputValue && !nextInputValue) {
+      const state = EditorState.createWithContent(
+        ContentState.createFromText('')
+      )
+      this.setState({editorState: state})
+    }
+  }
+
+  onChange (state) {
+    const {input} = this.props
+    const html = stateToHTML(state.getCurrentContent())
+    this.setState({editorState: state})
+    return input.onChange(html)
+  }
+
+  focus () {
+    return this.editor.current.focus()
+  }
+
+  render () {
+    const {
+      classes,
+      label,
+      placeholder,
+      button,
+      file,
+      meta: {active},
+      activeTools,
+      input
+    } = this.props
+
+    const isActive = activeTools || active
+    const {editorState} = this.state
+    const handleKeyCommand = (command, state) => {
+      const newState = RichUtils.handleKeyCommand(state, command)
+      if (newState) {
+        this.onChange(newState)
+        return true
+      }
+      return false
+    }
+
+    const mapKeyToEditorCommand = (event) => {
+      const TAB_CHAR = 9
+      const MAX_DEPTH = 4
+      if (event.keyCode === TAB_CHAR) {
+        const newEditorState = RichUtils.onTab(
+          event,
+          editorState,
+          MAX_DEPTH
+        )
+        if (newEditorState !== editorState) {
+          return this.onChange(newEditorState)
+        }
+      }
+      return getDefaultKeyBinding(event)
+    }
+
+    const toggleBlockType = (blockType) => {
+      return this.onChange(
+        RichUtils.toggleBlockType(
+          editorState,
+          blockType
+        )
+      )
+    }
+
+    const toggleInlineStyle = (inlineStyle) => {
+      return this.onChange(
+        RichUtils.toggleInlineStyle(
+          editorState,
+          inlineStyle
+        )
+      )
+    }
+
+    const getBlockStyle = (block) => {
+      switch (block.getType()) {
+        case 'blockquote': return 'RichEditor-blockquote'
+        default: return null
       }
     }
-    return getDefaultKeyBinding(event)
-  }
 
-  const toggleBlockType = (blockType) => {
-    return props.onChange(
-      RichUtils.toggleBlockType(
-        editorState,
-        blockType
-      )
-    )
-  }
-
-  const toggleInlineStyle = (inlineStyle) => {
-    return props.onChange(
-      RichUtils.toggleInlineStyle(
-        editorState,
-        inlineStyle
-      )
-    )
-  }
-
-  const getBlockStyle = (block) => {
-    switch (block.getType()) {
-      case 'blockquote': return 'RichEditor-blockquote'
-      default: return null
+    const styleMap = {
+      CODE: {
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+        fontSize: 16,
+        padding: 2
+      }
     }
-  }
 
-  const styleMap = {
-    CODE: {
-      backgroundColor: 'rgba(0, 0, 0, 0.05)',
-      fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
-      fontSize: 16,
-      padding: 2
-    }
-  }
-
-  const contentState = editorState.getCurrentContent()
-  const hidePlaceholder = !contentState.hasText() && contentState.getBlockMap().first().getType() !== 'unstyled'
-  return (
-    <div>
-      <Label label={label}/>
-      <div className={classes.wrapper}>
-        <div className={classNames({
-          [classes.controls]: true,
-          [classes.controlShow]: (active || file)
-        })}>
-          {button}
-          <BlockStyleControls
-            editorState={editorState}
-            onToggle={toggleBlockType}
-          />
-          <InlineStyleControls
-            editorState={editorState}
-            onToggle={toggleInlineStyle}
-          />
-          {file && (
-            <ToolTip position={'bottom'} text={'Загрузить файл'}>
-              <Field
-                name={'file'}
-                label={<AttachIcon style={{height: '20px'}}/>}
-                component={FileSimpleUploadField}
+    const contentState = editorState.getCurrentContent()
+    const hidePlaceholder = !contentState.hasText() && contentState.getBlockMap().first().getType() !== 'unstyled'
+    return (
+      <div>
+        <Label label={label}/>
+        <div className={classes.wrapper}>
+          <div className={classNames({
+            [classes.controls]: true,
+            [classes.controlShow]: (isActive || file)
+          })}>
+            {button}
+            <BlockStyleControls
+              editorState={editorState}
+              onToggle={toggleBlockType}
+            />
+            <InlineStyleControls
+              editorState={editorState}
+              onToggle={toggleInlineStyle}
+            />
+            {file && (
+              <ToolTip position={'bottom'} text={'Загрузить файл'}>
+                <Field
+                  name={'file'}
+                  label={<AttachIcon style={{height: '20px'}}/>}
+                  component={FileSimpleUploadField}
+                />
+              </ToolTip>
+            )}
+            <ToolTip position={'bottom'} text={'Загрузить фото'}>
+              <AddImage
+                editorState={this.state.editorState}
+                onChange={this.onChange}
+                modifier={imagePlugin.addImage}
               />
             </ToolTip>
-          )}
-        </div>
-        <div className={classNames(classes.editor, {
-          [classes.editAnim]: active,
-          'RichEditor-hidePlaceholder': hidePlaceholder
-        })} onClick={focus}>
-          <Editor
-            ref={editor}
-            placeholder={placeholder}
-            blockStyleFn={getBlockStyle}
-            customStyleMap={styleMap}
-            editorState={editorState}
-            handleKeyCommand={handleKeyCommand}
-            keyBindingFn={mapKeyToEditorCommand}
-            onChange={props.onChange}
-            onBlur={() => input.onBlur()}
-            onFocus={() => input.onFocus()}
-            spellCheck={true}
-          />
+
+          </div>
+          <div className={classNames(classes.editor, {
+            [classes.editAnim]: isActive,
+            'RichEditor-hidePlaceholder': hidePlaceholder
+          })} onClick={this.focus}>
+            <Editor
+              ref={this.editor}
+              placeholder={placeholder}
+              blockStyleFn={getBlockStyle}
+              customStyleMap={styleMap}
+              editorState={editorState}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={mapKeyToEditorCommand}
+              onChange={this.onChange}
+              onBlur={() => input.onBlur()}
+              onFocus={() => input.onFocus()}
+              spellCheck={true}
+              plugins={[imagePlugin]}
+            />
+          </div>
         </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
 TextEditor.propTypes = {

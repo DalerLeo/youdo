@@ -23,6 +23,8 @@
     "classnames": "^2.2.5",
     "draft-js": "^0.10.5",
     "draft-js-export-html": "^1.2.0",
+    "draft-js-image-plugin": "^2.0.6",
+    "draft-js-plugins-editor": "^2.1.1",
     "intl": "^1.2.5",
     "lodash": "^4.17.4",
     "material-ui": "^0.20.0",

@@ -43,7 +43,7 @@ export const ACCESS = 'main/access'
 export const ACCESS_LIST = `${ACCESS}/`
 export const ACCESS_ITEM = `${ACCESS}/%d/`
 
-export const ARTICLES = 'blog/posts'
+export const ARTICLES = 'main/news'
 export const ARTICLES_CREATE = `/${ARTICLES}/`
 export const ARTICLES_LIST = `/${ARTICLES}/`
 export const ARTICLES_ITEM = `/${ARTICLES}/%d/`

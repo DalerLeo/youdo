@@ -9,10 +9,10 @@ import PlanList from '../containers/Plan'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
 import {CompanyTypeList} from '../containers/Settings/CompanyType'
+import NewsList from '../containers/News'
 import CustomerList from '../containers/Customer'
 import ProjectList from '../containers/Project'
 import {
-  ArticlesList,
   CompaniesList,
   PerformerList
 } from '../containers/Administration'
@@ -72,11 +72,11 @@ export default {
     // Articles
     {
       path: ROUTES.ARTICLES_LIST_URL,
-      component: userIsAdminChain(ArticlesList),
+      component: userIsAdminChain(NewsList),
       childRoutes: [
         {
           path: ROUTES.ARTICLES_ITEM_URL,
-          component: userIsAuth(ArticlesList)
+          component: userIsAuth(NewsList)
         }
       ]
     },
