@@ -67,7 +67,6 @@
     "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "chai": "^3.5.0",
-    "copy-webpack-plugin": "^4.6.0",
     "css-loader": "^0.26.1",
     "eslint": "^4.19.1",
     "eslint-config-standard": "^6.2.1",
@@ -81,12 +80,10 @@
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "style-loader": "^0.13.1",
-    "sw-precache-webpack-plugin": "^0.11.5",
     "watchify": "^3.8.0",
     "webpack": "^4.19.1",
     "webpack-cli": "^3.1.0",
-    "webpack-dev-server": "3.1.8",
-    "webpack-manifest-plugin": "^2.0.4"
+    "webpack-dev-server": "3.1.8"
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
