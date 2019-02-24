@@ -48,6 +48,13 @@ const enhance = compose(
     }
   })
 )
+
+const labelStyle = {
+  color: '#12aaeb',
+  fontWeight: '600',
+  whiteSpace: 'noWrap'
+}
+
 const FileUploadField = ({
   classes, setFileUploadLoading, fileUploadLoading, setFileUploadErrors, withfileDetails,
   fileUploadErrors, input, meta: {error}, label, toolTipText, handleRemoveFile, fileName
@@ -98,13 +105,13 @@ const FileUploadField = ({
         .value()
       if (inputFile) {
         return (
-          <div style={{color: '#12aaeb', fontWeight: '600'}}>
+          <div style={labelStyle}>
             {label} {inputName}.{inputFormat}
           </div>
         )
       }
       return (
-        <div style={{color: '#12aaeb', fontWeight: '600'}}>
+        <div style={labelStyle}>
           {label}
         </div>)
     }
@@ -115,8 +122,8 @@ const FileUploadField = ({
       .last()
       .value()
     return (
-      <div style={{color: '#12aaeb', fontWeight: '600'}}>
-        {label} {inputName}.{docFormat}
+      <div style={labelStyle}>
+        {label}.{docFormat}
       </div>)
   }
 

@@ -1,3 +1,3 @@
-import UsersList from './PerformerList'
+import PerformerList from './PerformerList'
 
-export default UsersList
+export default PerformerList

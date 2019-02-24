@@ -39,9 +39,9 @@ export const applicantDeleteAction = (id) => {
 }
 
 export const applicantUpdateAction = (id, formValues) => {
-  const requestData = serializers.updateSerializer(formValues)
+  const requestData = serializers.createSerializer(formValues)
   const payload = axios()
-    .patch(sprintf(API.APPLICANT_ITEM, id), requestData)
+    .put(sprintf(API.APPLICANT_ITEM, id), requestData)
     .then((response) => {
       return _.get(response, 'data')
     })

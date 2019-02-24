@@ -4,17 +4,14 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router'
 import * as ROUTES from '../../../constants/routes'
 import injectSheet from 'react-jss'
-import {compose, withState} from 'recompose'
+import {compose} from 'recompose'
 import LinearProgress from '../../../components/LinearProgress'
 import ToolTip from '../../../components/Utils/ToolTip'
 import {BORDER_STYLE, COLOR_GREY} from '../../../constants/styleConstants'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
-import AnnounceIcon from 'material-ui/svg-icons/action/announcement'
 import ActivateIcon from 'material-ui/svg-icons/action/check-circle'
-import EditPasswordIcon from 'material-ui/svg-icons/action/settings-backup-restore'
-import BalanceIcon from 'material-ui/svg-icons/editor/attach-money'
 import BlockIcon from 'material-ui/svg-icons/content/block'
 import t from '../../../helpers/translate'
 import EmptyQuery from '../../../components/Utils/EmptyQuery'
@@ -205,16 +202,14 @@ const CustomerDetails = enhance((props) => {
     classes,
     onUpdateOpen,
     onDeleteOpen,
-    updateLoading,
-    handleSubmitUpdateDialog,
+    updateLoading
   } = props
 
   const photo = _.get(data, ['photo', 'file'])
   const fullName = _.get(data, 'fullName')
 
-  const city = _.get(data, 'city')
-  const district = _.get(data, 'district')
-  const balance = _.get(data, 'balance')
+  const phoneNumber = _.get(data, 'phoneNumber')
+  const email = _.get(data, 'email')
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -269,7 +264,7 @@ const CustomerDetails = enhance((props) => {
       <div className={classes.content}>
         <div className={classes.detailTitle}>
           <Link to={{
-            pathname: ROUTES.APPLICANT_LIST_URL,
+            pathname: ROUTES.CUSTOMER_LIST_URL,
             query: filter.getParams()
           }} className={classes.closeDetail}/>
           <span>{fullName}</span>
@@ -290,9 +285,8 @@ const CustomerDetails = enhance((props) => {
                 </div>}
             </div>
             <div className={classes.detailData}>
-              <div className={classes.bodyTitle}>{t('Город')}: <span>{city}</span></div>
-              <div className={classes.bodyTitle}>{t('Район')}: <span>{district}</span></div>
-              <div className={classes.bodyTitle}>{t('Балансе')}: <span>{balance}</span></div>
+              <div className={classes.bodyTitle}>{t('Тел.')}: <span>{phoneNumber}</span></div>
+              <div className={classes.bodyTitle}>{t('Email')}: <span>{email}</span></div>
             </div>
           </div>
           <div className={classes.detailsBlock}>

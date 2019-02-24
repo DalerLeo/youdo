@@ -159,7 +159,7 @@ const NewsGridList = enhance((props) => {
   const articlesList = _.map(_.get(listData, 'data'), (item) => {
     const id = _.get(item, 'id')
     const title = _.get(item, 'title')
-    const createdDate = dateFormat(_.get(item, 'createdAt'))
+    const createdDate = dateFormat(_.get(item, 'createdDate'))
     return (
       <Row key={id} className={classes.listRow}>
         <Col xs={2}>{id}</Col>

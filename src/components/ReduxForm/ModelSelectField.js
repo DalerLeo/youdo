@@ -56,8 +56,14 @@ const enhance = compose(
     props$
       .distinctUntilChanged(null, fp.get('state.open'))
       .filter(fp.get('state.open'))
-      .subscribe(({dispatch, api}) => {
-        dispatch({loading: true})
+      .subscribe(({dispatch, api, input}) => {
+        const initValues = fp.get('value', input)
+        if (initValues) {
+          dispatch({loading: true, selected: {1: [2]}})
+        } else {
+          dispatch({loading: true})
+        }
+
         return handleData(dispatch, api)
       })
 
@@ -68,19 +74,22 @@ const enhance = compose(
       props.dispatch({open})
     },
     onChange: props => (values, id) => {
+      console.warn(props.state.selected)
+
       props.dispatch({
         selected: {
           ...props.state.selected,
           [id]: values
         }})
     },
-    onComplete: ({input, state}) => () => {
+    onComplete: ({input, state, dispatch}) => () => {
       let ids = []
       fp.map(item => {
         ids = fp.union(item, ids)
         return item
       }, state.selected)
       input.onChange(ids)
+      dispatch({open: false})
     }
   }),
   injectSheet({
@@ -148,7 +157,7 @@ const enhance = compose(
     actionButton: {
       fontSize: '13px !important',
       margin: '0 !important'
-    },
+    }
   })
 )
 const ModelSelectField = props => {
@@ -169,7 +178,7 @@ const ModelSelectField = props => {
         onClick={() => onOpen(true)}
         className={classes.notSelected}>
         <Label2 label={selectLabel} required={required}/>
-        </div>
+      </div>
       <Dialog
         modal={true}
         open={open}

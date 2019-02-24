@@ -11,7 +11,6 @@ import {Tab, Tabs} from 'material-ui/Tabs'
 import {BORDER_STYLE, COLOR_GREY} from '../../../constants/styleConstants'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import AnnounceIcon from 'material-ui/svg-icons/action/announcement'
 import EditPasswordIcon from 'material-ui/svg-icons/editor/mode-edit'
 import BalanceIcon from 'material-ui/svg-icons/editor/attach-money'
 import t from '../../../helpers/translate'
@@ -65,7 +64,7 @@ const enhance = compose(
     mainBlock: {
       padding: '20px 0',
       display: 'flex',
-      width: '400px',
+      width: '500px',
       borderRight: '1px solid #efefef',
       paddingRight: '20px'
     },
@@ -126,7 +125,7 @@ const enhance = compose(
       width: 'calc(100% - 230px)'
     },
     detailsBlock: {
-      width: 'calc(100% - 400px)',
+      width: 'calc(100% - 500px)',
       '& .dottedList': {
         padding: '10px 0',
         '&:after': {
@@ -213,7 +212,7 @@ const PerformerDetails = enhance((props) => {
   const photo = _.get(data, ['photo', 'file'])
   const fullName = _.get(data, 'fullName')
 
-  const city = _.get(data, 'city')
+  const city = _.get(data, 'livingPlace.parent.name')
   const numberPassport = _.get(data, 'numberPassport')
   const email = _.get(data, 'email')
   const phoneNumber = _.get(data, 'phoneNumber')
@@ -287,6 +286,7 @@ const PerformerDetails = enhance((props) => {
               <div className={classes.bodyTitle}>{t('Тель')}: <span>{phoneNumber}</span></div>
               <div className={classes.bodyTitle}>{t('Email')}: <span>{email}</span></div>
               <div className={classes.bodyTitle}>{t('Пасспорт №')}: <span>{numberPassport}</span></div>
+              <div className={classes.bodyTitle}>{t('Город')}: <span>{city}</span></div>
               <div className={classes.bodyTitle}>{t('Район')}: <span>{district}</span></div>
               <div className={classes.bodyTitle}>{t('Балансе')}: <span>{balance}</span></div>
             </div>

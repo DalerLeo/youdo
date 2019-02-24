@@ -17,6 +17,8 @@ import {
 } from 'components/ReduxForm'
 import * as API from 'constants/api'
 import t from 'helpers/translate'
+import AttachIcon from 'material-ui/svg-icons/editor/attach-file'
+import FileSimpleUploadField from '../../../components/ReduxForm/Basic/FileSimpleUploadField'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -211,12 +213,6 @@ const PerformerCreateDialog = enhance((props) => {
                   label={'Телефонный номер'}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
-                <Field
-                  name="numberPassport"
-                  component={TextField}
-                  label={'Номер пасспорта'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
               </div>
               <Field
                 name="photo"
@@ -224,11 +220,25 @@ const PerformerCreateDialog = enhance((props) => {
                 label={t('Изображения')}
                 fullWidth={true}/>
             </div>
-
+            <div style={{display: 'flex'}}>
+              <Field
+                name="numberPassport"
+                component={TextField}
+                label={'Номер пасспорта'}
+                className={classes.inputFieldCustom}
+                fullWidth={true}/>
+              <Field
+                name={'pdfPassport'}
+                withfileDetails={true}
+                label={'Загрузит пасспорт '}
+                component={FileSimpleUploadField}
+              />
+            </div>
             <Field
               name="city"
               component={UniversalSearchField}
               listPath={API.REGIONS_LIST}
+              itemPath={API.REGIONS_ITEM}
               label={'Город'}
               params={{type: 'region'}}
               fullWidth={true}/>
@@ -236,6 +246,7 @@ const PerformerCreateDialog = enhance((props) => {
               name="district"
               component={UniversalSearchField}
               listPath={API.REGIONS_LIST}
+              itemPath={API.REGIONS_ITEM}
               params={{type: 'district'}}
               label={'Район'}
               fullWidth={true}/>

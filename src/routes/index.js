@@ -12,10 +12,7 @@ import {CompanyTypeList} from '../containers/Settings/CompanyType'
 import NewsList from '../containers/News'
 import CustomerList from '../containers/Customer'
 import ProjectList from '../containers/Project'
-import {
-  CompaniesList,
-  PerformerList
-} from '../containers/Administration'
+import PerformerList from '../containers/Performer'
 import {
   SkillsList,
   PostList,
@@ -80,19 +77,6 @@ export default {
         }
       ]
     },
-    // Companies
-    {
-      path: ROUTES.COMPANIES_LIST_URL,
-      component: userIsAdminChain(CompaniesList),
-      childRoutes: [
-        {
-          path: ROUTES.COMPANIES_ITEM_URL,
-          component: userIsAuth(CompaniesList)
-        }
-      ]
-    },
-
-    /* SETTINGS */
 
     // Skills
     {
@@ -102,9 +86,6 @@ export default {
         {
           path: ROUTES.SKILLS_ITEM_URL,
           component: userIsAuth(SkillsList)
-        },
-        {
-
         }
       ]
     },

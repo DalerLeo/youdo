@@ -46,30 +46,24 @@ const listHeader = [
     sorting: false,
     name: 'name',
     title: 'ФИО',
+    xs: 4
+  },
+  {
+    sorting: false,
+    name: 'phone',
+    title: t('Номер телефона'),
     xs: 3
   },
   {
     sorting: false,
-    name: 'resume_num',
-    title: t('Город'),
-    xs: 2
-  },
-  {
-    sorting: false,
-    name: 'modified_date',
-    title: t('Район'),
+    name: 'email',
+    title: t('Email'),
     xs: 3
   },
   {
     sorting: false,
     name: 'created_date',
     title: t('Дата создания'),
-    xs: 2
-  },
-  {
-    sorting: false,
-    name: 'balance',
-    title: t('Балансе'),
     xs: 2
   }
 ]
@@ -114,6 +108,7 @@ const enhance = compose(
       }
     },
     link: {
+      cursor: 'pointer',
       position: 'absolute',
       top: '0',
       left: '0',
@@ -193,20 +188,18 @@ const CustomerGridList = enhance((props) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const fullName = _.get(item, 'fullName')
-    const city = _.get(item, 'city')
-    const district = _.get(item, 'district')
-    const createdDate = dateFormat(_.get(item, 'createdAt'))
-    const balance = _.get(item, 'balance')
+    const email = _.get(item, 'email')
+    const phone = _.get(item, 'phoneNumber')
+    const createdDate = dateFormat(_.get(item, 'createdDate'))
     return (
       <Row key={id} className={classes.listRow}>
         <div
           onClick={() => replaceUrl(filter, sprintf(ROUTES.CUSTOMER_ITEM_PATH, id), {})}
           className={classes.link}/>
-        <Col xs={3}>{fullName}</Col>
-        <Col xs={2}>{city}</Col>
-        <Col xs={3}>{district}</Col>
+        <Col xs={4}>{fullName}</Col>
+        <Col xs={3}>{phone}</Col>
+        <Col xs={3}>{email}</Col>
         <Col xs={2}>{createdDate}</Col>
-        <Col xs={2}>{balance}</Col>
       </Row>
     )
   })

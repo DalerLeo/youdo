@@ -6,26 +6,25 @@ import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
-import * as ROUTES from '../../../constants/routes'
-import GridList from '../../../components/GridList'
-import Container from '../../../components/Container'
+import * as ROUTES from 'constants/routes'
+import GridList from 'components/GridList'
+import Container from 'components/Container'
 import ApplicantCreateDialog from './PerformerCreateDialog'
 import PerformerDetails from './PerformerDetails'
-import ConfirmDialog from '../../../components/ConfirmDialog'
-import ToolTip from '../../../components/Utils/ToolTip'
-import SubMenu from '../../../components/SubMenu'
+import ConfirmDialog from 'components/ConfirmDialog'
+import ToolTip from 'components/Utils/ToolTip'
+import SubMenu from 'components/SubMenu'
 import sprintf from 'sprintf'
-import t from '../../../helpers/translate'
-import defaultPropTypes from '../../../constants/propTypes'
-import dateFormat from '../../../helpers/dateFormat'
-import {replaceUrl} from '../../../helpers/changeUrl'
+import t from 'helpers/translate'
+import defaultPropTypes from 'constants/propTypes'
+import dateFormat from 'helpers/dateFormat'
+import {replaceUrl} from 'helpers/changeUrl'
 // .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import PerformerFilterForm from './PerformerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import CustomerDetails from '../../Customer/components/CustomerDetails'
-import numberFormat from '../../../helpers/numberFormat'
+import numberFormat from 'helpers/numberFormat'
 
 const data = [
   {
@@ -116,6 +115,7 @@ const enhance = compose(
       }
     },
     link: {
+      cursor: 'pointer',
       position: 'absolute',
       top: '0',
       left: '0',

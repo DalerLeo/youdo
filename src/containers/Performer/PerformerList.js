@@ -30,12 +30,14 @@ import {
 import {openErrorAction} from 'actions/error'
 
 const updateKeys = {
-  livingPlace: 'city',
+  city: 'livingPlace.parent.id',
   email: 'email',
+  speciality: 'speciality',
   fullName: 'fullName',
   image: 'image',
-  district: 'district',
-  phoneNumber: 'phoneNumber'
+  district: 'livingPlace.id',
+  phoneNumber: 'phoneNumber',
+  numberPassport: 'numberPassport'
 }
 const createKeys = {
 }
@@ -96,7 +98,6 @@ const enhance = compose(
 
 const PerformerList = enhance((props) => {
   const {
-    location,
     list,
     listLoading,
     detail,

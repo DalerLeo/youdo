@@ -8,6 +8,7 @@ export const createSerializer = (data) => {
   const phoneNumber = _.get(data, ['phoneNumber'])
   const speciality = _.get(data, ['speciality'])
   const numberPassport = _.get(data, ['numberPassport'])
+  const pdfPassport = _.get(data, ['pdfPassport', 'id'])
   const livingPlace = _.get(data, ['district'])
   const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
 
@@ -18,7 +19,8 @@ export const createSerializer = (data) => {
     speciality,
     numberPassport,
     livingPlace,
-    image
+    image,
+    pdfPassport
   })
 }
 
