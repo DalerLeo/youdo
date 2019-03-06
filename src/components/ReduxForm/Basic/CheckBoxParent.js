@@ -50,14 +50,13 @@ const enhance = compose(
     },
     onParentChange: props => (ev) => {
       const children = _.get(props, 'item.children')
+      const parentId = _.get(props, 'item.id')
       const isTrue = _.get(ev, 'target.checked')
 
       props.setParent(isTrue)
-
-
       if (isTrue) {
         const childIds = _.map(children, child => child.id)
-        props.onChange(childIds)
+        props.onChange(_.union(childIds, [parentId]))
         props.setChild(childIds)
         props.setInter(false)
       } else {

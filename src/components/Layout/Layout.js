@@ -103,7 +103,7 @@ const Layout = enhance((props) => {
     notificationsLoading,
     title
   } = props
-  const mainTitle = 'MyJob Administration'
+  const mainTitle = 'Tasker Administration'
   return (
     <DocumentTitle title={title || mainTitle}>
       <div className={classes.wrapper}>

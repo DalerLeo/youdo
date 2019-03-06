@@ -6,20 +6,22 @@ export const createSerializer = (data) => {
   const email = _.get(data, ['email'])
   const fullName = _.get(data, ['fullName'])
   const phoneNumber = _.get(data, ['phoneNumber'])
+  const password = _.get(data, ['password'])
   const speciality = _.get(data, ['speciality'])
   const numberPassport = _.get(data, ['numberPassport'])
   const pdfPassport = _.get(data, ['pdfPassport', 'id'])
   const livingPlace = _.get(data, ['district'])
-  const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
+  const photo = _.isObject(_.get(data, 'photo')) ? _.get(data, ['photo', 'id']) : _.get(data, 'photo')
 
   return toSnakeCase({
     fullName,
     phoneNumber,
     email,
+    password,
     speciality,
     numberPassport,
     livingPlace,
-    image,
+    photo,
     pdfPassport
   })
 }

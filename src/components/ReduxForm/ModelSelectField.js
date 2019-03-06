@@ -88,6 +88,7 @@ const enhance = compose(
         ids = fp.union(item, ids)
         return item
       }, state.selected)
+//      console.warn(ids)
       input.onChange(ids)
       dispatch({open: false})
     }
@@ -201,7 +202,10 @@ const ModelSelectField = props => {
                 <CheckBoxParent
                   key={item.id}
                   item={item}
-                  onChange={(value) => onChange(value, item.id)}
+                  onChange={(value) => {
+                    console.warn(value)
+                    onChange(value, item.id)
+                  }}
                 />
               ))}
             </div>

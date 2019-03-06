@@ -34,7 +34,7 @@ const updateKeys = {
   email: 'email',
   speciality: 'speciality',
   fullName: 'fullName',
-  image: 'image',
+  photo: 'photo.file',
   district: 'livingPlace.id',
   phoneNumber: 'phoneNumber',
   numberPassport: 'numberPassport'

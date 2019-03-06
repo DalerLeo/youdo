@@ -22,7 +22,7 @@ import {
 import confirmWrapper from '../Wrappers/ConfirmWrapper'
 
 const updateKeys = {
-  photo: 'photo',
+  photo: 'image',
   title: 'title',
   text: 'text',
   intro: 'intro'

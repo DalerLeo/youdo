@@ -262,7 +262,7 @@ const PerformerGridList = enhance((props) => {
       <ApplicantCreateDialog
         onOpenMailDialog={confirmDialog.handleOpenConfirmDialog}
         detailData={_.get(detailData, 'data')}
-        initialValues={updateDialog.initialValues}
+        initialValues={{...updateDialog.initialValues, phoneNumber: '+998'}}
         open={createDialog.open}
         loading={createDialog.loading}
         onClose={createDialog.onClose}
