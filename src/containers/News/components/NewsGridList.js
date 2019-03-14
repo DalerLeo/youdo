@@ -169,9 +169,6 @@ const NewsGridList = enhance((props) => {
         }}/>
         <Col xs={6}>{title}</Col>
         <Col xs={3}>{createdDate}</Col>
-        <Col xs={1} style={{textAlign: 'right'}}>
-          <div className={classes.iconBtn}>{actionButtons(id)}</div>
-        </Col>
       </Row>
     )
   })
