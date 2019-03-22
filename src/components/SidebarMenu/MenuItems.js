@@ -22,7 +22,7 @@ export const MenuItems = [
     query: defaultPageSizeQuery,
     childs: [
       {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-      {name: t('Заказчики'), url: ROUTES.CUSTOMER_LIST_URL, query: defaultPageSizeQuery, permission: ''}
+      {name: t('Заказ'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: '', icon: <AccountIcon/>}
     ]
   },
 

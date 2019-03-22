@@ -9,7 +9,7 @@ import validate from '../../helpers/validate'
 import {CheckBox, TextField} from '../ReduxForm'
 import Dot from '../Images/dot.png'
 import t from '../../helpers/translate'
-
+import FlatBtn from './FlatBtn'
 const enhance = compose(
   injectSheet({
     loader: {
@@ -95,19 +95,7 @@ const SignInForm = enhance((props) => {
           <Field className={classes.loginForm} name="password" component={TextField} label={t('Пароль')} type="password" fullWidth={true} />
           <div style={{margin: '20px 0'}}><Field name="rememberMe" component={CheckBox} label={t('Запомнить меня')} className={classes.rememberMe} /></div>
 
-          <FlatButton
-            type="submit"
-            backgroundColor={'#5d6474'}
-            hoverColor={'#5d6474'}
-            rippleColor={'#fff'}
-            label={t('Войти')}
-            labelStyle={{
-              color: '#fff',
-              verticalAlign: 'baseline'
-            }}
-            primary={true}
-            fullWidth={true}
-          />
+          <FlatBtn/>
         </div>
       </form>
     </Paper>

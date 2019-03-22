@@ -205,3 +205,16 @@ export const CUSTOMER_LIST = `/${CUSTOMER}/`
 export const CUSTOMER_ITEM = `/${CUSTOMER}/%d/`
 export const CUSTOMER_DELETE = `/${CUSTOMER}/%d/`
 
+export const ORDER = 'main/order'
+export const ORDER_CREATE = `/${ORDER}/`
+export const ORDER_LIST = `/${ORDER}/`
+export const ORDER_ITEM = `/${ORDER}/%d/`
+export const ORDER_DELETE = `/${ORDER}/%d/`
+
+
+export const SERVICE = 'main/service'
+export const SERVICE_CREATE = `/${SERVICE}/`
+export const SERVICE_LIST = `/${SERVICE}/`
+export const SERVICE_ITEM = `/${SERVICE}/%d/`
+export const SERVICE_DELETE = `/${SERVICE}/%d/`
+

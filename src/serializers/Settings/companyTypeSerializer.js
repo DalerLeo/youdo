@@ -3,13 +3,11 @@ import {orderingSnakeCase} from '../../helpers/serializer'
 
 export const createSerializer = (data) => {
   const name = _.get(data, ['name'])
-  const division = _.get(data, ['division', 'value'])
-  const parent = _.get(data, ['parent', 'value'])
+  const price = _.get(data, ['price'])
 
   return {
     name,
-    division,
-    parent
+    price
   }
 }
 

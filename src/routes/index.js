@@ -11,6 +11,7 @@ import {PermissionList} from '../containers/Permission'
 import {CompanyTypeList} from '../containers/Settings/CompanyType'
 import NewsList from '../containers/News'
 import CustomerList from '../containers/Customer'
+import OrderList from '../containers/Order'
 import ProjectList from '../containers/Project'
 import PerformerList from '../containers/Performer'
 import {
@@ -185,6 +186,18 @@ export default {
         {
           path: ROUTES.CUSTOMER_ITEM_URL,
           component: userIsAuth(CustomerList)
+        }
+      ]
+    },
+
+     // ORDER
+    {
+      path: ROUTES.ORDER_LIST_URL,
+      component: userIsAdminChain(OrderList),
+      childRoutes: [
+        {
+          path: ROUTES.ORDER_ITEM_URL,
+          component: userIsAuth(OrderList)
         }
       ]
     },

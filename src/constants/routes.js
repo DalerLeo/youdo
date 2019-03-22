@@ -98,3 +98,8 @@ export const CUSTOMER_LIST_URL = `/${CUSTOMER}`
 export const CUSTOMER_ITEM_URL = `/${CUSTOMER}/:id`
 export const CUSTOMER_ITEM_PATH = `/${CUSTOMER}/%d`
 
+export const ORDER = 'order'
+export const ORDER_LIST_URL = `/${ORDER}`
+export const ORDER_ITEM_URL = `/${ORDER}/:id`
+export const ORDER_ITEM_PATH = `/${ORDER}/%d`
+

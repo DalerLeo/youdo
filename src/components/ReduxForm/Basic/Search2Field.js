@@ -15,7 +15,8 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
       return _.map(data, (item) => {
         return {
           text: getText(item),
-          value: getValue(item)
+          value: getValue(item),
+          ...item
         }
       })
     })
@@ -176,7 +177,8 @@ const SearchField = enhance((props) => {
     disabled,
     meta,
     withoutErrorText,
-    placeHolder
+    placeHolder,
+    onChange
   } = props
   const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
   const inputValue = _.get(input, ['value'])
@@ -193,7 +195,10 @@ const SearchField = enhance((props) => {
         options={state.dataSource}
         value={_.find(state.dataSource, {value: input.value})}
         onInputChange={text => dispatch({text: text})}
-        onChange={value => input.onChange(value ? value.value : value)}
+        onChange={value => {
+          onChange && onChange(value)
+          return input.onChange(value ? value.value : value)
+        }}
         onBlur={() => input.onBlur()}
         onFocus={input.onFocus}
         placeholder={placeHolder || ''}

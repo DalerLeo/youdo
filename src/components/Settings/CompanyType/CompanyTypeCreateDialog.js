@@ -5,15 +5,13 @@ import {compose} from 'recompose'
 import injectSheet from 'react-jss'
 import Dialog from 'material-ui/Dialog'
 import {Field, reduxForm} from 'redux-form'
-import * as API from 'constants/api'
 import FlatButton from 'material-ui/FlatButton'
 import Loader from '../../Loader'
-import {TextField, UniversalSearchField} from '../../ReduxForm'
+import {TextField} from '../../ReduxForm'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import IconButton from 'material-ui/IconButton'
 import MainStyles from '../../Styles/MainStyles'
 import t from '../../../helpers/translate'
-import formValidate from '../../../helpers/formValidate'
 
 export const COMPANY_TYPE_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -39,12 +37,8 @@ const enhance = compose(
 )
 
 const CompanyTypeCreateDialog = enhance((props) => {
-  const {open, loading, dispatch, handleSubmit, onClose, classes, isUpdate} = props
-  const formNames = ['name', 'parent', 'division']
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const {open, loading, handleSubmit, onClose, classes, isUpdate} = props
+  const onSubmit = handleSubmit(() => props.onSubmit())
 
   return (
     <Dialog
@@ -69,19 +63,17 @@ const CompanyTypeCreateDialog = enhance((props) => {
           <div className={classes.inContent} style={{minHeight: '100px', paddingTop: '15px'}}>
             <div className={classes.field}>
               <Field
-                name="parent"
-                component={UniversalSearchField}
-                className={classes.inputFieldCustom}
-                params={{parent: 0}}
-                listPath={API.COMPANIES_LIST}
-                label={t('Родительская категория')}
-                fullWidth={true}
-              />
-              <Field
                 name="name"
                 component={TextField}
                 className={classes.inputFieldCustom}
-                label={t('Наименование категории')}
+                label={t('Наименование услуги')}
+                fullWidth={true}
+              />
+              <Field
+                name="price"
+                component={TextField}
+                className={classes.inputFieldCustom}
+                label={t('Цена')}
                 fullWidth={true}
               />
             </div>

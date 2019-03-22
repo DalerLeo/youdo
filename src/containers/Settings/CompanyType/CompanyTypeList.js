@@ -23,21 +23,20 @@ import {
   companyTypeListFetchAction,
   companyTypeDeleteAction,
   companyTypeItemFetchAction
-} from '../../../actions/Settings/companyType'
+} from '../../../actions/Settings/service'
 
 const UPDATE_KEYS = {
   name: 'name',
-  division: 'division.id',
-  parent: 'parent'
+  price: 'price',
 }
 
 const enhance = compose(
   listWrapper({
-    storeName: 'companyType',
+    storeName: 'service',
     listFetchAction: companyTypeListFetchAction
   }),
   detailWrapper({
-    storeName: 'companyType',
+    storeName: 'service',
     paramName: 'companyTypeId',
     itemFetchAction: companyTypeItemFetchAction
   }),
@@ -89,7 +88,7 @@ const CompanyTypeList = enhance((props) => {
   }
 
   const listData = {
-    data: list,
+    data: _.get(list, 'results'),
     listLoading
   }
 

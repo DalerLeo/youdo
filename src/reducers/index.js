@@ -114,6 +114,12 @@ const rootReducer = combineReducers({
     update: createThunkReducer(actionTypes.CUSTOMER_UPDATE),
     item: createThunkReducer(actionTypes.CUSTOMER_ITEM)
   }),
+  order: combineReducers({
+    create: createThunkReducer(actionTypes.ORDER_CREATE),
+    list: createThunkReducer(actionTypes.ORDER_LIST),
+    update: createThunkReducer(actionTypes.ORDER_UPDATE),
+    item: createThunkReducer(actionTypes.ORDER_ITEM)
+  }),
   plan: combineReducers({
     create: createThunkReducer(actionTypes.PLAN_CREATE),
     list: createThunkReducer(actionTypes.PLAN_LIST),
@@ -131,6 +137,12 @@ const rootReducer = combineReducers({
     list: createThunkReducer(actionTypes.PROJECT_LIST),
     update: createThunkReducer(actionTypes.PROJECT_UPDATE),
     item: createThunkReducer(actionTypes.PROJECT_ITEM)
+  }),
+  service: combineReducers({
+    create: createThunkReducer(actionTypes.SERVICE_CREATE),
+    list: createThunkReducer(actionTypes.SERVICE_LIST),
+    update: createThunkReducer(actionTypes.SERVICE_UPDATE),
+    item: createThunkReducer(actionTypes.SERVICE_ITEM)
   }),
   task: combineReducers({
     create: createThunkReducer(actionTypes.TASK_CREATE),

@@ -16,31 +16,25 @@ import GridList from '../../GridList'
 import Container from '../../Container'
 import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
 import ConfirmDialog from '../../ConfirmDialog'
-import SettingSideMenu from '../../Settings/SideMenu'
 import SubMenu from '../../SubMenu'
 import defaultPropTypes from '../../../constants/propTypes'
-import ToolTip from '../../Utils/ToolTip'
 import Dot from '../../Images/dot.png'
 import t from '../../../helpers/translate'
+import numberFormat from '../../../helpers/numberFormat'
+import ToolTip from 'components/Utils/ToolTip'
 
 const listHeader = [
   {
     sorting: true,
     name: 'name',
-    xs: 5,
-    title: t('Категории')
+    xs: 7,
+    title: t('Наименование')
   },
   {
     sorting: true,
     name: 'division',
-    xs: 3,
-    title: t('Организация')
-  },
-  {
-    sorting: true,
-    xs: 3,
-    name: 'created_date',
-    title: t('Дата создания')
+    xs: 4,
+    title: t('Цена')
   },
   {
     sorting: true,
@@ -137,35 +131,25 @@ const enhance = compose(
         justifyContent: 'center'
       }
     },
-    rowWithParent: {
-      flexWrap: 'wrap',
-      margin: '0 -30px !important',
-      width: 'auto !important',
-      padding: '0 30px',
-      '& > div': {
-        height: '50px',
-        display: 'flex',
-        alignItems: 'center',
-        '&:hover button': {
-          opacity: '1'
-        }
-      },
-      '& > div:first-child': {
-        fontWeight: '600'
-      }
-    },
-    rowWithoutParent: {
-      extend: 'rowWithParent',
-      flexWrap: 'none',
-      '&:hover > div:last-child > div': {
-        opacity: '1'
-      }
-    },
+
     iconBtn: {
       display: 'flex',
       opacity: '0',
       justifyContent: 'flex-end',
       transition: 'all 200ms ease-out'
+    },
+    listRow: {
+      margin: '0 -30px !important',
+      width: 'auto !important',
+      padding: '0 30px',
+      '&:hover > div:last-child > div ': {
+        opacity: '1'
+      },
+      '& > div': {
+        overflow: 'hidden',
+        wordBreak: 'normal',
+        textOverflow: 'ellipsis'
+      }
     }
   })
 )
@@ -207,93 +191,16 @@ const CompanyTypeGridList = enhance((props) => {
     </div>
   )
 
-  const companyTypeDetail = (
-    <span>a</span>
-  )
-  const companyTypeList = _.map(_.get(listData, 'data'), (item) => {
-    const id = _.get(item, 'id')
-    const name = _.get(item, 'name')
-    const division = _.get(item, ['division', 'name'])
-    const createdDate = dateFormat(_.get(item, 'createdDate'))
-    const hasChild = !_.isEmpty(_.get(item, 'children'))
-    if (hasChild) {
-      return (
-        <Row key={id} className={classes.rowWithParent}>
-          <div className={classes.parentCategory}>
-            <Col xs={5}>{name}</Col>
-            <Col xs={3}>{division}</Col>
-            <Col xs={3}>{createdDate}</Col>
-            <Col xs={1} className={classes.right}>
-              <div className={classes.iconBtn}>
-                <ToolTip position="bottom" text={t('Изменить')}>
-                  <IconButton
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    disableTouchRipple={true}
-                    touch={true}
-                    onClick={() => { updateDialog.onOpen(id) }}>
-                    <Edit />
-                  </IconButton>
-                </ToolTip>
-                <ToolTip position="bottom" text={t('Удалить')}>
-                  <IconButton
-                    disableTouchRipple={true}
-                    iconStyle={iconStyle.icon}
-                    style={iconStyle.button}
-                    onClick={() => { confirmDialog.onOpen(id) }}
-                    touch={true}>
-                    <DeleteIcon />
-                  </IconButton>
-                </ToolTip>
-              </div>
-            </Col>
-          </div>
-          {_.map(_.get(item, 'children'), (child) => {
-            const childId = _.get(child, 'id')
-            const childName = _.get(child, 'name')
-            const childDivision = _.get(child, ['division', 'name']) || t('Не указано')
-            const childCreatedDate = dateFormat(_.get(child, 'createdDate'))
-            return (
-              <div key={childId} className={classes.subCategory}>
-                <Col xs={5}>{childName}</Col>
-                <Col xs={3}>{childDivision}</Col>
-                <Col xs={3}>{childCreatedDate}</Col>
-                <Col xs={1} className={classes.right}>
-                  <div className={classes.iconBtn}>
-                    <ToolTip position="bottom" text={t('Изменить')}>
-                      <IconButton
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        disableTouchRipple={true}
-                        touch={true}
-                        onClick={() => { updateDialog.onOpen(childId) }}>
-                        <Edit />
-                      </IconButton>
-                    </ToolTip>
-                    <ToolTip position="bottom" text={t('Удалить')}>
-                      <IconButton
-                        disableTouchRipple={true}
-                        iconStyle={iconStyle.icon}
-                        style={iconStyle.button}
-                        onClick={() => { confirmDialog.onOpen(childId) }}
-                        touch={true}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </ToolTip>
-                  </div>
-                </Col>
-              </div>
-            )
-          })}
-        </Row>
-      )
-    }
+  const companyTypeList = _.map(listData.data, (item, index) => {
+    const id = _.toNumber(_.get(item, 'id'))
+    //    Const status = fp.flow(findItem, fp.get('name'))
+    const fullName = _.get(item, 'name')
+    const price = numberFormat(_.get(item, 'price'))
     return (
-      <Row key={id} className={classes.rowWithoutParent}>
-        <Col xs={5}>{name}</Col>
-        <Col xs={3}>{division}</Col>
-        <Col xs={3}>{createdDate}</Col>
-        <Col xs={1} className={classes.right}>
+      <Row key={id} className={classes.listRow}>
+        <Col xs={7}>{fullName}</Col>
+        <Col xs={4}>{price}</Col>
+        <Col xs={1}>
           <div className={classes.iconBtn}>
             <ToolTip position="bottom" text={t('Изменить')}>
               <IconButton
@@ -321,6 +228,7 @@ const CompanyTypeGridList = enhance((props) => {
     )
   })
 
+
   const list = {
     header: listHeader,
     list: companyTypeList,
@@ -341,10 +249,11 @@ const CompanyTypeGridList = enhance((props) => {
   return (
     <Container>
       <SubMenu url={ROUTES.COMPANY_TYPE_LIST_URL}/>
+
       <GridList
         filter={filter}
         list={list}
-        detail={companyTypeDetail}
+        detail={(<span>2</span>)}
         actionsDialog={actions}
         addButton={addButton}
       />
@@ -366,14 +275,14 @@ const CompanyTypeGridList = enhance((props) => {
         initialValues={updateDialog.initialValues}
       />
 
-      {detailData.data && <ConfirmDialog
+      <ConfirmDialog
         type="delete"
         message={_.get(detailData, ['data', 'name'])}
         loading={confirmDialog.loading}
         onClose={confirmDialog.onClose}
         onSubmit={confirmDialog.onSubmit}
         open={confirmDialog.open}
-      />}
+      />
     </Container>
   )
 })

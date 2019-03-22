@@ -7,6 +7,7 @@ import toCamelCase from '../../helpers/toCamelCase'
 import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const getItem = (id, path) => {
+  console.warn(id, path)
   return axios().get(sprintf(path, id))
     .then(({data}) => Promise.resolve(toCamelCase(data)))
 }

@@ -8,7 +8,7 @@ import * as serializers from '../../serializers/Settings/companyTypeSerializer'
 export const companyTypeCreateAction = (formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
-    .post(API.COMPANY_TYPE_CREATE, requestData)
+    .post(API.SERVICE_CREATE, requestData)
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -17,14 +17,14 @@ export const companyTypeCreateAction = (formValues) => {
     })
 
   return {
-    type: actionTypes.COMPANY_TYPE_CREATE,
+    type: actionTypes.SERVICE_CREATE,
     payload
   }
 }
 
 export const companyTypeDeleteAction = (id) => {
   const payload = axios()
-    .delete(sprintf(API.COMPANY_TYPE_DELETE, id))
+    .delete(sprintf(API.SERVICE_DELETE, id))
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -32,7 +32,7 @@ export const companyTypeDeleteAction = (id) => {
       return Promise.reject(_.get(error, ['response', 'data']))
     })
   return {
-    type: actionTypes.COMPANY_TYPE_DELETE,
+    type: actionTypes.SERVICE_DELETE,
     payload
   }
 }
@@ -40,7 +40,7 @@ export const companyTypeDeleteAction = (id) => {
 export const companyTypeUpdateAction = (id, formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
-    .put(sprintf(API.COMPANY_TYPE_ITEM, id), requestData)
+    .put(sprintf(API.SERVICE_ITEM, id), requestData)
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -49,7 +49,7 @@ export const companyTypeUpdateAction = (id, formValues) => {
     })
 
   return {
-    type: actionTypes.COMPANY_TYPE_UPDATE,
+    type: actionTypes.SERVICE_UPDATE,
     payload
   }
 }
@@ -57,7 +57,7 @@ export const companyTypeUpdateAction = (id, formValues) => {
 export const companyTypeListFetchAction = (filter) => {
   const params = serializers.listFilterSerializer(filter.getParams())
   const payload = axios()
-    .get(API.COMPANY_TYPE_H_LIST, {params})
+    .get(API.SERVICE_LIST, {params})
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -66,14 +66,14 @@ export const companyTypeListFetchAction = (filter) => {
     })
 
   return {
-    type: actionTypes.COMPANY_TYPE_H_LIST,
+    type: actionTypes.SERVICE_LIST,
     payload
   }
 }
 
 export const companyTypeItemFetchAction = (id) => {
   const payload = axios()
-    .get(sprintf(API.COMPANY_TYPE_ITEM, id))
+    .get(sprintf(API.SERVICE_ITEM, id))
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -82,7 +82,7 @@ export const companyTypeItemFetchAction = (id) => {
     })
 
   return {
-    type: actionTypes.COMPANY_TYPE_ITEM,
+    type: actionTypes.SERVICE_ITEM,
     payload
   }
 }
