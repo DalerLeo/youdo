@@ -22,6 +22,7 @@ export const MenuItems = [
     query: defaultPageSizeQuery,
     childs: [
       {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+      {name: t('Обратный звонок'), url: ROUTES.FEEDBACK_LIST_URL, query: defaultPageSizeQuery, permission: ''},
       {name: t('Заказ'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: '', icon: <AccountIcon/>}
     ]
   },
@@ -32,7 +33,8 @@ export const MenuItems = [
     url: ROUTES.COMPANY_TYPE_LIST_URL,
     query: defaultPageSizeQuery,
     childs: [
-      {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''}
+      {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''},
+      {name: t('Brand'), url: ROUTES.BRAND_LIST_URL, permission: ''}
     ]
   },
 

@@ -253,7 +253,7 @@ const OrderGridList = enhance((props) => {
       {createDialog.open &&
       <OrderCreateDialog
         detailData={_.get(detailData, 'data')}
-        initialValues={updateDialog.initialValues}
+        initialValues={createDialog.initialValues}
         open={createDialog.open}
         loading={createDialog.loading}
         onClose={createDialog.onClose}

@@ -270,7 +270,7 @@ const OrderDetails = enhance((props) => {
       <div className={classes.content}>
         <div className={classes.detailTitle}>
           <Link to={{
-            pathname: ROUTES.CUSTOMER_LIST_URL,
+            pathname: ROUTES.ORDER_LIST_URL,
             query: filter.getParams()
           }} className={classes.closeDetail}/>
           <span>{fullName}</span>

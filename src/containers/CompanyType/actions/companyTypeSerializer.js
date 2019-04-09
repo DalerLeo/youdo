@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import {orderingSnakeCase} from '../../helpers/serializer'
+import {orderingSnakeCase} from '../../../helpers/serializer'
 
 export const createSerializer = (data) => {
   const name = _.get(data, ['name'])

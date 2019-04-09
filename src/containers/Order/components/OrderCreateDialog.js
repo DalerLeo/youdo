@@ -141,6 +141,20 @@ const enhance = compose(
         width: '65%'
       }
 
+    },
+    flex: {
+      display: 'flex',
+      width: '100%',
+      '& > div': {
+        '&:first-child': {
+          width: '250px',
+          paddingRight: '20px',
+          borderRight: '#efefef solid 1px',
+        },
+        '&:last-child': {
+          width: 'calc(100% - 250px)'
+        }
+      }
     }
   }),
   reduxForm({
@@ -172,10 +186,10 @@ const OrderCreateDialog = enhance((props) => {
       open={open}
       onRequestClose={onClose}
       className={classes.dialogAddUser}
-      contentStyle={loading ? {width: '300px'} : {width: '500px'}}
+      contentStyle={loading ? {width: '700px'} : {width: '1000px', maxWidth: '1000px'}}
       bodyClassName={classes.popUp}>
       <div className={classes.titleContent}>
-        <span>{isUpdate ? 'Изменить пользователя' : 'Добавить пользователя'}</span>
+        <span>{isUpdate ? 'Изменить заказ' : 'Добавить заказ'}</span>
         <IconButton onClick={onClose}>
           <CloseIcon color="#666666"/>
         </IconButton>
@@ -187,47 +201,49 @@ const OrderCreateDialog = enhance((props) => {
           </div>
           <div className={classes.inContent}>
             <div className={classes.upperSection}>
-              <div>
-                <Field
-                  name="clientName"
-                  component={TextField}
-                  label={'ФИО'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="address"
-                  label={'Address'}
-                  component={TextField}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="phoneNumber"
-                  normalize={normalizePhone}
-                  component={TextField}
-                  label={'Телефонный номер'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="district"
-                  component={UniversalSearchField}
-                  listPath={API.REGIONS_LIST}
-                  itemPath={API.REGIONS_ITEM}
-                  params={{'type': 'district'}}
-                  label={'District'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="master"
-                  component={UniversalSearchField}
-                  listPath={API.APPLICANT_LIST}
-                  itemPath={API.APPLICANT_ITEM}
-                  textName={'fullName'}
-                  label={'Master'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
+              <div className={classes.flex}>
                 <div>
-                  <Fields component={OrderList} names={['item', 'service', 'services'] }/>
+                  <Field
+                    name="clientName"
+                    component={UniversalSearchField}
+                    listPath={API.CUSTOMER_LIST}
+                    itemPath={API.CUSTOMER_ITEM}
+                    textName={'fullName'}
+                    label={'ФИО'}
+                    fullWidth={true}/>
+                  <Field
+                    name="phoneNumber"
+                    normalize={normalizePhone}
+                    component={TextField}
+                    label={'Телефонный номер'}
+                    className={classes.inputFieldCustom}
+                    fullWidth={true}/>
+                  <Field
+                    name="district"
+                    component={UniversalSearchField}
+                    listPath={API.REGIONS_LIST}
+                    itemPath={API.REGIONS_ITEM}
+                    params={{'type': 'district'}}
+                    label={'District'}
+                    className={classes.inputFieldCustom}
+                    fullWidth={true}/>
+                  <Field
+                    name="address"
+                    label={'Address'}
+                    component={TextField}
+                    className={classes.inputFieldCustom}
+                    fullWidth={true}/>
+                  <Field
+                    name="master"
+                    component={UniversalSearchField}
+                    listPath={API.APPLICANT_LIST}
+                    itemPath={API.APPLICANT_ITEM}
+                    textName={'fullName'}
+                    label={'Master'}
+                    className={classes.inputFieldCustom}
+                    fullWidth={true}/>
                 </div>
+                  <Fields component={OrderList} names={['item', 'service', 'brand', 'amount', 'services'] }/>
               </div>
             </div>
           </div>

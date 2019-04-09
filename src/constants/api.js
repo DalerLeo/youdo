@@ -199,7 +199,7 @@ export const COMMENT_UPDATE = `/${COMMENT}/%d`
 export const COMMENT_CREATE = `/${COMMENT}/`
 export const COMMENT_DELETE = `/${COMMENT}/%d`
 
-export const CUSTOMER = 'main/client'
+export const CUSTOMER = 'main/customer'
 export const CUSTOMER_CREATE = `/${CUSTOMER}/`
 export const CUSTOMER_LIST = `/${CUSTOMER}/`
 export const CUSTOMER_ITEM = `/${CUSTOMER}/%d/`
@@ -217,4 +217,17 @@ export const SERVICE_CREATE = `/${SERVICE}/`
 export const SERVICE_LIST = `/${SERVICE}/`
 export const SERVICE_ITEM = `/${SERVICE}/%d/`
 export const SERVICE_DELETE = `/${SERVICE}/%d/`
+
+export const BRAND = 'main/brand'
+export const BRAND_CREATE = `/${BRAND}/`
+export const BRAND_LIST = `/${BRAND}/`
+export const BRAND_ITEM = `/${BRAND}/%d/`
+export const BRAND_DELETE = `/${BRAND}/%d/`
+
+
+export const FEEDBACK = 'main/feedback'
+export const FEEDBACK_CREATE = `/${FEEDBACK}/`
+export const FEEDBACK_LIST = `/${FEEDBACK}/`
+export const FEEDBACK_ITEM = `/${FEEDBACK}/%d/`
+export const FEEDBACK_DELETE = `/${FEEDBACK}/%d/`
 

@@ -1,29 +1,29 @@
 import React from 'react'
 import _ from 'lodash'
-import Layout from '../../../components/Layout'
+import Layout from '../../components/Layout'
 import {compose} from 'recompose'
-import * as ROUTER from '../../../constants/routes'
+import * as ROUTER from '../../constants/routes'
 import {
   listWrapper,
   detailWrapper,
   createWrapper,
   confirmWrapper,
   updateWrapper
-} from '../../Wrappers'
+} from '../Wrappers'
 
 import {
   COMPANY_TYPE_CREATE_DIALOG_OPEN,
   COMPANY_TYPE_UPDATE_DIALOG_OPEN,
   COMPANY_TYPE_DELETE_DIALOG_OPEN,
-  CompanyTypeGridList
-} from '../../../components/Settings/CompanyType'
+  FeedbackGridList
+} from './component'
 import {
   companyTypeCreateAction,
   companyTypeUpdateAction,
-  companyTypeListFetchAction,
+  feedbackListFetchAction,
   companyTypeDeleteAction,
   companyTypeItemFetchAction
-} from '../../../actions/Settings/service'
+} from './actions/service'
 
 const UPDATE_KEYS = {
   name: 'name',
@@ -32,8 +32,8 @@ const UPDATE_KEYS = {
 
 const enhance = compose(
   listWrapper({
-    storeName: 'service',
-    listFetchAction: companyTypeListFetchAction
+    storeName: 'feedback',
+    listFetchAction: feedbackListFetchAction
   }),
   detailWrapper({
     storeName: 'service',
@@ -66,7 +66,7 @@ const enhance = compose(
   })
 )
 
-const CompanyTypeList = enhance((props) => {
+const FeedbackList = enhance((props) => {
   const {
     list,
     listLoading,
@@ -100,7 +100,7 @@ const CompanyTypeList = enhance((props) => {
 
   return (
     <Layout {...layout}>
-      <CompanyTypeGridList
+      <FeedbackGridList
         filter={filter}
         listData={listData}
         detailData={detailData}
@@ -113,4 +113,4 @@ const CompanyTypeList = enhance((props) => {
   )
 })
 
-export default CompanyTypeList
+export default FeedbackList

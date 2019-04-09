@@ -10,17 +10,16 @@ import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import FlatButton from 'material-ui/FlatButton'
 import ContentAdd from 'material-ui/svg-icons/content/add'
 import Edit from 'material-ui/svg-icons/image/edit'
-import * as ROUTES from '../../../constants/routes'
-import dateFormat from '../../../helpers/dateFormat'
-import GridList from '../../GridList'
-import Container from '../../Container'
+import * as ROUTES from 'constants/routes'
+import GridList from 'components/GridList'
+import Container from 'components/Container'
 import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
-import ConfirmDialog from '../../ConfirmDialog'
-import SubMenu from '../../SubMenu'
-import defaultPropTypes from '../../../constants/propTypes'
-import Dot from '../../Images/dot.png'
-import t from '../../../helpers/translate'
-import numberFormat from '../../../helpers/numberFormat'
+import ConfirmDialog from 'components/ConfirmDialog'
+import SubMenu from 'components/SubMenu'
+import defaultPropTypes from 'constants/propTypes'
+import Dot from 'components/Images/dot.png'
+import t from 'helpers/translate'
+import numberFormat from 'helpers/numberFormat'
 import ToolTip from 'components/Utils/ToolTip'
 
 const listHeader = [
@@ -227,7 +226,6 @@ const CompanyTypeGridList = enhance((props) => {
       </Row>
     )
   })
-
 
   const list = {
     header: listHeader,

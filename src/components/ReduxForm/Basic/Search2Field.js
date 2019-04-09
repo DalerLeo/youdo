@@ -3,9 +3,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import classNames from 'classnames'
-import {compose, withPropsOnChange, withReducer, withHandlers} from 'recompose'
+import {
+  compose,
+  withPropsOnChange,
+  withReducer,
+  withHandlers
+} from 'recompose'
 import Select from 'react-select2'
-import t from '../../../helpers/translate'
+import t from 'helpers/translate'
 const DELAY_FOR_TYPE_ATTACK = 300
 
 const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
@@ -16,13 +21,12 @@ const fetchList = ({state, dispatch, getOptions, getText, getValue, input}) => {
         return {
           text: getText(item),
           value: getValue(item),
-          ...item
+          ..._.omit(item, ['id', 'name'])
         }
       })
     })
     .then((data) => {
-      dispatch({dataSource: data})
-      dispatch({loading: false})
+      dispatch({loading: false, dataSource: data})
     })
 }
 
@@ -37,8 +41,8 @@ const enhance = compose(
     return _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value']) && _.get(nextProps, ['withDetails'])
   }, (props) => {
     _.get(props, ['withDetails']) &&
-        _.get(props, ['input', 'value']) &&
-        props.getItem(_.get(props, ['input', 'value']))
+    _.get(props, ['input', 'value']) &&
+    props.getItem(_.get(props, ['input', 'value']))
   }),
   withPropsOnChange((props, nextProps) => {
     const text = _.get(props, ['state', 'text'])
@@ -51,13 +55,16 @@ const enhance = compose(
   }),
 
   withPropsOnChange((props, nextProps) => {
-    return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) || _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
-        _.get(nextProps, ['input', 'value'])
+    return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) ||
+      _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
+      _.get(nextProps, ['input', 'value'])
   }, (props) => {
     const {state, input, getItem, dispatch, getText, getValue} = props
-    const finder = _.find(state.dataSource, {'value': input.value})
-    if (_.isEmpty(finder) && input.value) {
-      getItem(input.value).then((data) => {
+    const value = _.get(input, 'value.value')
+
+    const finder = _.find(state.dataSource, {value})
+    if (_.isEmpty(finder) && value) {
+      getItem(value).then((data) => {
         if (!_.isEmpty(data)) {
           return dispatch({
             dataSource: _.unionBy(props.state.dataSource, [{
@@ -119,15 +126,17 @@ const enhance = compose(
 )
 
 const customStyle = {
-  control: (base, {isFocused}) => {
+  control: (base, {isFocused, ...p}) => {
     return {
       ...base,
       border: 'none',
-      borderBottom: isFocused ? 'solid 2px #5d6474' : '1px solid #e8e8e8',
+      transition: 'border 200ms',
+      borderBottom: isFocused ? 'solid 2px #959595' : '1px solid #999',
       background: 'transparent',
       borderRadius: '0',
       boxShadow: 'none',
       '&:hover': {
+        borderBottom: '2px #959595 solid'
       }
     }
   },
@@ -177,11 +186,10 @@ const SearchField = enhance((props) => {
     disabled,
     meta,
     withoutErrorText,
-    placeHolder,
-    onChange
+    placeHolder
   } = props
   const hintText = state.loading ? <div>Загрузка...</div> : <div>Не найдено</div>
-  const inputValue = _.get(input, ['value'])
+  const inputValue = _.get(input, 'value.value')
   const isEmptyValue = _.isNumber(inputValue) ? false : (_.isEmpty(inputValue) || _.isNaN(inputValue))
   return (
     <div className={classes.wrapper}>
@@ -193,12 +201,9 @@ const SearchField = enhance((props) => {
         styles={customStyle}
         className={(meta.error && meta.touched) ? classes.selectError : ''}
         options={state.dataSource}
-        value={_.find(state.dataSource, {value: input.value})}
+        value={_.find(state.dataSource, {value: inputValue})}
         onInputChange={text => dispatch({text: text})}
-        onChange={value => {
-          onChange && onChange(value)
-          return input.onChange(value ? value.value : value)
-        }}
+        onChange={input.onChange}
         onBlur={() => input.onBlur()}
         onFocus={input.onFocus}
         placeholder={placeHolder || ''}
@@ -211,9 +216,9 @@ const SearchField = enhance((props) => {
         loadingMessage={() => t('Загрузка') + '...'}
       />
       {meta.error && meta.touched &&
-        <div className={withoutErrorText ? classes.noTextError : classes.error}>
-          {withoutErrorText ? null : meta.error}
-        </div>
+      <div className={withoutErrorText ? classes.noTextError : classes.error}>
+        {withoutErrorText ? null : meta.error}
+      </div>
       }
     </div>
   )

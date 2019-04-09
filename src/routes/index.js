@@ -8,11 +8,13 @@ import SignIn from '../containers/SignIn'
 import PlanList from '../containers/Plan'
 import NotFound from '../containers/NotFound'
 import {PermissionList} from '../containers/Permission'
-import {CompanyTypeList} from '../containers/Settings/CompanyType'
+import {CompanyTypeList} from '../containers/CompanyType'
 import NewsList from '../containers/News'
 import CustomerList from '../containers/Customer'
+import FeedbackList from '../containers/Feedback'
 import OrderList from '../containers/Order'
 import ProjectList from '../containers/Project'
+import BrandList from '../containers/Brand'
 import PerformerList from '../containers/Performer'
 import {
   SkillsList,
@@ -189,8 +191,19 @@ export default {
         }
       ]
     },
+    // CUSTOMER
+    {
+      path: ROUTES.FEEDBACK_LIST_URL,
+      component: userIsAdminChain(FeedbackList),
+      childRoutes: [
+        {
+          path: ROUTES.FEEDBACK_ITEM_URL,
+          component: userIsAuth(FeedbackList)
+        }
+      ]
+    },
 
-     // ORDER
+    // ORDER
     {
       path: ROUTES.ORDER_LIST_URL,
       component: userIsAdminChain(OrderList),
@@ -198,6 +211,19 @@ export default {
         {
           path: ROUTES.ORDER_ITEM_URL,
           component: userIsAuth(OrderList)
+        }
+      ]
+    },
+
+
+    // BRAND
+    {
+      path: ROUTES.BRAND_LIST_URL,
+      component: userIsAdminChain(BrandList),
+      childRoutes: [
+        {
+          path: ROUTES.BRAND_ITEM_URL,
+          component: userIsAuth(BrandList)
         }
       ]
     },

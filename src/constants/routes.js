@@ -35,10 +35,20 @@ export const COMPANY_TYPE_LIST_URL = `/${COMPANY_TYPE}`
 export const COMPANY_TYPE_ITEM_URL = `/${COMPANY_TYPE}/:companyTypeId`
 export const COMPANY_TYPE_ITEM_PATH = `${COMPANY_TYPE}/%d`
 
+export const BRAND = 'brand'
+export const BRAND_LIST_URL = `/${BRAND}`
+export const BRAND_ITEM_URL = `/${BRAND}/:id`
+export const BRAND_ITEM_PATH = `${BRAND}/%d`
+
 export const SKILLS = 'skills'
 export const SKILLS_LIST_URL = `/${SKILLS}`
 export const SKILLS_ITEM_URL = `/${SKILLS}/:skillsId`
 export const SKILLS_ITEM_PATH = `/${SKILLS}/%d`
+
+export const FEEDBACK = 'feedback'
+export const FEEDBACK_LIST_URL = `/${FEEDBACK}`
+export const FEEDBACK_ITEM_URL = `/${FEEDBACK}/:skillsId`
+export const FEEDBACK_ITEM_PATH = `/${FEEDBACK}/%d`
 
 export const ROLE = 'role'
 export const ROLE_LIST_URL = `/${ROLE}`

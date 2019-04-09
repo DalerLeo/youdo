@@ -7,7 +7,13 @@ export const createSerializer = (data) => {
   const clientName = _.get(data, ['clientName'])
   const master = _.get(data, ['master'])
   const district = _.get(data, ['district'])
-  const services = _.map(_.get(data, ['services']), service => service.id)
+  const services = _.map(_.get(data, ['services']), service => {
+    return {
+      service: service.service.value,
+      brand: service.brand.value,
+      amount: service.amount
+    }
+  })
   const phoneNumber = _.get(data, ['phoneNumber'])
   return toSnakeCase({
     phoneNumber,

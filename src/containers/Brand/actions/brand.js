@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import sprintf from 'sprintf'
-import axios from '../../helpers/axios'
-import * as API from '../../constants/api'
-import * as actionTypes from '../../constants/actionTypes'
-import * as serializers from '../../serializers/Settings/companyTypeSerializer'
+import axios from '../../../helpers/axios'
+import * as API from '../../../constants/api'
+import * as actionTypes from '../../../constants/actionTypes'
+import * as serializers from './brandSerializer'
 
-export const companyTypeCreateAction = (formValues) => {
+export const brandCreateAction = (formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
-    .post(API.SERVICE_CREATE, requestData)
+    .post(API.BRAND_CREATE, requestData)
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -17,14 +17,14 @@ export const companyTypeCreateAction = (formValues) => {
     })
 
   return {
-    type: actionTypes.SERVICE_CREATE,
+    type: actionTypes.BRAND_CREATE,
     payload
   }
 }
 
-export const companyTypeDeleteAction = (id) => {
+export const brandDeleteAction = (id) => {
   const payload = axios()
-    .delete(sprintf(API.SERVICE_DELETE, id))
+    .delete(sprintf(API.BRAND_DELETE, id))
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -32,15 +32,15 @@ export const companyTypeDeleteAction = (id) => {
       return Promise.reject(_.get(error, ['response', 'data']))
     })
   return {
-    type: actionTypes.SERVICE_DELETE,
+    type: actionTypes.BRAND_DELETE,
     payload
   }
 }
 
-export const companyTypeUpdateAction = (id, formValues) => {
+export const brandUpdateAction = (id, formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
-    .put(sprintf(API.SERVICE_ITEM, id), requestData)
+    .put(sprintf(API.BRAND_ITEM, id), requestData)
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -49,15 +49,15 @@ export const companyTypeUpdateAction = (id, formValues) => {
     })
 
   return {
-    type: actionTypes.SERVICE_UPDATE,
+    type: actionTypes.BRAND_UPDATE,
     payload
   }
 }
 
-export const companyTypeListFetchAction = (filter) => {
+export const brandListFetchAction = (filter) => {
   const params = serializers.listFilterSerializer(filter.getParams())
   const payload = axios()
-    .get(API.SERVICE_LIST, {params})
+    .get(API.BRAND_LIST, {params})
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -66,14 +66,14 @@ export const companyTypeListFetchAction = (filter) => {
     })
 
   return {
-    type: actionTypes.SERVICE_LIST,
+    type: actionTypes.BRAND_LIST,
     payload
   }
 }
 
-export const companyTypeItemFetchAction = (id) => {
+export const brandItemFetchAction = (id) => {
   const payload = axios()
-    .get(sprintf(API.SERVICE_ITEM, id))
+    .get(sprintf(API.BRAND_ITEM, id))
     .then((response) => {
       return _.get(response, 'data')
     })
@@ -82,7 +82,7 @@ export const companyTypeItemFetchAction = (id) => {
     })
 
   return {
-    type: actionTypes.SERVICE_ITEM,
+    type: actionTypes.BRAND_ITEM,
     payload
   }
 }

@@ -90,6 +90,7 @@ const enhance = compose(
 
 const OrderList = enhance((props) => {
   const {
+    location,
     list,
     listLoading,
     detail,
@@ -124,13 +125,16 @@ const OrderList = enhance((props) => {
     detailLoading
   }
 
+  const createInitial = {
+    clientName: {value: _.get(location, 'query.clientName')}
+  }
   return (
     <Layout {...layout}>
       <OrderGridList
         filter={filter}
         listData={listData}
         detailData={detailData}
-        createDialog={createDialog}
+        createDialog={{...createDialog, initialValues: createInitial}}
         confirmDialog={confirmDialog}
         updateDialog={{...updateDialog, initialValues}}
         filterDialog={filterDialog}
