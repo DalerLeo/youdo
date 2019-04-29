@@ -8,12 +8,12 @@ import searchFieldGetOptions from '../../helpers/searchFieldGetOptions'
 
 const getItem = (id, path) => {
   console.warn(id, path)
-  return axios().get(sprintf(path, id))
+  return axios().get(sprintf(path, id.id || id))
     .then(({data}) => Promise.resolve(toCamelCase(data)))
 }
 
 const UniversalSearchField = (props) => {
-  const {params, pageSize, itemPath, listPath, textName, valueName} = props
+  const {params, pageSize, listPath, itemPath = `${listPath}%d`, textName, valueName} = props
 
   return (
     <SearchField

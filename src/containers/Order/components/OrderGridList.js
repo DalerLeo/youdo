@@ -17,9 +17,11 @@ import SubMenu from '../../../components/SubMenu'
 import sprintf from 'sprintf'
 import t from '../../../helpers/translate'
 import defaultPropTypes from '../../../constants/propTypes'
+import classNames from 'classnames'
 import dateFormat from '../../../helpers/dateFormat'
 import numberFormat from '../../../helpers/numberFormat'
 import {replaceUrl} from '../../../helpers/changeUrl'
+import {COLOR_YELLOW, COLOR_GREEN} from 'constants/styleConstants'
 // .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
@@ -93,6 +95,7 @@ const enhance = compose(
       transition: 'all 200ms ease-out'
     },
     listRow: {
+      borderLeft: 'solid 2px ' + COLOR_YELLOW,
       margin: '0 -30px !important',
       width: 'auto !important',
       padding: '0 30px',
@@ -107,6 +110,9 @@ const enhance = compose(
         }
 
       }
+    },
+    statusDone: {
+      borderLeftColor: COLOR_GREEN
     },
     link: {
       cursor: 'pointer',
@@ -188,12 +194,13 @@ const OrderGridList = enhance((props) => {
   const applicantList = _.map(listData.data, (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
-    const fullName = _.get(item, 'clientName')
+    const fullName = _.get(item, 'customer.fullName')
     const master = _.get(item, 'master.fullName')
+    const status = _.get(item, 'status') === 'confirmed'
     const totalPrice = numberFormat(_.get(item, 'totalPrice'), 'сум')
     const createdDate = dateFormat(_.get(item, 'createdDate'))
     return (
-      <Row key={id} className={classes.listRow}>
+      <Row key={id} className={classNames(classes.listRow, status && classes.statusDone)}>
         <div
           onClick={() => replaceUrl(filter, sprintf(ROUTES.ORDER_ITEM_PATH, id), {})}
           className={classes.link}/>
@@ -231,7 +238,7 @@ const OrderGridList = enhance((props) => {
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.ORDER_LIST_URL}/>
         <div className={classes.addButtonWrapper}>
-          <ToolTip position="left" text={'добавить соискателя'}>
+          <ToolTip position="left" text={'добавить Заказ'}>
             <FloatingActionButton
               mini={true}
               zDepth={1}

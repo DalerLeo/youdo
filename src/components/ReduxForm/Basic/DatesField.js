@@ -16,7 +16,8 @@ const enhance = compose(
     onDatesChange: props => ({startDate, endDate}) => {
       const {input} = props
       input.onChange({
-        fromDate: startDate, toDate: endDate
+        fromDate: startDate ? startDate.format('YYYY-MM-DD') : null,
+        toDate: endDate ? endDate.format('YYYY-MM-DD') : null
       })
     }
   })
@@ -28,12 +29,15 @@ const DateToDateField = ({className, input, ...props}) => {
     'stateDateWrapper',
     'meta'
   ])
-
+  const from = _.get(input, 'value.fromDate')
+  const to = _.get(input, 'value.toDate')
+  const startDate = from && moment(from)
+  const endDate = to && moment(to)
   return (
     <div className={className} style={{width: '250px'}}>
       <DateRangePicker
         {...defaultProps}
-        {...{startDate: _.get(input, 'value.fromDate'), endDate: _.get(input, 'value.toDate')}}
+        {...{startDate: startDate, endDate: endDate}}
       />
     </div>
   )
@@ -51,11 +55,12 @@ DateToDateField.defaultProps = {
   block: true,
   small: true,
   noBorder: true,
-
+  showClearDates: true,
   // Calendar presentation and interaction related props
   numberOfMonths: 2,
   keepOpenOnDateSelect: false,
   reopenPickerOnClearDates: false,
+  isOutsideRange: () => false,
 
   // Internationalization
   displayFormat: () => moment.localeData().longDateFormat('ll'),

@@ -211,6 +211,18 @@ export const ORDER_LIST = `/${ORDER}/`
 export const ORDER_ITEM = `/${ORDER}/%d/`
 export const ORDER_DELETE = `/${ORDER}/%d/`
 
+const STATS = 'main/statistic/general'
+export const STAT_SERVICE = `${STATS}/by_service`
+export const STAT_DISTRICT = `${STATS}/by_district`
+export const STAT_BRAND = `${STATS}/by_brand`
+export const STAT_SERVICE_CREATE = `/${STAT_SERVICE}/`
+export const STAT_SERVICE_LIST = `/${STAT_SERVICE}/`
+export const STAT_SERVICE_ITEM = `/${STAT_SERVICE}/%d/`
+export const STAT_SERVICE_DELETE = `/${STAT_SERVICE}/%d/`
+
+export const STAT_DISTRICT_LIST = `/${STAT_DISTRICT}/`
+export const STAT_BRAND_LIST = `/${STAT_BRAND}/`
+
 
 export const SERVICE = 'main/service'
 export const SERVICE_CREATE = `/${SERVICE}/`

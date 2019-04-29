@@ -1,8 +1,9 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, pure} from 'recompose'
+import {compose, pure, withHandlers} from 'recompose'
 import {connect} from 'react-redux'
-import Layout from '../../components/Layout'
+import {hashHistory} from 'react-router'
+import Layout from 'components/Layout'
 import {
   listWrapper,
   detailWrapper,
@@ -21,12 +22,13 @@ import {
   OrderGridList
 } from './components'
 import {
-  customerCreateAction,
+  orderCreateAction,
   customerUpdateAction,
-  customerListFetchAction,
+  orderListFetchAction,
   customerDeleteAction,
   customerItemFetchAction
 } from './actions/order'
+import {customerCreateAction} from 'containers/Customer/actions/custormer'
 import {openErrorAction} from 'actions/error'
 
 const updateKeys = {
@@ -41,8 +43,6 @@ const except = {}
 
 const mapDispatchToProps = {
   customerCreateAction,
-  customerUpdateAction,
-  customerDeleteAction,
   openErrorAction
 }
 
@@ -52,7 +52,7 @@ const enhance = compose(
   listWrapper({
     except,
     storeName: 'order',
-    listFetchAction: customerListFetchAction
+    listFetchAction: orderListFetchAction
   }),
   detailWrapper({
     storeName: 'order',
@@ -61,7 +61,7 @@ const enhance = compose(
   createWrapper({
     storeName: 'order',
     formName: 'CustomerCreateForm',
-    createAction: customerCreateAction,
+    createAction: orderCreateAction,
     queryKey: CUSTOMER_CREATE_DIALOG_OPEN,
     thenActionKey: CUSTOMER_MAIL_DIALOG_OPEN
   }),
@@ -85,6 +85,21 @@ const enhance = compose(
     filterKeys: CUSTOMER_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),
+  withHandlers({
+    onOrder: props => () => {
+      const {createForm} = props
+      const formValues = _.get(createForm, ['values'])
+      if (_.get(formValues, 'fullName')) {
+        return props.customerCreateAction(formValues)
+          .then(({value}) => props.createAction({...formValues, customer: {value: value.id}}))
+          .then(() => props.listFetchAction(props.filter))
+          .then(() => hashHistory.push('/order'))
+      }
+      return props.createAction(formValues)
+        .then(() => props.listFetchAction(props.filter))
+        .then(() => hashHistory.push('/order'))
+    }
+  }),
   pure
 )
 
@@ -100,7 +115,8 @@ const OrderList = enhance((props) => {
     params,
     filterDialog,
     createDialog,
-    updateDialog
+    updateDialog,
+    onOrder
   } = props
   const detailId = _.toInteger(_.get(params, 'id'))
 
@@ -109,11 +125,27 @@ const OrderList = enhance((props) => {
     ...props.confirmDialog
 
   }
-
+  const orderService = _.map(detail.orderService, item => {
+    return {
+      amount: _.get(item, 'amount'),
+      price: _.get(item, 'price'),
+      brand: {value: _.get(item, 'brand.id'), text: _.get(item, 'brand.title')},
+      service: {
+        value: _.get(item, 'service.id'),
+        text: _.get(item, 'service.name'),
+        price: _.get(item, 'service.price')
+      }
+      //    Brand: {value: _.get(item, 'brand')},
+      //    Brand: {value: _.get(item, 'brand')},
+    }
+  })
   const initialValues = {
     ...detail,
-    master: _.get(detail, 'master.id'),
-    district: _.get(detail, 'district.id')
+    master: {value: _.get(detail, 'master.id')},
+    customer: {value: _.get(detail, 'customer.id')},
+    district: {value: _.get(detail, 'district.id')},
+    status: {value: _.get(detail, 'status') || 'unconfirmed'},
+    services: orderService
   }
   const listData = {
     data: _.get(list, 'results'),
@@ -126,7 +158,7 @@ const OrderList = enhance((props) => {
   }
 
   const createInitial = {
-    clientName: {value: _.get(location, 'query.clientName')}
+    customer: {value: _.toInteger(_.get(location, 'query.clientName'))}
   }
   return (
     <Layout {...layout}>
@@ -134,7 +166,7 @@ const OrderList = enhance((props) => {
         filter={filter}
         listData={listData}
         detailData={detailData}
-        createDialog={{...createDialog, initialValues: createInitial}}
+        createDialog={{...createDialog, initialValues: createInitial, onSubmit: onOrder}}
         confirmDialog={confirmDialog}
         updateDialog={{...updateDialog, initialValues}}
         filterDialog={filterDialog}

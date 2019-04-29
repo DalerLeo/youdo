@@ -19,46 +19,23 @@ import t from '../../../helpers/translate'
 import defaultPropTypes from '../../../constants/propTypes'
 import dateFormat from '../../../helpers/dateFormat'
 import {replaceUrl} from '../../../helpers/changeUrl'
-// .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import CustomerFilterForm from './CustomerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
 
-const data = [
-  {
-    id: '1',
-    fullName: 'Shokir Shomullaev',
-    city: 'Tashkent',
-    district: 'Yunusobod',
-    balance: '100 000'
-  },
-  {
-    id: '2',
-    fullName: 'Mahmud Mulloev',
-    city: 'Tashkent',
-    district: 'Chilonzor',
-    balance: '20 000'
-  }
-]
 const listHeader = [
   {
     sorting: false,
     name: 'name',
     title: 'ФИО',
-    xs: 4
+    xs: 6
   },
   {
     sorting: false,
     name: 'phone',
     title: t('Номер телефона'),
-    xs: 3
-  },
-  {
-    sorting: false,
-    name: 'email',
-    title: t('Email'),
-    xs: 3
+    xs: 4
   },
   {
     sorting: false,
@@ -135,7 +112,8 @@ const CustomerGridList = enhance((props) => {
     listData,
     detailData,
     filterDialog,
-    classes
+    classes,
+    orderList
   } = props
 
   const actionButtons = (id) => {
@@ -163,14 +141,14 @@ const CustomerGridList = enhance((props) => {
 
   const detail = (
     <CustomerDetails
-      initialValues={updateDialog.initialValues}
+      orderList={orderList}
       filter={filter}
       key={_.get(detailData, 'id')}
       onUpdateOpen={updateDialog.onOpen}
       onDeleteOpen={confirmDialog.onOpen}
       updateLoading={_.get(updateDialog, 'loading')}
       handleSubmitUpdateDialog={updateDialog.onSubmit}
-      data={_.get(detailData, 'data') || _.get(data, '0')}
+      data={_.get(detailData, 'data')}
       loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
     />
@@ -188,7 +166,6 @@ const CustomerGridList = enhance((props) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const fullName = _.get(item, 'fullName')
-    const email = _.get(item, 'email')
     const phone = _.get(item, 'phoneNumber')
     const createdDate = dateFormat(_.get(item, 'createdDate'))
     return (
@@ -196,9 +173,8 @@ const CustomerGridList = enhance((props) => {
         <div
           onClick={() => replaceUrl(filter, sprintf(ROUTES.CUSTOMER_ITEM_PATH, id), {})}
           className={classes.link}/>
-        <Col xs={4}>{fullName}</Col>
-        <Col xs={3}>{phone}</Col>
-        <Col xs={3}>{email}</Col>
+        <Col xs={6}>{fullName}</Col>
+        <Col xs={4}>{phone}</Col>
         <Col xs={2}>{createdDate}</Col>
       </Row>
     )
@@ -229,7 +205,7 @@ const CustomerGridList = enhance((props) => {
     <Container>
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.CUSTOMER_LIST_URL}/>
-        <div className={classes.addButtonWrapper}>
+        {/* <div className={classes.addButtonWrapper}>
           <ToolTip position="left" text={'добавить соискателя'}>
             <FloatingActionButton
               mini={true}
@@ -239,7 +215,7 @@ const CustomerGridList = enhance((props) => {
               <ContentAdd/>
             </FloatingActionButton>
           </ToolTip>
-        </div>
+        </div> */}
         <GridList
           filter={filter}
           filterDialog={applicantFilterDialog}

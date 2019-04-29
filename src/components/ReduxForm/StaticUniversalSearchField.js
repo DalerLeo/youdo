@@ -1,14 +1,11 @@
 import {find, flow} from 'lodash/fp'
 import React from 'react'
+import _ from 'lodash'
 import Search2Field from './Basic/Search2Field'
-import toCamelCase from '../../helpers/toCamelCase'
 
 const getOptions = (search, ITEMS) => Promise.resolve(ITEMS)
 const getItem = (id, ITEMS) => Promise.resolve(
-  flow(
-    find('id'),
-    toCamelCase
-  )(ITEMS)
+  _.find(ITEMS, {id})
 )
 
 const StaticUniversalSearchField = (props) => {

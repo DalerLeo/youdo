@@ -1,6 +1,7 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, pure} from 'recompose'
+import fp from 'lodash/fp'
+import {compose, pure, mapPropsStream} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from 'components/Layout'
 import {
@@ -11,7 +12,6 @@ import {
   confirmWrapper,
   filterWrapper
 } from '../Wrappers'
-import {updateDetailStore, updateStore} from 'helpers/updateStore'
 import {
   APPLICANT_CREATE_DIALOG_OPEN,
   APPLICANT_UPDATE_DIALOG_OPEN,
@@ -25,9 +25,10 @@ import {
   applicantUpdateAction,
   applicantListFetchAction,
   applicantDeleteAction,
+  userOrderListFetchAction,
   applicantItemFetchAction
 } from './actions/applicant'
-import {openErrorAction} from 'actions/error'
+import {getDataFromState} from 'helpers/get'
 
 const updateKeys = {
   city: 'livingPlace.parent.id',
@@ -46,15 +47,12 @@ const except = {
 }
 
 const mapDispatchToProps = {
-  applicantCreateAction,
-  applicantUpdateAction,
-  applicantDeleteAction,
-  updateDetailStore,
-  updateStore,
-  openErrorAction
+  userOrderListFetchAction
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  orderList: getDataFromState('order.list', state)
+})
 
 const enhance = compose(
   listWrapper({
@@ -93,6 +91,13 @@ const enhance = compose(
     filterKeys: APPLICANT_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),
+  mapPropsStream(props$ => {
+    props$
+      .distinctUntilChanged(null, fp.get('params.id'))
+      .filter(fp.get('params.id'))
+      .subscribe(props => props.userOrderListFetchAction(props.filter, {master: _.get(props, 'params.id')}))
+    return props$
+  }),
   pure
 )
 
@@ -107,7 +112,8 @@ const PerformerList = enhance((props) => {
     params,
     filterDialog,
     createDialog,
-    updateDialog
+    updateDialog,
+    orderList
   } = props
 
   const detailId = _.toInteger(_.get(params, 'id'))
@@ -136,6 +142,7 @@ const PerformerList = enhance((props) => {
         createDialog={createDialog}
         confirmDialog={confirmDialog}
         updateDialog={updateDialog}
+        orderList={orderList}
         filterDialog={filterDialog}
       />
     </Layout>

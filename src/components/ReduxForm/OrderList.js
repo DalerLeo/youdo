@@ -145,7 +145,7 @@ const OrderList = props => {
           return (
             <div key={index} className={classes.list}>
               <div className={classes.name}>{_.get(service, 'service.text')}</div>
-              <div className={classes.brand}>{_.get(service, 'brand.title')}</div>
+              <div className={classes.brand}>{_.get(service, 'brand.text')}</div>
               <div className={classes.amount}>{amount}</div>
               <div className={classes.price}>{numberFormat(price)}</div>
               <div className={classes.smt}>

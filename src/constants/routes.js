@@ -102,7 +102,6 @@ export const PROJECT_LIST_URL = `/${PROJECT}`
 export const PROJECT_ITEM_URL = `/${PROJECT}/:id`
 export const PROJECT_ITEM_PATH = `/${PROJECT}/%d`
 
-
 export const CUSTOMER = 'customer'
 export const CUSTOMER_LIST_URL = `/${CUSTOMER}`
 export const CUSTOMER_ITEM_URL = `/${CUSTOMER}/:id`
@@ -112,4 +111,13 @@ export const ORDER = 'order'
 export const ORDER_LIST_URL = `/${ORDER}`
 export const ORDER_ITEM_URL = `/${ORDER}/:id`
 export const ORDER_ITEM_PATH = `/${ORDER}/%d`
+
+export const STAT_DISTRICT = 'stat/district'
+export const STAT_DISTRICT_LIST_URL = `/${STAT_DISTRICT}`
+
+
+export const STAT_SERVICE = 'stat/service'
+export const STAT_SERVICE_LIST_URL = `/${STAT_SERVICE}`
+export const STAT_SERVICE_ITEM_URL = `/${STAT_SERVICE}/:id`
+export const STAT_SERVICE_ITEM_PATH = `/${STAT_SERVICE}/%d`
 

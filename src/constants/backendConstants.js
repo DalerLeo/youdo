@@ -124,3 +124,8 @@ export const PROJECT_VISIBILITY = [
   {id: 'True', name: 'Всем'},
   {id: 'False', name: 'Рабочей группе'}
 ]
+
+export const STATUS_LIST = [
+  {id: 'unconfirmed', name: 'неподтвержденный'},
+  {id: 'confirmed', name: 'подтвержденный'}
+]

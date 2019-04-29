@@ -19,41 +19,23 @@ import t from 'helpers/translate'
 import defaultPropTypes from 'constants/propTypes'
 import dateFormat from 'helpers/dateFormat'
 import {replaceUrl} from 'helpers/changeUrl'
-// .import {APPLICANT_STATUS} from '../../../constants/backendConstants'
 import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import PerformerFilterForm from './PerformerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
-import numberFormat from 'helpers/numberFormat'
 
-const data = [
-  {
-    id: '1',
-    fullName: 'Shokir Shomullaev',
-    city: 'Tashkent',
-    district: 'Yunusobod',
-    balance: '100 000'
-  },
-  {
-    id: '2',
-    fullName: 'Mahmud Mulloev',
-    city: 'Tashkent',
-    district: 'Chilonzor',
-    balance: '20 000'
-  }
-]
 const listHeader = [
   {
     sorting: false,
     name: 'name',
     title: 'ФИО',
-    xs: 3
+    xs: 4
   },
   {
     sorting: false,
     name: 'resume_num',
-    title: t('Город'),
-    xs: 2
+    title: t('Номер телефона'),
+    xs: 3
   },
   {
     sorting: false,
@@ -65,12 +47,6 @@ const listHeader = [
     sorting: false,
     name: 'created_date',
     title: t('Дата создания'),
-    xs: 2
-  },
-  {
-    sorting: false,
-    name: 'balance',
-    title: t('Балансе'),
     xs: 2
   }
 ]
@@ -142,6 +118,7 @@ const PerformerGridList = enhance((props) => {
     listData,
     detailData,
     filterDialog,
+    orderList,
     classes
   } = props
 
@@ -170,14 +147,14 @@ const PerformerGridList = enhance((props) => {
 
   const detail = (
     <PerformerDetails
-      initialValues={updateDialog.initialValues}
+      orderList={orderList}
       filter={filter}
       onUpdateOpen={updateDialog.onOpen}
       onDeleteOpen={confirmDialog.onOpen}
       key={_.get(detailData, 'id')}
       updateLoading={_.get(updateDialog, 'loading')}
       handleSubmitUpdateDialog={updateDialog.onSubmit}
-      data={_.get(detailData, 'data') || _.get(data, '0')}
+      data={_.get(detailData, 'data')}
       loading={_.get(detailData, 'detailLoading')}
       actionButtons={actionButtons}
     />
@@ -195,20 +172,18 @@ const PerformerGridList = enhance((props) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
     const fullName = _.get(item, 'fullName')
-    const city = _.get(item, 'city')
+    const phoneNumber = _.get(item, 'phoneNumber')
     const district = _.get(item, 'livingPlace.name')
     const createdDate = dateFormat(_.get(item, 'createdDate'))
-    const balance = numberFormat(_.get(item, 'balance'))
     return (
       <Row key={id} className={classes.listRow}>
         <div
           onClick={() => replaceUrl(filter, sprintf(ROUTES.APPLICANT_ITEM_PATH, id), {})}
           className={classes.link}/>
-        <Col xs={3}>{fullName}</Col>
-        <Col xs={2}>{city}</Col>
+        <Col xs={4}>{fullName}</Col>
+        <Col xs={3}>{phoneNumber}</Col>
         <Col xs={3}>{district}</Col>
         <Col xs={2}>{createdDate}</Col>
-        <Col xs={2}>{balance}</Col>
       </Row>
     )
   })

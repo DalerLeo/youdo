@@ -203,19 +203,16 @@ const OrderDetails = enhance((props) => {
     loading,
     classes,
     onUpdateOpen,
-    onDeleteOpen,
-    updateLoading
+    onDeleteOpen
   } = props
 
-  const photo = _.get(data, ['photo', 'file'])
-  const fullName = _.get(data, 'clientName')
+  const fullName = _.get(data, 'customer.fullName')
   const master = _.get(data, 'master.fullName')
-  const services = _.get(data, 'services')
+  const services = _.get(data, 'orderService')
   const masterNumber = _.get(data, 'master.phoneNumber')
   const totalPrice = numberFormat(_.get(data, 'totalPrice'), 'сум')
   const createdDate = dateFormat(_.get(data, 'createdDate'))
-  const phoneNumber = _.get(data, 'phoneNumber')
-  const email = _.get(data, 'email')
+  const phoneNumber = _.get(data, 'customer.phoneNumber')
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -288,8 +285,9 @@ const OrderDetails = enhance((props) => {
           <div className={classes.detailsBlock}>
             <div className={classes.tabBody}>
               <Row className={classes.bodyTitle} style={{borderBottom: '1px #efefef solid'}}>
-                <Col xs={7} style={{lineHeight: '2'}}>{t('Услуга')}</Col>
-                <Col xs={2} style={{lineHeight: '2', textAlign: 'right'}}>{t('Цена')}</Col>
+                <Col xs={4} style={{lineHeight: '2'}}>{t('Услуга')}</Col>
+                <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Цена')}</Col>
+                <Col xs={2} style={{lineHeight: '2', textAlign: 'right'}}>{t('Kol-vo')}</Col>
                 <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Дата')}</Col>
               </Row>
               <EmptyQuery list={order} />
@@ -299,8 +297,9 @@ const OrderDetails = enhance((props) => {
                   const cId = _.get(item, 'id')
                   return (
                     <Row key={cId} className={classes.tasks + ' dottedList'}>
-                      <Col xs={6}>{item.name}</Col>
+                      <Col xs={4}>{_.get(item, 'service.name')}</Col>
                       <Col xs={3} style={{textAlign: 'right'}}>{numberFormat(item.price, 'сум')}</Col>
+                      <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(item.amount)}</Col>
                       <Col xs={3} style={{textAlign: 'right'}}>{createdDate}</Col>
                     </Row>
                   )

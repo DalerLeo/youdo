@@ -103,3 +103,24 @@ export const applicantItemFetchAction = (id) => {
     payload
   }
 }
+
+export const userOrderListFetchAction = (filter, data) => {
+//  const params = serializers.listFilterSerializer(filter.getParams(), date)
+
+  const params = {
+    ...data
+  }
+  const payload = axios()
+    .get(API.ORDER_LIST, {params})
+    .then((response) => {
+      return _.get(response, 'data')
+    })
+    .catch((error) => {
+      return Promise.reject(_.get(error, ['response', 'data']))
+    })
+
+  return {
+    type: actionTypes.ORDER_LIST,
+    payload
+  }
+}

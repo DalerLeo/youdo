@@ -19,7 +19,6 @@ import SubMenu from 'components/SubMenu'
 import defaultPropTypes from 'constants/propTypes'
 import Dot from 'components/Images/dot.png'
 import t from 'helpers/translate'
-import numberFormat from 'helpers/numberFormat'
 import ToolTip from 'components/Utils/ToolTip'
 import {hashHistory} from 'react-router'
 
@@ -198,9 +197,9 @@ const FeedbackGridList = enhance((props) => {
   const companyTypeList = _.map(listData.data, (item, index) => {
     const id = _.toNumber(_.get(item, 'id'))
     //    Const status = fp.flow(findItem, fp.get('name'))
-    const fullName = _.get(item, 'clientName.fullName')
-    const phone = _.get(item, 'clientName.phoneNumber')
-    const clientId = _.get(item, 'clientName.id')
+    const fullName = _.get(item, 'customer.fullName')
+    const phone = _.get(item, 'customer.phoneNumber')
+    const clientId = _.get(item, 'customer.id')
     return (
       <Row key={id} className={classes.listRow} onClick={() => onCreate(clientId)}>
 
@@ -239,18 +238,7 @@ const FeedbackGridList = enhance((props) => {
     list: companyTypeList,
     loading: _.get(listData, 'listLoading')
   }
-  const addButton = (
-    <div className={classes.addButtonWrapper}>
-      <FlatButton
-        backgroundColor="#fff"
-        labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
-        className={classes.addButton}
-        label={t('добавить тип продукта')}
-        onClick={createDialog.onOpen}
-        icon={<ContentAdd color="#12aaeb"/>}>
-      </FlatButton>
-    </div>
-  )
+
   return (
     <Container>
       <SubMenu url={ROUTES.FEEDBACK_LIST_URL}/>
@@ -260,7 +248,6 @@ const FeedbackGridList = enhance((props) => {
         list={list}
         detail={(<span>2</span>)}
         actionsDialog={actions}
-        addButton={addButton}
       />
 
       <CompanyTypeCreateDialog

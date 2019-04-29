@@ -11,12 +11,9 @@ import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import {
   TextField,
   UniversalSearchField,
-  normalizePhone,
-  ImageUploadField,
-  ModelSelectField
+  normalizePhone
 } from 'components/ReduxForm'
 import * as API from 'constants/api'
-import t from 'helpers/translate'
 import FileSimpleUploadField from 'components/ReduxForm/Basic/FileSimpleUploadField'
 
 export const APPLICANT_CREATE_DIALOG_OPEN = 'openCreateDialog'
@@ -213,11 +210,6 @@ const PerformerCreateDialog = enhance((props) => {
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
               </div>
-              <Field
-                name="photo"
-                component={ImageUploadField}
-                label={t('Изображения')}
-                fullWidth={true}/>
             </div>
             <div style={{display: 'flex'}}>
               <Field
@@ -234,42 +226,12 @@ const PerformerCreateDialog = enhance((props) => {
               />
             </div>
             <Field
-              name="city"
-              component={UniversalSearchField}
-              listPath={API.REGIONS_LIST}
-              itemPath={API.REGIONS_ITEM}
-              label={'Город'}
-              params={{type: 'region'}}
-              fullWidth={true}/>
-            <Field
               name="district"
               component={UniversalSearchField}
               listPath={API.REGIONS_LIST}
               itemPath={API.REGIONS_ITEM}
               params={{type: 'district'}}
               label={'Район'}
-              fullWidth={true}/>
-            <Field
-              name="speciality"
-              component={ModelSelectField}
-              selectLabel={'Указать сферу деятельности'}
-              api={API.SPECIALITY_LIST}
-              label={'Сфера услуг'}
-              fullWidth={true}/>
-            <Field
-              name="passwordExp"
-              component={TextField}
-              type="password"
-              label={isUpdate ? 'Изменить пароль' : 'Пароль'}
-              className={classes.inputFieldCustom}
-              fullWidth={true}/>
-
-            <Field
-              name="password"
-              type="password"
-              component={TextField}
-              label={'Подтвердите пароль'}
-              className={classes.inputFieldCustom}
               fullWidth={true}/>
           </div>
           <div className={classes.bottomButton}>

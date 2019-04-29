@@ -61,7 +61,7 @@ const SignIn = enhance((props) => {
         // .        const rememberUser = _.get(formValues, 'rememberMe') || false
         const re = _.get(location, ['query', 'redirect'])
         updateSignInLoading(false)
-        const redirectUrl = !re || re === '/' ? ROUTES.USERS_LIST_URL : re
+        const redirectUrl = !re || re === '/' ? ROUTES.STAT_DISTRICT_LIST_URL : re
         return hashHistory.push(redirectUrl)
 
         /*

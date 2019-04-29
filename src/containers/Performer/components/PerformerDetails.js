@@ -12,11 +12,9 @@ import {BORDER_STYLE, COLOR_GREY} from '../../../constants/styleConstants'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditPasswordIcon from 'material-ui/svg-icons/editor/mode-edit'
-import BalanceIcon from 'material-ui/svg-icons/editor/attach-money'
 import t from '../../../helpers/translate'
 import numberFormat from '../../../helpers/numberFormat'
-import EmptyQuery from '../../../components/Utils/EmptyQuery'
-import {Col, Row} from 'react-flexbox-grid'
+import RowColumnList from 'components/Utils/RowColumnList'
 
 const enhance = compose(
   injectSheet({
@@ -195,29 +193,32 @@ const iconStyle = {
     padding: 12
   }
 }
-const order = [1, 2]
+const orderProps = [
+  {xs: '2', path: 'customer.fullName', title: 'Клиент'},
+  {xs: '2', path: 'district.name', title: 'Район'},
+  {xs: '2', path: 'totalPrice', title: 'Обшая Сумма', func: numberFormat}
+]
 const PerformerDetails = enhance((props) => {
   const {
     filter,
     data,
     loading,
     classes,
-    updateLoading,
     onUpdateOpen,
     onDeleteOpen,
     tab,
+    orderList,
     setTab
   } = props
 
+  const orderData = _.get(orderList, 'list')
+
   const photo = _.get(data, ['photo', 'file'])
   const fullName = _.get(data, 'fullName')
-
-  const city = _.get(data, 'livingPlace.parent.name')
   const numberPassport = _.get(data, 'numberPassport')
   const email = _.get(data, 'email')
   const phoneNumber = _.get(data, 'phoneNumber')
   const district = _.get(data, 'livingPlace.name')
-  const balance = numberFormat(_.get(data, 'balance'))
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -228,14 +229,6 @@ const PerformerDetails = enhance((props) => {
 
   const actionButtons = (
     <div className={classes.actionButtons}>
-      <ToolTip position="bottom" text={t('Пополнить баланс')}>
-        <IconButton
-          iconStyle={iconStyle.icon}
-          style={iconStyle.button}
-          touch={true}>
-          <BalanceIcon />
-        </IconButton>
-      </ToolTip>
       <ToolTip position="bottom" text={t('Изменить')}>
         <IconButton
           onClick={onUpdateOpen}
@@ -286,9 +279,7 @@ const PerformerDetails = enhance((props) => {
               <div className={classes.bodyTitle}>{t('Тель')}: <span>{phoneNumber}</span></div>
               <div className={classes.bodyTitle}>{t('Email')}: <span>{email}</span></div>
               <div className={classes.bodyTitle}>{t('Пасспорт №')}: <span>{numberPassport}</span></div>
-              <div className={classes.bodyTitle}>{t('Город')}: <span>{city}</span></div>
               <div className={classes.bodyTitle}>{t('Район')}: <span>{district}</span></div>
-              <div className={classes.bodyTitle}>{t('Балансе')}: <span>{balance}</span></div>
             </div>
           </div>
           <div className={classes.detailsBlock}>
@@ -311,48 +302,11 @@ const PerformerDetails = enhance((props) => {
               </Tab>
               <Tab value={'docs'} label={'Задачи'}>
                 <div className={classes.tabBody}>
-                  <Row className={classes.bodyTitle} style={{borderBottom: '1px #efefef solid'}}>
-                    <Col xs={7} style={{lineHeight: '2'}}>{t('Задача')}</Col>
-                    <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Дата')}</Col>
-                    <Col xs={2} style={{lineHeight: '2', textAlign: 'right'}}>{t('Статус')}</Col>
-                  </Row>
-                  <EmptyQuery list={order} />
-                  {!_.isEmpty(order) && _.map(order, (item) => {
-                    const cId = _.get(item, 'id')
-                    return (
-                      <Row key={cId} className={classes.tasks + ' dottedList'}>
-                        <Col xs={7}>
-                          Lorem Ipsum is simply dummy text of the printing and typeset
-                          <Link to={{pathname: 'order/' + cId, query: {ids: cId}}}>
-                          </Link>
-                        </Col>
-                        <Col xs={3} style={{textAlign: 'right'}}>Dec 16 2018</Col>
-                        <Col xs={2} style={{textAlign: 'right'}}>cancelled</Col>
-                      </Row>
-                    )
-                  })}
-                </div>
-              </Tab>
-              <Tab value={'history'} label={'Баланс'}>
-                <div className={classes.tabBody}>
-                  <Row className={classes.bodyTitle} style={{borderBottom: '1px #efefef solid'}}>
-                    <Col xs={8} style={{lineHeight: '2'}}>{t('Сумма')}</Col>
-                    <Col xs={4} style={{lineHeight: '2', textAlign: 'right'}}>{t('Дата')}</Col>
-                  </Row>
-                  <EmptyQuery list={order} />
-                  {!_.isEmpty(order) && _.map(order, (item) => {
-                    const cId = _.get(item, 'id')
-                    return (
-                      <Row key={cId} className={classes.tasks + ' dottedList'}>
-                        <Col xs={8}>
-                          200 000 UZS
-                          <Link to={{pathname: 'order/' + cId, query: {ids: cId}}}>
-                          </Link>
-                        </Col>
-                        <Col xs={4} style={{textAlign: 'right'}}>Dec 16 2018</Col>
-                      </Row>
-                    )
-                  })}
+                  <RowColumnList
+                    detailPath={ROUTES.ORDER_ITEM_PATH}
+                    properties={orderProps}
+                    filter={filter}
+                    list={orderData}/>
                 </div>
               </Tab>
             </Tabs>

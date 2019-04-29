@@ -7,6 +7,7 @@ import Administration from 'material-ui/svg-icons/action/event'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Widgets from 'material-ui/svg-icons/device/widgets'
 import AccountIcon from 'material-ui/svg-icons/social/group'
+import StatsIcon from 'material-ui/svg-icons/action/timeline'
 
 import {getPageSize} from '../../helpers/storage'
 const DEFAULT_PAGE_SIZE = getPageSize()
@@ -22,6 +23,7 @@ export const MenuItems = [
     query: defaultPageSizeQuery,
     childs: [
       {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
+      {name: t('Клиенты'), url: ROUTES.CUSTOMER_LIST_URL, query: defaultPageSizeQuery, permission: ''},
       {name: t('Обратный звонок'), url: ROUTES.FEEDBACK_LIST_URL, query: defaultPageSizeQuery, permission: ''},
       {name: t('Заказ'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: '', icon: <AccountIcon/>}
     ]
@@ -34,7 +36,7 @@ export const MenuItems = [
     query: defaultPageSizeQuery,
     childs: [
       {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''},
-      {name: t('Brand'), url: ROUTES.BRAND_LIST_URL, permission: ''}
+      {name: t('Бренд'), url: ROUTES.BRAND_LIST_URL, permission: ''}
     ]
   },
 
@@ -48,6 +50,17 @@ export const MenuItems = [
     ]
   },
   {
+    name: t('Статистика'),
+    icon: (<StatsIcon/>),
+    section: 'Статистика',
+    url: ROUTES.STAT_SERVICE_LIST_URL,
+    childs: [
+      {name: 'Статистика', url: ROUTES.STAT_DISTRICT_LIST_URL, permission: ''},
+      {name: 'Услуги', url: ROUTES.STAT_SERVICE_LIST_URL, permission: ''}
+    ]
+  }
+
+  /* {
     name: t('Настройки'),
     icon: (<Settings/>),
     section: 'Settings',
@@ -61,7 +74,7 @@ export const MenuItems = [
       {section: 'Основные', name: t('Статус поиска работы'), url: ROUTES.JOB_SEARCH_LIST_URL, permission: ''}
 
     ]
-  }
+  } */
 ]
 
 export const getNeedMenu = (userPermissions) => {

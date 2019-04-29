@@ -56,8 +56,8 @@ const enhance = compose(
 
   withPropsOnChange((props, nextProps) => {
     return (!_.isEmpty(_.get(nextProps, ['state', 'dataSource'])) ||
-      _.get(props, ['input', 'value']) !== _.get(nextProps, ['input', 'value'])) &&
-      _.get(nextProps, ['input', 'value'])
+      _.get(props, ['input', 'value', 'value']) !== _.get(nextProps, ['input', 'value', 'value'])) &&
+      _.get(nextProps, ['input', 'value', 'value'])
   }, (props) => {
     const {state, input, getItem, dispatch, getText, getValue} = props
     const value = _.get(input, 'value.value')
@@ -66,6 +66,7 @@ const enhance = compose(
     if (_.isEmpty(finder) && value) {
       getItem(value).then((data) => {
         if (!_.isEmpty(data)) {
+          console.warn('HEY: ', {text: getText(data), value: getValue(data)})
           return dispatch({
             dataSource: _.unionBy(props.state.dataSource, [{
               text: getText(data), value: getValue(data)

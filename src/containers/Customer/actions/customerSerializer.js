@@ -3,17 +3,11 @@ import {orderingSnakeCase} from '../../../helpers/serializer'
 import toSnakeCase from '../../../helpers/toSnakeCase'
 
 export const createSerializer = (data) => {
-  const email = _.get(data, ['email'])
   const fullName = _.get(data, ['fullName'])
   const phoneNumber = _.get(data, ['phoneNumber'])
-  const numberPassport = _.get(data, ['numberPassport'])
-  const image = _.isObject(_.get(data, 'image')) ? _.get(data, ['image', 'id']) : _.get(data, 'image')
   return toSnakeCase({
-    email,
-    image,
     fullName,
-    phoneNumber,
-    numberPassport
+    phoneNumber
   })
 }
 

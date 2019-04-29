@@ -5,7 +5,7 @@ import * as API from '../../../constants/api'
 import * as actionTypes from '../../../constants/actionTypes'
 import * as serializers from './orderSerializer'
 
-export const customerCreateAction = (formValues) => {
+export const orderCreateAction = (formValues) => {
   const requestData = serializers.createSerializer(formValues)
   const payload = axios()
     .post(API.ORDER_CREATE, requestData)
@@ -55,8 +55,8 @@ export const customerUpdateAction = (id, formValues) => {
   }
 }
 
-export const customerListFetchAction = (filter) => {
-  const params = serializers.listFilterSerializer(filter.getParams())
+export const orderListFetchAction = (filter, date) => {
+  const params = serializers.listFilterSerializer(filter.getParams(), date)
 
   const payload = axios()
     .get(API.ORDER_LIST, {params})

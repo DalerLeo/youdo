@@ -4,10 +4,11 @@ import toSnakeCase from '../../../helpers/toSnakeCase'
 
 export const createSerializer = (data) => {
   const address = _.get(data, ['address'])
-  const clientName = _.get(data, ['clientName'])
-  const master = _.get(data, ['master'])
-  const district = _.get(data, ['district'])
-  const services = _.map(_.get(data, ['services']), service => {
+  const customer = _.get(data, 'customer.value')
+  const status = _.get(data, 'status.value')
+  const master = _.get(data, 'master.value')
+  const district = _.get(data, 'district.value')
+  const orderService = _.map(_.get(data, ['services']), service => {
     return {
       service: service.service.value,
       brand: service.brand.value,
@@ -18,10 +19,11 @@ export const createSerializer = (data) => {
   return toSnakeCase({
     phoneNumber,
     address,
-    clientName,
+    customer,
     master,
     district,
-    services
+    orderService,
+    status
   })
 }
 
@@ -62,11 +64,13 @@ export const updateSerializer = (data) => {
   }
 }
 
-export const listFilterSerializer = (data) => {
+export const listFilterSerializer = (data, date) => {
   const {...defaultData} = data
   const ordering = _.get(data, 'ordering') || '-id'
   return {
+    ...date,
     'manufacture': _.get(defaultData, 'manufacture'),
+    'district': _.get(defaultData, 'district'),
     'user_group': _.get(defaultData, 'group'),
     'search': _.get(defaultData, 'search'),
     'page': _.get(defaultData, 'page'),

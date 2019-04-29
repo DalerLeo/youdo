@@ -16,6 +16,8 @@ import OrderList from '../containers/Order'
 import ProjectList from '../containers/Project'
 import BrandList from '../containers/Brand'
 import PerformerList from '../containers/Performer'
+import StatDistrict from '../containers/StatDistrict'
+import StatService from '../containers/StatService'
 import {
   SkillsList,
   PostList,
@@ -215,7 +217,6 @@ export default {
       ]
     },
 
-
     // BRAND
     {
       path: ROUTES.BRAND_LIST_URL,
@@ -224,6 +225,28 @@ export default {
         {
           path: ROUTES.BRAND_ITEM_URL,
           component: userIsAuth(BrandList)
+        }
+      ]
+    },
+    // StatService
+    {
+      path: ROUTES.STAT_DISTRICT_LIST_URL,
+      component: userIsAdminChain(StatDistrict),
+      childRoutes: [
+        {
+          path: ROUTES.STAT_DISTRICT_LIST_URL,
+          component: userIsAuth(StatDistrict)
+        }
+      ]
+    },
+    // StatService
+    {
+      path: ROUTES.STAT_SERVICE_LIST_URL,
+      component: userIsAdminChain(StatService),
+      childRoutes: [
+        {
+          path: ROUTES.STAT_SERVICE_ITEM_URL,
+          component: userIsAuth(StatService)
         }
       ]
     },

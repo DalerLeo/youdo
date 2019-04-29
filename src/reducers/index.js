@@ -120,6 +120,16 @@ const rootReducer = combineReducers({
     update: createThunkReducer(actionTypes.ORDER_UPDATE),
     item: createThunkReducer(actionTypes.ORDER_ITEM)
   }),
+  statService: combineReducers({
+    list: createThunkReducer(actionTypes.STAT_SERVICE_LIST),
+    item: createThunkReducer(actionTypes.STAT_SERVICE_ITEM)
+  }),
+  statBrand: combineReducers({
+    list: createThunkReducer(actionTypes.STAT_BRAND_LIST)
+  }),
+  region: combineReducers({
+    list: createThunkReducer(actionTypes.REGIONS_LIST)
+  }),
   plan: combineReducers({
     create: createThunkReducer(actionTypes.PLAN_CREATE),
     list: createThunkReducer(actionTypes.PLAN_LIST),

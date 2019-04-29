@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, pure} from 'recompose'
+import {compose, mapPropsStream, pure} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {
@@ -27,8 +27,10 @@ import {
   customerDeleteAction,
   customerItemFetchAction
 } from './actions/custormer'
-import {openErrorAction} from 'actions/error'
-
+import fp from 'lodash/fp'
+import {userOrderListFetchAction} from 'containers/Performer/actions/applicant'
+import {getDataFromState} from '../../helpers/get'
+import {PerformerGridList} from '../Performer/components'
 const updateKeys = {
   fullName: 'fullName',
   phoneNumber: 'phoneNumber',
@@ -40,14 +42,11 @@ const createKeys = {
 const except = {}
 
 const mapDispatchToProps = {
-  customerCreateAction,
-  customerUpdateAction,
-  customerDeleteAction,
-  openErrorAction
+  userOrderListFetchAction
 }
-
-const mapStateToProps = () => ({})
-
+const mapStateToProps = (state) => ({
+  orderList: getDataFromState('order.list', state)
+})
 const enhance = compose(
   listWrapper({
     except,
@@ -85,6 +84,13 @@ const enhance = compose(
     filterKeys: CUSTOMER_FILTER_KEY
   }),
   connect(mapStateToProps, mapDispatchToProps),
+  mapPropsStream(props$ => {
+    props$
+      .distinctUntilChanged(null, fp.get('params.id'))
+      .filter(fp.get('params.id'))
+      .subscribe(props => props.userOrderListFetchAction(props.filter, {customer: _.get(props, 'params.id')}))
+    return props$
+  }),
   pure
 )
 
@@ -99,7 +105,8 @@ const CustomerList = enhance((props) => {
     params,
     filterDialog,
     createDialog,
-    updateDialog
+    updateDialog,
+    orderList
   } = props
   const detailId = _.toInteger(_.get(params, 'id'))
 
@@ -128,6 +135,7 @@ const CustomerList = enhance((props) => {
         createDialog={createDialog}
         confirmDialog={confirmDialog}
         updateDialog={updateDialog}
+        orderList={orderList}
         filterDialog={filterDialog}
       />
     </Layout>

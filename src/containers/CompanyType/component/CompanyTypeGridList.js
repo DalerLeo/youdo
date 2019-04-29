@@ -238,7 +238,7 @@ const CompanyTypeGridList = enhance((props) => {
         backgroundColor="#fff"
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb', fontSize: '13px'}}
         className={classes.addButton}
-        label={t('добавить тип продукта')}
+        label={t('добавить услугу')}
         onClick={createDialog.onOpen}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>

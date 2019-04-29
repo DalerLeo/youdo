@@ -2,21 +2,22 @@ import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Link} from 'react-router'
-import * as ROUTES from 'constants/routes'
+import * as ROUTES from '../../../constants/routes'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import LinearProgress from 'components/LinearProgress'
-import ToolTip from 'components/Utils/ToolTip'
-import {BORDER_STYLE, COLOR_GREY} from 'constants/styleConstants'
+import LinearProgress from '../../../components/LinearProgress'
+import ToolTip from '../../../components/Utils/ToolTip'
+import {BORDER_STYLE, COLOR_GREY} from '../../../constants/styleConstants'
 import IconButton from 'material-ui/IconButton'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 import EditIcon from 'material-ui/svg-icons/editor/mode-edit'
 import ActivateIcon from 'material-ui/svg-icons/action/check-circle'
 import BlockIcon from 'material-ui/svg-icons/content/block'
-import t from 'helpers/translate'
-import RowColumnList from 'components/Utils/RowColumnList'
-import numberFormat from 'helpers/numberFormat'
-import dateFormat from 'helpers/dateFormat'
+import t from '../../../helpers/translate'
+import EmptyQuery from '../../../components/Utils/EmptyQuery'
+import {Col, Row} from 'react-flexbox-grid'
+import numberFormat from '../../../helpers/numberFormat'
+import dateFormat from '../../../helpers/dateFormat'
 
 const enhance = compose(
   injectSheet({
@@ -125,7 +126,7 @@ const enhance = compose(
       width: 'calc(100%)'
     },
     detailsBlock: {
-      width: 'calc(100%)',
+      width: 'calc(100% - 380px)',
       '& .dottedList': {
         padding: '10px 0',
         '&:after': {
@@ -194,29 +195,24 @@ const iconStyle = {
     padding: 12
   }
 }
-const orderProps = [
-  {xs: '2', path: 'master.fullName', title: 'Мастер'},
-  {xs: '2', path: 'district.name', title: 'Район'},
-  {xs: '2', path: 'totalPrice', title: 'Обшая Сумма', func: numberFormat},
-  {xs: '2', path: 'createdDate', title: 'Дата', func: dateFormat}
-]
-const CustomerDetails = enhance((props) => {
+const order = [1, 2]
+const StatServiceDetails = enhance((props) => {
   const {
     filter,
     data,
     loading,
     classes,
     onUpdateOpen,
-    onDeleteOpen,
-    orderList
+    onDeleteOpen
   } = props
 
-  const orderData = _.get(orderList, 'list')
-
-  const fullName = _.get(data, 'fullName')
-
-  const phoneNumber = _.get(data, 'phoneNumber')
-  const email = _.get(data, 'email')
+  const fullName = _.get(data, 'customer.fullName')
+  const master = _.get(data, 'master.fullName')
+  const services = _.get(data, 'orderService')
+  const masterNumber = _.get(data, 'master.phoneNumber')
+  const totalPrice = numberFormat(_.get(data, 'totalPrice'), 'сум')
+  const createdDate = dateFormat(_.get(data, 'createdDate'))
+  const phoneNumber = _.get(data, 'customer.phoneNumber')
   if (loading) {
     return (
       <div className={classes.loader}>
@@ -271,20 +267,45 @@ const CustomerDetails = enhance((props) => {
       <div className={classes.content}>
         <div className={classes.detailTitle}>
           <Link to={{
-            pathname: ROUTES.CUSTOMER_LIST_URL,
+            pathname: ROUTES.ORDER_LIST_URL,
             query: filter.getParams()
           }} className={classes.closeDetail}/>
-          <span>{fullName} ({phoneNumber})</span>
+          <span>{fullName}</span>
           {actionButtons}
         </div>
         <div className={classes.detailContent}>
+          <div className={classes.mainBlock}>
+            <div className={classes.detailData}>
+              <div className={classes.bodyTitle}>{t('Клиент')} <span>{fullName}</span></div>
+              <div className={classes.bodyTitle}>{t('Тел. клиента')}: <span>{phoneNumber}</span></div>
+              <div className={classes.bodyTitle}>{t('Мастер')} {master}</div>
+              <div className={classes.bodyTitle}>{t('Тел. мастера')}: <span>{masterNumber}</span></div>
+            </div>
+          </div>
           <div className={classes.detailsBlock}>
             <div className={classes.tabBody}>
-              <RowColumnList
-                detailPath={ROUTES.ORDER_ITEM_PATH}
-                properties={orderProps}
-                filter={filter}
-                list={orderData}/>
+              <Row className={classes.bodyTitle} style={{borderBottom: '1px #efefef solid'}}>
+                <Col xs={4} style={{lineHeight: '2'}}>{t('Услуга')}</Col>
+                <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Цена')}</Col>
+                <Col xs={2} style={{lineHeight: '2', textAlign: 'right'}}>{t('Kol-vo')}</Col>
+                <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Дата')}</Col>
+              </Row>
+              <EmptyQuery list={order} />
+              {!_.isEmpty(services) &&
+              <React.Fragment>
+                {_.map(services, (item) => {
+                  const cId = _.get(item, 'id')
+                  return (
+                    <Row key={cId} className={classes.tasks + ' dottedList'}>
+                      <Col xs={4}>{_.get(item, 'service.name')}</Col>
+                      <Col xs={3} style={{textAlign: 'right'}}>{numberFormat(item.price, 'сум')}</Col>
+                      <Col xs={2} style={{textAlign: 'right'}}>{numberFormat(item.amount)}</Col>
+                      <Col xs={3} style={{textAlign: 'right'}}>{createdDate}</Col>
+                    </Row>
+                  )
+                })}
+                <div style={{textAlign: 'right', fontWeight: '600', marginTop: '15px'}}>Сумма: {totalPrice}</div>
+              </React.Fragment>}
             </div>
           </div>
         </div>
@@ -293,9 +314,9 @@ const CustomerDetails = enhance((props) => {
   )
 })
 
-CustomerDetails.propTypes = {
+StatServiceDetails.propTypes = {
   loading: PropTypes.bool,
   data: PropTypes.object
 }
 
-export default CustomerDetails
+export default StatServiceDetails
