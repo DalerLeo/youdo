@@ -224,7 +224,7 @@ const OrderGridList = enhance((props) => {
         backgroundColor="#fff"
         labelStyle={{textTransform: 'none', paddingLeft: '2px', color: '#12aaeb'}}
         className={classes.addButton}
-        label={t('добавить соискателя')}
+        label={t('добавить Заказ')}
         onClick={createDialog.onOpen}
         icon={<ContentAdd color="#12aaeb"/>}>
       </FlatButton>
