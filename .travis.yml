@@ -13,6 +13,7 @@ script:
   - "export NODE_ENV=production"
   - "yarn install"
   - "ls"
+  - "ls ./node_modules/ -a"
   - "ls ./node_modules/.bin/ -al"
   - "yarn run build"
 
