@@ -53,12 +53,17 @@ const enhance = compose(
     }
   }),
   connect((state) => {
-    const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+    let perms = []
+    const groups = _.get(state, ['authConfirm', 'data', 'groups'])
+    _.map(groups, (item) => {
+      _.map(_.get(item, 'permissions'), p => {
+        perms.push(_.get(p, 'codename'))
+      })
       return _.get(item, 'codename')
     })
     const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
     return {
-      permissions,
+      permissions: perms,
       isAdmin
     }
   }),
@@ -75,8 +80,7 @@ const SubMenu = enhance((props) => {
     })
     .value()
 
-
-  const items = _.map(_.get(parent,'childs'), (item, index) => {
+  const items = _.map(_.get(parent, 'childs'), (item, index) => {
     return (
       <Link to={{pathname: item.url, query: item.query}} key={index}>
         <span className={item.url === url ? classes.active : classes.item}> {item.name}</span>

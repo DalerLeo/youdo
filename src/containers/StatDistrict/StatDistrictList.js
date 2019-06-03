@@ -1,21 +1,16 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, pure, mapPropsStream} from 'recompose'
+import {compose, mapPropsStream} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {
-  listWrapper,
-  detailWrapper,
-  filterWrapper
+  listWrapper
 } from '../Wrappers'
 import {
-  CUSTOMER_FILTER_KEY,
-  CUSTOMER_FILTER_OPEN,
   StatDistrictGridList
 } from './components'
 import {
   statServiceListFetchAction,
-  statServiceItemFetchAction,
   statBrandListFetchAction
 } from './actions/statDistrict'
 import {openErrorAction} from 'actions/error'
@@ -36,14 +31,6 @@ const enhance = compose(
     storeName: 'statService',
     listFetchAction: statServiceListFetchAction
   }),
-  detailWrapper({
-    storeName: 'order',
-    itemFetchAction: statServiceItemFetchAction
-  }),
-  filterWrapper({
-    queryKey: CUSTOMER_FILTER_OPEN,
-    filterKeys: CUSTOMER_FILTER_KEY
-  }),
   connect(mapStateToProps, mapDispatchToProps),
   mapPropsStream(props$ => {
     props$
@@ -52,7 +39,6 @@ const enhance = compose(
 
     return props$
   }),
-  pure
 )
 
 const StatDistrictList = enhance((props) => {

@@ -1,21 +1,13 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
-import {Link} from 'react-router'
 import _ from 'lodash'
-import classNames from 'classnames'
 import {connect} from 'react-redux'
-import {compose, lifecycle, shouldUpdate, pure} from 'recompose'
+import {compose, lifecycle, pure} from 'recompose'
 import injectSheet from 'react-jss'
-import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import SettingsPower from 'material-ui/svg-icons/action/power-settings-new'
-import ToolTip from '../Utils/ToolTip'
-import {getMenus} from './MenuItems'
 import Logo from '../Images/logo.svg'
-import CustomBadge from '../CustomBadge/CustomBadge'
 import ArrowDown from 'material-ui/svg-icons/hardware/keyboard-arrow-down'
 import ArrowUp from 'material-ui/svg-icons/hardware/keyboard-arrow-up'
-import * as ROUTE from '../../constants/routes'
 import MenuList from './MenuList'
 const menuWrapper = React.createRef()
 const itemsRef = React.createRef()
@@ -50,8 +42,9 @@ const enhance = compose(
       const logout = logoutBtn.current
       const downBlur = downBlurRef.current
       const upBlur = upBlurRef.current
-      const buttonHeight = logout.clientHeight
-      const itemChildsHeight = _.sumBy(items.childNodes, (o) => {
+      const buttonHeight = _.get(logout, 'clientHeight')
+
+      const itemChildsHeight = _.sumBy(_.get(items, 'childNodes'), (o) => {
         return o.clientHeight
       })
       items.style.minHeight = itemChildsHeight + addToItemsHeight + 'px'

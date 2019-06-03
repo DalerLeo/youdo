@@ -21,6 +21,7 @@ import Dot from 'components/Images/dot.png'
 import t from 'helpers/translate'
 import numberFormat from 'helpers/numberFormat'
 import ToolTip from 'components/Utils/ToolTip'
+import deepPure from '../../../helpers/deepPure'
 
 const listHeader = [
   {
@@ -150,7 +151,8 @@ const enhance = compose(
         textOverflow: 'ellipsis'
       }
     }
-  })
+  }),
+  deepPure
 )
 
 const iconStyle = {

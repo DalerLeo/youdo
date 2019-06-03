@@ -27,8 +27,7 @@ import StaticUniversalSearchField from './StaticUniversalSearchField'
 import UsersMultiSearchField from './Users/UsersMultiSearchField'
 import UsersSearchInlineField from './Users/UsersSearchInlineField'
 import TextFieldInlineEdit from './Basic/TextFieldInlineEdit'
-import ModelSelectField from './ModelSelectField'
-
+import GroupMultiSearchField from './GroupMultiSearchField'
 export {
   ClientContactsField,
   DateField,
@@ -57,6 +56,6 @@ export {
   TextFieldInlineEdit,
   UsersSearchInlineField,
   DatesField,
-  ModelSelectField,
-  Editor
+  Editor,
+  GroupMultiSearchField
 }

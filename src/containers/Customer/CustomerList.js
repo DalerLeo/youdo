@@ -30,7 +30,6 @@ import {
 import fp from 'lodash/fp'
 import {userOrderListFetchAction} from 'containers/Performer/actions/applicant'
 import {getDataFromState} from '../../helpers/get'
-import {PerformerGridList} from '../Performer/components'
 const updateKeys = {
   fullName: 'fullName',
   phoneNumber: 'phoneNumber',

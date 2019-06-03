@@ -3,18 +3,17 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
-import * as ROUTES from '../../../constants/routes'
-import Container from '../../../components/Container'
+import * as ROUTES from 'constants/routes'
+import Container from 'components/Container'
 import PieChart from './PieChart'
-import SubMenu from '../../../components/SubMenu'
-import defaultPropTypes from '../../../constants/propTypes'
-import numberFormat from '../../../helpers/numberFormat'
+import SubMenu from 'components/SubMenu'
+import defaultPropTypes from 'constants/propTypes'
+import numberFormat from 'helpers/numberFormat'
 import GridListNavPagination from 'components/GridList/GridListNavPagination/GridListNavPagination'
 import RowColumnList from 'components/Utils/RowColumnList'
-import {hashHistory} from 'react-router'
 import StatDates from 'components/Utils/StatDates'
 import StatRegion from 'components/Utils/StatRegion'
-import RemoveIcon from 'material-ui/svg-icons/content/remove-circle-outline'
+import deepPure from 'helpers/deepPure'
 
 const enhance = compose(
   injectSheet({
@@ -77,7 +76,8 @@ const enhance = compose(
       fontSize: '18px'
     }
 
-  })
+  }),
+  deepPure
 )
 const orderProps = [
   {xs: '2', path: 'customer.fullName', title: 'Клиент'},

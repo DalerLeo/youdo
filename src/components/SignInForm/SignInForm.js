@@ -1,6 +1,5 @@
 import React from 'react'
 import {compose} from 'recompose'
-import FlatButton from 'material-ui/FlatButton'
 import Loader from '../Loader'
 import Paper from 'material-ui/Paper'
 import {Field, reduxForm} from 'redux-form'

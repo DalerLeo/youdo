@@ -48,12 +48,17 @@ const enhance = compose(
     }
   }),
   connect((state) => {
-    const permissions = _.map(_.get(state, ['authConfirm', 'data', 'permissions']), (item) => {
+    let perms = []
+    const groups = _.get(state, ['authConfirm', 'data', 'groups'])
+    _.map(groups, (item) => {
+      _.map(_.get(item, 'permissions'), p => {
+        perms.push(_.get(p, 'codename'))
+      })
       return _.get(item, 'codename')
     })
     const isAdmin = _.get(state, ['authConfirm', 'data', 'isSuperuser'])
     return {
-      permissions,
+      permissions: perms,
       isAdmin
     }
   })

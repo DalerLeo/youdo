@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import _ from 'lodash'
 import fpGet from 'lodash/fp/get'
 import withStyles from 'react-jss'
@@ -14,7 +14,6 @@ const check = fpGet('value.value')
 const enhance = compose(
   withHandlers({
     onAdd: props => () => {
-      console.warn(props)
       const service = _.get(props, 'service.input')
       const brand = _.get(props, 'brand.input')
       const amount = _.get(props, 'amount.input')
@@ -22,7 +21,6 @@ const enhance = compose(
       if (check(service) && amount.value && check(brand)) {
         servicesInput.onChange(_.union(servicesInput.value, [{service: service.value, amount: amount.value, brand: brand.value}]))
         // ItemOnChange(null)
-        console.warn('sdsd')
       }
       return null
     },

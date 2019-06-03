@@ -3,6 +3,7 @@ import {compose} from 'recompose'
 import {reduxForm, Field} from 'redux-form'
 import {DatesField} from 'components/ReduxForm'
 import {hashHistory} from 'react-router'
+import _ from 'lodash'
 const enhance = compose(
   reduxForm({
     form: 'StatDatesForm'

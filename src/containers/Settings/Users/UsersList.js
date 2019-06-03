@@ -20,6 +20,7 @@ import {
   USERS_FILTER_OPEN,
   UsersGridList
 } from '../../../components/Settings/Users/index'
+import setInitialValues from 'helpers/setInitialValues'
 import {
   usersCreateAction,
   usersUpdateAction,
@@ -38,8 +39,8 @@ const mapDispatchToProps = {
   openSnackbarAction
 }
 const updateKeys = {
-  firstNameEn: 'fullName',
-  firstNameRu: 'fullName'
+  username: 'username'
+//  Groups: 'groups'
 }
 
 const createKeys = {
@@ -118,6 +119,11 @@ const UsersList = enhance((props) => {
     detailLoading
   }
 
+  const init = {
+    groups: _.map(_.get(detail, 'groups'), item => item.id)
+  }
+
+  setInitialValues(updateDialog, init)
   return (
     <Layout {...layout}>
       <UsersGridList

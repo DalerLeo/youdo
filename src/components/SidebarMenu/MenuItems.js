@@ -8,7 +8,7 @@ import Settings from 'material-ui/svg-icons/action/settings'
 import Widgets from 'material-ui/svg-icons/device/widgets'
 import AccountIcon from 'material-ui/svg-icons/social/group'
 import StatsIcon from 'material-ui/svg-icons/action/timeline'
-
+import OrderIcon from 'material-ui/svg-icons/editor/attach-money'
 import {getPageSize} from '../../helpers/storage'
 const DEFAULT_PAGE_SIZE = getPageSize()
 const defaultPageSizeQuery = {pageSize: DEFAULT_PAGE_SIZE}
@@ -17,15 +17,23 @@ const NOT_FOUND = -1
 export const MenuItems = [
 
   {
+    name: t('Закази'),
+    icon: (<OrderIcon/>),
+    url: ROUTES.ORDER_LIST_URL,
+    query: defaultPageSizeQuery,
+    childs: [
+      {name: t('Заказ'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: 'order_front'},
+      {name: t('Обратный звонок'), url: ROUTES.FEEDBACK_LIST_URL, query: defaultPageSizeQuery, permission: 'feedback_front'}
+    ]
+  },
+  {
     name: t('Пользователи'),
     icon: (<AccountIcon/>),
     url: ROUTES.APPLICANT_LIST_URL,
     query: defaultPageSizeQuery,
     childs: [
-      {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-      {name: t('Клиенты'), url: ROUTES.CUSTOMER_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-      {name: t('Обратный звонок'), url: ROUTES.FEEDBACK_LIST_URL, query: defaultPageSizeQuery, permission: ''},
-      {name: t('Заказ'), url: ROUTES.ORDER_LIST_URL, query: defaultPageSizeQuery, permission: '', icon: <AccountIcon/>}
+      {name: t('Исполнители'), url: ROUTES.APPLICANT_LIST_URL, query: defaultPageSizeQuery, permission: 'executor_front'},
+      {name: t('Клиенты'), url: ROUTES.CUSTOMER_LIST_URL, query: defaultPageSizeQuery, permission: 'client_front'}
     ]
   },
 
@@ -35,8 +43,8 @@ export const MenuItems = [
     url: ROUTES.COMPANY_TYPE_LIST_URL,
     query: defaultPageSizeQuery,
     childs: [
-      {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: ''},
-      {name: t('Бренд'), url: ROUTES.BRAND_LIST_URL, permission: ''}
+      {name: t('Сфера услуг'), url: ROUTES.COMPANY_TYPE_LIST_URL, permission: 'service_front'},
+      {name: t('Бренд'), url: ROUTES.BRAND_LIST_URL, permission: 'brand_front'}
     ]
   },
 
@@ -46,7 +54,7 @@ export const MenuItems = [
     section: 'Administration',
     url: ROUTES.ARTICLES_LIST_URL,
     childs: [
-      {section: 'Основные', name: t('Новости'), url: ROUTES.ARTICLES_LIST_URL, permission: ''}
+      {section: 'Основные', name: t('Новости'), url: ROUTES.ARTICLES_LIST_URL, permission: 'news_front'}
     ]
   },
   {
@@ -55,26 +63,21 @@ export const MenuItems = [
     section: 'Статистика',
     url: ROUTES.STAT_SERVICE_LIST_URL,
     childs: [
-      {name: 'Статистика', url: ROUTES.STAT_DISTRICT_LIST_URL, permission: ''},
-      {name: 'Услуги', url: ROUTES.STAT_SERVICE_LIST_URL, permission: ''}
+      {name: 'Статистика', url: ROUTES.STAT_DISTRICT_LIST_URL, permission: 'stats_front'},
+      {name: 'Услуги', url: ROUTES.STAT_SERVICE_LIST_URL, permission: 'stats_front'}
     ]
-  }
+  },
 
-  /* {
+  {
     name: t('Настройки'),
     icon: (<Settings/>),
     section: 'Settings',
-    url: ROUTES.SKILLS_LIST_URL,
+    url: ROUTES.USERS_LIST_URL,
     bottom: true,
     childs: [
-      {section: 'Основные', name: t('Навыки'), url: ROUTES.SKILLS_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Должности'), url: ROUTES.POST_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Права доступа'), url: ROUTES.ROLE_LIST_URL, permission: ''},
-      {section: 'Основные', name: t('Статус поиска работы'), url: ROUTES.JOB_SEARCH_LIST_URL, permission: ''}
-
+      {section: 'Основные', name: t('Пользователи'), url: ROUTES.USERS_LIST_URL, permission: 'manager_front'}
     ]
-  } */
+  }
 ]
 
 export const getNeedMenu = (userPermissions) => {
@@ -125,11 +128,9 @@ export const getNeedMenu = (userPermissions) => {
 }
 
 export const getMenus = (userPermissions, isAdmin) => {
-  return MenuItems
-
-  /* .if (isAdmin) {
-        return MenuItems
-    }
-    return getNeedMenu(userPermissions) */
+  if (isAdmin) {
+    return MenuItems
+  }
+  return getNeedMenu(userPermissions)
 }
 

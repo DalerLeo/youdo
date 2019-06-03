@@ -4,11 +4,9 @@ import {API_URL} from '../constants/api'
 import * as storageHelper from '../helpers/storage'
 import {hashHistory} from 'react-router'
 import * as ROUTES from '../constants/routes'
-import sprintf from 'sprintf'
 
 const axiosRequest = (useToken = true) => {
   const TOKEN = storageHelper.getToken()
-  const LANG = storageHelper.getLanguage()
   // .const GIVEN_URL = 'undefined'
   const GIVEN_URL = storageHelper.getApi()
   const FORMED_URL = (!_.isNil(GIVEN_URL) && GIVEN_URL !== 'undefined') ? `${GIVEN_URL}` : API_URL

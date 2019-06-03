@@ -23,6 +23,7 @@ import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import PerformerFilterForm from './PerformerFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import deepPure from '../../../helpers/deepPure'
 
 const listHeader = [
   {
@@ -106,7 +107,8 @@ const enhance = compose(
       marginBottom: '0px'
     }
 
-  })
+  }),
+  deepPure
 )
 
 const PerformerGridList = enhance((props) => {

@@ -1,5 +1,5 @@
 const environment = process.env
-export const API_HOST = environment.API_HOST
+export const API_HOST = environment.API_HOST || '84.54.97.114:8000'
 export const API_ROOT = 'api'
 export const API_VERSION = 'v1'
 export const API_PROTOCOL = environment.API_PROTOCOL ? environment.API_PROTOCOL : 'http'
@@ -10,7 +10,8 @@ export const API_URL = `${API_PROTOCOL}://${API_HOST}/`
 const MAIN = 'main'
 export const USER = 'main/user'
 export const SIGN_IN = 'main/login/'
-export const AUTH_CONFIRM = `/${USER}/auth-confirm/`
+export const AUTH_CONFIRM = 'main/check_token/%s/'
+
 export const SIGN_OUT = '/main/logout/'
 export const CONFIG = '/config'
 
@@ -24,7 +25,7 @@ export const CLIENT_LIST_REPETITION = `/${CLIENT}/repetitions/`
 export const CLIENT_ITEM = `/${CLIENT}/%d/`
 export const CLIENT_ITEM_REPETITION = `/${CLIENT}/%d/repetition/`
 
-export const USERS = 'staff/staff'
+export const USERS = 'main/manager'
 export const USERS_CREATE = `/${USERS}/`
 export const USERS_LIST = `/${USERS}/`
 export const USERS_ITEM = `/${USERS}/%d/`
@@ -131,8 +132,8 @@ export const ROLE_LIST = `/${ROLE}/`
 export const ROLE_DELETE = `/${ROLE}/%d/`
 export const ROLE_ITEM = `/${ROLE}/%d/`
 export const ROLE_PRIMARY = 'currency_primary'
-export const ROLE_RATE = `/${ROLE}/%d/permissions/`
-export const ROLE_PERMISSION = 'main/permissions/'
+export const ROLE_RATE = `/${ROLE}/%d/permission/`
+export const ROLE_PERMISSION = 'main/permission/'
 
 export const POST = 'main/position'
 export const POST_CREATE = `/${POST}/`
@@ -223,7 +224,6 @@ export const STAT_SERVICE_DELETE = `/${STAT_SERVICE}/%d/`
 export const STAT_DISTRICT_LIST = `/${STAT_DISTRICT}/`
 export const STAT_BRAND_LIST = `/${STAT_BRAND}/`
 
-
 export const SERVICE = 'main/service'
 export const SERVICE_CREATE = `/${SERVICE}/`
 export const SERVICE_LIST = `/${SERVICE}/`
@@ -235,7 +235,6 @@ export const BRAND_CREATE = `/${BRAND}/`
 export const BRAND_LIST = `/${BRAND}/`
 export const BRAND_ITEM = `/${BRAND}/%d/`
 export const BRAND_DELETE = `/${BRAND}/%d/`
-
 
 export const FEEDBACK = 'main/feedback'
 export const FEEDBACK_CREATE = `/${FEEDBACK}/`

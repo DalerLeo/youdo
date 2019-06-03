@@ -6,10 +6,11 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
-const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : 'apimyjob.wienerdeming.com'
+const API_HOST = NODE_ENV !== 'development' || process.env.API_HOST ? process.env.API_HOST : '84.54.97.114:8000'
 // Package build for compilation
 const developmentPackage = _.keys(packageJSON.dependencies)
 const productionPackage = _.without(_.keys(packageJSON.dependencies), 'redux-logger')
+console.warn(NODE_ENV)
 const vendorPackages = NODE_ENV === 'development' ?  developmentPackage : productionPackage
 
 let webpackConfig;
@@ -41,7 +42,7 @@ webpackConfig = {
 
   module: {
     rules: [
-      {test: /\.(eot|woff|woff2|svg|png|ttf)([\?]?.*)$/, loader: 'file-loader'},
+      {test: /\.(eot|woff|woff2|svg|png|ttf|mp3)([\?]?.*)$/, loader: 'file-loader'},
       {test: /\.js?$/, loader: 'babel-loader', include: path.join(__dirname, 'src')},
       {test: /\.css$/, loader: ExtractTextPlugin.extract({fallback: 'style-loader', use: 'css-loader'})}
     ]

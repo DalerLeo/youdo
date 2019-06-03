@@ -1,8 +1,9 @@
-import {pure, compose, mapPropsStream} from 'recompose'
+import {compose, mapPropsStream} from 'recompose'
 import {connect} from 'react-redux'
 import _ from 'lodash'
 import {compareFilterByProps} from '../../helpers/get'
 import filterHelper from '../../helpers/filter'
+import deepPure from 'helpers/deepPure'
 
 export default params => {
   const {
@@ -37,7 +38,7 @@ export default params => {
   if (!listFetchAction) {
     return compose(
       connect(mapStateToProps),
-      pure
+      deepPure
     )
   }
 
@@ -49,6 +50,6 @@ export default params => {
         .subscribe(({filter, ...props}) => props.listFetchAction(filter))
       return props$
     }),
-    pure
+    deepPure
   )
 }

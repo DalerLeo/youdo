@@ -834,7 +834,7 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px white inset;
 }
 #wrapper {
-    background: #2d3037;
+    background: #455A64;
 }
 
 ::-webkit-scrollbar-button {
@@ -2867,4 +2867,3 @@ hr.lineDote {
     display: none;
   }
 }
-/*# sourceMappingURL=main.css.map*/

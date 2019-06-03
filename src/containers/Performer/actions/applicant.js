@@ -105,8 +105,6 @@ export const applicantItemFetchAction = (id) => {
 }
 
 export const userOrderListFetchAction = (filter, data) => {
-//  const params = serializers.listFilterSerializer(filter.getParams(), date)
-
   const params = {
     ...data
   }

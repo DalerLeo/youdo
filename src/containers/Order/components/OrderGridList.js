@@ -27,6 +27,7 @@ import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import OrderFilterForm from './OrderFilterForm'
 import FloatingActionButton from 'material-ui/FloatingActionButton'
+import deepPure from '../../../helpers/deepPure'
 
 const data = [
   {
@@ -130,7 +131,8 @@ const enhance = compose(
       marginBottom: '0px'
     }
 
-  })
+  }),
+  deepPure
 )
 
 const OrderGridList = enhance((props) => {
@@ -226,8 +228,7 @@ const OrderGridList = enhance((props) => {
         className={classes.addButton}
         label={t('добавить Заказ')}
         onClick={createDialog.onOpen}
-        icon={<ContentAdd color="#12aaeb"/>}>
-      </FlatButton>
+        icon={<ContentAdd color="#12aaeb"/>}/>
     </div>
   )
 

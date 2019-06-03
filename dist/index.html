@@ -3,7 +3,6 @@
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <title>MyJob</title>
-    <link rel="manifest" href="./manifest.json">
 <link rel="shortcut icon" href="rhythm-logo.png"><link href="css/main.css" rel="stylesheet"><link href="css/vendor.css" rel="stylesheet"></head>
 <style>
     #wrapper {
@@ -11,7 +10,7 @@
         height: 100%;
     }
     .react-dom-loader {
-        background: #2d3037;
+        background: #455A64;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -65,22 +64,39 @@
         50% {transform: scaleY(1)}
         100% {transform: scaleY(0.6)}
     }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        25% { -webkit-transform: rotate(120deg); }
+        50% { -webkit-transform: rotate(270deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg);}
+        25% { transform: rotate(120deg);}
+        50% { transform: rotate(270deg);}
+        100% { transform: rotate(360deg); }
+    }
+
+    .loaderStyle {
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 6px solid #CFD8DC;
+        width: 80px;
+        height: 80px;
+        display: inline-block;
+    'WebkitAnimation': spin 800ms linear infinite;
+    animation: spin 800ms linear infinite
+    }
 </style>
 <body id="body">
     <div id="wrapper">
         <div class="react-dom-loader">
-            <div class="loader">
-                <div class="el"></div>
-                <div class="el blue"></div>
-                <div class="el"></div>
-                <div class="el"></div>
-                <div class="el blue"></div>
-                <div class="el"></div>
-                <div class="el"></div>
-            </div>
+                <div class="loaderStyle"></div>
         </div>
     </div>
-<script type="text/javascript" src="77a0ac764ce62b08dc5a-main.main.js"></script><script type="text/javascript" src="77a0ac764ce62b08dc5a-vendor.vendor.js"></script></body>
+<script type="text/javascript" src="42105759a5bc05d426b2-0.main.js"></script><script type="text/javascript" src="42105759a5bc05d426b2-1.vendor.js"></script></body>
 <!-- Prompt a message in the browser if users disabled JS -->
 <noscript>Your browser does not support JavaScript!</noscript>
 </html>

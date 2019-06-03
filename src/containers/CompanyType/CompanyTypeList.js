@@ -27,7 +27,7 @@ import {
 
 const UPDATE_KEYS = {
   name: 'name',
-  price: 'price',
+  price: 'price'
 }
 
 const enhance = compose(

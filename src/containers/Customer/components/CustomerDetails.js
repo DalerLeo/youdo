@@ -216,7 +216,6 @@ const CustomerDetails = enhance((props) => {
   const fullName = _.get(data, 'fullName')
 
   const phoneNumber = _.get(data, 'phoneNumber')
-  const email = _.get(data, 'email')
   if (loading) {
     return (
       <div className={classes.loader}>

@@ -22,6 +22,7 @@ import dateFormat from '../../../helpers/dateFormat'
 import t from '../../../helpers/translate'
 import {COLOR_WHITE, LINK_COLOR} from '../../../constants/styleConstants'
 import sprintf from 'sprintf'
+import deepPure from '../../../helpers/deepPure'
 
 const listHeader = [
   {
@@ -93,7 +94,8 @@ const enhance = compose(
       justifyContent: 'flex-end',
       zIndex: '2'
     }
-  })
+  }),
+  deepPure
 )
 
 const iconStyle = {

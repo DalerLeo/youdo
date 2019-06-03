@@ -10,8 +10,7 @@ import Loader from '../../Loader/index'
 import {Field, reduxForm} from 'redux-form'
 import CloseIcon from 'material-ui/svg-icons/navigation/close'
 import t from '../../../helpers/translate'
-import {TextField, ImageUploadField, PositionsSearchField, UserStatusRadioButton, RoleSearchField, normalizePhone} from '../../ReduxForm/index'
-import formValidate from '../../../helpers/formValidate'
+import {TextField, GroupMultiSearchField} from '../../ReduxForm'
 
 export const USERS_CREATE_DIALOG_OPEN = 'openCreateDialog'
 
@@ -150,7 +149,6 @@ const UsersCreateDialog = enhance((props) => {
   const {
     open,
     loading,
-    dispatch,
     handleSubmit,
     onClose,
     classes,
@@ -158,21 +156,10 @@ const UsersCreateDialog = enhance((props) => {
   } = props
 
   const formNames = [
-    'firstNameRu',
-    'lastNameRu',
-    'firstNameEn',
-    'lastNameEn',
-    'greetingTextRu',
-    'greetingTextEn',
-    'phoneNumber',
-    'photo',
-    'email',
+    'username',
     'password'
   ]
-  const onSubmit = handleSubmit(() => props.onSubmit()
-    .catch((error) => {
-      formValidate(formNames, dispatch, error)
-    }))
+  const onSubmit = handleSubmit(() => props.onSubmit(formNames))
   return (
     <Dialog
       modal={true}
@@ -193,56 +180,18 @@ const UsersCreateDialog = enhance((props) => {
             <Loader size={0.75}/>
           </div>
           <div className={classes.inContent}>
-            <div className={classes.upperSection}>
-              <div>
-                <Field
-                  name="firstNameRu"
-                  component={TextField}
-                  label={t('Имя на русском')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="firstNameEn"
-                  component={TextField}
-                  label={t('Имя на английском')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="lastNameRu"
-                  component={TextField}
-                  label={t('Фамилия на русском')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="lastNameEn"
-                  component={TextField}
-                  label={t('Фамилия на английском')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </div>
-              <Field
-                name="photo"
-                component={ImageUploadField}
-                label={t('Изображения')}
-                fullWidth={true}/>
-            </div>
+            <Field
+              name="username"
+              component={TextField}
+              label={'Логин'}
+              className={classes.inputFieldCustom}
+              fullWidth={true}/>
+            <Field
+              name="groups"
+              component={GroupMultiSearchField}
+              label={'доступ'}
+              fullWidth={true}/>
             <Row className={classes.field}>
-              <Col xs={6}>
-                <Field
-                  name="email"
-                  component={TextField}
-                  type="email"
-                  label={t('email') + ' (Логин)'}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-                <Field
-                  name="phoneNumber"
-                  normalize={normalizePhone}
-                  component={TextField}
-                  label={t('Телефонный номер')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
               <Col xs={6}>
                 <Field
                   name="passwordExp"
@@ -251,6 +200,9 @@ const UsersCreateDialog = enhance((props) => {
                   label={isUpdate ? t('Изменить пароль') : t('Пароль')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
+
+              </Col>
+              <Col xs={6}>
                 <Field
                   name="password"
                   type="password"
@@ -258,45 +210,8 @@ const UsersCreateDialog = enhance((props) => {
                   label={t('Подтвердите пароль')}
                   className={classes.inputFieldCustom}
                   fullWidth={true}/>
-
               </Col>
             </Row>
-            <Row className={classes.field}>
-              <Col xs={6}>
-                <Field
-                  name="role"
-                  component={RoleSearchField}
-                  label={t('Роль сотрудника')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-              <Col xs={6}>
-                <Field
-                  name="position"
-                  component={PositionsSearchField}
-                  label={t('Должность')}
-                  className={classes.inputFieldCustom}
-                  fullWidth={true}/>
-              </Col>
-            </Row>
-            <div className={classes.status}>
-              <Field
-                name="status"
-                component={UserStatusRadioButton}
-                fullWidth={true}/>
-              <Field
-                name="greetingRu"
-                component={TextField}
-                label={t('Текст приветствия в “онлайн консультант (на русском языке)')}
-                className={classes.inputFieldCustom}
-                fullWidth={true}/>
-              <Field
-                name="greetingEn"
-                component={TextField}
-                label={t('Текст приветствия в “онлайн консультант” (на английском языке)')}
-                className={classes.inputFieldCustom}
-                fullWidth={true}/>
-            </div>
           </div>
           <div className={classes.bottomButton}>
             <FlatButton

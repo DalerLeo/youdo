@@ -1,11 +1,10 @@
 import React from 'react'
 import _ from 'lodash'
-import {compose, pure, mapPropsStream} from 'recompose'
+import {compose, mapPropsStream} from 'recompose'
 import {connect} from 'react-redux'
 import Layout from '../../components/Layout'
 import {
   listWrapper,
-  detailWrapper,
   filterWrapper
 } from '../Wrappers'
 import {
@@ -58,7 +57,6 @@ const enhance = compose(
 
     return props$
   }),
-  pure
 )
 
 const StatServiceList = enhance((props) => {

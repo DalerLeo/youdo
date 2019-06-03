@@ -66,7 +66,6 @@ const enhance = compose(
     if (_.isEmpty(finder) && value) {
       getItem(value).then((data) => {
         if (!_.isEmpty(data)) {
-          console.warn('HEY: ', {text: getText(data), value: getValue(data)})
           return dispatch({
             dataSource: _.unionBy(props.state.dataSource, [{
               text: getText(data), value: getValue(data)

@@ -202,4 +202,5 @@ parserOptions:
 globals:
   localStorage: true
   google: true
+  Audio: true
   sessionStorage: true

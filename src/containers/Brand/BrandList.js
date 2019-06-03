@@ -26,7 +26,7 @@ import {
 } from './actions/brand'
 
 const UPDATE_KEYS = {
-  name: 'title',
+  name: 'title'
 }
 
 const enhance = compose(

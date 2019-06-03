@@ -3,7 +3,7 @@ import axios from '../helpers/axios'
 import * as storageHelper from '../helpers/storage'
 import * as API from '../constants/api'
 import * as actionTypes from '../constants/actionTypes'
-
+import sprintf from 'sprintf'
 export const setTokenAction = () => {
   return {
     type: `${actionTypes.SIGN_IN}_FULFILLED`,
@@ -25,8 +25,8 @@ export const setAuthConfirmAction = () => {
   }
 }
 
-export const authConfirmAction = (rememberUser) => {
-  const payload = axios().get(API.AUTH_CONFIRM)
+export const authConfirmAction = (token, rememberUser) => {
+  const payload = axios().get(sprintf(API.AUTH_CONFIRM, token))
     .then((response) => {
       const userData = _.get(response, 'data')
       storageHelper.setUser(userData, rememberUser)
@@ -52,7 +52,6 @@ export const signInAction = (params) => {
     })
     .catch((error) => {
       const errorData = _.get(error, ['response', 'data'])
-
       return Promise.reject(
         errorData || {'nonFieldErrors': ['Internet connection error']}
       )

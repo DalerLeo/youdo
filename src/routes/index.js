@@ -1,5 +1,5 @@
-import {compose} from 'redux'
-import {userIsAuth, visibleOnlyAdmin} from '../permissions'
+// . import {compose} from 'redux'
+import {userIsAuth} from '../permissions'
 import * as ROUTES from '../constants/routes'
 import AppLayout from '../containers/App/AppLayout'
 import {MainList} from '../containers/Main'
@@ -26,7 +26,7 @@ import {
 } from '../containers/Settings'
 
 import {RoleList} from '../containers/Settings/Role'
-const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
+// .const userIsAdminChain = compose(userIsAuth, visibleOnlyAdmin)
 
 export default {
   path: '/',
@@ -49,7 +49,7 @@ export default {
     // Permission
     {
       path: ROUTES.PERMISSION_LIST_URL,
-      component: userIsAdminChain(PermissionList),
+      component: userIsAuth(PermissionList),
       childRoutes: [
         {
           path: ROUTES.PERMISSION_ITEM_URL,
@@ -63,7 +63,7 @@ export default {
     // Users
     {
       path: ROUTES.USERS_LIST_URL,
-      component: userIsAdminChain(UsersList),
+      component: userIsAuth(UsersList),
       childRoutes: [
         {
           path: ROUTES.USERS_ITEM_URL,
@@ -74,7 +74,7 @@ export default {
     // Articles
     {
       path: ROUTES.ARTICLES_LIST_URL,
-      component: userIsAdminChain(NewsList),
+      component: userIsAuth(NewsList),
       childRoutes: [
         {
           path: ROUTES.ARTICLES_ITEM_URL,
@@ -86,7 +86,7 @@ export default {
     // Skills
     {
       path: ROUTES.SKILLS_LIST_URL,
-      component: userIsAdminChain(SkillsList),
+      component: userIsAuth(SkillsList),
       childRoutes: [
         {
           path: ROUTES.SKILLS_ITEM_URL,
@@ -98,7 +98,7 @@ export default {
     // Roles
     {
       path: ROUTES.ROLE_LIST_URL,
-      component: userIsAdminChain(RoleList),
+      component: userIsAuth(RoleList),
       childRoutes: [
         {
           path: ROUTES.ROLE_ITEM_URL,
@@ -113,7 +113,7 @@ export default {
     // Post
     {
       path: ROUTES.POST_LIST_URL,
-      component: userIsAdminChain(PostList),
+      component: userIsAuth(PostList),
       childRoutes: [
         {
           path: ROUTES.POST_ITEM_URL,
@@ -127,7 +127,7 @@ export default {
     // COMPANY TYPE
     {
       path: ROUTES.COMPANY_TYPE_LIST_URL,
-      component: userIsAdminChain(CompanyTypeList),
+      component: userIsAuth(CompanyTypeList),
       childRoutes: [
         {
           path: ROUTES.COMPANY_TYPE_ITEM_URL,
@@ -139,7 +139,7 @@ export default {
     // APPLICANT
     {
       path: ROUTES.APPLICANT_LIST_URL,
-      component: userIsAdminChain(PerformerList),
+      component: userIsAuth(PerformerList),
       childRoutes: [
         {
           path: ROUTES.APPLICANT_ITEM_URL,
@@ -151,7 +151,7 @@ export default {
     // PLAN TYPE
     {
       path: ROUTES.PLAN_LIST_URL,
-      component: userIsAdminChain(PlanList),
+      component: userIsAuth(PlanList),
       childRoutes: [
         {
           path: ROUTES.PLAN_ITEM_URL,
@@ -162,7 +162,7 @@ export default {
     // PLAN TYPE
     {
       path: ROUTES.JOB_SEARCH_LIST_URL,
-      component: userIsAdminChain(JobSearch),
+      component: userIsAuth(JobSearch),
       childRoutes: [
         {
           path: ROUTES.JOB_SEARCH_ITEM_URL,
@@ -173,7 +173,7 @@ export default {
     // PROJECT TYPE
     {
       path: ROUTES.PROJECT_LIST_URL,
-      component: userIsAdminChain(ProjectList),
+      component: userIsAuth(ProjectList),
       childRoutes: [
         {
           path: ROUTES.PROJECT_ITEM_URL,
@@ -185,7 +185,7 @@ export default {
     // CUSTOMER
     {
       path: ROUTES.CUSTOMER_LIST_URL,
-      component: userIsAdminChain(CustomerList),
+      component: userIsAuth(CustomerList),
       childRoutes: [
         {
           path: ROUTES.CUSTOMER_ITEM_URL,
@@ -196,7 +196,7 @@ export default {
     // CUSTOMER
     {
       path: ROUTES.FEEDBACK_LIST_URL,
-      component: userIsAdminChain(FeedbackList),
+      component: userIsAuth(FeedbackList),
       childRoutes: [
         {
           path: ROUTES.FEEDBACK_ITEM_URL,
@@ -208,7 +208,7 @@ export default {
     // ORDER
     {
       path: ROUTES.ORDER_LIST_URL,
-      component: userIsAdminChain(OrderList),
+      component: userIsAuth(OrderList),
       childRoutes: [
         {
           path: ROUTES.ORDER_ITEM_URL,
@@ -220,7 +220,7 @@ export default {
     // BRAND
     {
       path: ROUTES.BRAND_LIST_URL,
-      component: userIsAdminChain(BrandList),
+      component: userIsAuth(BrandList),
       childRoutes: [
         {
           path: ROUTES.BRAND_ITEM_URL,
@@ -231,7 +231,7 @@ export default {
     // StatService
     {
       path: ROUTES.STAT_DISTRICT_LIST_URL,
-      component: userIsAdminChain(StatDistrict),
+      component: userIsAuth(StatDistrict),
       childRoutes: [
         {
           path: ROUTES.STAT_DISTRICT_LIST_URL,
@@ -242,7 +242,7 @@ export default {
     // StatService
     {
       path: ROUTES.STAT_SERVICE_LIST_URL,
-      component: userIsAdminChain(StatService),
+      component: userIsAuth(StatService),
       childRoutes: [
         {
           path: ROUTES.STAT_SERVICE_ITEM_URL,

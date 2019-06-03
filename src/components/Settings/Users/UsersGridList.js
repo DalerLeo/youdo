@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import fp from 'lodash/fp'
 import React from 'react'
 import PropTypes from 'prop-types'
 import {Row, Col} from 'react-flexbox-grid'
@@ -17,7 +16,6 @@ import ConfirmDialog from '../../ConfirmDialog/index'
 import SideMenu from '../SideMenu'
 import ToolTip from '../../Utils/ToolTip/index'
 import t from '../../../helpers/translate'
-import {USERS_STATUS} from '../../../constants/backendConstants'
 import defaultPropTypes from '../../../constants/propTypes'
 import DeleteIcon from 'material-ui/svg-icons/action/delete'
 const ZERO = 0
@@ -37,27 +35,9 @@ const listHeader = [
   },
   {
     sorting: false,
-    name: 'email',
-    title: t('email'),
-    xs: 2
-  },
-  {
-    sorting: false,
-    name: 'phone_number',
-    title: t('Телефон'),
-    xs: 2
-  },
-  {
-    sorting: false,
     name: 'permissions',
     title: t('Роль'),
-    xs: 2
-  },
-  {
-    sorting: false,
-    name: 'status',
-    title: t('Статус'),
-    xs: 2
+    xs: 8
   }
 ]
 
@@ -128,7 +108,7 @@ const iconStyle = {
     padding: 0
   }
 }
-const findItem = (item) => _.find(USERS_STATUS, {value: _.get(item, 'status')})
+// . const findItem = (item) => _.find(USERS_STATUS, {value: _.get(item, 'status')})
 
 const UsersGridList = enhance((props) => {
   const {
@@ -143,19 +123,15 @@ const UsersGridList = enhance((props) => {
 
   const usersList = _.map(_.get(listData, 'data'), (item) => {
     const id = _.get(item, 'id')
-    const status = fp.flow(findItem, fp.get('name'))
-    const username = _.get(item, 'email')
-    const phone = _.get(item, 'phoneNumber')
     const firstName = _.get(item, 'fullName')
-    const permissions = _.get(item, ['groups', '0', 'name'])
+    const permissions = _.get(item, ['groups'])
+    const groups = _.map(permissions, g => _.get(g, 'name'))
     return (
       <Row key={id} className={classes.listRow}>
         <Col xs={1}>{id}</Col>
         <Col xs={3}>{firstName}</Col>
-        <Col xs={2}>{username}</Col>
-        <Col xs={2} style={{textAlign: 'right'}}>{phone}</Col>
-        <Col xs={2}>{permissions}</Col>
-        <Col xs={2}>{status(item)}
+        <Col xs={6}>{_.join(groups, ' | ')}</Col>
+        <Col xs={2}>
           <div className={classes.iconBtn}>
             <ToolTip position="bottom" text={t('Изменить')}>
               <IconButton

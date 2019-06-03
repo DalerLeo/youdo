@@ -24,7 +24,6 @@ import 'draft-js/dist/Draft.css'
 import './Editor.css'
 import {BORDER_STYLE} from '../../../constants/styleConstants'
 import Label from './FieldLabel'
-import {getOnlyString} from 'helpers/get'
 import AttachIcon from 'material-ui/svg-icons/editor/attach-file'
 import FileSimpleUploadField from 'components/ReduxForm/Basic/FileSimpleUploadField'
 import {Field} from 'redux-form'
@@ -134,7 +133,6 @@ class TextEditor extends React.Component {
       activeTools,
       input
     } = this.props
-    console.warn(input.value)
 
     const isActive = activeTools || active
     const {editorState} = this.state

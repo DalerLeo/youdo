@@ -22,7 +22,7 @@ import {replaceUrl} from '../../../helpers/changeUrl'
 import IconButton from 'material-ui/IconButton'
 import EditIcon from 'material-ui/svg-icons/content/create'
 import CustomerFilterForm from './CustomerFilterForm'
-import FloatingActionButton from 'material-ui/FloatingActionButton'
+import deepPure from '../../../helpers/deepPure'
 
 const listHeader = [
   {
@@ -100,7 +100,8 @@ const enhance = compose(
       marginBottom: '0px'
     }
 
-  })
+  }),
+  deepPure
 )
 
 const CustomerGridList = enhance((props) => {
@@ -205,17 +206,6 @@ const CustomerGridList = enhance((props) => {
     <Container>
       <div className={classes.wrapper}>
         <SubMenu url={ROUTES.CUSTOMER_LIST_URL}/>
-        {/* <div className={classes.addButtonWrapper}>
-          <ToolTip position="left" text={'добавить соискателя'}>
-            <FloatingActionButton
-              mini={true}
-              zDepth={1}
-              backgroundColor="#12aaeb"
-              onClick={createDialog.onOpen}>
-              <ContentAdd/>
-            </FloatingActionButton>
-          </ToolTip>
-        </div> */}
         <GridList
           filter={filter}
           filterDialog={applicantFilterDialog}

@@ -12,7 +12,6 @@ import DocumentTitle from 'react-document-title'
 import SnakeBar from '../Snackbar'
 import {connect} from 'react-redux'
 import ErrorDialog from '../ErrorDialog'
-import DataLayout from './DataLayout'
 import Notifications from './Notifications'
 import {
   notificationListFetchAction,

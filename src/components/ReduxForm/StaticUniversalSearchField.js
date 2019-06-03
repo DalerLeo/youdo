@@ -1,4 +1,3 @@
-import {find, flow} from 'lodash/fp'
 import React from 'react'
 import _ from 'lodash'
 import Search2Field from './Basic/Search2Field'

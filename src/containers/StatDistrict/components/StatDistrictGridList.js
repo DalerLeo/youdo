@@ -7,7 +7,7 @@ import * as ROUTES from 'constants/routes'
 import Container from 'components/Container'
 import PieChart from './PieChart'
 import SubMenu from 'components/SubMenu'
-import defaultPropTypes from 'constants/propTypes'
+import deepPure from 'helpers/deepPure'
 
 const enhance = compose(
   injectSheet({
@@ -73,7 +73,9 @@ const enhance = compose(
       }
     }
 
-  })
+  }),
+  deepPure
+
 )
 
 const StatDistrictGridList = enhance((props) => {

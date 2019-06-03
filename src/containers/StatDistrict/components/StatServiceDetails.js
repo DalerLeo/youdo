@@ -195,7 +195,6 @@ const iconStyle = {
     padding: 12
   }
 }
-const order = [1, 2]
 const StatServiceDetails = enhance((props) => {
   const {
     filter,
@@ -290,7 +289,7 @@ const StatServiceDetails = enhance((props) => {
                 <Col xs={2} style={{lineHeight: '2', textAlign: 'right'}}>{t('Kol-vo')}</Col>
                 <Col xs={3} style={{lineHeight: '2', textAlign: 'right'}}>{t('Дата')}</Col>
               </Row>
-              <EmptyQuery list={order} />
+              <EmptyQuery size={'100'} list={services} loading={loading}/>
               {!_.isEmpty(services) &&
               <React.Fragment>
                 {_.map(services, (item) => {

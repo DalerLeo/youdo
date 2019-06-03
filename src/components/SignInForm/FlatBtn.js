@@ -1,10 +1,8 @@
-import {renderReact}from 'hypernova-react'
 import FlatButton from 'material-ui/FlatButton'
 
 import React from 'react'
 
 const FlatBtn = props => {
-
   return (
     <FlatButton
       type="submit"
@@ -22,4 +20,4 @@ const FlatBtn = props => {
   )
 }
 
-export default renderReact('FlatBtn', FlatBtn)
+export default FlatBtn

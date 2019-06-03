@@ -4,23 +4,14 @@ import PropTypes from 'prop-types'
 import injectSheet from 'react-jss'
 import {compose} from 'recompose'
 import {Row, Col} from 'react-flexbox-grid'
-import IconButton from 'material-ui/IconButton'
-import ModEditorIcon from 'material-ui/svg-icons/editor/mode-edit'
-import DeleteIcon from 'material-ui/svg-icons/action/delete'
-import FlatButton from 'material-ui/FlatButton'
-import ContentAdd from 'material-ui/svg-icons/content/add'
-import Edit from 'material-ui/svg-icons/image/edit'
 import * as ROUTES from 'constants/routes'
 import GridList from 'components/GridList'
 import Container from 'components/Container'
-import CompanyTypeCreateDialog from './CompanyTypeCreateDialog'
-import ConfirmDialog from 'components/ConfirmDialog'
 import SubMenu from 'components/SubMenu'
-import defaultPropTypes from 'constants/propTypes'
 import Dot from 'components/Images/dot.png'
 import t from 'helpers/translate'
-import ToolTip from 'components/Utils/ToolTip'
 import {hashHistory} from 'react-router'
+import deepPure from '../../../helpers/deepPure'
 
 const listHeader = [
   {
@@ -150,45 +141,16 @@ const enhance = compose(
         textOverflow: 'ellipsis'
       }
     }
-  })
+  }),
+  deepPure
 )
-
-const iconStyle = {
-  icon: {
-    color: '#666',
-    width: 22,
-    height: 22
-  },
-  button: {
-    width: 30,
-    height: 25,
-    padding: 0
-  }
-}
 
 const FeedbackGridList = enhance((props) => {
   const {
     filter,
-    createDialog,
-    updateDialog,
-    actionsDialog,
-    confirmDialog,
     listData,
-    detailData,
     classes
   } = props
-
-  const actions = (
-    <div>
-      <IconButton onClick={actionsDialog.handleActionEdit}>
-        <ModEditorIcon />
-      </IconButton>
-
-      <IconButton onClick={actionsDialog.handleActionDelete}>
-        <DeleteIcon />
-      </IconButton>
-    </div>
-  )
 
   const onCreate = (clientName) => {
     hashHistory.push({pathname: ROUTES.ORDER_LIST_URL, query: {openCreateDialog: true, clientName}})
@@ -206,28 +168,6 @@ const FeedbackGridList = enhance((props) => {
         <Col xs={7}>{fullName}</Col>
         <Col xs={4}>{phone}</Col>
         <Col xs={1}>
-          <div className={classes.iconBtn} style={{opacity: '0'}}>
-            <ToolTip position="bottom" text={t('Изменить')}>
-              <IconButton
-                iconStyle={iconStyle.icon}
-                style={iconStyle.button}
-                disableTouchRipple={true}
-                touch={true}
-                onClick={() => { updateDialog.onOpen(id) }}>
-                <Edit />
-              </IconButton>
-            </ToolTip>
-            <ToolTip position="bottom" text={t('Удалить')}>
-              <IconButton
-                disableTouchRipple={true}
-                iconStyle={iconStyle.icon}
-                style={iconStyle.button}
-                onClick={() => { confirmDialog.onOpen(id) }}
-                touch={true}>
-                <DeleteIcon />
-              </IconButton>
-            </ToolTip>
-          </div>
         </Col>
       </Row>
     )
@@ -236,7 +176,7 @@ const FeedbackGridList = enhance((props) => {
   const list = {
     header: listHeader,
     list: companyTypeList,
-    loading: _.get(listData, 'listLoading')
+    loading: false
   }
 
   return (
@@ -247,33 +187,6 @@ const FeedbackGridList = enhance((props) => {
         filter={filter}
         list={list}
         detail={(<span>2</span>)}
-        actionsDialog={actions}
-      />
-
-      <CompanyTypeCreateDialog
-        open={createDialog.open}
-        loading={createDialog.loading}
-        onClose={createDialog.onClose}
-        onSubmit={createDialog.onSubmit}
-        initialValues={updateDialog.initialValues}
-      />
-
-      <CompanyTypeCreateDialog
-        isUpdate={true}
-        open={updateDialog.open}
-        loading={updateDialog.loading}
-        onClose={updateDialog.onClose}
-        onSubmit={updateDialog.onSubmit}
-        initialValues={updateDialog.initialValues}
-      />
-
-      <ConfirmDialog
-        type="delete"
-        message={_.get(detailData, ['data', 'name'])}
-        loading={confirmDialog.loading}
-        onClose={confirmDialog.onClose}
-        onSubmit={confirmDialog.onSubmit}
-        open={confirmDialog.open}
       />
     </Container>
   )
@@ -282,20 +195,7 @@ const FeedbackGridList = enhance((props) => {
 FeedbackGridList.propTypes = {
   filter: PropTypes.object.isRequired,
   listData: PropTypes.object,
-  detailData: PropTypes.object,
-  createDialog: PropTypes.shape({
-    ...defaultPropTypes
-  }).isRequired,
-  confirmDialog: PropTypes.shape({
-    ...defaultPropTypes
-  }).isRequired,
-  updateDialog: PropTypes.shape({
-    ...defaultPropTypes
-  }).isRequired,
-  actionsDialog: PropTypes.shape({
-    handleActionEdit: PropTypes.func.isRequired,
-    handleActionDelete: PropTypes.func.isRequired
-  }).isRequired
+  detailData: PropTypes.object
 }
 
 export default FeedbackGridList

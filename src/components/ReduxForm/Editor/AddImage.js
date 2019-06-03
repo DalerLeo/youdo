@@ -1,4 +1,4 @@
-/* eslint no-invalid-this: 0 */
+/* eslint no-invalid-this: 0, no-undef: 0 */
 import React, {Component} from 'react'
 import fp from 'lodash/fp'
 import axios from 'helpers/axios'

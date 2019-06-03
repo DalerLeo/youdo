@@ -115,7 +115,6 @@ export const ORDER_ITEM_PATH = `/${ORDER}/%d`
 export const STAT_DISTRICT = 'stat/district'
 export const STAT_DISTRICT_LIST_URL = `/${STAT_DISTRICT}`
 
-
 export const STAT_SERVICE = 'stat/service'
 export const STAT_SERVICE_LIST_URL = `/${STAT_SERVICE}`
 export const STAT_SERVICE_ITEM_URL = `/${STAT_SERVICE}/:id`

@@ -70,27 +70,7 @@ const enhance = compose(
     }
   })
 )
-const loaderStyle = {
-  border: '10px solid #f3f3f3',
-  borderRadius: '50%',
-  borderTop: '8px solid #636ec1',
-  width: '120px',
-  height: '120px',
-  display: 'inline-block',
-  'WebkitAnimation': 'spin 800ms linear infinite',
-  animation: 'spin 800ms linear infinite'
-}
-const loadWrap = {
-  display: 'none',
-  zIndex: '99',
-  background: '#fff9',
-  position: 'absolute',
-  top: '0',
-  textAlign: 'center',
-  paddingTop: '300px',
-  height: '100%',
-  width: '100%'
-}
+
 const ONE = 1
 const ELEMENTS_AMOUNT = 7
 const BLUE_ELEMENTS = _.map(['2', '5'], _.parseInt)

@@ -5,15 +5,44 @@ import * as ROUTES from '../../constants/routes'
 import {setTokenAction, signOutAction, setAuthConfirmAction} from '../../actions/signIn'
 import {hashHistory} from 'react-router'
 import injectSheet from 'react-jss'
+import NotiFy from 'components/Images/notify.mp3'
+import {feedbackListFetchAction} from 'containers/Feedback/actions/service'
+import {getToken} from 'helpers/storage'
 import {
   compose,
   withState,
-  withHandlers
+  withHandlers,
+  mapPropsStream
 } from 'recompose'
-import SideBarMenu from '../../components/SidebarMenu'
 
+import SideBarMenu from '../../components/SidebarMenu'
+import {Observable} from 'rxjs'
+
+const WAIT_SECUNDS = 5000
 const enhance = compose(
-  connect(),
+  connect(state => ({
+    feedCount: _.get(state, 'feedback.list.data.count'),
+    authLoading: _.get(state, ['authConfirm', 'loading'])
+  })),
+  mapPropsStream(props$ => {
+    const source = Observable.interval(WAIT_SECUNDS)
+    const everySecond = source.withLatestFrom(props$).subscribe(([, props]) => {
+      const getParams = () => _.get(props, 'location.query')
+      if (getToken()) {
+        return props.dispatch(feedbackListFetchAction({getParams}))
+          .then(({value}) => {
+            if (value.count !== props.feedCount) {
+              const audio = new Audio(NotiFy)
+              audio.play()
+            }
+          })
+      }
+      return null
+    })
+    props$.last().subscribe(() => everySecond.unsubscribe())
+
+    return props$
+  }),
   withHandlers({
     handleSignOut: prop => (event) => {
       const {dispatch} = prop
@@ -63,7 +92,6 @@ class AppLayout extends React.Component {
     dispatch(setTokenAction())
     dispatch(setAuthConfirmAction())
   }
-
   componentWillReceiveProps (nextProps) {
     const props = this.props
     const prevLocation = _.get(props, ['location', 'pathname'])
@@ -75,16 +103,23 @@ class AppLayout extends React.Component {
   }
 
   render () {
-    const {handleSignOut, scrollValue, updateScrollValue, location: {pathname}, classes} = this.props
+    const {
+      handleSignOut,
+      scrollValue,
+      updateScrollValue,
+      location: {pathname},
+      classes,
+      authLoading
+    } = this.props
     const layout = {scrollValue, updateScrollValue, pathname}
     const isSignIn = pathname === '/sign-in'
     return (
       <div style={{width: '100%', height: '100%'}}>
         {!isSignIn &&
         <div className={classes.sidenav}>
-          <SideBarMenu
+          {!authLoading && <SideBarMenu
             handleSignOut={handleSignOut}
-            handleOpenNotificationBar={() => null}/>
+            handleOpenNotificationBar={() => null}/>}
         </div>}
         {React.cloneElement(this.props.children, {layout})}
       </div>
