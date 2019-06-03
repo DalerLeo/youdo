@@ -12,7 +12,7 @@ script:
   - "export API_HOST=84.54.97.114:8000"
   - "export NODE_ENV=production"
   - "yarn install"
-  - "ls -al"
+  - "ls node_modules/.bin/ -al"
   - "yarn run build"
 
 cache:
