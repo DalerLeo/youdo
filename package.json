@@ -89,7 +89,7 @@
   },
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
-    "build": "./node_modules/.bin/webpack",
+    "build": "node node_modules/.bin/webpack",
     "test": "yarn run lint",
     "lint": "eslint src/"
   }
