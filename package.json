@@ -90,7 +90,7 @@
   "scripts": {
     "start": "webpack-dev-server --inline --hot",
     "build": "webpack",
-    "test": "mocha --timeout 15000 test/AuthSpec.js",
+    "test": "yarn run lint",
     "lint": "eslint src/"
   }
 }
