@@ -10,9 +10,9 @@ branches:
 script:
   - "export SOURCE_DIR=`pwd`"
   - "export API_HOST=84.54.97.114:8000"
-  - "export NODE_ENV=production"
+  - "export NODE_ENV=development"
   - "yarn install"
-  - "ls"
+  - "export NODE_ENV=production"
   - "ls ./node_modules/ -a"
   - "ls ./node_modules/.bin/ -al"
   - "yarn run build"
