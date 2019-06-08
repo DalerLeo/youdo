@@ -16,7 +16,7 @@ branches:
       - master
 
 script:
-  - docker run dalerleo/youdo
+  - docker run dalerleo/youdo yarn run test
 #  - "export SOURCE_DIR=`pwd`"
 #  - "export API_HOST=84.54.97.114:8000"
 #  - "export NODE_ENV=development"
