@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  youdo:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    command: ["yarn", "run", "test"]
+
