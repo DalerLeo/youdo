@@ -1,6 +1,14 @@
-language: node_js
-node_js:
-  - "stable"
+sudo: required
+services:
+  - docker
+
+
+before_install:
+  - docker build -t dalerleo/youdo .
+  -
+#language: node_js
+#node_js:
+#  - "stable"
 
 
 branches:
@@ -8,22 +16,23 @@ branches:
       - master
 
 script:
-  - "export SOURCE_DIR=`pwd`"
-  - "export API_HOST=84.54.97.114:8000"
-  - "export NODE_ENV=development"
-  - "yarn install"
-  - "export NODE_ENV=production"
-  - "ls ../ -al"
-  - "yarn run build"
-
-cache:
-  directories:
-    - node_modules
-
-deploy:
-  provider: pages
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
-  local_dir: dist
-  on:
-    branch: master
+  - docker run dalerleo/youdo
+#  - "export SOURCE_DIR=`pwd`"
+#  - "export API_HOST=84.54.97.114:8000"
+#  - "export NODE_ENV=development"
+#  - "yarn install"
+#  - "export NODE_ENV=production"
+#  - "ls ../ -al"
+#  - "yarn run build"
+#
+#cache:
+#  directories:
+#    - node_modules
+#
+#deploy:
+#  provider: pages
+#  skip_cleanup: true
+#  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+#  local_dir: dist
+#  on:
+#    branch: master
