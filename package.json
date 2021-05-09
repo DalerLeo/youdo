@@ -28,7 +28,7 @@
     "hypernova": "^2.5.0",
     "hypernova-react": "^2.1.0",
     "intl": "^1.2.5",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "material-ui": "^0.20.0",
     "moment": "^2.17.1",
     "prop-types": "^15.5.8",
